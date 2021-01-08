@@ -56,10 +56,10 @@ jobs:
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
-        cp -rf build-x86/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf build-x86_64/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf build-armeabi-v7a/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf build-arm64-v8a/install/sdk/native/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV4_VERSION }}/build-x86/install/sdk/native/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV4_VERSION }}/build-x86_64/install/sdk/native/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV4_VERSION }}/build-armeabi-v7a/install/sdk/native/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV4_VERSION }}/build-arm64-v8a/install/sdk/native/* ${{ env.PACKAGENAME }}/
         rm -f ${{ env.PACKAGENAME }}/jni/*.mk
         rm -f ${{ env.PACKAGENAME }}/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
