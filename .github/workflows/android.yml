@@ -5,9 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: ndk-fix-debug
+      run: sed -i -e '/^  -g$/d' $ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake
     - name: opencv-source
       run: |
-        wget https://github.com/opencv/opencv/archive/4.5.1.zip -O opencv-4.5.1.zip
+        wget -q https://github.com/opencv/opencv/archive/4.5.1.zip -O opencv-4.5.1.zip
         unzip -q opencv-4.5.1.zip
         rm -rf opencv-4.5.1/modules/gapi
     - name: build-armeabi-v7a
