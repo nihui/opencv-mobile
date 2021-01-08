@@ -1,0 +1,44 @@
+name: android
+on: [push, pull_request]
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: opencv-source
+      run: |
+        wget https://github.com/opencv/opencv/archive/4.5.1.zip -O opencv-4.5.1.zip
+        unzip -q opencv-4.5.1.zip
+        rm -rf opencv-4.5.1/modules/gapi
+    - name: build-armeabi-v7a
+      run: |
+        cd opencv-4.5.1
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-14 -DANDROID_STL_FORCE_FEATURES=OFF \
+          -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv_cmake_options.txt` ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-arm64-v8a
+      run: |
+        cd opencv-4.5.1
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_STL_FORCE_FEATURES=OFF \
+          -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv_cmake_options.txt` ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-x86
+      run: |
+        cd opencv-4.5.1
+        mkdir build-x86 && cd build-x86
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-14 -DANDROID_STL_FORCE_FEATURES=OFF \
+          -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv_cmake_options.txt` ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-x86_64
+      run: |
+        cd opencv-4.5.1
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_STL_FORCE_FEATURES=OFF \
+          -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv_cmake_options.txt` ..
+        cmake --build . -j 2
+        cmake --build . --target install
