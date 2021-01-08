@@ -135,3 +135,70 @@ jobs:
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
+
+  android-opencv2:
+    runs-on: ubuntu-latest
+    env:
+      OPENCV_VERSION: 2.4.13.7
+      PACKAGENAME: opencv-mobile-2.4.13.7-android
+    steps:
+    - uses: actions/checkout@v2
+    - name: ndk-fix-debug
+      run: sed -i -e '/^  -g$/d' $ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
+    - name: build-armeabi-v7a
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-arm64-v8a
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-x86
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86 && cd build-x86
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-x86_64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGENAME }}
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/sdk/native/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/sdk/native/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/sdk/native/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/sdk/native/* ${{ env.PACKAGENAME }}/
+        rm -f ${{ env.PACKAGENAME }}/jni/*.mk
+        rm -f ${{ env.PACKAGENAME }}/jni/android.toolchain.cmake
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip

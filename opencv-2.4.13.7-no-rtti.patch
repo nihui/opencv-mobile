@@ -1,0 +1,144 @@
+diff -Nuarp opencv-2.4.13.7/modules/core/src/glob.cpp opencv-2.4.13.7.nortti/modules/core/src/glob.cpp
+--- opencv-2.4.13.7/modules/core/src/glob.cpp	2018-07-02 05:41:56.000000000 +0800
++++ opencv-2.4.13.7.nortti/modules/core/src/glob.cpp	2021-01-08 23:24:46.371298637 +0800
+@@ -225,7 +225,6 @@ static void glob_rec(const cv::String& d
+     if ((dir = opendir (directory.c_str())) != 0)
+     {
+         /* find all the files and directories within directory */
+-        try
+         {
+             while ((ent = readdir (dir)) != 0)
+             {
+@@ -247,11 +246,6 @@ static void glob_rec(const cv::String& d
+                 }
+             }
+         }
+-        catch (...)
+-        {
+-            closedir(dir);
+-            throw;
+-        }
+         closedir(dir);
+     }
+     else CV_Error(CV_StsObjectNotFound, cv::format("could not open directory: %s", directory.c_str()));
+diff -Nuarp opencv-2.4.13.7/modules/core/src/matrix.cpp opencv-2.4.13.7.nortti/modules/core/src/matrix.cpp
+--- opencv-2.4.13.7/modules/core/src/matrix.cpp	2018-07-02 05:41:56.000000000 +0800
++++ opencv-2.4.13.7.nortti/modules/core/src/matrix.cpp	2021-01-08 23:24:59.991085589 +0800
+@@ -279,7 +279,6 @@ Mat::Mat(const Mat& m, const Range& _row
+     }
+ 
+     *this = m;
+-    try
+     {
+         if( _rowRange != Range::all() && _rowRange != Range(0,rows) )
+         {
+@@ -300,11 +299,6 @@ Mat::Mat(const Mat& m, const Range& _row
+             flags |= SUBMATRIX_FLAG;
+         }
+     }
+-    catch(...)
+-    {
+-        release();
+-        throw;
+-    }
+ 
+     if( rows == 1 )
+         flags |= CONTINUOUS_FLAG;
+diff -Nuarp opencv-2.4.13.7/modules/core/src/persistence.cpp opencv-2.4.13.7.nortti/modules/core/src/persistence.cpp
+--- opencv-2.4.13.7/modules/core/src/persistence.cpp	2018-07-02 05:41:56.000000000 +0800
++++ opencv-2.4.13.7.nortti/modules/core/src/persistence.cpp	2021-01-08 23:25:39.470468027 +0800
+@@ -2918,18 +2918,12 @@ cvOpenFileStorage( const char* filename,
+ 
+         //mode = cvGetErrMode();
+         //cvSetErrMode( CV_ErrModeSilent );
+-        try
+         {
+             if( fs->fmt == CV_STORAGE_FORMAT_XML )
+                 icvXMLParse( fs );
+             else
+                 icvYMLParse( fs );
+         }
+-        catch (...)
+-        {
+-            cvReleaseFileStorage( &fs );
+-            throw;
+-        }
+         //cvSetErrMode( mode );
+ 
+         // release resources that we do not need anymore
+@@ -4285,13 +4279,9 @@ icvReadSeq( CvFileStorage* fs, CvFileNod
+             flags |= CV_SEQ_FLAG_HOLE;
+         if( !strstr(flags_str, "untyped") )
+         {
+-            try
+             {
+                 flags |= icvDecodeSimpleFormat(dt);
+             }
+-            catch(...)
+-            {
+-            }
+         }
+     }
+ 
+diff -Nuarp opencv-2.4.13.7/modules/core/src/system.cpp opencv-2.4.13.7.nortti/modules/core/src/system.cpp
+--- opencv-2.4.13.7/modules/core/src/system.cpp	2018-07-02 05:41:56.000000000 +0800
++++ opencv-2.4.13.7.nortti/modules/core/src/system.cpp	2021-01-08 23:25:56.543200966 +0800
+@@ -571,8 +571,6 @@ void error( const Exception& exc )
+         static volatile int* p = 0;
+         *p = 0;
+     }
+-
+-    throw exc;
+ }
+ 
+ CvErrorCallback
+@@ -1160,14 +1158,9 @@ public:
+         TLSDataContainer* k = tlsContainers_[key];
+         if (!k)
+             return;
+-        try
+         {
+             k->deleteDataInstance(data);
+         }
+-        catch (...)
+-        {
+-            CV_DbgAssert(k == NULL); // Debug this!
+-        }
+     }
+ };
+ 
+diff -Nuarp opencv-2.4.13.7/modules/imgproc/src/contours.cpp opencv-2.4.13.7.nortti/modules/imgproc/src/contours.cpp
+--- opencv-2.4.13.7/modules/imgproc/src/contours.cpp	2018-07-02 05:41:56.000000000 +0800
++++ opencv-2.4.13.7.nortti/modules/imgproc/src/contours.cpp	2021-01-08 23:26:22.223799256 +0800
+@@ -1681,7 +1681,6 @@ cvFindContours( void*  img,  CvMemStorag
+     }
+     else
+     {
+-        try
+         {
+             scanner = cvStartFindContours( img, storage, cntHeaderSize, mode, method, offset );
+ 
+@@ -1692,12 +1691,6 @@ cvFindContours( void*  img,  CvMemStorag
+             }
+             while( contour != 0 );
+         }
+-        catch(...)
+-        {
+-            if( scanner )
+-                cvEndFindContours(&scanner);
+-            throw;
+-        }
+ 
+         *firstContour = cvEndFindContours( &scanner );
+     }
+diff -Nuarp opencv-2.4.13.7/modules/photo/src/arrays.hpp opencv-2.4.13.7.nortti/modules/photo/src/arrays.hpp
+--- opencv-2.4.13.7/modules/photo/src/arrays.hpp	2018-07-02 05:41:56.000000000 +0800
++++ opencv-2.4.13.7.nortti/modules/photo/src/arrays.hpp	2021-01-08 23:26:50.440357875 +0800
+@@ -52,7 +52,6 @@ template <class T> struct Array2d {
+     {
+         if (array2d.needToDeallocArray) {
+             // copy constructor for self allocating arrays not supported
+-            throw new exception();
+         }
+     }
+ 
