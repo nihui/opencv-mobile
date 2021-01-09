@@ -27,7 +27,7 @@ jobs:
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-arm64-v8a
@@ -36,7 +36,7 @@ jobs:
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-x86
@@ -45,7 +45,7 @@ jobs:
         mkdir build-x86 && cd build-x86
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-x86_64
@@ -54,7 +54,7 @@ jobs:
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -64,8 +64,8 @@ jobs:
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/sdk/native/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/sdk/native/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-arm64_v8a/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-armeabi_v7a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-arm64-v8a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-armeabi-v7a/OpenCVModules.cmake
         sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86/OpenCVModules.cmake
         sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86_64/OpenCVModules.cmake
         rm -f ${{ env.PACKAGENAME }}/jni/*.mk
@@ -98,7 +98,7 @@ jobs:
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-arm64-v8a
@@ -107,7 +107,7 @@ jobs:
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-x86
@@ -116,7 +116,7 @@ jobs:
         mkdir build-x86 && cd build-x86
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-x86_64
@@ -125,7 +125,7 @@ jobs:
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -135,8 +135,8 @@ jobs:
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/sdk/native/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/sdk/native/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-arm64_v8a/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-armeabi_v7a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-arm64-v8a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-armeabi-v7a/OpenCVModules.cmake
         sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86/OpenCVModules.cmake
         sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86_64/OpenCVModules.cmake
         rm -f ${{ env.PACKAGENAME }}/jni/*.mk
@@ -169,7 +169,7 @@ jobs:
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-arm64-v8a
@@ -178,7 +178,7 @@ jobs:
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-x86
@@ -187,7 +187,7 @@ jobs:
         mkdir build-x86 && cd build-x86
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-x86_64
@@ -196,7 +196,7 @@ jobs:
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -210,6 +210,10 @@ jobs:
         sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/OpenCVModules_armeabi_v7a.cmake
         sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/OpenCVModules_x86.cmake
         sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/OpenCVModules_x86_64.cmake
+        rm -f ${{ env.PACKAGENAME }}/libs/armeabi-v7a/libopencv_info.so
+        rm -f ${{ env.PACKAGENAME }}/libs/arm64-v8a/libopencv_info.so
+        rm -f ${{ env.PACKAGENAME }}/libs/x86/libopencv_info.so
+        rm -f ${{ env.PACKAGENAME }}/libs/x86_64/libopencv_info.so
         rm -f ${{ env.PACKAGENAME }}/jni/*.mk
         rm -f ${{ env.PACKAGENAME }}/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
@@ -240,7 +244,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=OS -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-simulator
@@ -250,7 +254,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -262,7 +266,7 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
         cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
@@ -293,7 +297,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=OS -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-simulator
@@ -303,7 +307,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -315,7 +319,7 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
         cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
@@ -346,7 +350,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=OS -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-simulator
@@ -356,7 +360,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -368,7 +372,7 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
         cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
@@ -400,7 +404,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=OS -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-simulator
@@ -410,7 +414,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -422,7 +426,7 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
         cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
@@ -453,7 +457,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=OS -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-simulator
@@ -463,7 +467,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -475,7 +479,7 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
         cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
@@ -506,7 +510,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=OS -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-simulator
@@ -516,7 +520,7 @@ jobs:
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -528,7 +532,7 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
         cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip

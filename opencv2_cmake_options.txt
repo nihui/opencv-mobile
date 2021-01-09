@@ -62,7 +62,6 @@
 -DBUILD_opencv_superres=OFF
 -DBUILD_opencv_videostab=OFF
 -DBUILD_opencv_viz=OFF
--DBUILD_opencv_world=OFF
 -DBUILD_opencv_contrib=OFF
 -DBUILD_opencv_features2d=OFF
 -DBUILD_opencv_legacy=OFF
