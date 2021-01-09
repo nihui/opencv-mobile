@@ -8,7 +8,7 @@
 
 ✔️ We also provide prebuild binary package for **ios with bitcode enabled**, that the official package lacks.
 
-✔️ All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secreted code**.
+✔️ All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secret code**.
 
 |opencv 4.5.1 android|package size|
 |---|---|
