@@ -6,6 +6,13 @@ We provide prebuild binary packages for opencv 2.4.13.7, 3.4.13 and 4.5.1.
 
 # download
 
+|opencv|android|ios|ios-bitcode|
+|---|---|---|---|
+||armeabi-v7a arm64-v8a x86 x86_64|armv7 arm64 arm64e i386 x86_64|armv7 arm64 arm64e i386 x86_64|
+|2.4.13.7|tbd|tbd|tbd|
+|3.4.13|tbd|tbd|tbd|
+|4.5.1|tbd|tbd|tbd|
+
 # some notes
 
 The minimal opencv build contains most basic opencv operators and common image processing functions, with some handy additions like keypoint feature extraction and matching, image inpainting and opticalflow estimation.
@@ -13,6 +20,8 @@ The minimal opencv build contains most basic opencv operators and common image p
 Many computer vision algorithms that reside in dedicated modules are discarded, such as face detection etc. You could try deep-learning based algorithms with nerual network inference library optimized for mobile. ncnn is a good one.
 
 cuda and opencl are disabled because there is no cuda on mobile, no opencl on ios, and opencl on android is slow. opencv on gpu is not suitable for real productions. Write metal on ios and opengles/vulkan on android if you need good gpu acceleration.
+
+C++ RTTI and exceptions are disabled for minimal build. Be careful when you write ```cv::Mat roi = image(roirect);```  :P
 
 # opencv modules contained
 
