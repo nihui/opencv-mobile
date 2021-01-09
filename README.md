@@ -29,7 +29,7 @@
 
 ## android
 
-(armeabi-v7a arm64-v8a x86 x86_64) build with ndk r21c
+(armeabi-v7a arm64-v8a x86 x86_64) build with ndk r21d and android api 24
 
 * [opencv-mobile-2.4.13.7-android.zip (9.68MB)](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-2.4.13.7-android.zip)
 * [opencv-mobile-3.4.13-android.zip (16.1MB)](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-3.4.13-android.zip)
