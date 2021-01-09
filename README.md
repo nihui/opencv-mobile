@@ -1,17 +1,30 @@
 # opencv-mobile
 
+![release](https://github.com/nihui/opencv-mobile/workflows/release/badge.svg)
+
 This project provides the minimal build of opencv library for the android and ios platforms.
 
 We provide prebuild binary packages for opencv 2.4.13.7, 3.4.13 and 4.5.1.
 
 # download
 
-|opencv|android|ios|ios-bitcode|
-|---|---|---|---|
-||armeabi-v7a arm64-v8a x86 x86_64|armv7 arm64 arm64e i386 x86_64|armv7 arm64 arm64e i386 x86_64|
-|2.4.13.7|tbd|tbd|tbd|
-|3.4.13|tbd|tbd|tbd|
-|4.5.1|tbd|tbd|tbd|
+## android (armeabi-v7a arm64-v8a x86 x86_64)
+
+* [opencv-mobile-2.4.13.7-android.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-2.4.13.7-android.zip)
+* [opencv-mobile-3.4.13-android.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-3.4.13-android.zip)
+* [opencv-mobile-4.5.1-android.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-4.5.1-android.zip)
+
+## ios (armv7 arm64 arm64e i386 x86_64)
+
+* [opencv-mobile-2.4.13.7-ios.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-2.4.13.7-ios.zip)
+* [opencv-mobile-3.4.13-ios.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-3.4.13-ios.zip)
+* [opencv-mobile-4.5.1-ios.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-4.5.1-ios.zip)
+
+## ios with bitcode (armv7 arm64 arm64e i386 x86_64)
+
+* [opencv-mobile-2.4.13.7-ios-bitcode.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-2.4.13.7-ios-bitcode.zip)
+* [opencv-mobile-3.4.13-ios-bitcode.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-3.4.13-ios-bitcode.zip)
+* [opencv-mobile-4.5.1-ios-bitcode.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-4.5.1-ios-bitcode.zip)
 
 # usage android
 
