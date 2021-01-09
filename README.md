@@ -8,19 +8,25 @@ We provide prebuild binary packages for opencv 2.4.13.7, 3.4.13 and 4.5.1.
 
 # Download
 
-## android (armeabi-v7a arm64-v8a x86 x86_64) build with ndk-r21c
+## android
+
+(armeabi-v7a arm64-v8a x86 x86_64) build with ndk r21c
 
 * [opencv-mobile-2.4.13.7-android.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-2.4.13.7-android.zip)
 * [opencv-mobile-3.4.13-android.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-3.4.13-android.zip)
 * [opencv-mobile-4.5.1-android.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-4.5.1-android.zip)
 
-## ios (armv7 arm64 arm64e i386 x86_64) build with Xcode 12.2
+## ios
+
+(armv7 arm64 arm64e i386 x86_64) build with Xcode 12.2
 
 * [opencv-mobile-2.4.13.7-ios.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-2.4.13.7-ios.zip)
 * [opencv-mobile-3.4.13-ios.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-3.4.13-ios.zip)
 * [opencv-mobile-4.5.1-ios.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-4.5.1-ios.zip)
 
-## ios with bitcode (armv7 arm64 arm64e i386 x86_64) build with Xcode 12.2
+## ios with bitcode
+
+(armv7 arm64 arm64e i386 x86_64) build with Xcode 12.2
 
 * [opencv-mobile-2.4.13.7-ios-bitcode.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-2.4.13.7-ios-bitcode.zip)
 * [opencv-mobile-3.4.13-ios-bitcode.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-3.4.13-ios-bitcode.zip)
