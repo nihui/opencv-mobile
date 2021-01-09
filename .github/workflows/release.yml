@@ -64,6 +64,10 @@ jobs:
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/sdk/native/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/sdk/native/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/sdk/native/* ${{ env.PACKAGENAME }}/
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-arm64_v8a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-armeabi_v7a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86_64/OpenCVModules.cmake
         rm -f ${{ env.PACKAGENAME }}/jni/*.mk
         rm -f ${{ env.PACKAGENAME }}/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
@@ -131,6 +135,10 @@ jobs:
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/sdk/native/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/sdk/native/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/sdk/native/* ${{ env.PACKAGENAME }}/
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-arm64_v8a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-armeabi_v7a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86_64/OpenCVModules.cmake
         rm -f ${{ env.PACKAGENAME }}/jni/*.mk
         rm -f ${{ env.PACKAGENAME }}/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
@@ -161,7 +169,7 @@ jobs:
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-arm64-v8a
@@ -170,7 +178,7 @@ jobs:
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-x86
@@ -179,7 +187,7 @@ jobs:
         mkdir build-x86 && cd build-x86
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: build-x86_64
@@ -188,7 +196,7 @@ jobs:
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake \
             -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -198,6 +206,10 @@ jobs:
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/sdk/native/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/sdk/native/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/sdk/native/* ${{ env.PACKAGENAME }}/
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/OpenCVModules_arm64_v8a.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/OpenCVModules_armeabi_v7a.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/OpenCVModules_x86.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/OpenCVModules_x86_64.cmake
         rm -f ${{ env.PACKAGENAME }}/jni/*.mk
         rm -f ${{ env.PACKAGENAME }}/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
@@ -250,8 +262,8 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create build-ios/install/lib/lib*.a build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
-        cp -r build-ios/install/include/* opencv2.framework/Versions/A/Headers/
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -303,8 +315,8 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create build-ios/install/lib/lib*.a build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
-        cp -r build-ios/install/include/* opencv2.framework/Versions/A/Headers/
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -356,8 +368,8 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create build-ios/install/lib/lib*.a build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
-        cp -r build-ios/install/include/* opencv2.framework/Versions/A/Headers/
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -410,8 +422,8 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create build-ios/install/lib/lib*.a build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
-        cp -r build-ios/install/include/* opencv2.framework/Versions/A/Headers/
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -463,8 +475,8 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create build-ios/install/lib/lib*.a build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
-        cp -r build-ios/install/include/* opencv2.framework/Versions/A/Headers/
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -516,8 +528,8 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create build-ios/install/lib/lib*.a build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
-        cp -r build-ios/install/include/* opencv2.framework/Versions/A/Headers/
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/lib*.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/lib*.a -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
