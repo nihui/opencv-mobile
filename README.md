@@ -13,6 +13,23 @@ We provide prebuild binary packages for opencv 2.4.13.7, 3.4.13 and 4.5.1.
 |3.4.13|tbd|tbd|tbd|
 |4.5.1|tbd|tbd|tbd|
 
+# usage android
+
+1. Extract archive to ```<project dir>/app/src/main/jni/```
+2. Modify ```<project dir>/app/src/main/jni/CMakeListst.txt``` to find and link opencv
+
+```cmake
+set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.5.1-android/sdk/native/jni)
+find_package(OpenCV REQUIRED)
+
+target_link_libraries(your_jni_target ${OpenCV_LIBS})
+```
+
+# usage ios
+
+1. Extract archive, and drag ```opencv2.framework``` into your project
+2. In Build Phases -> Link Binary with Libraries, add ```libz.tbd```
+
 # some notes
 
 The minimal opencv build contains most basic opencv operators and common image processing functions, with some handy additions like keypoint feature extraction and matching, image inpainting and opticalflow estimation.
