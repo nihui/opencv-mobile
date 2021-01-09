@@ -2,9 +2,26 @@
 
 ![release](https://github.com/nihui/opencv-mobile/workflows/release/badge.svg)
 
-This project provides the minimal build of opencv library for the android and ios platforms.
+✔️ This project provides the minimal build of opencv library for the **android** and **ios** platforms.
 
-We provide prebuild binary packages for opencv 2.4.13.7, 3.4.13 and 4.5.1.
+✔️ We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.13** and **4.5.1**.
+
+✔️ We also provide prebuild binary package for **ios with bitcode enabled**, that the official package lacks.
+
+|opencv 4.5.1 android|package size|
+|---|---|
+|The official opencv|229MB|
+|opencv-mobile|16.7MB|
+
+|opencv 4.5.1 ios|package size|
+|---|---|
+|The official opencv|173MB|
+|opencv-mobile|14.4MB|
+
+|opencv 4.5.1 ios with bitcode|package size|
+|---|---|
+|The official opencv|missing :(|
+|opencv-mobile|50.2MB|
 
 # Download
 
