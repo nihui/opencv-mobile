@@ -6,7 +6,7 @@ This project provides the minimal build of opencv library for the android and io
 
 We provide prebuild binary packages for opencv 2.4.13.7, 3.4.13 and 4.5.1.
 
-# download
+# Download
 
 ## android (armeabi-v7a arm64-v8a x86 x86_64)
 
@@ -26,7 +26,7 @@ We provide prebuild binary packages for opencv 2.4.13.7, 3.4.13 and 4.5.1.
 * [opencv-mobile-3.4.13-ios-bitcode.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-3.4.13-ios-bitcode.zip)
 * [opencv-mobile-4.5.1-ios-bitcode.zip](https://github.com/nihui/opencv-mobile/releases/download/v1/opencv-mobile-4.5.1-ios-bitcode.zip)
 
-# usage android
+# Usage android
 
 1. Extract archive to ```<project dir>/app/src/main/jni/```
 2. Modify ```<project dir>/app/src/main/jni/CMakeListst.txt``` to find and link opencv
@@ -38,12 +38,12 @@ find_package(OpenCV REQUIRED)
 target_link_libraries(your_jni_target ${OpenCV_LIBS})
 ```
 
-# usage ios
+# Usage ios
 
 1. Extract archive, and drag ```opencv2.framework``` into your project
 2. In Build Phases -> Link Binary with Libraries, add ```libz.tbd```
 
-# some notes
+# Some notes
 
 The minimal opencv build contains most basic opencv operators and common image processing functions, with some handy additions like keypoint feature extraction and matching, image inpainting and opticalflow estimation.
 
@@ -53,7 +53,7 @@ cuda and opencl are disabled because there is no cuda on mobile, no opencl on io
 
 C++ RTTI and exceptions are disabled for minimal build. Be careful when you write ```cv::Mat roi = image(roirect);```  :P
 
-# opencv modules contained
+# opencv modules included
 
 |module|comment|
 |---|---|
