@@ -82,7 +82,7 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 |---|---|
 |opencv_core|Mat, matrix operations, etc|
 |opencv_imgproc|resize, cvtColor, warpAffine, etc|
-|opencv_features2d|keypoint feature and mather, etc (not included in opencv 2.x package)|
+|opencv_features2d|keypoint feature and matcher, etc (not included in opencv 2.x package)|
 |opencv_photo|inpaint, etc|
 |opencv_video|opticalflow, etc|
 
