@@ -1,10 +1,23 @@
 name: release
-on: [push, pull_request]
+#on: [push, pull_request]
+on:
+  push:
+    tags:
+      - '*'
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
+    steps:
+    - name: get-version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
   android-opencv4:
     runs-on: ubuntu-latest
     env:
@@ -60,16 +73,17 @@ jobs:
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-arm64-v8a/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-armeabi-v7a/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86_64/OpenCVModules.cmake
-        rm -f ${{ env.PACKAGENAME }}/jni/*.mk
-        rm -f ${{ env.PACKAGENAME }}/jni/android.toolchain.cmake
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-arm64-v8a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-armeabi-v7a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-x86/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-x86_64/OpenCVModules.cmake
+        rm -rf ${{ env.PACKAGENAME }}/sdk/native/etc
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
       uses: actions/upload-artifact@v2
@@ -131,16 +145,17 @@ jobs:
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-arm64-v8a/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-armeabi-v7a/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/abi-x86_64/OpenCVModules.cmake
-        rm -f ${{ env.PACKAGENAME }}/jni/*.mk
-        rm -f ${{ env.PACKAGENAME }}/jni/android.toolchain.cmake
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-arm64-v8a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-armeabi-v7a/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-x86/OpenCVModules.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-x86_64/OpenCVModules.cmake
+        rm -rf ${{ env.PACKAGENAME }}/sdk/native/etc
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
       uses: actions/upload-artifact@v2
@@ -202,20 +217,21 @@ jobs:
     - name: package
       run: |
         mkdir ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/sdk/native/* ${{ env.PACKAGENAME }}/
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/OpenCVModules_arm64_v8a.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/OpenCVModules_armeabi_v7a.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/OpenCVModules_x86.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/jni/OpenCVModules_x86_64.cmake
-        rm -f ${{ env.PACKAGENAME }}/libs/armeabi-v7a/libopencv_info.so
-        rm -f ${{ env.PACKAGENAME }}/libs/arm64-v8a/libopencv_info.so
-        rm -f ${{ env.PACKAGENAME }}/libs/x86/libopencv_info.so
-        rm -f ${{ env.PACKAGENAME }}/libs/x86_64/libopencv_info.so
-        rm -f ${{ env.PACKAGENAME }}/jni/*.mk
-        rm -f ${{ env.PACKAGENAME }}/jni/android.toolchain.cmake
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/OpenCVModules_arm64_v8a.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/OpenCVModules_armeabi_v7a.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/OpenCVModules_x86.cmake
+        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/OpenCVModules_x86_64.cmake
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/armeabi-v7a/libopencv_info.so
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/arm64-v8a/libopencv_info.so
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/x86/libopencv_info.so
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/x86_64/libopencv_info.so
+        rm -rf ${{ env.PACKAGENAME }}/sdk/native/etc
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
       uses: actions/upload-artifact@v2
@@ -542,3 +558,122 @@ jobs:
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
+
+  release:
+    needs: [setup, android-opencv4, android-opencv3, android-opencv2, ios-opencv4, ios-opencv3, ios-opencv2, ios-opencv4-bitcode, ios-opencv3-bitcode, ios-opencv2-bitcode]
+    runs-on: ubuntu-latest
+    steps:
+    - name: download
+      uses: actions/download-artifact@v2
+      with:
+        path: artifacts
+
+    - name: create-release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ needs.setup.outputs.VERSION }}
+        release_name: Release ${{ needs.setup.outputs.VERSION }}
+        draft: false
+        prerelease: false
+
+    - name: upload-android-opencv4
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-4.5.1-android
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-android-opencv3
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-3.4.13-android
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-android-opencv2
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-2.4.13.7-android
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-ios-opencv4
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-4.5.1-ios
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-ios-opencv3
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-3.4.13-ios
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-ios-opencv2
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-2.4.13.7-ios
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-ios-opencv4-bitcode
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-4.5.1-ios-bitcode
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-ios-opencv3-bitcode
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-3.4.13-ios-bitcode
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-ios-opencv2-bitcode
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-2.4.13.7-ios-bitcode
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
