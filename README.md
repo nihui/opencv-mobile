@@ -1,6 +1,8 @@
 # opencv-mobile
 
+![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 ![release](https://github.com/nihui/opencv-mobile/workflows/release/badge.svg)
+![download](https://img.shields.io/github/downloads/nihui/opencv-mobile/total.svg)
 
 ✔️ This project provides the minimal build of opencv library for the **android** and **ios** platforms.
 
