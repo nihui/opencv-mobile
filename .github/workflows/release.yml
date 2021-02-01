@@ -267,7 +267,7 @@ jobs:
         mkdir build-ios && cd build-ios
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=OS -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
+            -DIOS_PLATFORM=OS -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -277,7 +277,7 @@ jobs:
         mkdir build-simulator && cd build-simulator
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
+            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -322,7 +322,7 @@ jobs:
         mkdir build-ios && cd build-ios
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=OS -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
+            -DIOS_PLATFORM=OS -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -332,7 +332,7 @@ jobs:
         mkdir build-simulator && cd build-simulator
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
+            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -377,7 +377,7 @@ jobs:
         mkdir build-ios && cd build-ios
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=OS -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
+            -DIOS_PLATFORM=OS -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -387,7 +387,7 @@ jobs:
         mkdir build-simulator && cd build-simulator
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
+            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=0 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -433,7 +433,7 @@ jobs:
         mkdir build-ios && cd build-ios
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=OS -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
+            -DIOS_PLATFORM=OS -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -443,7 +443,7 @@ jobs:
         mkdir build-simulator && cd build-simulator
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
+            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -488,7 +488,7 @@ jobs:
         mkdir build-ios && cd build-ios
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=OS -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
+            -DIOS_PLATFORM=OS -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -498,7 +498,7 @@ jobs:
         mkdir build-simulator && cd build-simulator
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
+            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -543,7 +543,7 @@ jobs:
         mkdir build-ios && cd build-ios
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=OS -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" \
+            -DIOS_PLATFORM=OS -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="armv7;arm64;arm64e" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -553,7 +553,7 @@ jobs:
         mkdir build-simulator && cd build-simulator
         cmake -DCMAKE_TOOLCHAIN_FILE=../../ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" \
+            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64" -DIOS_DEPLOYMENT_TARGET=9.0 \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
