@@ -34,6 +34,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.5.1-no-rtti.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
     - name: build-armeabi-v7a
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -106,6 +108,8 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         patch -p1 -i ../opencv-3.4.13-no-rtti.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
     - name: build-armeabi-v7a
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -178,6 +182,8 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
     - name: build-armeabi-v7a
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -253,6 +259,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.5.1-no-rtti.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
     - name: build-ios
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -306,6 +314,8 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         patch -p1 -i ../opencv-3.4.13-no-rtti.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
     - name: build-ios
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -359,6 +369,8 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
     - name: build-ios
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -413,6 +425,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.5.1-no-rtti.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
     - name: build-ios
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -466,6 +480,8 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         patch -p1 -i ../opencv-3.4.13-no-rtti.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
     - name: build-ios
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -519,6 +535,8 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
     - name: build-ios
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
