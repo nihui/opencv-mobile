@@ -76,6 +76,8 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 
 * Many computer vision algorithms that reside in dedicated modules are discarded, such as face detection etc. [You could try deep-learning based algorithms with nerual network inference library optimized for mobile.](https://github.com/Tencent/ncnn)
 
+* Image IO functions in highgui module, like ```cv::imread``` and ```cv::imwrite```, are re-implemented using [stb](https://github.com/nothings/stb) for smaller code size. GUI functions, like ```cv::imshow```, are discarded.
+
 * cuda and opencl are disabled because there is no cuda on mobile, no opencl on ios, and opencl on android is slow. opencv on gpu is not suitable for real productions. Write metal on ios and opengles/vulkan on android if you need good gpu acceleration.
 
 * C++ RTTI and exceptions are disabled for minimal build. Be careful when you write ```cv::Mat roi = image(roirect);```  :P
@@ -86,6 +88,7 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 |---|---|
 |opencv_core|Mat, matrix operations, etc|
 |opencv_imgproc|resize, cvtColor, warpAffine, etc|
+|opencv_highgui|imread, imwrite|
 |opencv_features2d|keypoint feature and matcher, etc (not included in opencv 2.x package)|
 |opencv_photo|inpaint, etc|
 |opencv_video|opticalflow, etc|
@@ -102,8 +105,7 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 |opencv_flann|feature matching, rare uses on mobile, build the source externally if you need|
 |opencv_gapi|graph based image processing, little gain on mobile|
 |opencv_gpu|no cuda/opencl on mobile|
-|opencv_highgui|use android Bitmap or ios UIImage api instead|
-|opencv_imgcodecs|use android Bitmap or ios UIImage api instead|
+|opencv_imgcodecs|link with opencv_highgui instead|
 |opencv_java|wrap your c++ code with jni|
 |opencv_js|write native code on mobile|
 |opencv_lagacy|various good-old cv routines, build part of the source externally if you need|
