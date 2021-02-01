@@ -15,17 +15,17 @@
 |opencv 4.5.1 android|package size|
 |---|---|
 |The official opencv|229MB|
-|opencv-mobile|16.7MB|
+|opencv-mobile|17.0MB|
 
 |opencv 4.5.1 ios|package size|
 |---|---|
 |The official opencv|173MB|
-|opencv-mobile|14.4MB|
+|opencv-mobile|14.8MB|
 
 |opencv 4.5.1 ios with bitcode|package size|
 |---|---|
 |The official opencv|missing :(|
-|opencv-mobile|50.2MB|
+|opencv-mobile|51.6MB|
 
 # Download
 
@@ -33,25 +33,25 @@
 
 (armeabi-v7a arm64-v8a x86 x86_64) build with ndk r21d and android api 24
 
-* [opencv-mobile-2.4.13.7-android.zip (9.68MB)](https://github.com/nihui/opencv-mobile/releases/download/v2/opencv-mobile-2.4.13.7-android.zip)
-* [opencv-mobile-3.4.13-android.zip (16.1MB)](https://github.com/nihui/opencv-mobile/releases/download/v2/opencv-mobile-3.4.13-android.zip)
-* [opencv-mobile-4.5.1-android.zip (16.7MB)](https://github.com/nihui/opencv-mobile/releases/download/v2/opencv-mobile-4.5.1-android.zip)
+* [opencv-mobile-2.4.13.7-android.zip (9.94MB)](https://github.com/nihui/opencv-mobile/releases/download/v3/opencv-mobile-2.4.13.7-android.zip)
+* [opencv-mobile-3.4.13-android.zip (16.4MB)](https://github.com/nihui/opencv-mobile/releases/download/v3/opencv-mobile-3.4.13-android.zip)
+* [opencv-mobile-4.5.1-android.zip (17.0MB)](https://github.com/nihui/opencv-mobile/releases/download/v3/opencv-mobile-4.5.1-android.zip)
 
 ## ios
 
 (armv7 arm64 arm64e i386 x86_64) build with Xcode 12.2
 
-* [opencv-mobile-2.4.13.7-ios.zip (9.46MB)](https://github.com/nihui/opencv-mobile/releases/download/v2/opencv-mobile-2.4.13.7-ios.zip)
-* [opencv-mobile-3.4.13-ios.zip (13.9MB)](https://github.com/nihui/opencv-mobile/releases/download/v2/opencv-mobile-3.4.13-ios.zip)
-* [opencv-mobile-4.5.1-ios.zip (14.4MB)](https://github.com/nihui/opencv-mobile/releases/download/v2/opencv-mobile-4.5.1-ios.zip)
+* [opencv-mobile-2.4.13.7-ios.zip (9.81MB)](https://github.com/nihui/opencv-mobile/releases/download/v3/opencv-mobile-2.4.13.7-ios.zip)
+* [opencv-mobile-3.4.13-ios.zip (14.3MB)](https://github.com/nihui/opencv-mobile/releases/download/v3/opencv-mobile-3.4.13-ios.zip)
+* [opencv-mobile-4.5.1-ios.zip (14.8MB)](https://github.com/nihui/opencv-mobile/releases/download/v3/opencv-mobile-4.5.1-ios.zip)
 
 ## ios with bitcode
 
 (armv7 arm64 arm64e i386 x86_64) build with Xcode 12.2
 
-* [opencv-mobile-2.4.13.7-ios-bitcode.zip (33.7MB)](https://github.com/nihui/opencv-mobile/releases/download/v2/opencv-mobile-2.4.13.7-ios-bitcode.zip)
-* [opencv-mobile-3.4.13-ios-bitcode.zip (48.0MB)](https://github.com/nihui/opencv-mobile/releases/download/v2/opencv-mobile-3.4.13-ios-bitcode.zip)
-* [opencv-mobile-4.5.1-ios-bitcode.zip (50.2MB)](https://github.com/nihui/opencv-mobile/releases/download/v2/opencv-mobile-4.5.1-ios-bitcode.zip)
+* [opencv-mobile-2.4.13.7-ios-bitcode.zip (35.2MB)](https://github.com/nihui/opencv-mobile/releases/download/v3/opencv-mobile-2.4.13.7-ios-bitcode.zip)
+* [opencv-mobile-3.4.13-ios-bitcode.zip (49.4MB)](https://github.com/nihui/opencv-mobile/releases/download/v3/opencv-mobile-3.4.13-ios-bitcode.zip)
+* [opencv-mobile-4.5.1-ios-bitcode.zip (51.6MB)](https://github.com/nihui/opencv-mobile/releases/download/v3/opencv-mobile-4.5.1-ios-bitcode.zip)
 
 # Usage android
 
