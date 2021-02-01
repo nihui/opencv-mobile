@@ -20,14 +20,11 @@
 #include <string.h>
 
 #define STB_IMAGE_IMPLEMENTATION
+#define STBI_NO_THREAD_LOCALS
 #define STBI_ONLY_JPEG
 #define STBI_ONLY_PNG
 #define STBI_ONLY_BMP
 #define STBI_ONLY_PNM
-#if __APPLE__
-#define STBI_NO_THREAD_LOCALS
-#define STBI_THREAD_LOCAL thread_local
-#endif
 #include "stb_image.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
