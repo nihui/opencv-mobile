@@ -80,11 +80,7 @@ jobs:
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-arm64-v8a/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-armeabi-v7a/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-x86/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-x86_64/OpenCVModules.cmake
-        rm -rf ${{ env.PACKAGENAME }}/sdk/native/etc
+        rm -rf ${{ env.PACKAGENAME }}/sdk/etc
         rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
         rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
@@ -155,11 +151,8 @@ jobs:
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-arm64-v8a/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-armeabi-v7a/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-x86/OpenCVModules.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/abi-x86_64/OpenCVModules.cmake
-        rm -rf ${{ env.PACKAGENAME }}/sdk/native/etc
+        rm -rf ${{ env.PACKAGENAME }}/apk
+        rm -rf ${{ env.PACKAGENAME }}/sdk/etc
         rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
         rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
@@ -230,15 +223,11 @@ jobs:
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/OpenCVModules_arm64_v8a.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/OpenCVModules_armeabi_v7a.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/OpenCVModules_x86.cmake
-        sed -i 's!/usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a!\\$<LINK_ONLY:z>!g' ${{ env.PACKAGENAME }}/sdk/native/jni/OpenCVModules_x86_64.cmake
         rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/armeabi-v7a/libopencv_info.so
         rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/arm64-v8a/libopencv_info.so
         rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/x86/libopencv_info.so
         rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/x86_64/libopencv_info.so
-        rm -rf ${{ env.PACKAGENAME }}/sdk/native/etc
+        rm -rf ${{ env.PACKAGENAME }}/sdk/etc
         rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
         rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
@@ -260,7 +249,7 @@ jobs:
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.5.1-no-rtti.patch
         rm -rf modules/highgui
@@ -317,7 +306,7 @@ jobs:
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-3.4.13-no-rtti.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -373,7 +362,7 @@ jobs:
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -429,7 +418,7 @@ jobs:
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.5.1-no-rtti.patch
         rm -rf modules/highgui
@@ -486,7 +475,7 @@ jobs:
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-3.4.13-no-rtti.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -542,7 +531,7 @@ jobs:
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
