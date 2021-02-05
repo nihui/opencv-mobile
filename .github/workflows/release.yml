@@ -583,6 +583,11 @@ jobs:
       OPENCV_VERSION: 4.5.1
       PACKAGENAME: opencv-mobile-4.5.1-armlinux
     steps:
+    - name: arm-gnu-toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
+
     - uses: actions/checkout@v2
     - name: opencv-source
       run: |
@@ -642,6 +647,11 @@ jobs:
       OPENCV_VERSION: 3.4.13
       PACKAGENAME: opencv-mobile-3.4.13-armlinux
     steps:
+    - name: arm-gnu-toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
+
     - uses: actions/checkout@v2
     - name: opencv-source
       run: |
@@ -700,6 +710,11 @@ jobs:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-armlinux
     steps:
+    - name: arm-gnu-toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
+
     - uses: actions/checkout@v2
     - name: opencv-source
       run: |
