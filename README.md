@@ -76,7 +76,6 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 # Usage iOS
 
 1. Extract archive, and drag ```opencv2.framework``` into your project
-2. In Build Phases -> Link Binary with Libraries, add ```libz.tbd```
 
 # Some notes
 
