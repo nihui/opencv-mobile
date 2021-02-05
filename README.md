@@ -4,11 +4,11 @@
 ![release](https://github.com/nihui/opencv-mobile/workflows/release/badge.svg)
 ![download](https://img.shields.io/github/downloads/nihui/opencv-mobile/total.svg)
 
-✔️ This project provides the minimal build of opencv library for the **android** and **ios** platforms.
+✔️ This project provides the minimal build of opencv library for the **Android**, **iOS** and **ARM Linux** platforms.
 
 ✔️ We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.13** and **4.5.1**.
 
-✔️ We also provide prebuild binary package for **ios with bitcode enabled**, that the official package lacks.
+✔️ We also provide prebuild binary package for **iOS with bitcode enabled**, that the official package lacks.
 
 ✔️ All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secret code**.
 
@@ -29,7 +29,7 @@
 
 # Download
 
-## android
+## Android
 
 (armeabi-v7a arm64-v8a x86 x86_64) build with ndk r21d and android api 24
 
@@ -37,7 +37,7 @@
 * [opencv-mobile-3.4.13-android.zip (14.9MB)](https://github.com/nihui/opencv-mobile/releases/download/v4/opencv-mobile-3.4.13-android.zip)
 * [opencv-mobile-4.5.1-android.zip (15.5MB)](https://github.com/nihui/opencv-mobile/releases/download/v4/opencv-mobile-4.5.1-android.zip)
 
-## ios
+## iOS
 
 (armv7 arm64 arm64e i386 x86_64) build with Xcode 12.2
 
@@ -45,7 +45,7 @@
 * [opencv-mobile-3.4.13-ios.zip (14.3MB)](https://github.com/nihui/opencv-mobile/releases/download/v4/opencv-mobile-3.4.13-ios.zip)
 * [opencv-mobile-4.5.1-ios.zip (14.8MB)](https://github.com/nihui/opencv-mobile/releases/download/v4/opencv-mobile-4.5.1-ios.zip)
 
-## ios with bitcode
+## iOS with bitcode
 
 (armv7 arm64 arm64e i386 x86_64) build with Xcode 12.2
 
@@ -53,7 +53,15 @@
 * [opencv-mobile-3.4.13-ios-bitcode.zip (49.4MB)](https://github.com/nihui/opencv-mobile/releases/download/v4/opencv-mobile-3.4.13-ios-bitcode.zip)
 * [opencv-mobile-4.5.1-ios-bitcode.zip (51.6MB)](https://github.com/nihui/opencv-mobile/releases/download/v4/opencv-mobile-4.5.1-ios-bitcode.zip)
 
-# Usage android
+## ARM Linux
+
+(arm-linux-gnueabi arm-linux-gnueabihf aarch64-linux-gnu) build with ubuntu cross compiler
+
+* [opencv-mobile-2.4.13.7-armlinux.zip (7.97MB)](https://github.com/nihui/opencv-mobile/releases/download/v4/opencv-mobile-2.4.13.7-armlinux.zip)
+* [opencv-mobile-3.4.13-armlinux.zip (14.1MB)](https://github.com/nihui/opencv-mobile/releases/download/v4/opencv-mobile-3.4.13-armlinux.zip)
+* [opencv-mobile-4.5.1-armlinux.zip (14.6MB)](https://github.com/nihui/opencv-mobile/releases/download/v4/opencv-mobile-4.5.1-armlinux.zip)
+
+# Usage Android and ARM Linux
 
 1. Extract archive to ```<project dir>/app/src/main/jni/```
 2. Modify ```<project dir>/app/src/main/jni/CMakeListst.txt``` to find and link opencv
@@ -65,7 +73,7 @@ find_package(OpenCV REQUIRED)
 target_link_libraries(your_jni_target ${OpenCV_LIBS})
 ```
 
-# Usage ios
+# Usage iOS
 
 1. Extract archive, and drag ```opencv2.framework``` into your project
 2. In Build Phases -> Link Binary with Libraries, add ```libz.tbd```
