@@ -61,7 +61,7 @@
 * [opencv-mobile-3.4.13-armlinux.zip (14.1MB)](https://github.com/nihui/opencv-mobile/releases/download/v4/opencv-mobile-3.4.13-armlinux.zip)
 * [opencv-mobile-4.5.1-armlinux.zip (14.6MB)](https://github.com/nihui/opencv-mobile/releases/download/v4/opencv-mobile-4.5.1-armlinux.zip)
 
-# Usage Android and ARM Linux
+# Usage Android
 
 1. Extract archive to ```<project dir>/app/src/main/jni/```
 2. Modify ```<project dir>/app/src/main/jni/CMakeListst.txt``` to find and link opencv
@@ -76,6 +76,18 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 # Usage iOS
 
 1. Extract archive, and drag ```opencv2.framework``` into your project
+
+# Usage ARM Linux
+
+1. Extract archive to ```<project dir>/```
+2. Modify ```<project dir>/CMakeListst.txt``` to find and link opencv
+
+```cmake
+set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.5.1-armlinux/arm-linux-gnueabihf/lib/cmake/opencv4)
+find_package(OpenCV REQUIRED)
+
+target_link_libraries(your_target ${OpenCV_LIBS})
+```
 
 # Some notes
 
