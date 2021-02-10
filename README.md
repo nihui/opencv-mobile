@@ -89,6 +89,45 @@ find_package(OpenCV REQUIRED)
 target_link_libraries(your_target ${OpenCV_LIBS})
 ```
 
+# How-to-build your custom package
+
+## step1 download opencv source
+```shell
+wget -q https://github.com/opencv/opencv/archive/4.5.1.zip -O opencv-4.5.1.zip
+unzip -q opencv-4.5.1.zip
+cd opencv-4.5.1
+```
+
+## step2 strip zlib dependency and use stb-based highgui implementation (optional)
+```shell
+truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+rm -rf modules/gapi
+rm -rf modules/highgui
+cp -r ../highgui modules/
+```
+
+## step3 patch opencv source for no-rtti build (optional)
+```shell
+patch -p1 -i ../opencv-4.5.1-no-rtti.patch
+```
+
+## step4 apply your opencv options to opencv4_cmake_options.txt
+
+## step5 build your opencv package with cmake
+```shell
+mkdir -p build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=install \
+  -DCMAKE_BUILD_TYPE=Release \
+  `cat ../../opencv4_cmake_options.txt` \
+  -DBUILD_opencv_world=OFF ..
+```
+
+## step6 make a package
+```shell
+zip -r -9 opencv-mobile-4.5.1.zip install
+```
+
 # Some notes
 
 * The minimal opencv build contains most basic opencv operators and common image processing functions, with some handy additions like keypoint feature extraction and matching, image inpainting and opticalflow estimation.
