@@ -1,0 +1,12 @@
+diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/persistence.cpp opencv-2.4.13.7/modules/core/src/persistence.cpp
+--- opencv-2.4.13.7.orig/modules/core/src/persistence.cpp	2018-07-02 05:41:56.000000000 +0800
++++ opencv-2.4.13.7/modules/core/src/persistence.cpp	2021-02-24 23:58:32.154994276 +0800
+@@ -47,7 +47,7 @@
+ #include <iterator>
+ #include <wchar.h>
+ 
+-#define USE_ZLIB 1
++#define USE_ZLIB 0
+ 
+ #ifdef __APPLE__
+ #  include "TargetConditionals.h"

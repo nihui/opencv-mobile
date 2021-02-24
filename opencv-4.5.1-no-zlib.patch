@@ -1,0 +1,12 @@
+diff -Nuarp opencv-4.5.1.orig/modules/core/src/persistence.hpp opencv-4.5.1/modules/core/src/persistence.hpp
+--- opencv-4.5.1.orig/modules/core/src/persistence.hpp	2020-12-21 12:01:38.000000000 +0800
++++ opencv-4.5.1/modules/core/src/persistence.hpp	2021-02-24 23:52:47.088155277 +0800
+@@ -12,7 +12,7 @@
+ #include <string>
+ #include <iterator>
+ 
+-#define USE_ZLIB 1
++#define USE_ZLIB 0
+ #if USE_ZLIB
+ #  ifndef _LFS64_LARGEFILE
+ #    define _LFS64_LARGEFILE 0
