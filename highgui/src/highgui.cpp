@@ -177,7 +177,7 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
     return success;
 }
 
-Mat imdecode(InputArray buf, int flags)
+Mat imdecode(InputArray _buf, int flags)
 {
     int desired_channels = 0;
     if (flags == IMREAD_UNCHANGED)
@@ -198,14 +198,19 @@ Mat imdecode(InputArray buf, int flags)
         return Mat();
     }
 
+    Mat buf = _buf.getMat();
+
+    if (!buf.isContinuous())
+    {
+        buf = buf.clone();
+    }
+
+    size_t buf_size = buf.cols * buf.rows * buf.elemSize();
+
     int w;
     int h;
     int c;
-#if CV_VERSION_EPOCH == 2
-    unsigned char* pixeldata = stbi_load_from_memory((const unsigned char*)buf.obj, (int)buf.total(), &w, &h, &c, desired_channels);
-#else
-    unsigned char* pixeldata = stbi_load_from_memory((const unsigned char*)buf.getObj(), (int)buf.total(), &w, &h, &c, desired_channels);
-#endif
+    unsigned char* pixeldata = stbi_load_from_memory((const unsigned char*)buf.data, buf_size, &w, &h, &c, desired_channels);
     if (!pixeldata)
     {
         // load failed
