@@ -289,7 +289,7 @@ jobs:
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
         lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv4/* opencv2.framework/Versions/A/Headers/
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -346,7 +346,7 @@ jobs:
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
         lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -404,7 +404,7 @@ jobs:
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
         lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -462,7 +462,7 @@ jobs:
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
         lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv4/* opencv2.framework/Versions/A/Headers/
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -519,7 +519,7 @@ jobs:
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
         lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -577,7 +577,7 @@ jobs:
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
         lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/* opencv2.framework/Versions/A/Headers/
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
