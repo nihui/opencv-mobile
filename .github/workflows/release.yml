@@ -181,6 +181,7 @@ jobs:
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-armeabi-v7a
@@ -370,6 +371,7 @@ jobs:
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-ios
@@ -542,6 +544,7 @@ jobs:
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-ios
@@ -750,6 +753,7 @@ jobs:
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-arm-linux-gnueabi
