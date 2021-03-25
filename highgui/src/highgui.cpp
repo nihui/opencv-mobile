@@ -18,6 +18,9 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <string.h>
+#include <fstream>
+#include <sstream>
+#include "exif.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_THREAD_LOCALS
@@ -31,6 +34,57 @@
 #include "stb_image_write.h"
 
 namespace cv {
+//
+//     1        2       3      4         5            6           7          8
+//
+//   888888  888888      88  88      8888888888  88                  88  8888888888
+//   88          88      88  88      88  88      88  88          88  88      88  88
+//   8888      8888    8888  8888    88          8888888888  8888888888          88
+//   88          88      88  88
+//   88          88  888888  888888
+//
+// ref http://sylvana.net/jpegcrop/exif_orientation.html
+static void rotate_by_orientation(const Mat& src, Mat& dst, int orientation)
+{
+    if (orientation == 1)
+    {
+        dst = src;
+    }
+    if (orientation == 2)
+    {
+        cv::flip(src, dst, 1);
+    }
+    if (orientation == 3)
+    {
+        cv::flip(src, dst, -1);
+    }
+    if (orientation == 4)
+    {
+        cv::flip(src, dst, 0);
+    }
+    if (orientation == 5)
+    {
+        cv::transpose(src, dst);
+    }
+    if (orientation == 6)
+    {
+        Mat tmp;
+        cv::flip(src, tmp, 0);
+        cv::transpose(tmp, dst);
+    }
+    if (orientation == 7)
+    {
+        Mat tmp;
+        cv::flip(src, tmp, -1);
+        cv::transpose(tmp, dst);
+    }
+    if (orientation == 8)
+    {
+        Mat tmp;
+        cv::flip(src, tmp, 1);
+        cv::transpose(tmp, dst);
+    }
+}
 
 Mat imread(const String& filename, int flags)
 {
@@ -92,6 +146,26 @@ Mat imread(const String& filename, int flags)
     memcpy(img.data, pixeldata, w * h * c);
 
     stbi_image_free(pixeldata);
+
+    // resolve exif orientation
+    {
+        std::ifstream ifs;
+        ifs.open(filename.c_str(), std::ifstream::in);
+
+        if (ifs.good())
+        {
+            ExifReader exif_reader(ifs);
+            if (exif_reader.parse())
+            {
+                ExifEntry_t e = exif_reader.getTag(ORIENTATION);
+                int orientation = e.field_u16;
+                if (orientation >= 1 && orientation <= 8)
+                    rotate_by_orientation(img, img, orientation);
+            }
+        }
+
+        ifs.close();
+    }
 
     // rgb to bgr
     if (c == 3)
@@ -246,6 +320,21 @@ Mat imdecode(InputArray _buf, int flags)
     memcpy(img.data, pixeldata, w * h * c);
 
     stbi_image_free(pixeldata);
+
+    // resolve exif orientation
+    {
+        std::string s((const char*)buf.data, buf_size);
+        std::istringstream iss(s);
+
+        ExifReader exif_reader(iss);
+        if (exif_reader.parse())
+        {
+            ExifEntry_t e = exif_reader.getTag(ORIENTATION);
+            int orientation = e.field_u16;
+            if (orientation >= 1 && orientation <= 8)
+                rotate_by_orientation(img, img, orientation);
+        }
+    }
 
     // rgb to bgr
     if (c == 3)
