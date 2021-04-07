@@ -31,7 +31,7 @@
 
 ## Android
 
-(armeabi-v7a arm64-v8a x86 x86_64) build with ndk r21d and android api 24
+(armeabi-v7a, arm64-v8a, x86, x86_64) build with ndk r21d and android api 24.
 
 * [opencv-mobile-2.4.13.7-android.zip (7.86MB)](https://github.com/nihui/opencv-mobile/releases/download/v9/opencv-mobile-2.4.13.7-android.zip)
 * [opencv-mobile-3.4.13-android.zip (15MB)](https://github.com/nihui/opencv-mobile/releases/download/v9/opencv-mobile-3.4.13-android.zip)
@@ -39,7 +39,7 @@
 
 ## iOS
 
-(armv7 arm64 arm64e i386 x86_64) build with Xcode 12.2
+(armv7, arm64, arm64e, i386, x86_64) build with Xcode 12.2.
 
 * [opencv-mobile-2.4.13.7-ios.zip (9.88MB)](https://github.com/nihui/opencv-mobile/releases/download/v9/opencv-mobile-2.4.13.7-ios.zip)
 * [opencv-mobile-3.4.13-ios.zip (14.3MB)](https://github.com/nihui/opencv-mobile/releases/download/v9/opencv-mobile-3.4.13-ios.zip)
@@ -47,7 +47,7 @@
 
 ## iOS with bitcode
 
-(armv7 arm64 arm64e i386 x86_64) build with Xcode 12.2
+(armv7, arm64, arm64e, i386, x86_64) build with Xcode 12.2.
 
 * [opencv-mobile-2.4.13.7-ios-bitcode.zip (35.5MB)](https://github.com/nihui/opencv-mobile/releases/download/v9/opencv-mobile-2.4.13.7-ios-bitcode.zip)
 * [opencv-mobile-3.4.13-ios-bitcode.zip (49.7MB)](https://github.com/nihui/opencv-mobile/releases/download/v9/opencv-mobile-3.4.13-ios-bitcode.zip)
@@ -55,7 +55,7 @@
 
 ## ARM Linux
 
-(arm-linux-gnueabi arm-linux-gnueabihf aarch64-linux-gnu) build with ubuntu cross compiler
+(arm-linux-gnueabi, arm-linux-gnueabihf, aarch64-linux-gnu) build with ubuntu cross compiler.
 
 * [opencv-mobile-2.4.13.7-armlinux.zip (8.01MB)](https://github.com/nihui/opencv-mobile/releases/download/v9/opencv-mobile-2.4.13.7-armlinux.zip)
 * [opencv-mobile-3.4.13-armlinux.zip (14.1MB)](https://github.com/nihui/opencv-mobile/releases/download/v9/opencv-mobile-3.4.13-armlinux.zip)
@@ -91,42 +91,42 @@ target_link_libraries(your_target ${OpenCV_LIBS})
 
 # How-to-build your custom package
 
-## step1 download opencv source
-```shell
-wget -q https://github.com/opencv/opencv/archive/4.5.1.zip -O opencv-4.5.1.zip
-unzip -q opencv-4.5.1.zip
-cd opencv-4.5.1
-```
+**step 1. download opencv source**
+  ```shell
+  wget -q https://github.com/opencv/opencv/archive/4.5.1.zip -O opencv-4.5.1.zip
+  unzip -q opencv-4.5.1.zip
+  cd opencv-4.5.1
+  ```
 
-## step2 strip zlib dependency and use stb-based highgui implementation (optional)
-```shell
-truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-rm -rf modules/gapi
-rm -rf modules/highgui
-cp -r ../highgui modules/
-```
+**step 2. strip zlib dependency and use stb-based highgui implementation (optional)**
+  ```shell
+  truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  rm -rf modules/gapi
+  rm -rf modules/highgui
+  cp -r ../highgui modules/
+  ```
 
-## step3 patch opencv source for no-rtti build (optional)
-```shell
-patch -p1 -i ../opencv-4.5.1-no-rtti.patch
-```
+**step 3. patch opencv source for no-rtti build (optional)**
+  ```shell
+  patch -p1 -i ../opencv-4.5.1-no-rtti.patch
+  ```
 
-## step4 apply your opencv options to opencv4_cmake_options.txt
+**step 4. apply your opencv options to opencv4_cmake_options.txt**
 
-## step5 build your opencv package with cmake
-```shell
-mkdir -p build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=install \
-  -DCMAKE_BUILD_TYPE=Release \
-  `cat ../../opencv4_cmake_options.txt` \
-  -DBUILD_opencv_world=OFF ..
-```
+**step 5. build your opencv package with cmake**
+  ```shell
+  mkdir -p build
+  cd build
+  cmake -DCMAKE_INSTALL_PREFIX=install \
+    -DCMAKE_BUILD_TYPE=Release \
+    `cat ../../opencv4_cmake_options.txt` \
+    -DBUILD_opencv_world=OFF ..
+  ```
 
-## step6 make a package
-```shell
-zip -r -9 opencv-mobile-4.5.1.zip install
-```
+**step 6. make a package**
+  ```shell
+  zip -r -9 opencv-mobile-4.5.1.zip install
+  ```
 
 # Some notes
 
