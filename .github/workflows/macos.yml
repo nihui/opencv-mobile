@@ -150,8 +150,18 @@ jobs:
 
         echo "------------------------"
 
-        #cmake --build . -j 2 --verbose
-        #cmake --build . --target install
+        cmake --build . -j 2 --verbose || ;
+
+        echo "------------------------"
+        cat modules/world/world_objects.list
+
+        echo "------------------------"
+        cat modules/world/world_objects.rsp
+
+        echo "------------------------"
+
+
+        # cmake --build . --target install
 
     #- name: build-arm64
       #run: |
