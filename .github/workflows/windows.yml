@@ -26,12 +26,14 @@ jobs:
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
       run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x86; cd build-x86
         cmake -T v141,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
     - name: build-x64
       run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x64; cd build-x64
         cmake -T v141,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 2
@@ -69,12 +71,14 @@ jobs:
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
       run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x86; cd build-x86
         cmake -T v141,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
     - name: build-x64
       run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x64; cd build-x64
         cmake -T v141,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 2
@@ -112,12 +116,14 @@ jobs:
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
       run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x86; cd build-x86
         cmake -T v141,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 2
         cmake --build . --config Release --target install
     - name: build-x64
       run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x64; cd build-x64
         cmake -T v141,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 2
