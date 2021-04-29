@@ -132,7 +132,7 @@ jobs:
         rm -rf modules/highgui
         cp -r ../highgui modules/
 
-        sed -i -e 's!\"${objpath4}\"!${objpath4}!g' modules/world/CMakeLists.txt
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' modules/world/CMakeLists.txt
 
         cat modules/world/CMakeLists.txt
 
