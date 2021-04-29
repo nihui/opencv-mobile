@@ -134,6 +134,8 @@ jobs:
 
         sed -i -e 's!\"${objpath4}\"!${objpath4}!g' modules/world/CMakeLists.txt
 
+        cat modules/world/CMakeLists.txt
+
     - name: build-x86_64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -153,10 +155,7 @@ jobs:
         ls -l ../core/CMakeFiles/opencv_core.dir/src/algorithm.cpp.o
 
         echo "------------------------"
-        cat modules/world/world_objects.list
-
-        echo "------------------------"
-        cat modules/world/world_objects.rsp
+        cat world_objects.rsp
 
         echo "------------------------"
 
