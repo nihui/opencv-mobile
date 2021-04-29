@@ -45,6 +45,7 @@
 #define _OPENCV_EXIF_HPP_
 
 #include <cstdio>
+#include <cstdint>
 #include <map>
 #include <utility>
 #include <algorithm>
