@@ -43,8 +43,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}
         mkdir ${{ env.PACKAGENAME }}/x86
         mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
@@ -87,8 +87,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}
         mkdir ${{ env.PACKAGENAME }}/x86
         mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
@@ -131,8 +131,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}
         mkdir ${{ env.PACKAGENAME }}/x86
         mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
