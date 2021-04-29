@@ -142,11 +142,11 @@ jobs:
         cmake --build . -j 2 --verbose || echo "qaq"
 
         cd modules/world
-        /Applications/Xcode_12.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a @world_objects.rsp CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        /Applications/Xcode_12.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a @world_objects.rsp CMakeFiles/opencv_world.dir/src/world_init.cpp.o || echo "qaq"
 
         echo "qwq"
 
-        /Applications/Xcode_12.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        /Applications/Xcode_12.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o || echo "qaq"
 
         echo "------------------------"
         cat modules/world/world_objects.list
