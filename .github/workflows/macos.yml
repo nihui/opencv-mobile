@@ -132,8 +132,6 @@ jobs:
         rm -rf modules/highgui
         cp -r ../highgui modules/
 
-        echo 'message(WARNING "objlist = ${objlist}")' >> modules/world/CMakeLists.txt
-        echo 'message(WARNING "CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")' >> modules/world/CMakeLists.txt
     - name: build-x86_64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -141,16 +139,14 @@ jobs:
         cmake -DCMAKE_OSX_ARCHITECTURES="x86_64" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
 
-
-        echo "------------------------"
-        cat modules/world/world_objects.list
-
-        echo "------------------------"
-        cat modules/world/world_objects.rsp
-
-        echo "------------------------"
-
         cmake --build . -j 2 --verbose || echo "qaq"
+
+        cd modules/world
+        /Applications/Xcode_12.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a @world_objects.rsp CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+
+        echo "qwq"
+
+        /Applications/Xcode_12.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
 
         echo "------------------------"
         cat modules/world/world_objects.list
