@@ -132,16 +132,26 @@ jobs:
         rm -rf modules/highgui
         cp -r ../highgui modules/
 
-        echo 'message(WARNING "objpath0 = ${objpath0}")' >> modules/world/CMakeLists.txt
         echo 'message(WARNING "objlist = ${objlist}")' >> modules/world/CMakeLists.txt
+        echo 'message(WARNING "CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")' >> modules/world/CMakeLists.txt
     - name: build-x86_64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_OSX_ARCHITECTURES="x86_64" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 2 --verbose
-        cmake --build . --target install
+
+
+        echo "------------------------"
+        cat modules/world/world_objects.list
+
+        echo "------------------------"
+        cat modules/world/world_objects.rsp
+
+        echo "------------------------"
+
+        #cmake --build . -j 2 --verbose
+        #cmake --build . --target install
 
     #- name: build-arm64
       #run: |
