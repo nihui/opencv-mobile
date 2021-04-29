@@ -132,10 +132,8 @@ jobs:
         rm -rf modules/highgui
         cp -r ../highgui modules/
 
+        # workaround ar @list issue on macos
         sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' modules/world/CMakeLists.txt
-        sed -i -e 's!@${CMAKE_CURRENT_BINARY_DIR}/world_objects.rsp!`cat ${CMAKE_CURRENT_BINARY_DIR}/world_objects.rsp`!g' modules/world/CMakeLists.txt
-
-        cat modules/world/CMakeLists.txt
 
     - name: build-x86_64
       run: |
@@ -143,14 +141,12 @@ jobs:
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_OSX_ARCHITECTURES="x86_64" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-
         cmake --build . -j 2 --verbose || echo "qaq"
 
-        #echo "qwq"
-
-        #/Applications/Xcode_12.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o || echo "qaq"
-
-        #ls -l ../core/CMakeFiles/opencv_core.dir/src/algorithm.cpp.o
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_12.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
 
         cmake --build . --target install
 
@@ -160,7 +156,13 @@ jobs:
         mkdir build-arm64 && cd build-arm64
         cmake -DCMAKE_OSX_ARCHITECTURES="arm64" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 2 --verbose
+        cmake --build . -j 2 --verbose || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_12.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: package
       run: |
