@@ -1,0 +1,25 @@
+set(CMAKE_SYSTEM_NAME Darwin)
+set(UNIX TRUE)
+set(APPLE TRUE)
+
+set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "Build architecture for iOS")
+
+# query xcodebuild for SDK root
+execute_process(COMMAND xcodebuild -version -sdk macosx Path
+    OUTPUT_VARIABLE CMAKE_OSX_SYSROOT
+    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+message(STATUS "Using SDK: ${CMAKE_OSX_SYSROOT}")
+
+set(CMAKE_FIND_ROOT_PATH ${CMAKE_OSX_SYSROOT} CACHE STRING "find search path root" FORCE)
+
+set(CMAKE_FIND_FRAMEWORK FIRST)
+set(CMAKE_SYSTEM_FRAMEWORK_PATH
+    ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks
+    ${CMAKE_OSX_SYSROOT}/System/Library/PrivateFrameworks
+    ${CMAKE_OSX_SYSROOT}/Developer/Library/Frameworks
+)
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)

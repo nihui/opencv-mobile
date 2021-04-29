@@ -89,7 +89,7 @@ jobs:
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-arm64 && cd build-arm64
-        cmake -DCMAKE_CROSSCOMPILING=ON -DCMAKE_SYSTEM_PROCESSOR="arm64" -DCMAKE_OSX_ARCHITECTURES="arm64" \
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/macos-arm64.toolchain.cmake \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -154,7 +154,7 @@ jobs:
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-arm64 && cd build-arm64
-        cmake -DCMAKE_CROSSCOMPILING=ON -DCMAKE_SYSTEM_PROCESSOR="arm64" -DCMAKE_OSX_ARCHITECTURES="arm64" \
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/macos-arm64.toolchain.cmake \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 2 || echo "qaq"
 
