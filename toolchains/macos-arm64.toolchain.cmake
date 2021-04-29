@@ -1,8 +1,12 @@
 set(CMAKE_SYSTEM_NAME Darwin)
+set(CMAKE_SYSTEM_PROCESSOR arm64)
 set(UNIX TRUE)
 set(APPLE TRUE)
 
-set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "Build architecture for iOS")
+set(CMAKE_AR ar CACHE FILEPATH "" FORCE)
+set(CMAKE_RANLIB ranlib CACHE FILEPATH "" FORCE)
+
+set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "Build architecture")
 
 # query xcodebuild for SDK root
 execute_process(COMMAND xcodebuild -version -sdk macosx Path
