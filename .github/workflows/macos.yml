@@ -150,7 +150,7 @@ jobs:
 
         echo "------------------------"
 
-        cmake --build . -j 2 --verbose || ;
+        cmake --build . -j 2 --verbose || echo "qaq"
 
         echo "------------------------"
         cat modules/world/world_objects.list
