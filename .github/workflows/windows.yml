@@ -65,7 +65,6 @@ jobs:
         7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        Remove-Item "modules\gapi" -Recurse
         C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.13-no-zlib.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
@@ -110,7 +109,6 @@ jobs:
         7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        Remove-Item "modules\gapi" -Recurse
         C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
