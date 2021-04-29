@@ -16,15 +16,14 @@ jobs:
     - uses: actions/checkout@v2
     - name: opencv-source
       run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-zlib.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-      shell: bash
+        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+        Remove-Item "modules\gapi" -Recurse
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.5.1-no-zlib.patch
+        Remove-Item "modules\highgui" -Recurse
+        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
       run: |
         mkdir build-x86; cd build-x86
@@ -60,15 +59,14 @@ jobs:
     - uses: actions/checkout@v2
     - name: opencv-source
       run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        rm -rf modules/gapi
-        patch -p1 -i ../opencv-3.4.13-no-zlib.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-      shell: bash
+        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+        Remove-Item "modules\gapi" -Recurse
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.13-no-zlib.patch
+        Remove-Item "modules\highgui" -Recurse
+        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
       run: |
         mkdir build-x86; cd build-x86
@@ -104,15 +102,14 @@ jobs:
     - uses: actions/checkout@v2
     - name: opencv-source
       run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        rm -rf modules/gapi
-        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-      shell: bash
+        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+        Remove-Item "modules\gapi" -Recurse
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
+        Remove-Item "modules\highgui" -Recurse
+        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
       run: |
         mkdir build-x86; cd build-x86
