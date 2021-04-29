@@ -1083,6 +1083,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-fix-highgui-include.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -1216,6 +1217,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-fix-highgui-include.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -1349,6 +1351,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-fix-highgui-include.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
