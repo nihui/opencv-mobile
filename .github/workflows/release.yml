@@ -1396,7 +1396,6 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-rtti.patch
         patch -p1 -i ../opencv-4.5.1-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -1433,7 +1432,6 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.13-no-rtti.patch
         patch -p1 -i ../opencv-3.4.13-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -1470,7 +1468,6 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
         rm -rf modules/highgui
@@ -1509,7 +1506,6 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-rtti.patch
         patch -p1 -i ../opencv-4.5.1-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -1546,7 +1542,6 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.13-no-rtti.patch
         patch -p1 -i ../opencv-3.4.13-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -1583,7 +1578,6 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
         rm -rf modules/highgui
@@ -1622,7 +1616,6 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-rtti.patch
         patch -p1 -i ../opencv-4.5.1-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -1659,7 +1652,6 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.13-no-rtti.patch
         patch -p1 -i ../opencv-3.4.13-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -1696,7 +1688,6 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
         rm -rf modules/highgui
