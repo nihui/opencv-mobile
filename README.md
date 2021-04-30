@@ -95,17 +95,17 @@
 
 (x86_64, arm64) build with Xcode 12.2.
 
-* [opencv-mobile-2.4.13.7-macos.zip (35.5MB)](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-2.4.13.7-macos.zip)
-* [opencv-mobile-3.4.13-macos.zip (49.7MB)](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-3.4.13-macos.zip)
-* [opencv-mobile-4.5.1-macos.zip (51.9MB)](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-4.5.1-macos.zip)
+* [opencv-mobile-2.4.13.7-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-2.4.13.7-macos.zip)
+* [opencv-mobile-3.4.13-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-3.4.13-macos.zip)
+* [opencv-mobile-4.5.1-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-4.5.1-macos.zip)
 
 ## WebAssembly
 
 (basic, simd, threads, simd+threads) build with Emscripten 2.0.8.
 
-* [opencv-mobile-2.4.13.7-webassembly.zip (35.5MB)](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-2.4.13.7-webassembly.zip)
-* [opencv-mobile-3.4.13-webassembly.zip (49.7MB)](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-3.4.13-webassembly.zip)
-* [opencv-mobile-4.5.1-webassembly.zip (51.9MB)](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-4.5.1-webassembly.zip)
+* [opencv-mobile-2.4.13.7-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-2.4.13.7-webassembly.zip)
+* [opencv-mobile-3.4.13-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-3.4.13-webassembly.zip)
+* [opencv-mobile-4.5.1-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v10/opencv-mobile-4.5.1-webassembly.zip)
 
 # Usage Android
 
