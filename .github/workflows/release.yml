@@ -1783,7 +1783,7 @@ jobs:
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -1794,7 +1794,7 @@ jobs:
         mkdir build-simd && cd build-simd
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -1805,7 +1805,7 @@ jobs:
         mkdir build-threads && cd build-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -1816,7 +1816,7 @@ jobs:
         mkdir build-simd-threads && cd build-simd-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -1871,7 +1871,7 @@ jobs:
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -1882,7 +1882,7 @@ jobs:
         mkdir build-simd && cd build-simd
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -1893,7 +1893,7 @@ jobs:
         mkdir build-threads && cd build-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -1904,7 +1904,7 @@ jobs:
         mkdir build-simd-threads && cd build-simd-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -1972,7 +1972,7 @@ jobs:
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -1983,7 +1983,7 @@ jobs:
         mkdir build-simd && cd build-simd
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -1994,7 +1994,7 @@ jobs:
         mkdir build-threads && cd build-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -2005,7 +2005,7 @@ jobs:
         mkdir build-simd-threads && cd build-simd-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
