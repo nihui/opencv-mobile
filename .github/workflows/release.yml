@@ -7,6 +7,7 @@ on:
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
+  EMSCRIPTEN_VERSION: 2.0.8
 
 jobs:
   setup:
@@ -1018,6 +1019,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}/x64
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
@@ -1062,6 +1065,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}/x64
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
@@ -1107,6 +1112,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}/x64
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Remove-Item "${{ env.PACKAGENAME }}\x86\share" -Recurse
+        Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
@@ -1152,6 +1159,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}/x64
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
@@ -1196,6 +1205,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}/x64
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
@@ -1241,6 +1252,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}/x64
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Remove-Item "${{ env.PACKAGENAME }}\x86\share" -Recurse
+        Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
@@ -1286,6 +1299,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}/x64
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
@@ -1330,6 +1345,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}/x64
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
@@ -1375,6 +1392,8 @@ jobs:
         mkdir ${{ env.PACKAGENAME }}/x64
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
         Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+        Remove-Item "${{ env.PACKAGENAME }}\x86\share" -Recurse
+        Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
       uses: actions/upload-artifact@v2
@@ -1411,6 +1430,7 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}
         mkdir -p ${{ env.PACKAGENAME }}
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/opencv4
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -1447,6 +1467,10 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}
         mkdir -p ${{ env.PACKAGENAME }}
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind.supp
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind_3rdparty.supp
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -1484,6 +1508,8 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}
         mkdir -p ${{ env.PACKAGENAME }}
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -1521,6 +1547,7 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}
         mkdir -p ${{ env.PACKAGENAME }}
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/opencv4
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -1557,6 +1584,10 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}
         mkdir -p ${{ env.PACKAGENAME }}
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind.supp
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind_3rdparty.supp
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -1594,6 +1625,8 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}
         mkdir -p ${{ env.PACKAGENAME }}
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -1631,6 +1664,7 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}
         mkdir -p ${{ env.PACKAGENAME }}
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/opencv4
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -1667,6 +1701,10 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}
         mkdir -p ${{ env.PACKAGENAME }}
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind.supp
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind_3rdparty.supp
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -1704,6 +1742,289 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}
         mkdir -p ${{ env.PACKAGENAME }}
         cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  webassembly-opencv4:
+    runs-on: ubuntu-20.04
+    env:
+      OPENCV_VERSION: 4.5.1
+      PACKAGENAME: opencv-mobile-4.5.1-webassembly
+    steps:
+    - uses: actions/checkout@v2
+    - name: emsdk
+      run: |
+        git clone https://github.com/emscripten-core/emsdk.git
+        cd emsdk
+        ./emsdk install $EMSCRIPTEN_VERSION
+        ./emsdk activate $EMSCRIPTEN_VERSION
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        rm -rf modules/gapi
+        patch -p1 -i ../opencv-4.5.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.5.1-no-zlib.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build && cd build
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-simd
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-simd && cd build-simd
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-threads
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-threads && cd build-threads
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-simd-threads
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-simd-threads && cd build-simd-threads
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf ${{ env.PACKAGENAME }}
+        mkdir -p ${{ env.PACKAGENAME }}
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install ${{ env.PACKAGENAME }}/basic
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd/install ${{ env.PACKAGENAME }}/simd
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-threads/install ${{ env.PACKAGENAME }}/threads
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd-threads/install ${{ env.PACKAGENAME }}/simd-threads
+        rm -rf ${{ env.PACKAGENAME }}/basic/share/opencv4
+        rm -rf ${{ env.PACKAGENAME }}/simd/share/opencv4
+        rm -rf ${{ env.PACKAGENAME }}/threads/share/opencv4
+        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/opencv4
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  webassembly-opencv3:
+    runs-on: ubuntu-20.04
+    env:
+      OPENCV_VERSION: 3.4.13
+      PACKAGENAME: opencv-mobile-3.4.13-webassembly
+    steps:
+    - uses: actions/checkout@v2
+    - name: emsdk
+      run: |
+        git clone https://github.com/emscripten-core/emsdk.git
+        cd emsdk
+        ./emsdk install $EMSCRIPTEN_VERSION
+        ./emsdk activate $EMSCRIPTEN_VERSION
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        rm -rf modules/gapi
+        patch -p1 -i ../opencv-3.4.13-no-rtti.patch
+        patch -p1 -i ../opencv-3.4.13-no-zlib.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build && cd build
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-simd
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-simd && cd build-simd
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-threads
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-threads && cd build-threads
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-simd-threads
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-simd-threads && cd build-simd-threads
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf ${{ env.PACKAGENAME }}
+        mkdir -p ${{ env.PACKAGENAME }}
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install ${{ env.PACKAGENAME }}/basic
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd/install ${{ env.PACKAGENAME }}/simd
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-threads/install ${{ env.PACKAGENAME }}/threads
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd-threads/install ${{ env.PACKAGENAME }}/simd-threads
+        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/lbpcascades
+        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/valgrind.supp
+        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/valgrind_3rdparty.supp
+        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/lbpcascades
+        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/valgrind.supp
+        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/valgrind_3rdparty.supp
+        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/lbpcascades
+        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/valgrind.supp
+        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/valgrind_3rdparty.supp
+        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/lbpcascades
+        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/valgrind.supp
+        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/valgrind_3rdparty.supp
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  webassembly-opencv2:
+    runs-on: ubuntu-20.04
+    env:
+      OPENCV_VERSION: 2.4.13.7
+      PACKAGENAME: opencv-mobile-2.4.13.7-webassembly
+    steps:
+    - uses: actions/checkout@v2
+    - name: emsdk
+      run: |
+        git clone https://github.com/emscripten-core/emsdk.git
+        cd emsdk
+        ./emsdk install $EMSCRIPTEN_VERSION
+        ./emsdk activate $EMSCRIPTEN_VERSION
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        rm -rf modules/gapi
+        patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build && cd build
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-simd
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-simd && cd build-simd
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-threads
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-threads && cd build-threads
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-simd-threads
+      run: |
+        source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-simd-threads && cd build-simd-threads
+        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+            -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf ${{ env.PACKAGENAME }}
+        mkdir -p ${{ env.PACKAGENAME }}
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install ${{ env.PACKAGENAME }}/basic
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd/install ${{ env.PACKAGENAME }}/simd
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-threads/install ${{ env.PACKAGENAME }}/threads
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd-threads/install ${{ env.PACKAGENAME }}/simd-threads
+        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/lbpcascades
+        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/lbpcascades
+        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/lbpcascades
+        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/lbpcascades
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
@@ -1713,7 +2034,7 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   release:
-    needs: [setup, android-opencv4, android-opencv3, android-opencv2, ios-opencv4, ios-opencv3, ios-opencv2, ios-opencv4-bitcode, ios-opencv3-bitcode, ios-opencv2-bitcode, armlinux-opencv4, armlinux-opencv3, armlinux-opencv2, macos-opencv4, macos-opencv3, macos-opencv2, windows-vs2015-opencv4, windows-vs2015-opencv3, windows-vs2015-opencv2, windows-vs2017-opencv4, windows-vs2017-opencv3, windows-vs2017-opencv2, windows-vs2019-opencv4, windows-vs2019-opencv3, windows-vs2019-opencv2, ubuntu-1604-opencv4, ubuntu-1604-opencv3, ubuntu-1604-opencv2, ubuntu-1804-opencv4, ubuntu-1804-opencv3, ubuntu-1804-opencv2, ubuntu-2004-opencv4, ubuntu-2004-opencv3, ubuntu-2004-opencv2]
+    needs: [setup, android-opencv4, android-opencv3, android-opencv2, ios-opencv4, ios-opencv3, ios-opencv2, ios-opencv4-bitcode, ios-opencv3-bitcode, ios-opencv2-bitcode, armlinux-opencv4, armlinux-opencv3, armlinux-opencv2, macos-opencv4, macos-opencv3, macos-opencv2, windows-vs2015-opencv4, windows-vs2015-opencv3, windows-vs2015-opencv2, windows-vs2017-opencv4, windows-vs2017-opencv3, windows-vs2017-opencv2, windows-vs2019-opencv4, windows-vs2019-opencv3, windows-vs2019-opencv2, ubuntu-1604-opencv4, ubuntu-1604-opencv3, ubuntu-1604-opencv2, ubuntu-1804-opencv4, ubuntu-1804-opencv3, ubuntu-1804-opencv2, ubuntu-2004-opencv4, ubuntu-2004-opencv3, ubuntu-2004-opencv2, webassembly-opencv4, webassembly-opencv3, webassembly-opencv2]
     runs-on: ubuntu-latest
     steps:
     - name: download
@@ -2089,6 +2410,39 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-2004
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-webassembly-opencv4
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-4.5.1-webassembly
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-webassembly-opencv3
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-3.4.13-webassembly
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
+        asset_name: ${{ env.PACKAGENAME }}.zip
+        asset_content_type: application/zip
+
+    - name: upload-webassembly-opencv2
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGENAME: opencv-mobile-2.4.13.7-webassembly
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
