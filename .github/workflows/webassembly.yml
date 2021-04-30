@@ -33,6 +33,7 @@ jobs:
     - name: build
       run: |
         source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
@@ -78,6 +79,7 @@ jobs:
     - name: build
       run: |
         source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
@@ -124,6 +126,7 @@ jobs:
     - name: build
       run: |
         source emsdk/emsdk_env.sh
+        cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
