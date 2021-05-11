@@ -32,7 +32,7 @@ diff -Nuarp opencv-3.4.13/modules/core/include/opencv2/core/cvdef.h opencv-3.4.1
 -    #error "OpenCV: can't define safe CV_XADD macro for current platform (unsupported). Define CV_XADD macro through custom port header (see OPENCV_INCLUDE_PORT_FILE)"
 -  #endif
 -#endif
-+CV_INLINE CV_XADD(int* addr, int delta) { int tmp = *addr; *addr += delta; return tmp; }
++CV_INLINE int CV_XADD(void* addr, int delta) { int tmp = *(int*)addr; *(int*)addr += delta; return tmp; }
  
  
  /****************************************************************************************\
