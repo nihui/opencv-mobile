@@ -183,6 +183,7 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-armeabi-v7a
@@ -373,6 +374,7 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-ios
@@ -546,6 +548,7 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-ios
@@ -755,6 +758,7 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-arm-linux-gnueabi
@@ -926,6 +930,7 @@ jobs:
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
 
@@ -1494,6 +1499,7 @@ jobs:
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -1611,6 +1617,7 @@ jobs:
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -1728,6 +1735,7 @@ jobs:
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -1780,6 +1788,7 @@ jobs:
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
+        patch -p1 -i ../opencv-4.5.1-unsafe-xadd.patch
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -1802,6 +1811,7 @@ jobs:
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
+        patch -p1 -R -i ../opencv-4.5.1-unsafe-xadd.patch
         mkdir build-threads && cd build-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -1868,6 +1878,7 @@ jobs:
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
+        patch -p1 -i ../opencv-3.4.13-unsafe-xadd.patch
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -1890,6 +1901,7 @@ jobs:
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
+        patch -p1 -R -i ../opencv-3.4.13-unsafe-xadd.patch
         mkdir build-threads && cd build-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -1963,12 +1975,14 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
+        patch -p1 -i ../opencv-2.4.13.7-unsafe-xadd.patch
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -1991,6 +2005,7 @@ jobs:
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
+        patch -p1 -R -i ../opencv-2.4.13.7-unsafe-xadd.patch
         mkdir build-threads && cd build-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \

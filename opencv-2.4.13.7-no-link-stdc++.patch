@@ -1,0 +1,11 @@
+diff -Nuarp opencv-2.4.13.7/cmake/OpenCVCompilerOptions.cmake opencv-2.4.13.7.no-link-stdc++/cmake/OpenCVCompilerOptions.cmake
+--- opencv-2.4.13.7/cmake/OpenCVCompilerOptions.cmake	2018-07-02 05:41:56.000000000 +0800
++++ opencv-2.4.13.7.no-link-stdc++/cmake/OpenCVCompilerOptions.cmake	2021-05-11 15:57:17.159970391 +0800
+@@ -313,7 +313,6 @@ endif()
+ # Extra link libs if the user selects building static libs:
+ if(NOT BUILD_SHARED_LIBS AND ((CMAKE_COMPILER_IS_GNUCXX AND NOT ANDROID) OR QNX))
+   # Android does not need these settings because they are already set by toolchain file
+-  set(OPENCV_LINKER_LIBS ${OPENCV_LINKER_LIBS} stdc++)
+   set(OPENCV_EXTRA_FLAGS "-fPIC ${OPENCV_EXTRA_FLAGS}")
+ endif()
+ 
