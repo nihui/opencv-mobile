@@ -1,0 +1,80 @@
+diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/gpumat.cpp opencv-2.4.13.7/modules/core/src/gpumat.cpp
+--- opencv-2.4.13.7.orig/modules/core/src/gpumat.cpp	2018-07-02 05:41:56.000000000 +0800
++++ opencv-2.4.13.7/modules/core/src/gpumat.cpp	2021-05-12 13:05:39.939811441 +0800
+@@ -222,40 +222,40 @@ static bool loadCudaSupportLib()
+ 
+ #endif
+ 
+-static GpuFuncTable* gpuFuncTable()
+-{
+ #ifdef DYNAMIC_CUDA_SUPPORT
+-   static EmptyFuncTable stub;
+-   static GpuFuncTable* libFuncTable = loadCudaSupportLib() ? gpuFactory(): (GpuFuncTable*)&stub;
+-   static GpuFuncTable *funcTable = libFuncTable ? libFuncTable : (GpuFuncTable*)&stub;
++static EmptyFuncTable g_GpuFuncTable_stub;
++static GpuFuncTable* g_GpuFuncTable_libFuncTable = loadCudaSupportLib() ? gpuFactory(): (GpuFuncTable*)&g_GpuFuncTable_stub;
++static GpuFuncTable *g_GpuFuncTable_funcTable = g_GpuFuncTable_libFuncTable ? g_GpuFuncTable_libFuncTable : (GpuFuncTable*)&g_GpuFuncTable_stub;
+ #else
+ # ifdef USE_CUDA
+-   static CudaFuncTable impl;
+-   static GpuFuncTable* funcTable = &impl;
++static CudaFuncTable g_GpuFuncTable_impl;
++static GpuFuncTable* g_GpuFuncTable_funcTable = &g_GpuFuncTable_impl;
+ #else
+-   static EmptyFuncTable stub;
+-   static GpuFuncTable* funcTable = &stub;
++static EmptyFuncTable g_GpuFuncTable_stub;
++static GpuFuncTable* g_GpuFuncTable_funcTable = &g_GpuFuncTable_stub;
+ #endif
+ #endif
+-   return funcTable;
++static GpuFuncTable* gpuFuncTable()
++{
++   return g_GpuFuncTable_funcTable;
+ }
+ 
+-static DeviceInfoFuncTable* deviceInfoFuncTable()
+-{
+ #ifdef DYNAMIC_CUDA_SUPPORT
+-   static EmptyDeviceInfoFuncTable stub;
+-   static DeviceInfoFuncTable* libFuncTable = loadCudaSupportLib() ? deviceInfoFactory(): (DeviceInfoFuncTable*)&stub;
+-   static DeviceInfoFuncTable* funcTable = libFuncTable ? libFuncTable : (DeviceInfoFuncTable*)&stub;
++static EmptyDeviceInfoFuncTable g_DeviceInfoFuncTable_stub;
++static DeviceInfoFuncTable* g_DeviceInfoFuncTable_libFuncTable = loadCudaSupportLib() ? deviceInfoFactory(): (DeviceInfoFuncTable*)&g_DeviceInfoFuncTable_stub;
++static DeviceInfoFuncTable* g_DeviceInfoFuncTable_funcTable = g_DeviceInfoFuncTable_libFuncTable ? g_DeviceInfoFuncTable_libFuncTable : (DeviceInfoFuncTable*)&g_DeviceInfoFuncTable_stub;
+ #else
+ # ifdef USE_CUDA
+-   static CudaDeviceInfoFuncTable impl;
+-   static DeviceInfoFuncTable* funcTable = &impl;
++static CudaDeviceInfoFuncTable g_DeviceInfoFuncTable_impl;
++static DeviceInfoFuncTable* g_DeviceInfoFuncTable_funcTable = &g_DeviceInfoFuncTable_impl;
+ #else
+-   static EmptyDeviceInfoFuncTable stub;
+-   static DeviceInfoFuncTable* funcTable = &stub;
++static EmptyDeviceInfoFuncTable g_DeviceInfoFuncTable_stub;
++static DeviceInfoFuncTable* g_DeviceInfoFuncTable_funcTable = &g_DeviceInfoFuncTable_stub;
+ #endif
+ #endif
+-   return funcTable;
++static DeviceInfoFuncTable* deviceInfoFuncTable()
++{
++   return g_DeviceInfoFuncTable_funcTable;
+ }
+ 
+ 
+diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/matop.cpp opencv-2.4.13.7/modules/core/src/matop.cpp
+--- opencv-2.4.13.7.orig/modules/core/src/matop.cpp	2018-07-02 05:41:56.000000000 +0800
++++ opencv-2.4.13.7/modules/core/src/matop.cpp	2021-05-12 14:09:01.821745993 +0800
+@@ -203,10 +203,10 @@ public:
+     static void makeExpr(MatExpr& res, int method, int ndims, const int* sizes, int type, double alpha=1);
+ };
+ 
++static MatOp_Initializer g_MatOp_initializer;
+ static MatOp_Initializer* getGlobalMatOpInitializer()
+ {
+-    static MatOp_Initializer initializer;
+-    return &initializer;
++    return &g_MatOp_initializer;
+ }
+ 
+ static inline bool isIdentity(const MatExpr& e) { return e.op == &g_MatOp_Identity; }

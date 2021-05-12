@@ -1983,6 +1983,7 @@ jobs:
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
         patch -p1 -i ../opencv-2.4.13.7-unsafe-xadd.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-local-static.patch
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -2006,6 +2007,7 @@ jobs:
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
         patch -p1 -R -i ../opencv-2.4.13.7-unsafe-xadd.patch
+        patch -p1 -R -i ../opencv-2.4.13.7-no-local-static.patch
         mkdir build-threads && cd build-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
