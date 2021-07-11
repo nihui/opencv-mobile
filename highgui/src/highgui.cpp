@@ -418,4 +418,17 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
     return success;
 }
 
+void imshow(const String& winname, InputArray mat)
+{
+    fprintf(stderr, "imshow save image to %s.png", winname.c_str());
+    imwrite(winname + ".png", mat);
+}
+
+int waitKey(int delay)
+{
+    (void)delay;
+    fprintf(stderr, "waitKey stub");
+    return -1;
+}
+
 } // namespace cv

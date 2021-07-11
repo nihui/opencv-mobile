@@ -53,6 +53,10 @@ CV_EXPORTS_W Mat imdecode(InputArray buf, int flags);
 
 CV_EXPORTS_W bool imencode(const String& ext, InputArray img, CV_OUT std::vector<uchar>& buf, const std::vector<int>& params = std::vector<int>());
 
+CV_EXPORTS_W void imshow(const String& winname, InputArray mat);
+
+CV_EXPORTS_W int waitKey(int delay = 0);
+
 } // namespace cv
 
 #endif // OPENCV_HIGHGUI_HPP
