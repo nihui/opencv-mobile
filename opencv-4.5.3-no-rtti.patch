@@ -484,18 +484,6 @@ diff -Nuarp opencv-4.5.3/modules/core/src/persistence.cpp opencv-4.5.3.nortti/mo
  }
  
  bool FileStorage::isOpened() const { return p->is_opened; }
-diff -Nuarp opencv-4.5.3/modules/core/src/persistence.hpp opencv-4.5.3.nortti/modules/core/src/persistence.hpp
---- opencv-4.5.3/modules/core/src/persistence.hpp	2021-07-11 15:31:45.902200175 +0800
-+++ opencv-4.5.3.nortti/modules/core/src/persistence.hpp	2021-07-05 05:03:22.000000000 +0800
-@@ -12,7 +12,7 @@
- #include <string>
- #include <iterator>
- 
--#define USE_ZLIB 0
-+#define USE_ZLIB 1
- #if USE_ZLIB
- #  ifndef _LFS64_LARGEFILE
- #    define _LFS64_LARGEFILE 0
 diff -Nuarp opencv-4.5.3/modules/core/src/system.cpp opencv-4.5.3.nortti/modules/core/src/system.cpp
 --- opencv-4.5.3/modules/core/src/system.cpp	2021-07-05 05:03:22.000000000 +0800
 +++ opencv-4.5.3.nortti/modules/core/src/system.cpp	2021-07-11 15:24:37.779854562 +0800
