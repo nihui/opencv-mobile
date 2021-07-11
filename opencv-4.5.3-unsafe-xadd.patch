@@ -1,7 +1,7 @@
-diff -Nuarp opencv-4.5.1/modules/core/include/opencv2/core/cvdef.h opencv-4.5.1.unsafe_xadd/modules/core/include/opencv2/core/cvdef.h
---- opencv-4.5.1/modules/core/include/opencv2/core/cvdef.h	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.unsafe_xadd/modules/core/include/opencv2/core/cvdef.h	2021-05-11 15:45:21.361733255 +0800
-@@ -654,33 +654,7 @@ __CV_ENUM_FLAGS_BITWISE_XOR_EQ   (EnumTy
+diff -Nuarp opencv-4.5.3/modules/core/include/opencv2/core/cvdef.h opencv-4.5.3.unsafe_xadd/modules/core/include/opencv2/core/cvdef.h
+--- opencv-4.5.3/modules/core/include/opencv2/core/cvdef.h	2021-07-05 05:03:22.000000000 +0800
++++ opencv-4.5.3.unsafe_xadd/modules/core/include/opencv2/core/cvdef.h	2021-07-11 15:00:01.863669223 +0800
+@@ -662,33 +662,7 @@ __CV_ENUM_FLAGS_BITWISE_XOR_EQ   (EnumTy
  *          exchange-add operation for atomic operations on reference counters            *
  \****************************************************************************************/
  
@@ -27,7 +27,7 @@ diff -Nuarp opencv-4.5.1/modules/core/include/opencv2/core/cvdef.h opencv-4.5.1.
 -#  define CV_XADD(addr, delta) (int)_InterlockedExchangeAdd((long volatile*)addr, delta)
 -#else
 -  #ifdef OPENCV_FORCE_UNSAFE_XADD
--    CV_INLINE CV_XADD(int* addr, int delta) { int tmp = *addr; *addr += delta; return tmp; }
+-    CV_INLINE int CV_XADD(int* addr, int delta) { int tmp = *addr; *addr += delta; return tmp; }
 -  #else
 -    #error "OpenCV: can't define safe CV_XADD macro for current platform (unsupported). Define CV_XADD macro through custom port header (see OPENCV_INCLUDE_PORT_FILE)"
 -  #endif

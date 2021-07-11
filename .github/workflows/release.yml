@@ -22,8 +22,8 @@ jobs:
   android-opencv4:
     runs-on: ubuntu-latest
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-android
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-android
     steps:
     - uses: actions/checkout@v2
     - name: ndk-fix-debug
@@ -35,8 +35,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-rtti.patch
-        patch -p1 -i ../opencv-4.5.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.5.3-no-rtti.patch
+        patch -p1 -i ../opencv-4.5.3-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-armeabi-v7a
@@ -95,8 +95,8 @@ jobs:
   android-opencv3:
     runs-on: ubuntu-latest
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-android
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-android
     steps:
     - uses: actions/checkout@v2
     - name: ndk-fix-debug
@@ -107,8 +107,8 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.13-no-rtti.patch
-        patch -p1 -i ../opencv-3.4.13-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.15-no-rtti.patch
+        patch -p1 -i ../opencv-3.4.15-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-armeabi-v7a
@@ -246,8 +246,8 @@ jobs:
   ios-opencv4:
     runs-on: macos-latest
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-ios
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-ios
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -257,8 +257,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-rtti.patch
-        patch -p1 -i ../opencv-4.5.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.5.3-no-rtti.patch
+        patch -p1 -i ../opencv-4.5.3-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-ios
@@ -304,8 +304,8 @@ jobs:
   ios-opencv3:
     runs-on: macos-latest
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-ios
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-ios
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -314,8 +314,8 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.13-no-rtti.patch
-        patch -p1 -i ../opencv-3.4.13-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.15-no-rtti.patch
+        patch -p1 -i ../opencv-3.4.15-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-ios
@@ -420,8 +420,8 @@ jobs:
   ios-opencv4-bitcode:
     runs-on: macos-latest
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-ios-bitcode
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-ios-bitcode
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -431,8 +431,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-rtti.patch
-        patch -p1 -i ../opencv-4.5.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.5.3-no-rtti.patch
+        patch -p1 -i ../opencv-4.5.3-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-ios
@@ -478,8 +478,8 @@ jobs:
   ios-opencv3-bitcode:
     runs-on: macos-latest
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-ios-bitcode
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-ios-bitcode
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -488,8 +488,8 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.13-no-rtti.patch
-        patch -p1 -i ../opencv-3.4.13-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.15-no-rtti.patch
+        patch -p1 -i ../opencv-3.4.15-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-ios
@@ -594,8 +594,8 @@ jobs:
   armlinux-opencv4:
     runs-on: ubuntu-latest
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-armlinux
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-armlinux
     steps:
     - name: arm-gnu-toolchain
       run: |
@@ -610,8 +610,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-rtti.patch
-        patch -p1 -i ../opencv-4.5.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.5.3-no-rtti.patch
+        patch -p1 -i ../opencv-4.5.3-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-arm-linux-gnueabi
@@ -663,8 +663,8 @@ jobs:
   armlinux-opencv3:
     runs-on: ubuntu-latest
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-armlinux
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-armlinux
     steps:
     - name: arm-gnu-toolchain
       run: |
@@ -678,8 +678,8 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.13-no-rtti.patch
-        patch -p1 -i ../opencv-3.4.13-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.15-no-rtti.patch
+        patch -p1 -i ../opencv-3.4.15-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-arm-linux-gnueabi
@@ -813,8 +813,8 @@ jobs:
   macos-opencv4:
     runs-on: macos-latest
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-macos
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-macos
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -824,7 +824,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.5.3-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-x86_64
@@ -866,8 +866,8 @@ jobs:
   macos-opencv3:
     runs-on: macos-latest
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-macos
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-macos
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -876,7 +876,7 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.13-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.15-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-x86_64
@@ -989,8 +989,8 @@ jobs:
   windows-vs2015-opencv4:
     runs-on: windows-2016
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-windows-vs2015
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-windows-vs2015
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1000,7 +1000,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         Remove-Item "modules\gapi" -Recurse
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.5.1-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.5.3-no-zlib.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -1036,8 +1036,8 @@ jobs:
   windows-vs2015-opencv3:
     runs-on: windows-2016
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-windows-vs2015
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-windows-vs2015
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1046,7 +1046,7 @@ jobs:
         7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.13-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.15-no-zlib.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -1129,8 +1129,8 @@ jobs:
   windows-vs2017-opencv4:
     runs-on: windows-2016
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-windows-vs2017
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-windows-vs2017
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1140,7 +1140,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         Remove-Item "modules\gapi" -Recurse
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.5.1-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.5.3-no-zlib.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -1176,8 +1176,8 @@ jobs:
   windows-vs2017-opencv3:
     runs-on: windows-2016
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-windows-vs2017
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-windows-vs2017
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1186,7 +1186,7 @@ jobs:
         7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.13-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.15-no-zlib.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -1269,8 +1269,8 @@ jobs:
   windows-vs2019-opencv4:
     runs-on: windows-latest
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-windows-vs2019
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-windows-vs2019
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1280,7 +1280,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         Remove-Item "modules\gapi" -Recurse
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.5.1-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.5.3-no-zlib.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -1316,8 +1316,8 @@ jobs:
   windows-vs2019-opencv3:
     runs-on: windows-latest
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-windows-vs2019
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-windows-vs2019
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1326,7 +1326,7 @@ jobs:
         7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.13-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.15-no-zlib.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -1409,8 +1409,8 @@ jobs:
   ubuntu-1604-opencv4:
     runs-on: ubuntu-16.04
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-ubuntu-1604
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-ubuntu-1604
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1420,7 +1420,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.5.3-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -1447,8 +1447,8 @@ jobs:
   ubuntu-1604-opencv3:
     runs-on: ubuntu-16.04
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-ubuntu-1604
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-ubuntu-1604
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1457,7 +1457,7 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.13-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.15-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -1527,8 +1527,8 @@ jobs:
   ubuntu-1804-opencv4:
     runs-on: ubuntu-18.04
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-ubuntu-1804
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-ubuntu-1804
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1538,7 +1538,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.5.3-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -1565,8 +1565,8 @@ jobs:
   ubuntu-1804-opencv3:
     runs-on: ubuntu-18.04
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-ubuntu-1804
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-ubuntu-1804
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1575,7 +1575,7 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.13-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.15-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -1645,8 +1645,8 @@ jobs:
   ubuntu-2004-opencv4:
     runs-on: ubuntu-20.04
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-ubuntu-2004
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-ubuntu-2004
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1656,7 +1656,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.5.3-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -1683,8 +1683,8 @@ jobs:
   ubuntu-2004-opencv3:
     runs-on: ubuntu-20.04
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-ubuntu-2004
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-ubuntu-2004
     steps:
     - uses: actions/checkout@v2
     - name: opencv-source
@@ -1693,7 +1693,7 @@ jobs:
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.13-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.15-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -1763,8 +1763,8 @@ jobs:
   webassembly-opencv4:
     runs-on: ubuntu-20.04
     env:
-      OPENCV_VERSION: 4.5.1
-      PACKAGENAME: opencv-mobile-4.5.1-webassembly
+      OPENCV_VERSION: 4.5.3
+      PACKAGENAME: opencv-mobile-4.5.3-webassembly
     steps:
     - uses: actions/checkout@v2
     - name: emsdk
@@ -1780,15 +1780,15 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.5.1-no-rtti.patch
-        patch -p1 -i ../opencv-4.5.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.5.3-no-rtti.patch
+        patch -p1 -i ../opencv-4.5.3-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -i ../opencv-4.5.1-unsafe-xadd.patch
+        patch -p1 -i ../opencv-4.5.3-unsafe-xadd.patch
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -1811,7 +1811,7 @@ jobs:
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -R -i ../opencv-4.5.1-unsafe-xadd.patch
+        patch -p1 -R -i ../opencv-4.5.3-unsafe-xadd.patch
         mkdir build-threads && cd build-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -1853,8 +1853,8 @@ jobs:
   webassembly-opencv3:
     runs-on: ubuntu-20.04
     env:
-      OPENCV_VERSION: 3.4.13
-      PACKAGENAME: opencv-mobile-3.4.13-webassembly
+      OPENCV_VERSION: 3.4.15
+      PACKAGENAME: opencv-mobile-3.4.15-webassembly
     steps:
     - uses: actions/checkout@v2
     - name: emsdk
@@ -1870,15 +1870,15 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-3.4.13-no-rtti.patch
-        patch -p1 -i ../opencv-3.4.13-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.15-no-rtti.patch
+        patch -p1 -i ../opencv-3.4.15-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -i ../opencv-3.4.13-unsafe-xadd.patch
+        patch -p1 -i ../opencv-3.4.15-unsafe-xadd.patch
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -1901,7 +1901,7 @@ jobs:
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -R -i ../opencv-3.4.13-unsafe-xadd.patch
+        patch -p1 -R -i ../opencv-3.4.15-unsafe-xadd.patch
         mkdir build-threads && cd build-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -2074,7 +2074,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-android
+        PACKAGENAME: opencv-mobile-4.5.3-android
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2085,7 +2085,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-android
+        PACKAGENAME: opencv-mobile-3.4.15-android
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2107,7 +2107,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-ios
+        PACKAGENAME: opencv-mobile-4.5.3-ios
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2118,7 +2118,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-ios
+        PACKAGENAME: opencv-mobile-3.4.15-ios
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2140,7 +2140,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-ios-bitcode
+        PACKAGENAME: opencv-mobile-4.5.3-ios-bitcode
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2151,7 +2151,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-ios-bitcode
+        PACKAGENAME: opencv-mobile-3.4.15-ios-bitcode
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2173,7 +2173,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-armlinux
+        PACKAGENAME: opencv-mobile-4.5.3-armlinux
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2184,7 +2184,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-armlinux
+        PACKAGENAME: opencv-mobile-3.4.15-armlinux
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2206,7 +2206,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-macos
+        PACKAGENAME: opencv-mobile-4.5.3-macos
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2217,7 +2217,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-macos
+        PACKAGENAME: opencv-mobile-3.4.15-macos
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2239,7 +2239,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-windows-vs2015
+        PACKAGENAME: opencv-mobile-4.5.3-windows-vs2015
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2250,7 +2250,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-windows-vs2015
+        PACKAGENAME: opencv-mobile-3.4.15-windows-vs2015
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2272,7 +2272,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-windows-vs2017
+        PACKAGENAME: opencv-mobile-4.5.3-windows-vs2017
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2283,7 +2283,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-windows-vs2017
+        PACKAGENAME: opencv-mobile-3.4.15-windows-vs2017
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2305,7 +2305,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-windows-vs2019
+        PACKAGENAME: opencv-mobile-4.5.3-windows-vs2019
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2316,7 +2316,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-windows-vs2019
+        PACKAGENAME: opencv-mobile-3.4.15-windows-vs2019
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2338,7 +2338,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-ubuntu-1604
+        PACKAGENAME: opencv-mobile-4.5.3-ubuntu-1604
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2349,7 +2349,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-ubuntu-1604
+        PACKAGENAME: opencv-mobile-3.4.15-ubuntu-1604
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2371,7 +2371,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-ubuntu-1804
+        PACKAGENAME: opencv-mobile-4.5.3-ubuntu-1804
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2382,7 +2382,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-ubuntu-1804
+        PACKAGENAME: opencv-mobile-3.4.15-ubuntu-1804
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2404,7 +2404,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-ubuntu-2004
+        PACKAGENAME: opencv-mobile-4.5.3-ubuntu-2004
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2415,7 +2415,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-ubuntu-2004
+        PACKAGENAME: opencv-mobile-3.4.15-ubuntu-2004
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2437,7 +2437,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-4.5.1-webassembly
+        PACKAGENAME: opencv-mobile-4.5.3-webassembly
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip
@@ -2448,7 +2448,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGENAME: opencv-mobile-3.4.13-webassembly
+        PACKAGENAME: opencv-mobile-3.4.15-webassembly
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/${{ env.PACKAGENAME }}/${{ env.PACKAGENAME }}.zip

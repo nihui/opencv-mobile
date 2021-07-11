@@ -1,7 +1,20 @@
-diff -Nuarp opencv-4.5.1/modules/core/include/opencv2/core/bindings_utils.hpp opencv-4.5.1.nortti/modules/core/include/opencv2/core/bindings_utils.hpp
---- opencv-4.5.1/modules/core/include/opencv2/core/bindings_utils.hpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/core/include/opencv2/core/bindings_utils.hpp	2021-01-08 21:34:08.012830180 +0800
-@@ -76,14 +76,6 @@ CV_WRAP static inline
+diff -Nuarp opencv-3.4.15/modules/core/include/opencv2/core/bindings_utils.hpp opencv-3.4.15.nortti/modules/core/include/opencv2/core/bindings_utils.hpp
+--- opencv-3.4.15/modules/core/include/opencv2/core/bindings_utils.hpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/include/opencv2/core/bindings_utils.hpp	2021-07-11 15:37:28.622075271 +0800
+@@ -117,12 +117,6 @@ String dumpRange(const Range& argument)
+ }
+ 
+ CV_WRAP static inline
+-void testRaiseGeneralException()
+-{
+-    throw std::runtime_error("exception text");
+-}
+-
+-CV_WRAP static inline
+ AsyncArray testAsyncArray(InputArray argument)
+ {
+     AsyncPromise p;
+@@ -134,14 +128,6 @@ CV_WRAP static inline
  AsyncArray testAsyncException()
  {
      AsyncPromise p;
@@ -16,9 +29,9 @@ diff -Nuarp opencv-4.5.1/modules/core/include/opencv2/core/bindings_utils.hpp op
      return p.getArrayResult();
  }
  
-diff -Nuarp opencv-4.5.1/modules/core/src/async.cpp opencv-4.5.1.nortti/modules/core/src/async.cpp
---- opencv-4.5.1/modules/core/src/async.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/core/src/async.cpp	2021-01-08 21:34:45.847117093 +0800
+diff -Nuarp opencv-3.4.15/modules/core/src/async.cpp opencv-3.4.15.nortti/modules/core/src/async.cpp
+--- opencv-3.4.15/modules/core/src/async.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/src/async.cpp	2021-07-11 15:35:42.202735096 +0800
 @@ -118,7 +118,6 @@ struct AsyncArray::Impl
              if (has_exception)
              {
@@ -27,9 +40,9 @@ diff -Nuarp opencv-4.5.1/modules/core/src/async.cpp opencv-4.5.1.nortti/modules/
              }
              CV_Error(Error::StsInternal, "AsyncArray: invalid state of 'has_result = true'");
          }
-diff -Nuarp opencv-4.5.1/modules/core/src/bindings_utils.cpp opencv-4.5.1.nortti/modules/core/src/bindings_utils.cpp
---- opencv-4.5.1/modules/core/src/bindings_utils.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/core/src/bindings_utils.cpp	2021-01-08 21:36:12.481499049 +0800
+diff -Nuarp opencv-3.4.15/modules/core/src/bindings_utils.cpp opencv-3.4.15.nortti/modules/core/src/bindings_utils.cpp
+--- opencv-3.4.15/modules/core/src/bindings_utils.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/src/bindings_utils.cpp	2021-07-11 15:35:42.202735096 +0800
 @@ -14,7 +14,7 @@ String dumpInputArray(InputArray argumen
          return "InputArray: noArray()";
      std::ostringstream ss;
@@ -110,18 +123,18 @@ diff -Nuarp opencv-4.5.1/modules/core/src/bindings_utils.cpp opencv-4.5.1.nortti
      return ss.str();
  }
  
-diff -Nuarp opencv-4.5.1/modules/core/src/command_line_parser.cpp opencv-4.5.1.nortti/modules/core/src/command_line_parser.cpp
---- opencv-4.5.1/modules/core/src/command_line_parser.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/core/src/command_line_parser.cpp	2021-01-08 21:39:58.903428101 +0800
-@@ -119,7 +119,6 @@ static void from_str(const String& str,
+diff -Nuarp opencv-3.4.15/modules/core/src/command_line_parser.cpp opencv-3.4.15.nortti/modules/core/src/command_line_parser.cpp
+--- opencv-3.4.15/modules/core/src/command_line_parser.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/src/command_line_parser.cpp	2021-07-11 15:35:42.202735096 +0800
+@@ -124,7 +124,6 @@ static void from_str(const String& str,
  
- void CommandLineParser::getByName(const String& name, bool space_delete, Param type, void* dst) const
+ void CommandLineParser::getByName(const String& name, bool space_delete, int type, void* dst) const
  {
 -    try
      {
          for (size_t i = 0; i < impl->data.size(); i++)
          {
-@@ -144,12 +143,6 @@ void CommandLineParser::getByName(const
+@@ -149,12 +148,6 @@ void CommandLineParser::getByName(const
              }
          }
      }
@@ -134,15 +147,15 @@ diff -Nuarp opencv-4.5.1/modules/core/src/command_line_parser.cpp opencv-4.5.1.n
  
      CV_Error_(Error::StsBadArg, ("undeclared key '%s' requested", name.c_str()));
  }
-@@ -157,7 +150,6 @@ void CommandLineParser::getByName(const
+@@ -162,7 +155,6 @@ void CommandLineParser::getByName(const
  
- void CommandLineParser::getByIndex(int index, bool space_delete, Param type, void* dst) const
+ void CommandLineParser::getByIndex(int index, bool space_delete, int type, void* dst) const
  {
 -    try
      {
          for (size_t i = 0; i < impl->data.size(); i++)
          {
-@@ -177,12 +169,6 @@ void CommandLineParser::getByIndex(int i
+@@ -182,12 +174,6 @@ void CommandLineParser::getByIndex(int i
              }
          }
      }
@@ -155,7 +168,7 @@ diff -Nuarp opencv-4.5.1/modules/core/src/command_line_parser.cpp opencv-4.5.1.n
  
      CV_Error_(Error::StsBadArg, ("undeclared position %d requested", index));
  }
-@@ -464,16 +450,7 @@ std::vector<String> CommandLineParser::I
+@@ -469,16 +455,7 @@ std::vector<String> CommandLineParser::I
          {
              if (begin == true)
              {
@@ -173,7 +186,7 @@ diff -Nuarp opencv-4.5.1/modules/core/src/command_line_parser.cpp opencv-4.5.1.n
              }
              begin = true;
              word = "";
-@@ -484,16 +461,7 @@ std::vector<String> CommandLineParser::I
+@@ -489,16 +466,7 @@ std::vector<String> CommandLineParser::I
          {
              if (begin == false)
              {
@@ -191,7 +204,7 @@ diff -Nuarp opencv-4.5.1/modules/core/src/command_line_parser.cpp opencv-4.5.1.n
              }
              begin = false;
              vec.push_back(word);
-@@ -508,16 +476,7 @@ std::vector<String> CommandLineParser::I
+@@ -513,16 +481,7 @@ std::vector<String> CommandLineParser::I
  
      if (begin == true)
      {
@@ -209,9 +222,9 @@ diff -Nuarp opencv-4.5.1/modules/core/src/command_line_parser.cpp opencv-4.5.1.n
      }
  
      return vec;
-diff -Nuarp opencv-4.5.1/modules/core/src/glob.cpp opencv-4.5.1.nortti/modules/core/src/glob.cpp
---- opencv-4.5.1/modules/core/src/glob.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/core/src/glob.cpp	2021-01-08 21:35:24.928380538 +0800
+diff -Nuarp opencv-3.4.15/modules/core/src/glob.cpp opencv-3.4.15.nortti/modules/core/src/glob.cpp
+--- opencv-3.4.15/modules/core/src/glob.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/src/glob.cpp	2021-07-11 15:35:42.202735096 +0800
 @@ -231,7 +231,6 @@ static void glob_rec(const cv::String& d
      if ((dir = opendir (directory.c_str())) != 0)
      {
@@ -232,29 +245,29 @@ diff -Nuarp opencv-4.5.1/modules/core/src/glob.cpp opencv-4.5.1.nortti/modules/c
          closedir(dir);
      }
      else
-diff -Nuarp opencv-4.5.1/modules/core/src/matrix.cpp opencv-4.5.1.nortti/modules/core/src/matrix.cpp
---- opencv-4.5.1/modules/core/src/matrix.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/core/src/matrix.cpp	2021-01-08 21:37:12.735415692 +0800
-@@ -700,18 +700,10 @@ void Mat::create(int d, const int* _size
+diff -Nuarp opencv-3.4.15/modules/core/src/matrix.cpp opencv-3.4.15.nortti/modules/core/src/matrix.cpp
+--- opencv-3.4.15/modules/core/src/matrix.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/src/matrix.cpp	2021-07-11 15:35:42.203735090 +0800
+@@ -640,18 +640,10 @@ void Mat::create(int d, const int* _size
  #endif
          if(!a)
              a = a0;
 -        try
          {
-             u = a->allocate(dims, size, _type, 0, step.p, ACCESS_RW /* ignored */, USAGE_DEFAULT);
+             u = a->allocate(dims, size, _type, 0, step.p, 0, USAGE_DEFAULT);
              CV_Assert(u != 0);
          }
 -        catch (...)
 -        {
 -            if (a == a0)
 -                throw;
--            u = a0->allocate(dims, size, _type, 0, step.p, ACCESS_RW /* ignored */, USAGE_DEFAULT);
+-            u = a0->allocate(dims, size, _type, 0, step.p, 0, USAGE_DEFAULT);
 -            CV_Assert(u != 0);
 -        }
          CV_Assert( step[dims-1] == (size_t)CV_ELEM_SIZE(flags) );
      }
  
-@@ -761,7 +753,6 @@ Mat::Mat(const Mat& m, const Range& _row
+@@ -701,7 +693,6 @@ Mat::Mat(const Mat& m, const Range& _row
      }
  
      *this = m;
@@ -262,7 +275,7 @@ diff -Nuarp opencv-4.5.1/modules/core/src/matrix.cpp opencv-4.5.1.nortti/modules
      {
          if( _rowRange != Range::all() && _rowRange != Range(0,rows) )
          {
-@@ -781,11 +772,6 @@ Mat::Mat(const Mat& m, const Range& _row
+@@ -721,11 +712,6 @@ Mat::Mat(const Mat& m, const Range& _row
              flags |= SUBMATRIX_FLAG;
          }
      }
@@ -274,10 +287,10 @@ diff -Nuarp opencv-4.5.1/modules/core/src/matrix.cpp opencv-4.5.1.nortti/modules
  
      updateContinuityFlag();
  
-diff -Nuarp opencv-4.5.1/modules/core/src/parallel.cpp opencv-4.5.1.nortti/modules/core/src/parallel.cpp
---- opencv-4.5.1/modules/core/src/parallel.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/core/src/parallel.cpp	2021-01-08 21:41:52.984376964 +0800
-@@ -332,29 +332,9 @@ namespace {
+diff -Nuarp opencv-3.4.15/modules/core/src/parallel.cpp opencv-3.4.15.nortti/modules/core/src/parallel.cpp
+--- opencv-3.4.15/modules/core/src/parallel.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/src/parallel.cpp	2021-07-11 15:35:42.203735090 +0800
+@@ -321,29 +321,9 @@ namespace {
              CV_TRACE_ARG_VALUE(range_end, "range.end", (int64)r.end);
  #endif
  
@@ -307,78 +320,74 @@ diff -Nuarp opencv-4.5.1/modules/core/src/parallel.cpp opencv-4.5.1.nortti/modul
  
              if (!ctx.is_rng_used && !(cv::theRNG() == ctx.rng))
                  ctx.is_rng_used = true;
-@@ -507,16 +487,10 @@ void parallel_for_(const cv::Range& rang
-       isNotNestedRegion = !flagNestedParallelFor.exchange(true);
+@@ -476,16 +456,10 @@ void parallel_for_(const cv::Range& rang
+       isNotNestedRegion = CV_XADD(&flagNestedParallelFor, 1) == 0;
      if (isNotNestedRegion)
      {
 -        try
          {
              parallel_for_impl(range, body, nstripes);
-             flagNestedParallelFor = false;
+             flagNestedParallelFor = 0;
          }
 -        catch (...)
 -        {
--            flagNestedParallelFor = false;
+-            flagNestedParallelFor = 0;
 -            throw;
 -        }
      }
      else // nested parallel_for_() calls are not parallelized
  #endif // CV_PARALLEL_FRAMEWORK
-diff -Nuarp opencv-4.5.1/modules/core/src/persistence.cpp opencv-4.5.1.nortti/modules/core/src/persistence.cpp
---- opencv-4.5.1/modules/core/src/persistence.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/core/src/persistence.cpp	2021-01-08 21:41:32.875738497 +0800
-@@ -722,7 +722,6 @@ public:
-             strbufpos = bufOffset;
-             bufofs = 0;
+diff -Nuarp opencv-3.4.15/modules/core/src/persistence_c.cpp opencv-3.4.15.nortti/modules/core/src/persistence_c.cpp
+--- opencv-3.4.15/modules/core/src/persistence_c.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/src/persistence_c.cpp	2021-07-11 15:35:42.203735090 +0800
+@@ -456,17 +456,10 @@ cvOpenFileStorage(const char* query, CvM
+     CV_Assert(fs);
+     memset( fs, 0, sizeof(*fs));
  
--            try
-             {
-                 char* ptr = bufferStart();
-                 ptr[0] = ptr[1] = ptr[2] = '\0';
-@@ -760,12 +759,6 @@ public:
-                     }
-                 }
-             }
--            catch(...)
--            {
--                is_opened = true;
--                release();
--                throw;
--            }
- 
-             // release resources that we do not need anymore
-             closeFile();
-@@ -1823,18 +1816,12 @@ FileStorage::~FileStorage()
- 
- bool FileStorage::open(const String& filename, int flags, const String& encoding)
- {
 -    try
      {
-         bool ok = p->open(filename.c_str(), flags, encoding.c_str());
-         if(ok)
-             state = FileStorage::NAME_EXPECTED + FileStorage::INSIDE_MAP;
-         return ok;
+         cvOpenFileStorage_(fs, query, dststorage, flags, encoding);
+         return fs;
      }
 -    catch (...)
 -    {
--        release();
--        throw;  // re-throw
+-        if (fs)
+-            cvReleaseFileStorage(&fs);
+-        throw;
 -    }
  }
  
- bool FileStorage::isOpened() const { return p->is_opened; }
-diff -Nuarp opencv-4.5.1/modules/core/src/system.cpp opencv-4.5.1.nortti/modules/core/src/system.cpp
---- opencv-4.5.1/modules/core/src/system.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/core/src/system.cpp	2021-01-08 21:39:08.288338136 +0800
-@@ -1133,7 +1133,6 @@ void error( const Exception& exc )
-         *p = 0;
+ /* closes file storage and deallocates buffers */
+diff -Nuarp opencv-3.4.15/modules/core/src/persistence_types.cpp opencv-3.4.15.nortti/modules/core/src/persistence_types.cpp
+--- opencv-3.4.15/modules/core/src/persistence_types.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/src/persistence_types.cpp	2021-07-11 15:35:42.203735090 +0800
+@@ -756,13 +756,9 @@ static void* icvReadSeq( CvFileStorage*
+             flags |= CV_SEQ_FLAG_HOLE;
+         if( !strstr(flags_str, "untyped") )
+         {
+-            try
+             {
+                 flags |= icvDecodeSimpleFormat(dt);
+             }
+-            catch (...)
+-            {
+-            }
+         }
      }
  
+diff -Nuarp opencv-3.4.15/modules/core/src/system.cpp opencv-3.4.15.nortti/modules/core/src/system.cpp
+--- opencv-3.4.15/modules/core/src/system.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/src/system.cpp	2021-07-11 15:35:42.203735090 +0800
+@@ -1136,8 +1136,6 @@ void error( const Exception& exc )
+         static volatile int* p = 0;
+         *p = 0;
+     }
+-
 -    throw exc;
- #ifdef __GNUC__
- # if !defined __clang__ && !defined __APPLE__
-     // this suppresses this warning: "noreturn" function does return [enabled by default]
-@@ -1885,7 +1884,7 @@ inline bool parseOption(const std::strin
+ }
+ 
+ void error(int _code, const String& _err, const char* _func, const char* _file, int _line)
+@@ -1991,7 +1989,7 @@ inline bool parseOption(const std::strin
      {
          return false;
      }
@@ -387,7 +396,7 @@ diff -Nuarp opencv-4.5.1/modules/core/src/system.cpp opencv-4.5.1.nortti/modules
  }
  
  template<>
-@@ -1906,7 +1905,7 @@ inline size_t parseOption(const std::str
+@@ -2016,7 +2014,7 @@ inline size_t parseOption(const std::str
          return v * 1024 * 1024;
      else if (suffixStr == "KB" || suffixStr == "Kb" || suffixStr == "kb")
          return v * 1024;
@@ -396,7 +405,7 @@ diff -Nuarp opencv-4.5.1/modules/core/src/system.cpp opencv-4.5.1.nortti/modules
  }
  
  template<>
-@@ -1949,16 +1948,11 @@ static inline const char * envRead(const
+@@ -2059,16 +2057,11 @@ static inline const char * envRead(const
  template<typename T>
  inline T read(const std::string & k, const T & defaultValue)
  {
@@ -413,10 +422,10 @@ diff -Nuarp opencv-4.5.1/modules/core/src/system.cpp opencv-4.5.1.nortti/modules
      return defaultValue;
  }
  
-diff -Nuarp opencv-4.5.1/modules/core/src/umatrix.cpp opencv-4.5.1.nortti/modules/core/src/umatrix.cpp
---- opencv-4.5.1/modules/core/src/umatrix.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/core/src/umatrix.cpp	2021-01-08 21:40:27.170919849 +0800
-@@ -575,14 +575,9 @@ UMat Mat::getUMat(AccessFlag accessFlags
+diff -Nuarp opencv-3.4.15/modules/core/src/umatrix.cpp opencv-3.4.15.nortti/modules/core/src/umatrix.cpp
+--- opencv-3.4.15/modules/core/src/umatrix.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/src/umatrix.cpp	2021-07-11 15:35:42.204735083 +0800
+@@ -516,14 +516,9 @@ UMat Mat::getUMat(int accessFlags, UMatU
          new_u->originalUMatData = u;
      }
      bool allocated = false;
@@ -431,28 +440,28 @@ diff -Nuarp opencv-4.5.1/modules/core/src/umatrix.cpp opencv-4.5.1.nortti/module
      if (!allocated)
      {
          allocated = getDefaultAllocator()->allocate(new_u, accessFlags, usageFlags);
-@@ -650,17 +645,10 @@ void UMat::create(int d, const int* _siz
+@@ -591,17 +586,10 @@ void UMat::create(int d, const int* _siz
              a = a0;
              a0 = Mat::getDefaultAllocator();
          }
 -        try
          {
-             u = a->allocate(dims, size, _type, 0, step.p, ACCESS_RW /* ignored */, usageFlags);
+             u = a->allocate(dims, size, _type, 0, step.p, 0, usageFlags);
              CV_Assert(u != 0);
          }
 -        catch(...)
 -        {
 -            if(a != a0)
--                u = a0->allocate(dims, size, _type, 0, step.p, ACCESS_RW /* ignored */, usageFlags);
+-                u = a0->allocate(dims, size, _type, 0, step.p, 0, usageFlags);
 -            CV_Assert(u != 0);
 -        }
          CV_Assert( step[dims-1] == (size_t)CV_ELEM_SIZE(flags) );
      }
  
-diff -Nuarp opencv-4.5.1/modules/core/src/utils/filesystem.cpp opencv-4.5.1.nortti/modules/core/src/utils/filesystem.cpp
---- opencv-4.5.1/modules/core/src/utils/filesystem.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/core/src/utils/filesystem.cpp	2021-01-08 21:40:57.625372292 +0800
-@@ -508,14 +508,9 @@ cv::String getCacheDirectory(const char*
+diff -Nuarp opencv-3.4.15/modules/core/src/utils/filesystem.cpp opencv-3.4.15.nortti/modules/core/src/utils/filesystem.cpp
+--- opencv-3.4.15/modules/core/src/utils/filesystem.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/core/src/utils/filesystem.cpp	2021-07-11 15:35:42.204735083 +0800
+@@ -492,14 +492,9 @@ cv::String getCacheDirectory(const char*
                      && !utils::fs::isDirectory(default_cache_path))
                  {
                      std::vector<cv::String> existedCacheDirs;
@@ -467,10 +476,10 @@ diff -Nuarp opencv-4.5.1/modules/core/src/utils/filesystem.cpp opencv-4.5.1.nort
                      if (!existedCacheDirs.empty())
                      {
                          CV_LOG_WARNING(NULL, "Creating new OpenCV cache directory: " << default_cache_path);
-diff -Nuarp opencv-4.5.1/modules/imgproc/src/contours.cpp opencv-4.5.1.nortti/modules/imgproc/src/contours.cpp
---- opencv-4.5.1/modules/imgproc/src/contours.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/imgproc/src/contours.cpp	2021-01-08 21:49:14.717434789 +0800
-@@ -1736,7 +1736,6 @@ cvFindContours_Impl( void*  img,  CvMemS
+diff -Nuarp opencv-3.4.15/modules/imgproc/src/contours.cpp opencv-3.4.15.nortti/modules/imgproc/src/contours.cpp
+--- opencv-3.4.15/modules/imgproc/src/contours.cpp	2021-07-04 14:10:12.000000000 +0800
++++ opencv-3.4.15.nortti/modules/imgproc/src/contours.cpp	2021-07-11 15:35:42.204735083 +0800
+@@ -1761,7 +1761,6 @@ cvFindContours_Impl( void*  img,  CvMemS
      }
      else
      {
@@ -478,7 +487,7 @@ diff -Nuarp opencv-4.5.1/modules/imgproc/src/contours.cpp opencv-4.5.1.nortti/mo
          {
              scanner = cvStartFindContours_Impl( img, storage, cntHeaderSize, mode, method, offset,
                                              needFillBorder);
-@@ -1748,12 +1747,6 @@ cvFindContours_Impl( void*  img,  CvMemS
+@@ -1773,12 +1772,6 @@ cvFindContours_Impl( void*  img,  CvMemS
              }
              while( contour != 0 );
          }
@@ -491,22 +500,3 @@ diff -Nuarp opencv-4.5.1/modules/imgproc/src/contours.cpp opencv-4.5.1.nortti/mo
  
          *firstContour = cvEndFindContours( &scanner );
      }
-diff -Nuarp opencv-4.5.1/modules/video/src/tracking/detail/tracking_feature.cpp opencv-4.5.1.nortti/modules/video/src/tracking/detail/tracking_feature.cpp
---- opencv-4.5.1/modules/video/src/tracking/detail/tracking_feature.cpp	2020-12-21 12:01:38.000000000 +0800
-+++ opencv-4.5.1.nortti/modules/video/src/tracking/detail/tracking_feature.cpp	2021-01-08 21:50:14.792354689 +0800
-@@ -107,15 +107,9 @@ void CvHaarEvaluator::generateFeatures(i
- 
- CvHaarEvaluator::FeatureHaar::FeatureHaar(Size patchSize)
- {
--    try
-     {
-         generateRandomFeature(patchSize);
-     }
--    catch (...)
--    {
--        // FIXIT
--        throw;
--    }
- }
- 
- void CvHaarEvaluator::FeatureHaar::generateRandomFeature(Size patchSize)
