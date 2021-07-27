@@ -35,77 +35,77 @@
 
 (armeabi-v7a, arm64-v8a, x86, x86_64) build with ndk r21d and android api 24.
 
-* [opencv-mobile-2.4.13.7-android.zip (7.87MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-android.zip)
-* [opencv-mobile-3.4.15-android.zip (15.2MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-android.zip)
-* [opencv-mobile-4.5.3-android.zip (16.2MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-android.zip)
+* [opencv-mobile-2.4.13.7-android.zip (7.87MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-android.zip)
+* [opencv-mobile-3.4.15-android.zip (15.2MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-android.zip)
+* [opencv-mobile-4.5.3-android.zip (16.2MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-android.zip)
 
 ## iOS
 
 (armv7, arm64, arm64e, i386, x86_64) build with Xcode 12.2.
 
-* [opencv-mobile-2.4.13.7-ios.zip (9.88MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-ios.zip)
-* [opencv-mobile-3.4.15-ios.zip (14.6MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-ios.zip)
-* [opencv-mobile-4.5.3-ios.zip (15.4MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-ios.zip)
+* [opencv-mobile-2.4.13.7-ios.zip (9.88MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-ios.zip)
+* [opencv-mobile-3.4.15-ios.zip (14.6MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-ios.zip)
+* [opencv-mobile-4.5.3-ios.zip (15.4MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-ios.zip)
 
 ## iOS with bitcode
 
 (armv7, arm64, arm64e, i386, x86_64) build with Xcode 12.2.
 
-* [opencv-mobile-2.4.13.7-ios-bitcode.zip (35.5MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-ios-bitcode.zip)
-* [opencv-mobile-3.4.15-ios-bitcode.zip (50.9MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-ios-bitcode.zip)
-* [opencv-mobile-4.5.3-ios-bitcode.zip (54MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-ios-bitcode.zip)
+* [opencv-mobile-2.4.13.7-ios-bitcode.zip (35.5MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-ios-bitcode.zip)
+* [opencv-mobile-3.4.15-ios-bitcode.zip (50.9MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-ios-bitcode.zip)
+* [opencv-mobile-4.5.3-ios-bitcode.zip (54MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-ios-bitcode.zip)
 
 ## ARM Linux
 
 (arm-linux-gnueabi, arm-linux-gnueabihf, aarch64-linux-gnu) build with ubuntu cross compiler.
 
-* [opencv-mobile-2.4.13.7-armlinux.zip (8.01MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-armlinux.zip)
-* [opencv-mobile-3.4.15-armlinux.zip (14.2MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-armlinux.zip)
-* [opencv-mobile-4.5.3-armlinux.zip (15.2MB)](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-armlinux.zip)
+* [opencv-mobile-2.4.13.7-armlinux.zip (8.01MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-armlinux.zip)
+* [opencv-mobile-3.4.15-armlinux.zip (14.2MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-armlinux.zip)
+* [opencv-mobile-4.5.3-armlinux.zip (15.2MB)](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-armlinux.zip)
 
 ## Windows
 
 (x86, x64) build with VS2015, VS2017 and VS2019.
 
-* [opencv-mobile-2.4.13.7-windows-vs2015.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-windows-vs2015.zip)
-* [opencv-mobile-2.4.13.7-windows-vs2017.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-windows-vs2017.zip)
-* [opencv-mobile-2.4.13.7-windows-vs2019.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-windows-vs2019.zip)
-* [opencv-mobile-3.4.15-windows-vs2015.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-windows-vs2015.zip)
-* [opencv-mobile-3.4.15-windows-vs2017.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-windows-vs2017.zip)
-* [opencv-mobile-3.4.15-windows-vs2019.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-windows-vs2019.zip)
-* [opencv-mobile-4.5.3-windows-vs2015.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-windows-vs2015.zip)
-* [opencv-mobile-4.5.3-windows-vs2017.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-windows-vs2017.zip)
-* [opencv-mobile-4.5.3-windows-vs2019.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-windows-vs2019.zip)
+* [opencv-mobile-2.4.13.7-windows-vs2015.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-windows-vs2015.zip)
+* [opencv-mobile-2.4.13.7-windows-vs2017.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-windows-vs2017.zip)
+* [opencv-mobile-2.4.13.7-windows-vs2019.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-windows-vs2019.zip)
+* [opencv-mobile-3.4.15-windows-vs2015.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-windows-vs2015.zip)
+* [opencv-mobile-3.4.15-windows-vs2017.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-windows-vs2017.zip)
+* [opencv-mobile-3.4.15-windows-vs2019.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-windows-vs2019.zip)
+* [opencv-mobile-4.5.3-windows-vs2015.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-windows-vs2015.zip)
+* [opencv-mobile-4.5.3-windows-vs2017.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-windows-vs2017.zip)
+* [opencv-mobile-4.5.3-windows-vs2019.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-windows-vs2019.zip)
 
 ## Linux
 
 (x86_64) build on Ubuntu-16.04, 18.04 and 20.04.
 
-* [opencv-mobile-2.4.13.7-ubuntu-1604.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-ubuntu-1604.zip)
-* [opencv-mobile-2.4.13.7-ubuntu-1804.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-ubuntu-1804.zip)
-* [opencv-mobile-2.4.13.7-ubuntu-2004.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-ubuntu-2004.zip)
-* [opencv-mobile-3.4.15-ubuntu-1604.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-ubuntu-1604.zip)
-* [opencv-mobile-3.4.15-ubuntu-1804.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-ubuntu-1804.zip)
-* [opencv-mobile-3.4.15-ubuntu-2004.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-ubuntu-2004.zip)
-* [opencv-mobile-4.5.3-ubuntu-1604.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-ubuntu-1604.zip)
-* [opencv-mobile-4.5.3-ubuntu-1804.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-ubuntu-1804.zip)
-* [opencv-mobile-4.5.3-ubuntu-2004.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-ubuntu-2004.zip)
+* [opencv-mobile-2.4.13.7-ubuntu-1604.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-ubuntu-1604.zip)
+* [opencv-mobile-2.4.13.7-ubuntu-1804.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-ubuntu-1804.zip)
+* [opencv-mobile-2.4.13.7-ubuntu-2004.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-ubuntu-2004.zip)
+* [opencv-mobile-3.4.15-ubuntu-1604.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-ubuntu-1604.zip)
+* [opencv-mobile-3.4.15-ubuntu-1804.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-ubuntu-1804.zip)
+* [opencv-mobile-3.4.15-ubuntu-2004.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-ubuntu-2004.zip)
+* [opencv-mobile-4.5.3-ubuntu-1604.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-ubuntu-1604.zip)
+* [opencv-mobile-4.5.3-ubuntu-1804.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-ubuntu-1804.zip)
+* [opencv-mobile-4.5.3-ubuntu-2004.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-ubuntu-2004.zip)
 
 ## MacOS
 
 (x86_64, arm64) build with Xcode 12.2.
 
-* [opencv-mobile-2.4.13.7-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-macos.zip)
-* [opencv-mobile-3.4.15-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-macos.zip)
-* [opencv-mobile-4.5.3-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-macos.zip)
+* [opencv-mobile-2.4.13.7-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-macos.zip)
+* [opencv-mobile-3.4.15-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-macos.zip)
+* [opencv-mobile-4.5.3-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-macos.zip)
 
 ## WebAssembly
 
 (basic, simd, threads, simd+threads) build with Emscripten 2.0.8.
 
-* [opencv-mobile-2.4.13.7-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-2.4.13.7-webassembly.zip)
-* [opencv-mobile-3.4.15-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-3.4.15-webassembly.zip)
-* [opencv-mobile-4.5.3-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v12/opencv-mobile-4.5.3-webassembly.zip)
+* [opencv-mobile-2.4.13.7-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-2.4.13.7-webassembly.zip)
+* [opencv-mobile-3.4.15-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-3.4.15-webassembly.zip)
+* [opencv-mobile-4.5.3-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v13/opencv-mobile-4.5.3-webassembly.zip)
 
 # Usage Android
 
