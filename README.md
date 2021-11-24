@@ -41,7 +41,7 @@
 
 ## iOS
 
-(armv7, arm64, arm64e, i386, x86_64) build with Xcode 12.2.
+(armv7, arm64, arm64e, i386, x86_64) build with Xcode 12.4.
 
 * [opencv-mobile-2.4.13.7-ios.zip (9.88MB)](https://github.com/nihui/opencv-mobile/releases/download/v14/opencv-mobile-2.4.13.7-ios.zip)
 * [opencv-mobile-3.4.16-ios.zip (14.7MB)](https://github.com/nihui/opencv-mobile/releases/download/v14/opencv-mobile-3.4.16-ios.zip)
@@ -49,7 +49,7 @@
 
 ## iOS with bitcode
 
-(armv7, arm64, arm64e, i386, x86_64) build with Xcode 12.2.
+(armv7, arm64, arm64e, i386, x86_64) build with Xcode 12.4.
 
 * [opencv-mobile-2.4.13.7-ios-bitcode.zip (35.5MB)](https://github.com/nihui/opencv-mobile/releases/download/v14/opencv-mobile-2.4.13.7-ios-bitcode.zip)
 * [opencv-mobile-3.4.16-ios-bitcode.zip (51.3MB)](https://github.com/nihui/opencv-mobile/releases/download/v14/opencv-mobile-3.4.16-ios-bitcode.zip)
@@ -90,7 +90,7 @@
 
 ## MacOS
 
-(x86_64, arm64) build with Xcode 12.2.
+(x86_64, arm64) build with Xcode 12.4.
 
 * [opencv-mobile-2.4.13.7-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v14/opencv-mobile-2.4.13.7-macos.zip)
 * [opencv-mobile-3.4.16-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v14/opencv-mobile-3.4.16-macos.zip)
