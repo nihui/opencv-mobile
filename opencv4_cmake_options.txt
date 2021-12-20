@@ -75,7 +75,7 @@
 -DBUILD_opencv_python3=OFF
 -DBUILD_opencv_dnn=OFF
 -DBUILD_opencv_imgcodecs=OFF
--DBUILD_opencv_videoio=OFF
+-DBUILD_opencv_videoio=ON
 -DBUILD_opencv_calib3d=OFF
 -DBUILD_opencv_flann=OFF
 -DBUILD_opencv_objdetect=OFF
