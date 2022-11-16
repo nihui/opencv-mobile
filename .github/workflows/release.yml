@@ -1414,6 +1414,7 @@ jobs:
     steps:
     - uses: msys2/setup-msys2@v2
       with:
+        release: false
         install: >-
           base-devel
     - uses: actions/checkout@v3
@@ -1465,6 +1466,7 @@ jobs:
     steps:
     - uses: msys2/setup-msys2@v2
       with:
+        release: false
         install: >-
           base-devel
     - uses: actions/checkout@v3
@@ -1515,6 +1517,7 @@ jobs:
     steps:
     - uses: msys2/setup-msys2@v2
       with:
+        release: false
         install: >-
           base-devel
     - uses: actions/checkout@v3
