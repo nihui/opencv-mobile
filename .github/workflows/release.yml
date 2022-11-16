@@ -25,7 +25,7 @@ jobs:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-android
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: ndk-fix-debug
       run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
     - name: opencv-source
@@ -87,7 +87,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -98,7 +98,7 @@ jobs:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-android
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: ndk-fix-debug
       run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
     - name: opencv-source
@@ -160,7 +160,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -171,7 +171,7 @@ jobs:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-android
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: ndk-fix-debug
       run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
     - name: opencv-source
@@ -238,7 +238,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -249,7 +249,7 @@ jobs:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-ios
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -296,7 +296,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -307,7 +307,7 @@ jobs:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-ios
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -353,7 +353,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -364,7 +364,7 @@ jobs:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-ios
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -412,7 +412,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -423,7 +423,7 @@ jobs:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-ios-bitcode
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -470,7 +470,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -481,7 +481,7 @@ jobs:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-ios-bitcode
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -527,7 +527,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -538,7 +538,7 @@ jobs:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-ios-bitcode
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -586,7 +586,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -602,7 +602,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -655,7 +655,7 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/opencv4
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -671,7 +671,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -732,7 +732,7 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/valgrind_3rdparty.supp
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -748,7 +748,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -805,7 +805,7 @@ jobs:
         rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/lbpcascades
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -816,7 +816,7 @@ jobs:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-macos
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -858,7 +858,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -869,7 +869,7 @@ jobs:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-macos
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -910,7 +910,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -921,7 +921,7 @@ jobs:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-macos
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -981,7 +981,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -992,7 +992,7 @@ jobs:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-windows-vs2015
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1028,7 +1028,7 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1039,7 +1039,7 @@ jobs:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-windows-vs2015
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1074,7 +1074,7 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1085,7 +1085,7 @@ jobs:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2015
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1121,7 +1121,7 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1132,7 +1132,7 @@ jobs:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-windows-vs2017
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1168,7 +1168,7 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1179,7 +1179,7 @@ jobs:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-windows-vs2017
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1214,7 +1214,7 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1225,7 +1225,7 @@ jobs:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2017
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1261,18 +1261,18 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
   windows-vs2019-opencv4:
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-windows-vs2019
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1308,18 +1308,18 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
   windows-vs2019-opencv3:
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-windows-vs2019
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1354,18 +1354,18 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
   windows-vs2019-opencv2:
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2019
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1401,18 +1401,18 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
   windows-vs2022-opencv4:
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-windows-vs2022
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1448,18 +1448,18 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
   windows-vs2022-opencv3:
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-windows-vs2022
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1494,18 +1494,18 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
   windows-vs2022-opencv2:
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2022
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1541,7 +1541,7 @@ jobs:
         Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
         7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload-zip
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1552,7 +1552,7 @@ jobs:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-ubuntu-1804
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1579,7 +1579,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1590,7 +1590,7 @@ jobs:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-ubuntu-1804
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1619,7 +1619,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1630,7 +1630,7 @@ jobs:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-1804
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1659,7 +1659,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1670,7 +1670,7 @@ jobs:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-ubuntu-2004
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1697,7 +1697,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1708,7 +1708,7 @@ jobs:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-ubuntu-2004
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1737,7 +1737,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1748,7 +1748,7 @@ jobs:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-2004
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1777,7 +1777,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1788,7 +1788,7 @@ jobs:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-ubuntu-2204
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1815,7 +1815,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1826,7 +1826,7 @@ jobs:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-ubuntu-2204
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1855,7 +1855,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1866,7 +1866,7 @@ jobs:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-2204
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
@@ -1895,7 +1895,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1906,7 +1906,7 @@ jobs:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-webassembly
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: emsdk
       run: |
         git clone https://github.com/emscripten-core/emsdk.git
@@ -1985,7 +1985,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -1996,7 +1996,7 @@ jobs:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-webassembly
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: emsdk
       run: |
         git clone https://github.com/emscripten-core/emsdk.git
@@ -2087,7 +2087,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
@@ -2098,7 +2098,7 @@ jobs:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-webassembly
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: emsdk
       run: |
         git clone https://github.com/emscripten-core/emsdk.git
@@ -2185,7 +2185,7 @@ jobs:
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
