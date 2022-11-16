@@ -1407,11 +1407,15 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   windows-vs2022-opencv4:
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       OPENCV_VERSION: 4.6.0
       PACKAGENAME: opencv-mobile-4.6.0-windows-vs2022
     steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        install: >-
+          base-devel
     - uses: actions/checkout@v3
     - name: opencv-source
       run: |
@@ -1454,11 +1458,15 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   windows-vs2022-opencv3:
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       OPENCV_VERSION: 3.4.18
       PACKAGENAME: opencv-mobile-3.4.18-windows-vs2022
     steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        install: >-
+          base-devel
     - uses: actions/checkout@v3
     - name: opencv-source
       run: |
@@ -1500,11 +1508,15 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   windows-vs2022-opencv2:
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2022
     steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        install: >-
+          base-devel
     - uses: actions/checkout@v3
     - name: opencv-source
       run: |
