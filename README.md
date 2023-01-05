@@ -1,7 +1,7 @@
 # opencv-mobile
 
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)
-![release](https://img.shields.io/github/workflow/status/nihui/opencv-mobile/release?style=for-the-badge)
+![build](https://img.shields.io/github/actions/workflow/status/nihui/opencv-mobile/release.yml?style=for-the-badge)
 ![download](https://img.shields.io/github/downloads/nihui/opencv-mobile/total.svg?style=for-the-badge)
 
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
