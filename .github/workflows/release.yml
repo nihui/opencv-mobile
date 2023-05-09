@@ -338,7 +338,7 @@ jobs:
       run: |
         rm -rf opencv2.xcframework
         mkdir -p opencv2.xcframework/Headers
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv3/* opencv2.xcframework/Headers/
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv2/* opencv2.xcframework/Headers/
         xcodebuild -create-xcframework \
             -library opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a \
             -library opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a \
@@ -439,7 +439,7 @@ jobs:
         mkdir build-simulator && cd build-simulator
         cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH=""i386;x86_64;arm64" \
+            -DIOS_PLATFORM=SIMULATOR -DENABLE_BITCODE=1 -DENABLE_ARC=0 -DENABLE_VISIBILITY=0 -DIOS_ARCH="i386;x86_64;arm64" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j 3
         cmake --build . --target install
@@ -500,7 +500,7 @@ jobs:
       run: |
         rm -rf opencv2.xcframework
         mkdir -p opencv2.xcframework/Headers
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv3/* opencv2.xcframework/Headers/
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv2/* opencv2.xcframework/Headers/
         xcodebuild -create-xcframework \
             -library opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a \
             -library opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a \
