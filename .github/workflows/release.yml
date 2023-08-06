@@ -32,229 +32,229 @@ jobs:
       id: get_version
       run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
-  android-opencv4:
-    runs-on: ubuntu-latest
-    env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-android
-    steps:
-    - uses: actions/checkout@v3
-    - name: ndk-fix-debug
-      run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build-armeabi-v7a
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-armeabi-v7a && cd build-armeabi-v7a
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-arm64-v8a
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-arm64-v8a && cd build-arm64-v8a
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86 && cd build-x86
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-x86_64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86_64 && cd build-x86_64
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
-        rm -rf ${{ env.PACKAGENAME }}/sdk/etc
-        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
-        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  android-opencv3:
-    runs-on: ubuntu-latest
-    env:
-      OPENCV_VERSION: 3.4.20
-      PACKAGENAME: opencv-mobile-3.4.20-android
-    steps:
-    - uses: actions/checkout@v3
-    - name: ndk-fix-debug
-      run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.20-no-rtti.patch
-        patch -p1 -i ../opencv-3.4.20-no-zlib.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build-armeabi-v7a
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-armeabi-v7a && cd build-armeabi-v7a
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-arm64-v8a
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-arm64-v8a && cd build-arm64-v8a
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86 && cd build-x86
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-x86_64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86_64 && cd build-x86_64
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
-        rm -rf ${{ env.PACKAGENAME }}/apk
-        rm -rf ${{ env.PACKAGENAME }}/sdk/etc
-        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
-        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  android-opencv2:
-    runs-on: ubuntu-latest
-    env:
-      OPENCV_VERSION: 2.4.13.7
-      PACKAGENAME: opencv-mobile-2.4.13.7-android
-    steps:
-    - uses: actions/checkout@v3
-    - name: ndk-fix-debug
-      run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
-        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
-        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
-        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build-armeabi-v7a
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-armeabi-v7a && cd build-armeabi-v7a
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-arm64-v8a
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-arm64-v8a && cd build-arm64-v8a
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86 && cd build-x86
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-x86_64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86_64 && cd build-x86_64
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
-        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/armeabi-v7a/libopencv_info.so
-        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/arm64-v8a/libopencv_info.so
-        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/x86/libopencv_info.so
-        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/x86_64/libopencv_info.so
-        rm -rf ${{ env.PACKAGENAME }}/sdk/etc
-        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
-        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
+  # android-opencv4:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     OPENCV_VERSION: 4.8.0
+  #     PACKAGENAME: opencv-mobile-4.8.0-android
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: ndk-fix-debug
+  #     run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       rm -rf modules/gapi
+  #       patch -p1 -i ../opencv-4.8.0-no-rtti.patch
+  #       patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build-armeabi-v7a
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-armeabi-v7a && cd build-armeabi-v7a
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-arm64-v8a
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-arm64-v8a && cd build-arm64-v8a
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86 && cd build-x86
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-x86_64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86_64 && cd build-x86_64
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
+  #       rm -rf ${{ env.PACKAGENAME }}/sdk/etc
+  #       rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
+  #       rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # android-opencv3:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     OPENCV_VERSION: 3.4.20
+  #     PACKAGENAME: opencv-mobile-3.4.20-android
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: ndk-fix-debug
+  #     run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       patch -p1 -i ../opencv-3.4.20-no-rtti.patch
+  #       patch -p1 -i ../opencv-3.4.20-no-zlib.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build-armeabi-v7a
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-armeabi-v7a && cd build-armeabi-v7a
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-arm64-v8a
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-arm64-v8a && cd build-arm64-v8a
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86 && cd build-x86
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-x86_64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86_64 && cd build-x86_64
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
+  #       rm -rf ${{ env.PACKAGENAME }}/apk
+  #       rm -rf ${{ env.PACKAGENAME }}/sdk/etc
+  #       rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
+  #       rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # android-opencv2:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     OPENCV_VERSION: 2.4.13.7
+  #     PACKAGENAME: opencv-mobile-2.4.13.7-android
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: ndk-fix-debug
+  #     run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build-armeabi-v7a
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-armeabi-v7a && cd build-armeabi-v7a
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-arm64-v8a
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-arm64-v8a && cd build-arm64-v8a
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86 && cd build-x86
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-x86_64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86_64 && cd build-x86_64
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+  #           -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
+  #       rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/armeabi-v7a/libopencv_info.so
+  #       rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/arm64-v8a/libopencv_info.so
+  #       rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/x86/libopencv_info.so
+  #       rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/x86_64/libopencv_info.so
+  #       rm -rf ${{ env.PACKAGENAME }}/sdk/etc
+  #       rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
+  #       rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
 
   ios-opencv4:
     runs-on: macos-12
@@ -274,21 +274,31 @@ jobs:
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-    - name: build-ios
+    - name: build-armv7
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-ios && cd build-ios
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7;arm64;arm64e" \
+        mkdir build-armv7 && cd build-armv7
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j 3
         cmake --build . --target install
-    - name: build-simulator
+    - name: build-arm64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simulator && cd build-simulator
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386;x86_64;arm64" \
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-arm64e
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64e && cd build-arm64e
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64e" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
@@ -303,8 +313,12 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-armv7/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64e/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -331,21 +345,31 @@ jobs:
         patch -p1 -i ../opencv-3.4.20-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-    - name: build-ios
+    - name: build-armv7
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-ios && cd build-ios
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7;arm64;arm64e" \
+        mkdir build-armv7 && cd build-armv7
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 3
         cmake --build . --target install
-    - name: build-simulator
+    - name: build-arm64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simulator && cd build-simulator
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386;x86_64;arm64" \
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-arm64e
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64e && cd build-arm64e
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64e" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
@@ -360,8 +384,12 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-armv7/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64e/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -390,21 +418,31 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-    - name: build-ios
+    - name: build-armv7
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-ios && cd build-ios
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7;arm64;arm64e" \
+        mkdir build-armv7 && cd build-armv7
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 3
         cmake --build . --target install
-    - name: build-simulator
+    - name: build-arm64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simulator && cd build-simulator
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386;x86_64;arm64" \
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-arm64e
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64e && cd build-arm64e
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64e" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
@@ -419,8 +457,12 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-armv7/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64e/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -448,21 +490,31 @@ jobs:
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-    - name: build-ios
+    - name: build-armv7
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-ios && cd build-ios
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7;arm64;arm64e" \
+        mkdir build-armv7 && cd build-armv7
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j 3
         cmake --build . --target install
-    - name: build-simulator
+    - name: build-arm64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simulator && cd build-simulator
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386;x86_64;arm64" \
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-arm64e
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64e && cd build-arm64e
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64e" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
@@ -477,8 +529,12 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-armv7/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64e/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -505,21 +561,31 @@ jobs:
         patch -p1 -i ../opencv-3.4.20-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-    - name: build-ios
+    - name: build-armv7
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-ios && cd build-ios
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7;arm64;arm64e" \
+        mkdir build-armv7 && cd build-armv7
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 3
         cmake --build . --target install
-    - name: build-simulator
+    - name: build-arm64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simulator && cd build-simulator
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386;x86_64;arm64" \
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-arm64e
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64e && cd build-arm64e
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64e" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
@@ -534,8 +600,12 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-armv7/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64e/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -564,21 +634,31 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-    - name: build-ios
+    - name: build-armv7
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-ios && cd build-ios
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7;arm64;arm64e" \
+        mkdir build-armv7 && cd build-armv7
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="armv7" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
         cmake --build . -j 3
         cmake --build . --target install
-    - name: build-simulator
+    - name: build-arm64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simulator && cd build-simulator
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386;x86_64;arm64" \
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-arm64e
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64e && cd build-arm64e
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=OS -DARCHS="arm64e" \
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
@@ -593,8 +673,12 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-ios/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-simulator/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-        cp -r opencv-${{ env.OPENCV_VERSION }}/build-ios/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-armv7/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64e/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
@@ -604,224 +688,656 @@ jobs:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
-  armlinux-opencv4:
-    runs-on: ubuntu-latest
+  ios-simulator-opencv4:
+    runs-on: macos-12
     env:
       OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-armlinux
+      PACKAGENAME: opencv-mobile-4.8.0-ios-simulator
     steps:
-    - name: arm-gnu-toolchain
-      run: |
-        sudo apt-get update
-        sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
-
     - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-    - name: build-arm-linux-gnueabi
+    - name: build-i386
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
+        mkdir build-i386 && cd build-i386
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 3
         cmake --build . --target install
-    - name: build-arm-linux-gnueabihf
+    - name: build-x86_64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="x86_64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 3
         cmake --build . --target install
-    - name: build-aarch64-linux-gnu
+    - name: build-arm64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 3
         cmake --build . --target install
     - name: package
       run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabi
-        mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabihf
-        mkdir ${{ env.PACKAGENAME }}/aarch64-linux-gnu
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabi/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabi/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabihf/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-aarch64-linux-gnu/install/* ${{ env.PACKAGENAME }}/aarch64-linux-gnu/
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/opencv4
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/opencv4
-        rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/opencv4
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-i386/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/
+        sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
-  armlinux-opencv3:
-    runs-on: ubuntu-latest
+  ios-simulator-opencv3:
+    runs-on: macos-12
     env:
       OPENCV_VERSION: 3.4.20
-      PACKAGENAME: opencv-mobile-3.4.20-armlinux
+      PACKAGENAME: opencv-mobile-3.4.20-ios-simulator
     steps:
-    - name: arm-gnu-toolchain
-      run: |
-        sudo apt-get update
-        sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
-
     - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-3.4.20-no-rtti.patch
         patch -p1 -i ../opencv-3.4.20-no-zlib.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-    - name: build-arm-linux-gnueabi
+    - name: build-i386
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
+        mkdir build-i386 && cd build-i386
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
         cmake --build . --target install
-    - name: build-arm-linux-gnueabihf
+    - name: build-x86_64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="x86_64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
         cmake --build . --target install
-    - name: build-aarch64-linux-gnu
+    - name: build-arm64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
         cmake --build . --target install
     - name: package
       run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabi
-        mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabihf
-        mkdir ${{ env.PACKAGENAME }}/aarch64-linux-gnu
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabi/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabi/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabihf/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-aarch64-linux-gnu/install/* ${{ env.PACKAGENAME }}/aarch64-linux-gnu/
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/valgrind.supp
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/valgrind_3rdparty.supp
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/valgrind.supp
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/valgrind_3rdparty.supp
-        rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/valgrind.supp
-        rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/valgrind_3rdparty.supp
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-i386/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
+        sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
-  armlinux-opencv2:
-    runs-on: ubuntu-latest
+  ios-simulator-opencv2:
+    runs-on: macos-12
     env:
       OPENCV_VERSION: 2.4.13.7
-      PACKAGENAME: opencv-mobile-2.4.13.7-armlinux
+      PACKAGENAME: opencv-mobile-2.4.13.7-ios-simulator
     steps:
-    - name: arm-gnu-toolchain
-      run: |
-        sudo apt-get update
-        sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
-
     - uses: actions/checkout@v3
     - name: opencv-source
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
         unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
         cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
         patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
         patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-    - name: build-arm-linux-gnueabi
+    - name: build-i386
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
+        mkdir build-i386 && cd build-i386
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
         cmake --build . --target install
-    - name: build-arm-linux-gnueabihf
+    - name: build-x86_64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="x86_64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
         cmake --build . --target install
-    - name: build-aarch64-linux-gnu
+    - name: build-arm64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
-        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
         cmake --build . --target install
     - name: package
       run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabi
-        mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabihf
-        mkdir ${{ env.PACKAGENAME }}/aarch64-linux-gnu
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabi/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabi/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabihf/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-aarch64-linux-gnu/install/* ${{ env.PACKAGENAME }}/aarch64-linux-gnu/
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/lbpcascades
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-i386/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
+        sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
+
+  ios-simulator-opencv4-bitcode:
+    runs-on: macos-12
+    env:
+      OPENCV_VERSION: 4.8.0
+      PACKAGENAME: opencv-mobile-4.8.0-ios-simulator-bitcode
+    steps:
+    - uses: actions/checkout@v3
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
+        rm -rf modules/gapi
+        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build-i386
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-i386 && cd build-i386
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-x86_64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="x86_64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-arm64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-i386/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/
+        sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
+    - name: upload-zip
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  ios-simulator-opencv3-bitcode:
+    runs-on: macos-12
+    env:
+      OPENCV_VERSION: 3.4.20
+      PACKAGENAME: opencv-mobile-3.4.20-ios-simulator-bitcode
+    steps:
+    - uses: actions/checkout@v3
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
+        patch -p1 -i ../opencv-3.4.20-no-rtti.patch
+        patch -p1 -i ../opencv-3.4.20-no-zlib.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build-i386
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-i386 && cd build-i386
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-x86_64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="x86_64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-arm64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-i386/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
+        sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
+    - name: upload-zip
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  ios-simulator-opencv2-bitcode:
+    runs-on: macos-12
+    env:
+      OPENCV_VERSION: 2.4.13.7
+      PACKAGENAME: opencv-mobile-2.4.13.7-ios-simulator-bitcode
+    steps:
+    - uses: actions/checkout@v3
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
+        patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build-i386
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-i386 && cd build-i386
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="i386" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-x86_64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="x86_64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-arm64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=SIMULATOR -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create \
+            opencv-${{ env.OPENCV_VERSION }}/build-i386/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/lib/libopencv_world.a \
+            opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
+        sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
+    - name: upload-zip
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  # armlinux-opencv4:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     OPENCV_VERSION: 4.8.0
+  #     PACKAGENAME: opencv-mobile-4.8.0-armlinux
+  #   steps:
+  #   - name: arm-gnu-toolchain
+  #     run: |
+  #       sudo apt-get update
+  #       sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
+  #
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       rm -rf modules/gapi
+  #       patch -p1 -i ../opencv-4.8.0-no-rtti.patch
+  #       patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build-arm-linux-gnueabi
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-arm-linux-gnueabihf
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-aarch64-linux-gnu
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabi
+  #       mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabihf
+  #       mkdir ${{ env.PACKAGENAME }}/aarch64-linux-gnu
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabi/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabi/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabihf/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-aarch64-linux-gnu/install/* ${{ env.PACKAGENAME }}/aarch64-linux-gnu/
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/opencv4
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/opencv4
+  #       rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/opencv4
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # armlinux-opencv3:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     OPENCV_VERSION: 3.4.20
+  #     PACKAGENAME: opencv-mobile-3.4.20-armlinux
+  #   steps:
+  #   - name: arm-gnu-toolchain
+  #     run: |
+  #       sudo apt-get update
+  #       sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
+  #
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       patch -p1 -i ../opencv-3.4.20-no-rtti.patch
+  #       patch -p1 -i ../opencv-3.4.20-no-zlib.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build-arm-linux-gnueabi
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-arm-linux-gnueabihf
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-aarch64-linux-gnu
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabi
+  #       mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabihf
+  #       mkdir ${{ env.PACKAGENAME }}/aarch64-linux-gnu
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabi/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabi/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabihf/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-aarch64-linux-gnu/install/* ${{ env.PACKAGENAME }}/aarch64-linux-gnu/
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/valgrind.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/valgrind_3rdparty.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/valgrind.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/valgrind_3rdparty.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/valgrind.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/valgrind_3rdparty.supp
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # armlinux-opencv2:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     OPENCV_VERSION: 2.4.13.7
+  #     PACKAGENAME: opencv-mobile-2.4.13.7-armlinux
+  #   steps:
+  #   - name: arm-gnu-toolchain
+  #     run: |
+  #       sudo apt-get update
+  #       sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
+  #
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build-arm-linux-gnueabi
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-arm-linux-gnueabihf
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-aarch64-linux-gnu
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabi
+  #       mkdir ${{ env.PACKAGENAME }}/arm-linux-gnueabihf
+  #       mkdir ${{ env.PACKAGENAME }}/aarch64-linux-gnu
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabi/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabi/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm-linux-gnueabihf/install/* ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-aarch64-linux-gnu/install/* ${{ env.PACKAGENAME }}/aarch64-linux-gnu/
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabi/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/arm-linux-gnueabihf/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/aarch64-linux-gnu/share/OpenCV/lbpcascades
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
 
   macos-opencv4:
     runs-on: macos-12
@@ -1007,816 +1523,816 @@ jobs:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
-  windows-vs2015-opencv4:
-    runs-on: windows-2019
-    env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-windows-vs2015
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        Remove-Item "modules\gapi" -Recurse
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v140,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v140,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  windows-vs2015-opencv3:
-    runs-on: windows-2019
-    env:
-      OPENCV_VERSION: 3.4.20
-      PACKAGENAME: opencv-mobile-3.4.20-windows-vs2015
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.20-no-zlib.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v140,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v140,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  windows-vs2015-opencv2:
-    runs-on: windows-2019
-    env:
-      OPENCV_VERSION: 2.4.13.7
-      PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2015
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-fix-highgui-include.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v140,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v140,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\share" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  windows-vs2017-opencv4:
-    runs-on: windows-2019
-    env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-windows-vs2017
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        Remove-Item "modules\gapi" -Recurse
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v141,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v141,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  windows-vs2017-opencv3:
-    runs-on: windows-2019
-    env:
-      OPENCV_VERSION: 3.4.20
-      PACKAGENAME: opencv-mobile-3.4.20-windows-vs2017
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.20-no-zlib.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v141,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v141,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  windows-vs2017-opencv2:
-    runs-on: windows-2019
-    env:
-      OPENCV_VERSION: 2.4.13.7
-      PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2017
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-fix-highgui-include.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v141,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v141,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\share" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  windows-vs2019-opencv4:
-    runs-on: windows-2019
-    env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-windows-vs2019
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        Remove-Item "modules\gapi" -Recurse
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v142,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v142,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  windows-vs2019-opencv3:
-    runs-on: windows-2019
-    env:
-      OPENCV_VERSION: 3.4.20
-      PACKAGENAME: opencv-mobile-3.4.20-windows-vs2019
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.20-no-zlib.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v142,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v142,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  windows-vs2019-opencv2:
-    runs-on: windows-2019
-    env:
-      OPENCV_VERSION: 2.4.13.7
-      PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2019
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-fix-highgui-include.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v142,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v142,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\share" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  windows-vs2022-opencv4:
-    runs-on: windows-2022
-    env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-windows-vs2022
-    steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        release: false
-        install: >-
-          base-devel
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        Remove-Item "modules\gapi" -Recurse
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v143,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v143,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  windows-vs2022-opencv3:
-    runs-on: windows-2022
-    env:
-      OPENCV_VERSION: 3.4.20
-      PACKAGENAME: opencv-mobile-3.4.20-windows-vs2022
-    steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        release: false
-        install: >-
-          base-devel
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.20-no-zlib.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v143,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v143,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  windows-vs2022-opencv2:
-    runs-on: windows-2022
-    env:
-      OPENCV_VERSION: 2.4.13.7
-      PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2022
-    steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        release: false
-        install: >-
-          base-devel
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
-        7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-fix-highgui-include.patch
-        Remove-Item "modules\highgui" -Recurse
-        Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
-    - name: build-x86
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x86; cd build-x86
-        cmake -T v143,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-x64; cd build-x64
-        cmake -T v143,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
-        cmake --build . --config Release --target install
-    - name: package
-      run: |
-        mkdir ${{ env.PACKAGENAME }}
-        mkdir ${{ env.PACKAGENAME }}/x86
-        mkdir ${{ env.PACKAGENAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
-        Remove-Item "${{ env.PACKAGENAME }}\x86\share" -Recurse
-        Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
-        7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload-zip
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  ubuntu-2004-opencv4:
-    runs-on: ubuntu-20.04
-    env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-ubuntu-2004
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        rm -rf ${{ env.PACKAGENAME }}
-        mkdir -p ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
-        rm -rf ${{ env.PACKAGENAME }}/share/opencv4
-        rm -f ${{ env.PACKAGENAME }}.zip
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  ubuntu-2004-opencv3:
-    runs-on: ubuntu-20.04
-    env:
-      OPENCV_VERSION: 3.4.20
-      PACKAGENAME: opencv-mobile-3.4.20-ubuntu-2004
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.20-no-zlib.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        rm -rf ${{ env.PACKAGENAME }}
-        mkdir -p ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind.supp
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind_3rdparty.supp
-        rm -f ${{ env.PACKAGENAME }}.zip
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  ubuntu-2004-opencv2:
-    runs-on: ubuntu-20.04
-    env:
-      OPENCV_VERSION: 2.4.13.7
-      PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-2004
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
-        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
-        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        rm -rf ${{ env.PACKAGENAME }}
-        mkdir -p ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
-        rm -f ${{ env.PACKAGENAME }}.zip
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  ubuntu-2204-opencv4:
-    runs-on: ubuntu-22.04
-    env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-ubuntu-2204
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        rm -rf ${{ env.PACKAGENAME }}
-        mkdir -p ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
-        rm -rf ${{ env.PACKAGENAME }}/share/opencv4
-        rm -f ${{ env.PACKAGENAME }}.zip
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  ubuntu-2204-opencv3:
-    runs-on: ubuntu-22.04
-    env:
-      OPENCV_VERSION: 3.4.20
-      PACKAGENAME: opencv-mobile-3.4.20-ubuntu-2204
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.20-no-zlib.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        rm -rf ${{ env.PACKAGENAME }}
-        mkdir -p ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind.supp
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind_3rdparty.supp
-        rm -f ${{ env.PACKAGENAME }}.zip
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  ubuntu-2204-opencv2:
-    runs-on: ubuntu-22.04
-    env:
-      OPENCV_VERSION: 2.4.13.7
-      PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-2204
-    steps:
-    - uses: actions/checkout@v3
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
-        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
-        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build
-      run: |
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build && cd build
-        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        rm -rf ${{ env.PACKAGENAME }}
-        mkdir -p ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
-        rm -f ${{ env.PACKAGENAME }}.zip
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
+  # windows-vs2015-opencv4:
+  #   runs-on: windows-2019
+  #   env:
+  #     OPENCV_VERSION: 4.8.0
+  #     PACKAGENAME: opencv-mobile-4.8.0-windows-vs2015
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       Remove-Item "modules\gapi" -Recurse
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v140,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v140,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # windows-vs2015-opencv3:
+  #   runs-on: windows-2019
+  #   env:
+  #     OPENCV_VERSION: 3.4.20
+  #     PACKAGENAME: opencv-mobile-3.4.20-windows-vs2015
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.20-no-zlib.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v140,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v140,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # windows-vs2015-opencv2:
+  #   runs-on: windows-2019
+  #   env:
+  #     OPENCV_VERSION: 2.4.13.7
+  #     PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2015
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-fix-highgui-include.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v140,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v140,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\share" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # windows-vs2017-opencv4:
+  #   runs-on: windows-2019
+  #   env:
+  #     OPENCV_VERSION: 4.8.0
+  #     PACKAGENAME: opencv-mobile-4.8.0-windows-vs2017
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       Remove-Item "modules\gapi" -Recurse
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v141,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v141,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # windows-vs2017-opencv3:
+  #   runs-on: windows-2019
+  #   env:
+  #     OPENCV_VERSION: 3.4.20
+  #     PACKAGENAME: opencv-mobile-3.4.20-windows-vs2017
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.20-no-zlib.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v141,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v141,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # windows-vs2017-opencv2:
+  #   runs-on: windows-2019
+  #   env:
+  #     OPENCV_VERSION: 2.4.13.7
+  #     PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2017
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-fix-highgui-include.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v141,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v141,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\share" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # windows-vs2019-opencv4:
+  #   runs-on: windows-2019
+  #   env:
+  #     OPENCV_VERSION: 4.8.0
+  #     PACKAGENAME: opencv-mobile-4.8.0-windows-vs2019
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       Remove-Item "modules\gapi" -Recurse
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v142,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v142,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # windows-vs2019-opencv3:
+  #   runs-on: windows-2019
+  #   env:
+  #     OPENCV_VERSION: 3.4.20
+  #     PACKAGENAME: opencv-mobile-3.4.20-windows-vs2019
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.20-no-zlib.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v142,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v142,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # windows-vs2019-opencv2:
+  #   runs-on: windows-2019
+  #   env:
+  #     OPENCV_VERSION: 2.4.13.7
+  #     PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2019
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-fix-highgui-include.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v142,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v142,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\share" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # windows-vs2022-opencv4:
+  #   runs-on: windows-2022
+  #   env:
+  #     OPENCV_VERSION: 4.8.0
+  #     PACKAGENAME: opencv-mobile-4.8.0-windows-vs2022
+  #   steps:
+  #   - uses: msys2/setup-msys2@v2
+  #     with:
+  #       release: false
+  #       install: >-
+  #         base-devel
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       Remove-Item "modules\gapi" -Recurse
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v143,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v143,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv4_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # windows-vs2022-opencv3:
+  #   runs-on: windows-2022
+  #   env:
+  #     OPENCV_VERSION: 3.4.20
+  #     PACKAGENAME: opencv-mobile-3.4.20-windows-vs2022
+  #   steps:
+  #   - uses: msys2/setup-msys2@v2
+  #     with:
+  #       release: false
+  #       install: >-
+  #         base-devel
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-3.4.20-no-zlib.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v143,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v143,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv3_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\etc" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\etc" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # windows-vs2022-opencv2:
+  #   runs-on: windows-2022
+  #   env:
+  #     OPENCV_VERSION: 2.4.13.7
+  #     PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2022
+  #   steps:
+  #   - uses: msys2/setup-msys2@v2
+  #     with:
+  #       release: false
+  #       install: >-
+  #         base-devel
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -OutFile opencv-${{ env.OPENCV_VERSION }}.zip
+  #       7z x ./opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-no-zlib.patch
+  #       C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-2.4.13.7-fix-highgui-include.patch
+  #       Remove-Item "modules\highgui" -Recurse
+  #       Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
+  #   - name: build-x86
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x86; cd build-x86
+  #       cmake -T v143,host=x64 -A Win32 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: build-x64
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-x64; cd build-x64
+  #       cmake -T v143,host=x64 -A x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release $(type ../../opencv2_cmake_options.txt) -DBUILD_opencv_world=OFF ..
+  #       cmake --build . --config Release -j 2
+  #       cmake --build . --config Release --target install
+  #   - name: package
+  #     run: |
+  #       mkdir ${{ env.PACKAGENAME }}
+  #       mkdir ${{ env.PACKAGENAME }}/x86
+  #       mkdir ${{ env.PACKAGENAME }}/x64
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x86\install\*" -Destination "${{ env.PACKAGENAME }}\x86"
+  #       Copy-Item -Verbose -Recurse -Path "opencv-${{ env.OPENCV_VERSION }}\build-x64\install\*" -Destination "${{ env.PACKAGENAME }}\x64"
+  #       Remove-Item "${{ env.PACKAGENAME }}\x86\share" -Recurse
+  #       Remove-Item "${{ env.PACKAGENAME }}\x64\share" -Recurse
+  #       7z a -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # ubuntu-2004-opencv4:
+  #   runs-on: ubuntu-20.04
+  #   env:
+  #     OPENCV_VERSION: 4.8.0
+  #     PACKAGENAME: opencv-mobile-4.8.0-ubuntu-2004
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       rm -rf modules/gapi
+  #       patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       rm -rf ${{ env.PACKAGENAME }}
+  #       mkdir -p ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+  #       rm -rf ${{ env.PACKAGENAME }}/share/opencv4
+  #       rm -f ${{ env.PACKAGENAME }}.zip
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # ubuntu-2004-opencv3:
+  #   runs-on: ubuntu-20.04
+  #   env:
+  #     OPENCV_VERSION: 3.4.20
+  #     PACKAGENAME: opencv-mobile-3.4.20-ubuntu-2004
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       patch -p1 -i ../opencv-3.4.20-no-zlib.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       rm -rf ${{ env.PACKAGENAME }}
+  #       mkdir -p ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind_3rdparty.supp
+  #       rm -f ${{ env.PACKAGENAME }}.zip
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # ubuntu-2004-opencv2:
+  #   runs-on: ubuntu-20.04
+  #   env:
+  #     OPENCV_VERSION: 2.4.13.7
+  #     PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-2004
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       rm -rf ${{ env.PACKAGENAME }}
+  #       mkdir -p ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
+  #       rm -f ${{ env.PACKAGENAME }}.zip
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # ubuntu-2204-opencv4:
+  #   runs-on: ubuntu-22.04
+  #   env:
+  #     OPENCV_VERSION: 4.8.0
+  #     PACKAGENAME: opencv-mobile-4.8.0-ubuntu-2204
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       rm -rf modules/gapi
+  #       patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       rm -rf ${{ env.PACKAGENAME }}
+  #       mkdir -p ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+  #       rm -rf ${{ env.PACKAGENAME }}/share/opencv4
+  #       rm -f ${{ env.PACKAGENAME }}.zip
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # ubuntu-2204-opencv3:
+  #   runs-on: ubuntu-22.04
+  #   env:
+  #     OPENCV_VERSION: 3.4.20
+  #     PACKAGENAME: opencv-mobile-3.4.20-ubuntu-2204
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       patch -p1 -i ../opencv-3.4.20-no-zlib.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       rm -rf ${{ env.PACKAGENAME }}
+  #       mkdir -p ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind_3rdparty.supp
+  #       rm -f ${{ env.PACKAGENAME }}.zip
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # ubuntu-2204-opencv2:
+  #   runs-on: ubuntu-22.04
+  #   env:
+  #     OPENCV_VERSION: 2.4.13.7
+  #     PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-2204
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build
+  #     run: |
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       rm -rf ${{ env.PACKAGENAME }}
+  #       mkdir -p ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
+  #       rm -f ${{ env.PACKAGENAME }}.zip
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
 
   webassembly-opencv4:
     runs-on: ubuntu-20.04
@@ -2108,21 +2624,21 @@ jobs:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
-  release:
-    permissions:
-      contents: write  # for softprops/action-gh-release to create a release
-    needs: [setup, android-opencv4, android-opencv3, android-opencv2, ios-opencv4, ios-opencv3, ios-opencv2, ios-opencv4-bitcode, ios-opencv3-bitcode, ios-opencv2-bitcode, armlinux-opencv4, armlinux-opencv3, armlinux-opencv2, macos-opencv4, macos-opencv3, macos-opencv2, windows-vs2015-opencv4, windows-vs2015-opencv3, windows-vs2015-opencv2, windows-vs2017-opencv4, windows-vs2017-opencv3, windows-vs2017-opencv2, windows-vs2019-opencv4, windows-vs2019-opencv3, windows-vs2019-opencv2, windows-vs2022-opencv4, windows-vs2022-opencv3, windows-vs2022-opencv2, ubuntu-2004-opencv4, ubuntu-2004-opencv3, ubuntu-2004-opencv2, ubuntu-2204-opencv4, ubuntu-2204-opencv3, ubuntu-2204-opencv2, webassembly-opencv4, webassembly-opencv3, webassembly-opencv2]
-    runs-on: ubuntu-latest
-    steps:
-    - name: download
-      uses: actions/download-artifact@v3
-      with:
-        path: artifacts
-
-    - name: create-release
-      uses: softprops/action-gh-release@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag_name: ${{ needs.setup.outputs.VERSION }}
-        name: Release ${{ needs.setup.outputs.VERSION }}
-        files: artifacts/*/*.zip
+  # release:
+  #   permissions:
+  #     contents: write  # for softprops/action-gh-release to create a release
+  #   needs: [setup, android-opencv4, android-opencv3, android-opencv2, ios-opencv4, ios-opencv3, ios-opencv2, ios-opencv4-bitcode, ios-opencv3-bitcode, ios-opencv2-bitcode, ios-simulator-opencv4, ios-simulator-opencv3, ios-simulator-opencv2, ios-simulator-opencv4-bitcode, ios-simulator-opencv3-bitcode, ios-simulator-opencv2-bitcode, armlinux-opencv4, armlinux-opencv3, armlinux-opencv2, macos-opencv4, macos-opencv3, macos-opencv2, windows-vs2015-opencv4, windows-vs2015-opencv3, windows-vs2015-opencv2, windows-vs2017-opencv4, windows-vs2017-opencv3, windows-vs2017-opencv2, windows-vs2019-opencv4, windows-vs2019-opencv3, windows-vs2019-opencv2, windows-vs2022-opencv4, windows-vs2022-opencv3, windows-vs2022-opencv2, ubuntu-2004-opencv4, ubuntu-2004-opencv3, ubuntu-2004-opencv2, ubuntu-2204-opencv4, ubuntu-2204-opencv3, ubuntu-2204-opencv2, webassembly-opencv4, webassembly-opencv3, webassembly-opencv2]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: download
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       path: artifacts
+  #
+  #   - name: create-release
+  #     uses: softprops/action-gh-release@v1
+  #     with:
+  #       token: ${{ secrets.GITHUB_TOKEN }}
+  #       tag_name: ${{ needs.setup.outputs.VERSION }}
+  #       name: Release ${{ needs.setup.outputs.VERSION }}
+  #       files: artifacts/*/*.zip
