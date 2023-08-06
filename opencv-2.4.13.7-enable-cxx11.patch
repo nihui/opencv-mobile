@@ -1,0 +1,11 @@
+diff -Nuarp opencv-2.4.13.7.orig/cmake/OpenCVDetectCXXCompiler.cmake opencv-2.4.13.7/cmake/OpenCVDetectCXXCompiler.cmake
+--- opencv-2.4.13.7.orig/cmake/OpenCVDetectCXXCompiler.cmake	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/cmake/OpenCVDetectCXXCompiler.cmake	2023-08-06 19:27:16.226755305 +0800
+@@ -114,3 +114,7 @@ elseif(MINGW)
+     set(OpenCV_ARCH x86)
+   endif()
+ endif()
++
++set(CMAKE_CXX_STANDARD 11)
++set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
++set(CMAKE_CXX_EXTENSIONS OFF)
