@@ -204,14 +204,14 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
     else if (img.type() == CV_8UC3)
     {
         c = 3;
-        Mat img2
+        Mat img2;
         cvtColor(img, img2, COLOR_BGR2RGB);
         img = img2;
     }
     else if (img.type() == CV_8UC4)
     {
         c = 4;
-        Mat img2
+        Mat img2;
         cvtColor(img, img2, COLOR_BGRA2RGBA);
         img = img2;
     }
