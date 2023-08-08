@@ -420,6 +420,10 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
+
+        # workaround ar @list issue on macos
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' modules/world/CMakeLists.txt
+
     - name: build-armv7
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -428,7 +432,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: build-arm64
       run: |
@@ -438,7 +448,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: build-arm64e
       run: |
@@ -448,7 +464,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: package
       run: |
@@ -637,6 +659,10 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
+
+        # workaround ar @list issue on macos
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' modules/world/CMakeLists.txt
+
     - name: build-armv7
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -645,7 +671,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: build-arm64
       run: |
@@ -655,7 +687,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: build-arm64e
       run: |
@@ -665,7 +703,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: package
       run: |
@@ -854,6 +898,10 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
+
+        # workaround ar @list issue on macos
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' modules/world/CMakeLists.txt
+
     - name: build-i386
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -862,7 +910,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: build-x86_64
       run: |
@@ -872,7 +926,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: build-arm64
       run: |
@@ -882,7 +942,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: package
       run: |
@@ -1071,6 +1137,10 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
+
+        # workaround ar @list issue on macos
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' modules/world/CMakeLists.txt
+
     - name: build-i386
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
@@ -1079,7 +1149,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: build-x86_64
       run: |
@@ -1089,7 +1165,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: build-arm64
       run: |
@@ -1099,7 +1181,13 @@ jobs:
             -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET -DENABLE_BITCODE=ON -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-        cmake --build . -j 3
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
         cmake --build . --target install
     - name: package
       run: |
@@ -1492,7 +1580,6 @@ jobs:
         cd ../..
 
         cmake --build . --target install
-
     - name: build-arm64
       run: |
         cd opencv-${{ env.OPENCV_VERSION }}
