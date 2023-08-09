@@ -3210,7 +3210,7 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   apple-opencv4-bitcode:
-    needs: [macos-opencv4-bitcode, ios-opencv4-bitcode, ios-simulator-opencv4-bitcode, mac-catalyst-opencv4-bitcode]
+    needs: [macos-opencv4, ios-opencv4-bitcode, ios-simulator-opencv4-bitcode, mac-catalyst-opencv4-bitcode]
     runs-on: macos-12
     env:
       OPENCV_VERSION: 4.8.0
@@ -3224,18 +3224,18 @@ jobs:
 
     - name: create-xcframwork
       run: |
-        mkdir -p opencv-mobile-macos-bitcode
+        mkdir -p opencv-mobile-macos
         mkdir -p opencv-mobile-ios-bitcode
         mkdir -p opencv-mobile-ios-simulator-bitcode
         mkdir -p opencv-mobile-mac-catalyst-bitcode
 
-        unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-macos-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-macos-bitcode.zip -d opencv-mobile-macos-bitcode
+        unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-macos/opencv-mobile-${{ env.OPENCV_VERSION }}-macos.zip -d opencv-mobile-macos
         unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-bitcode.zip -d opencv-mobile-ios-bitcode
         unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-simulator-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-simulator-bitcode.zip -d opencv-mobile-ios-simulator-bitcode
         unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-mac-catalyst-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-mac-catalyst-bitcode.zip -d opencv-mobile-mac-catalyst-bitcode
 
         xcodebuild -create-xcframework \
-            -framework opencv-mobile-macos-bitcode/opencv2.framework \
+            -framework opencv-mobile-macos/opencv2.framework \
             -framework opencv-mobile-ios-bitcode/opencv2.framework \
             -framework opencv-mobile-ios-simulator-bitcode/opencv2.framework \
             -framework opencv-mobile-mac-catalyst-bitcode/opencv2.framework \
@@ -3250,7 +3250,7 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   apple-opencv3-bitcode:
-    needs: [macos-opencv3-bitcode, ios-opencv3-bitcode, ios-simulator-opencv3-bitcode, mac-catalyst-opencv3-bitcode]
+    needs: [macos-opencv3, ios-opencv3-bitcode, ios-simulator-opencv3-bitcode, mac-catalyst-opencv3-bitcode]
     runs-on: macos-12
     env:
       OPENCV_VERSION: 3.4.20
@@ -3264,18 +3264,18 @@ jobs:
 
     - name: create-xcframwork
       run: |
-        mkdir -p opencv-mobile-macos-bitcode
+        mkdir -p opencv-mobile-macos
         mkdir -p opencv-mobile-ios-bitcode
         mkdir -p opencv-mobile-ios-simulator-bitcode
         mkdir -p opencv-mobile-mac-catalyst-bitcode
 
-        unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-macos-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-macos-bitcode.zip -d opencv-mobile-macos-bitcode
+        unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-macos/opencv-mobile-${{ env.OPENCV_VERSION }}-macos.zip -d opencv-mobile-macos
         unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-bitcode.zip -d opencv-mobile-ios-bitcode
         unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-simulator-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-simulator-bitcode.zip -d opencv-mobile-ios-simulator-bitcode
         unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-mac-catalyst-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-mac-catalyst-bitcode.zip -d opencv-mobile-mac-catalyst-bitcode
 
         xcodebuild -create-xcframework \
-            -framework opencv-mobile-macos-bitcode/opencv2.framework \
+            -framework opencv-mobile-macos/opencv2.framework \
             -framework opencv-mobile-ios-bitcode/opencv2.framework \
             -framework opencv-mobile-ios-simulator-bitcode/opencv2.framework \
             -framework opencv-mobile-mac-catalyst-bitcode/opencv2.framework \
@@ -3290,7 +3290,7 @@ jobs:
         path: ${{ env.PACKAGENAME }}.zip
 
   apple-opencv2-bitcode:
-    needs: [macos-opencv2-bitcode, ios-opencv2-bitcode, ios-simulator-opencv2-bitcode, mac-catalyst-opencv2-bitcode]
+    needs: [macos-opencv2, ios-opencv2-bitcode, ios-simulator-opencv2-bitcode, mac-catalyst-opencv2-bitcode]
     runs-on: macos-12
     env:
       OPENCV_VERSION: 2.4.13.7
@@ -3304,18 +3304,18 @@ jobs:
 
     - name: create-xcframwork
       run: |
-        mkdir -p opencv-mobile-macos-bitcode
+        mkdir -p opencv-mobile-macos
         mkdir -p opencv-mobile-ios-bitcode
         mkdir -p opencv-mobile-ios-simulator-bitcode
         mkdir -p opencv-mobile-mac-catalyst-bitcode
 
-        unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-macos-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-macos-bitcode.zip -d opencv-mobile-macos-bitcode
+        unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-macos/opencv-mobile-${{ env.OPENCV_VERSION }}-macos.zip -d opencv-mobile-macos
         unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-bitcode.zip -d opencv-mobile-ios-bitcode
         unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-simulator-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-ios-simulator-bitcode.zip -d opencv-mobile-ios-simulator-bitcode
         unzip -q artifacts/opencv-mobile-${{ env.OPENCV_VERSION }}-mac-catalyst-bitcode/opencv-mobile-${{ env.OPENCV_VERSION }}-mac-catalyst-bitcode.zip -d opencv-mobile-mac-catalyst-bitcode
 
         xcodebuild -create-xcframework \
-            -framework opencv-mobile-macos-bitcode/opencv2.framework \
+            -framework opencv-mobile-macos/opencv2.framework \
             -framework opencv-mobile-ios-bitcode/opencv2.framework \
             -framework opencv-mobile-ios-simulator-bitcode/opencv2.framework \
             -framework opencv-mobile-mac-catalyst-bitcode/opencv2.framework \
