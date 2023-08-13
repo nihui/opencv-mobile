@@ -3043,7 +3043,7 @@ jobs:
       run: |
         cd test
         mkdir build && cd build
-        cmake -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/share/OpenCV ..
+        cmake -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/lib/cmake/opencv4 ..
         cmake --build . -j 2
     - name: upload
       uses: actions/upload-artifact@v3
@@ -3065,6 +3065,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         patch -p1 -i ../opencv-3.4.20-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.20-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
