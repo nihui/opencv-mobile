@@ -1,0 +1,28 @@
+diff -Nuarp opencv-2.4.13.7.orig/cmake/OpenCVConfig.cmake opencv-2.4.13.7/cmake/OpenCVConfig.cmake
+--- opencv-2.4.13.7.orig/cmake/OpenCVConfig.cmake	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/cmake/OpenCVConfig.cmake	2023-08-13 22:11:10.193931771 +0800
+@@ -85,6 +85,10 @@ elseif(MSVC)
+     set(OpenCV_RUNTIME vc14)
+   elseif(MSVC_VERSION MATCHES "^191[0-9]$")
+     set(OpenCV_RUNTIME vc15)
++  elseif(MSVC_VERSION MATCHES "^192[0-9]$")
++    set(OpenCV_RUNTIME vc16)
++  elseif(MSVC_VERSION MATCHES "^193[0-9]$")
++    set(OpenCV_RUNTIME vc17)
+   endif()
+ elseif(MINGW)
+   set(OpenCV_RUNTIME mingw)
+diff -Nuarp opencv-2.4.13.7.orig/cmake/OpenCVDetectCXXCompiler.cmake opencv-2.4.13.7/cmake/OpenCVDetectCXXCompiler.cmake
+--- opencv-2.4.13.7.orig/cmake/OpenCVDetectCXXCompiler.cmake	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/cmake/OpenCVDetectCXXCompiler.cmake	2023-08-13 22:11:03.358965110 +0800
+@@ -104,6 +104,10 @@ elseif(MSVC)
+     set(OpenCV_RUNTIME vc14)
+   elseif(MSVC_VERSION MATCHES "^191[0-9]$")
+     set(OpenCV_RUNTIME vc15)
++  elseif(MSVC_VERSION MATCHES "^192[0-9]$")
++    set(OpenCV_RUNTIME vc16)
++  elseif(MSVC_VERSION MATCHES "^193[0-9]$")
++    set(OpenCV_RUNTIME vc17)
+   endif()
+ elseif(MINGW)
+   set(OpenCV_RUNTIME mingw)
