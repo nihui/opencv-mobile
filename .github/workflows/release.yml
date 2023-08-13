@@ -1715,80 +1715,98 @@ jobs:
   #     with:
   #       name: ${{ env.PACKAGENAME }}
   #       path: ${{ env.PACKAGENAME }}.zip
-  #
-  # macos-opencv2:
-  #   runs-on: macos-12
-  #   env:
-  #     OPENCV_VERSION: 2.4.13.7
-  #     PACKAGENAME: opencv-mobile-2.4.13.7-macos
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: opencv-source
-  #     run: |
-  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-  #       cd opencv-${{ env.OPENCV_VERSION }}
-  #       echo -n > cmake/OpenCVFindLibsGrfmt.cmake
-  #       patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
-  #       patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
-  #       patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
-  #       patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
-  #       rm -rf modules/highgui
-  #       cp -r ../highgui modules/
-  #
-  #       # workaround ar @list issue on macos
-  #       sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' modules/world/CMakeLists.txt
-  #
-  #   - name: build-x86_64
-  #     run: |
-  #       cd opencv-${{ env.OPENCV_VERSION }}
-  #       mkdir build-x86_64 && cd build-x86_64
-  #       cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=MAC -DARCHS="x86_64" \
-  #           -DDEPLOYMENT_TARGET=$MAC_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
-  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-  #       cmake --build . -j 3 || echo "qaq"
-  #
-  #       # workaround ar @list issue on macos
-  #       cd modules/world
-  #       /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
-  #       cd ../..
-  #
-  #       cmake --build . --target install
-  #   - name: build-arm64
-  #     run: |
-  #       cd opencv-${{ env.OPENCV_VERSION }}
-  #       mkdir build-arm64 && cd build-arm64
-  #       cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=MAC_ARM64 -DARCHS="arm64" \
-  #           -DDEPLOYMENT_TARGET=$MAC_ARM64_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
-  #           -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
-  #       cmake --build . -j 3 || echo "qaq"
-  #
-  #       # workaround ar @list issue on macos
-  #       cd modules/world
-  #       /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
-  #       cd ../..
-  #
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       rm -rf opencv2.framework
-  #       mkdir -p opencv2.framework/Versions/A/Headers
-  #       mkdir -p opencv2.framework/Versions/A/Resources
-  #       ln -s A opencv2.framework/Versions/Current
-  #       ln -s Versions/Current/Headers opencv2.framework/Headers
-  #       ln -s Versions/Current/Resources opencv2.framework/Resources
-  #       ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-  #       lipo -create opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
-  #       cp -r opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
-  #       sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
-  #       rm -f ${{ env.PACKAGENAME }}.zip
-  #       zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
-  #   - name: upload-zip
-  #     uses: actions/upload-artifact@v3
-  #     with:
-  #       name: ${{ env.PACKAGENAME }}
-  #       path: ${{ env.PACKAGENAME }}.zip
-  #
+
+  macos-opencv2:
+    runs-on: macos-12
+    env:
+      OPENCV_VERSION: 2.4.13.7
+      PACKAGENAME: opencv-mobile-2.4.13.7-macos
+    steps:
+    - uses: actions/checkout@v3
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        echo -n > cmake/OpenCVFindLibsGrfmt.cmake
+        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
+        patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+
+        # workaround ar @list issue on macos
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' modules/world/CMakeLists.txt
+
+    - name: build-x86_64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=MAC -DARCHS="x86_64" \
+            -DDEPLOYMENT_TARGET=$MAC_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
+        cmake --build . --target install
+    - name: build-arm64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=MAC_ARM64 -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$MAC_ARM64_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=ON ..
+        cmake --build . -j 3 || echo "qaq"
+
+        # workaround ar @list issue on macos
+        cd modules/world
+        /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o
+        cd ../..
+
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
+        cp -r opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
+        sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
+        mkdir -p opencv2.framework/Versions/A/Resources/CMake
+        cp opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/share/OpenCV/*.cmake opencv2.framework/Versions/A/Resources/CMake/
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
+    - name: test-x86_64
+      run: |
+        cd test
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=MAC -DARCHS="x86_64" \
+            -DDEPLOYMENT_TARGET=$MAC_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/opencv2.framework/Versions/A/Resources/CMake ..
+        cmake --build . -j 3
+    - name: test-arm64
+      run: |
+        cd test
+        mkdir build-arm64 && cd build-arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=MAC_ARM64 -DARCHS="arm64" \
+            -DDEPLOYMENT_TARGET=$MAC_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/opencv2.framework/Versions/A/Resources/CMake ..
+        cmake --build . -j 3
+    - name: upload-zip
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
   # mac-catalyst-opencv4:
   #   runs-on: macos-12
   #   env:
@@ -3179,410 +3197,398 @@ jobs:
   #     with:
   #       name: ${{ env.PACKAGENAME }}
   #       path: ${{ env.PACKAGENAME }}.zip
-
-  webassembly-opencv4:
-    runs-on: ubuntu-20.04
-    env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-webassembly
-    steps:
-    - uses: actions/checkout@v3
-    - name: emsdk
-      run: |
-        git clone https://github.com/emscripten-core/emsdk.git
-        cd emsdk
-        ./emsdk install $EMSCRIPTEN_VERSION
-        ./emsdk activate $EMSCRIPTEN_VERSION
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-fix-emscripten-include.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -i ../opencv-4.8.0-unsafe-xadd.patch
-        mkdir build && cd build
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-simd
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simd && cd build-simd
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-threads
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -R -i ../opencv-4.8.0-unsafe-xadd.patch
-        mkdir build-threads && cd build-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-simd-threads
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simd-threads && cd build-simd-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        rm -rf ${{ env.PACKAGENAME }}
-        mkdir -p ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install ${{ env.PACKAGENAME }}/basic
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd/install ${{ env.PACKAGENAME }}/simd
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-threads/install ${{ env.PACKAGENAME }}/threads
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd-threads/install ${{ env.PACKAGENAME }}/simd-threads
-        rm -rf ${{ env.PACKAGENAME }}/basic/share/opencv4
-        rm -rf ${{ env.PACKAGENAME }}/simd/share/opencv4
-        rm -rf ${{ env.PACKAGENAME }}/threads/share/opencv4
-        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/opencv4
-        rm -f ${{ env.PACKAGENAME }}.zip
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: test
-      run: |
-        cd test
-        mkdir build && cd build
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/basic/lib/cmake/opencv4 ..
-        cmake --build . -j 2
-    - name: test-simd
-      run: |
-        cd test
-        mkdir build-simd && cd build-simd
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd/lib/cmake/opencv4 ..
-        cmake --build . -j 2
-    - name: test-threads
-      run: |
-        cd test
-        mkdir build-threads && cd build-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/threads/lib/cmake/opencv4 ..
-        cmake --build . -j 2
-    - name: test-simd-threads
-      run: |
-        cd test
-        mkdir build-simd-threads && cd build-simd-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd-threads/lib/cmake/opencv4 ..
-        cmake --build . -j 2
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  webassembly-opencv3:
-    runs-on: ubuntu-20.04
-    env:
-      OPENCV_VERSION: 3.4.20
-      PACKAGENAME: opencv-mobile-3.4.20-webassembly
-    steps:
-    - uses: actions/checkout@v3
-    - name: emsdk
-      run: |
-        git clone https://github.com/emscripten-core/emsdk.git
-        cd emsdk
-        ./emsdk install $EMSCRIPTEN_VERSION
-        ./emsdk activate $EMSCRIPTEN_VERSION
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        rm -rf modules/gapi
-        patch -p1 -i ../opencv-3.4.20-no-rtti.patch
-        patch -p1 -i ../opencv-3.4.20-no-zlib.patch
-        patch -p1 -i ../opencv-3.4.20-link-openmp.patch
-        patch -p1 -i ../opencv-3.4.20-fix-emscripten-include.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -i ../opencv-3.4.20-unsafe-xadd.patch
-        mkdir build && cd build
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-simd
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simd && cd build-simd
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-threads
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -R -i ../opencv-3.4.20-unsafe-xadd.patch
-        mkdir build-threads && cd build-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-simd-threads
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simd-threads && cd build-simd-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        rm -rf ${{ env.PACKAGENAME }}
-        mkdir -p ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install ${{ env.PACKAGENAME }}/basic
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd/install ${{ env.PACKAGENAME }}/simd
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-threads/install ${{ env.PACKAGENAME }}/threads
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd-threads/install ${{ env.PACKAGENAME }}/simd-threads
-        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/valgrind.supp
-        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/valgrind_3rdparty.supp
-        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/valgrind.supp
-        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/valgrind_3rdparty.supp
-        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/valgrind.supp
-        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/valgrind_3rdparty.supp
-        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/valgrind.supp
-        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/valgrind_3rdparty.supp
-        rm -f ${{ env.PACKAGENAME }}.zip
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: test
-      run: |
-        cd test
-        mkdir build && cd build
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/basic/share/OpenCV ..
-        cmake --build . -j 2
-    - name: test-simd
-      run: |
-        cd test
-        mkdir build-simd && cd build-simd
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd/share/OpenCV ..
-        cmake --build . -j 2
-    - name: test-threads
-      run: |
-        cd test
-        mkdir build-threads && cd build-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/threads/share/OpenCV ..
-        cmake --build . -j 2
-    - name: test-simd-threads
-      run: |
-        cd test
-        mkdir build-simd-threads && cd build-simd-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd-threads/share/OpenCV ..
-        cmake --build . -j 2
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
-
-  webassembly-opencv2:
-    runs-on: ubuntu-20.04
-    env:
-      OPENCV_VERSION: 2.4.13.7
-      PACKAGENAME: opencv-mobile-2.4.13.7-webassembly
-    steps:
-    - uses: actions/checkout@v3
-    - name: emsdk
-      run: |
-        git clone https://github.com/emscripten-core/emsdk.git
-        cd emsdk
-        ./emsdk install $EMSCRIPTEN_VERSION
-        ./emsdk activate $EMSCRIPTEN_VERSION
-    - name: opencv-source
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-        cd opencv-${{ env.OPENCV_VERSION }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        rm -rf modules/gapi
-        patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
-        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
-        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
-        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
-        patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
-        patch -p1 -i ../opencv-2.4.13.7-link-openmp.patch
-        patch -p1 -i ../opencv-2.4.13.7-newer-msvc.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-    - name: build
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -i ../opencv-2.4.13.7-unsafe-xadd.patch
-        patch -p1 -i ../opencv-2.4.13.7-no-local-static.patch
-        mkdir build && cd build
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-simd
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simd && cd build-simd
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-threads
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -R -i ../opencv-2.4.13.7-unsafe-xadd.patch
-        patch -p1 -R -i ../opencv-2.4.13.7-no-local-static.patch
-        mkdir build-threads && cd build-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: build-simd-threads
-      run: |
-        source emsdk/emsdk_env.sh
-        cd opencv-${{ env.OPENCV_VERSION }}
-        mkdir build-simd-threads && cd build-simd-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        rm -rf ${{ env.PACKAGENAME }}
-        mkdir -p ${{ env.PACKAGENAME }}
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install ${{ env.PACKAGENAME }}/basic
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd/install ${{ env.PACKAGENAME }}/simd
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-threads/install ${{ env.PACKAGENAME }}/threads
-        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd-threads/install ${{ env.PACKAGENAME }}/simd-threads
-        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/lbpcascades
-        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/haarcascades
-        rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/lbpcascades
-        rm -f ${{ env.PACKAGENAME }}.zip
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-    - name: test
-      run: |
-        cd test
-        mkdir build && cd build
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/basic/share/OpenCV ..
-        cmake --build . -j 2
-    - name: test-simd
-      run: |
-        cd test
-        mkdir build-simd && cd build-simd
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd/share/OpenCV ..
-        cmake --build . -j 2
-    - name: test-threads
-      run: |
-        cd test
-        mkdir build-threads && cd build-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/threads/share/OpenCV ..
-        cmake --build . -j 2
-    - name: test-simd-threads
-      run: |
-        cd test
-        mkdir build-simd-threads && cd build-simd-threads
-        cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-            -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd-threads/share/OpenCV ..
-        cmake --build . -j 2
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
+  #
+  # webassembly-opencv4:
+  #   runs-on: ubuntu-20.04
+  #   env:
+  #     OPENCV_VERSION: 4.8.0
+  #     PACKAGENAME: opencv-mobile-4.8.0-webassembly
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: emsdk
+  #     run: |
+  #       git clone https://github.com/emscripten-core/emsdk.git
+  #       cd emsdk
+  #       ./emsdk install $EMSCRIPTEN_VERSION
+  #       ./emsdk activate $EMSCRIPTEN_VERSION
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       rm -rf modules/gapi
+  #       patch -p1 -i ../opencv-4.8.0-no-rtti.patch
+  #       patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+  #       patch -p1 -i ../opencv-4.8.0-fix-emscripten-include.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       patch -p1 -i ../opencv-4.8.0-unsafe-xadd.patch
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-simd
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-simd && cd build-simd
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-threads
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       patch -p1 -R -i ../opencv-4.8.0-unsafe-xadd.patch
+  #       mkdir build-threads && cd build-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-simd-threads
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-simd-threads && cd build-simd-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       rm -rf ${{ env.PACKAGENAME }}
+  #       mkdir -p ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install ${{ env.PACKAGENAME }}/basic
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd/install ${{ env.PACKAGENAME }}/simd
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-threads/install ${{ env.PACKAGENAME }}/threads
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd-threads/install ${{ env.PACKAGENAME }}/simd-threads
+  #       rm -rf ${{ env.PACKAGENAME }}/basic/share/opencv4
+  #       rm -rf ${{ env.PACKAGENAME }}/simd/share/opencv4
+  #       rm -rf ${{ env.PACKAGENAME }}/threads/share/opencv4
+  #       rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/opencv4
+  #       rm -f ${{ env.PACKAGENAME }}.zip
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: test
+  #     run: |
+  #       cd test
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/basic/lib/cmake/opencv4 ..
+  #       cmake --build . -j 2
+  #   - name: test-simd
+  #     run: |
+  #       cd test
+  #       mkdir build-simd && cd build-simd
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd/lib/cmake/opencv4 ..
+  #       cmake --build . -j 2
+  #   - name: test-threads
+  #     run: |
+  #       cd test
+  #       mkdir build-threads && cd build-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/threads/lib/cmake/opencv4 ..
+  #       cmake --build . -j 2
+  #   - name: test-simd-threads
+  #     run: |
+  #       cd test
+  #       mkdir build-simd-threads && cd build-simd-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd-threads/lib/cmake/opencv4 ..
+  #       cmake --build . -j 2
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # webassembly-opencv3:
+  #   runs-on: ubuntu-20.04
+  #   env:
+  #     OPENCV_VERSION: 3.4.20
+  #     PACKAGENAME: opencv-mobile-3.4.20-webassembly
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: emsdk
+  #     run: |
+  #       git clone https://github.com/emscripten-core/emsdk.git
+  #       cd emsdk
+  #       ./emsdk install $EMSCRIPTEN_VERSION
+  #       ./emsdk activate $EMSCRIPTEN_VERSION
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       rm -rf modules/gapi
+  #       patch -p1 -i ../opencv-3.4.20-no-rtti.patch
+  #       patch -p1 -i ../opencv-3.4.20-no-zlib.patch
+  #       patch -p1 -i ../opencv-3.4.20-link-openmp.patch
+  #       patch -p1 -i ../opencv-3.4.20-fix-emscripten-include.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       patch -p1 -i ../opencv-3.4.20-unsafe-xadd.patch
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-simd
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-simd && cd build-simd
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-threads
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       patch -p1 -R -i ../opencv-3.4.20-unsafe-xadd.patch
+  #       mkdir build-threads && cd build-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-simd-threads
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-simd-threads && cd build-simd-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       rm -rf ${{ env.PACKAGENAME }}
+  #       mkdir -p ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install ${{ env.PACKAGENAME }}/basic
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd/install ${{ env.PACKAGENAME }}/simd
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-threads/install ${{ env.PACKAGENAME }}/threads
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd-threads/install ${{ env.PACKAGENAME }}/simd-threads
+  #       rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/valgrind.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/valgrind_3rdparty.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/valgrind.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/valgrind_3rdparty.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/valgrind.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/valgrind_3rdparty.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/valgrind.supp
+  #       rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/valgrind_3rdparty.supp
+  #       rm -f ${{ env.PACKAGENAME }}.zip
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: test
+  #     run: |
+  #       cd test
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/basic/share/OpenCV ..
+  #       cmake --build . -j 2
+  #   - name: test-simd
+  #     run: |
+  #       cd test
+  #       mkdir build-simd && cd build-simd
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd/share/OpenCV ..
+  #       cmake --build . -j 2
+  #   - name: test-threads
+  #     run: |
+  #       cd test
+  #       mkdir build-threads && cd build-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/threads/share/OpenCV ..
+  #       cmake --build . -j 2
+  #   - name: test-simd-threads
+  #     run: |
+  #       cd test
+  #       mkdir build-simd-threads && cd build-simd-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd-threads/share/OpenCV ..
+  #       cmake --build . -j 2
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
+  #
+  # webassembly-opencv2:
+  #   runs-on: ubuntu-20.04
+  #   env:
+  #     OPENCV_VERSION: 2.4.13.7
+  #     PACKAGENAME: opencv-mobile-2.4.13.7-webassembly
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: emsdk
+  #     run: |
+  #       git clone https://github.com/emscripten-core/emsdk.git
+  #       cd emsdk
+  #       ./emsdk install $EMSCRIPTEN_VERSION
+  #       ./emsdk activate $EMSCRIPTEN_VERSION
+  #   - name: opencv-source
+  #     run: |
+  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+  #       rm -rf modules/gapi
+  #       patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-link-openmp.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-newer-msvc.patch
+  #       rm -rf modules/highgui
+  #       cp -r ../highgui modules/
+  #   - name: build
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       patch -p1 -i ../opencv-2.4.13.7-unsafe-xadd.patch
+  #       patch -p1 -i ../opencv-2.4.13.7-no-local-static.patch
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-simd
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-simd && cd build-simd
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-threads
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       patch -p1 -R -i ../opencv-2.4.13.7-unsafe-xadd.patch
+  #       patch -p1 -R -i ../opencv-2.4.13.7-no-local-static.patch
+  #       mkdir build-threads && cd build-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: build-simd-threads
+  #     run: |
+  #       source emsdk/emsdk_env.sh
+  #       cd opencv-${{ env.OPENCV_VERSION }}
+  #       mkdir build-simd-threads && cd build-simd-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       rm -rf ${{ env.PACKAGENAME }}
+  #       mkdir -p ${{ env.PACKAGENAME }}
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install ${{ env.PACKAGENAME }}/basic
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd/install ${{ env.PACKAGENAME }}/simd
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-threads/install ${{ env.PACKAGENAME }}/threads
+  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build-simd-threads/install ${{ env.PACKAGENAME }}/simd-threads
+  #       rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/basic/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/simd/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/threads/share/OpenCV/lbpcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/haarcascades
+  #       rm -rf ${{ env.PACKAGENAME }}/simd-threads/share/OpenCV/lbpcascades
+  #       rm -f ${{ env.PACKAGENAME }}.zip
+  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+  #   - name: test
+  #     run: |
+  #       cd test
+  #       mkdir build && cd build
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/basic/share/OpenCV ..
+  #       cmake --build . -j 2
+  #   - name: test-simd
+  #     run: |
+  #       cd test
+  #       mkdir build-simd && cd build-simd
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd/share/OpenCV ..
+  #       cmake --build . -j 2
+  #   - name: test-threads
+  #     run: |
+  #       cd test
+  #       mkdir build-threads && cd build-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/threads/share/OpenCV ..
+  #       cmake --build . -j 2
+  #   - name: test-simd-threads
+  #     run: |
+  #       cd test
+  #       mkdir build-simd-threads && cd build-simd-threads
+  #       cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+  #           -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/simd-threads/share/OpenCV ..
+  #       cmake --build . -j 2
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGENAME }}
+  #       path: ${{ env.PACKAGENAME }}.zip
 
   # apple-opencv4:
   #   needs: [macos-opencv4, ios-opencv4, ios-simulator-opencv4, mac-catalyst-opencv4]
