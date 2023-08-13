@@ -2198,13 +2198,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v140,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v140,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -2258,13 +2258,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v140,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v140,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -2320,13 +2320,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v140,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v140,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -2380,13 +2380,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v141,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v141,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -2440,13 +2440,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v141,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v141,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -2502,13 +2502,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v141,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v141,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -2562,13 +2562,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v142,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v142,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -2622,13 +2622,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v142,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v142,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -2684,13 +2684,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v142,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v142,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -2749,13 +2749,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v143,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v143,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -2814,13 +2814,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v143,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v143,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -2881,13 +2881,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake -T v143,host=x64 -A Win32 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake -T v143,host=x64 -A x64 -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . -j 2
+        cmake --build . --config Release -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
