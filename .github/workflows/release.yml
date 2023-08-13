@@ -2869,143 +2869,145 @@ jobs:
   #     with:
   #       name: ${{ env.PACKAGENAME }}
   #       path: ${{ env.PACKAGENAME }}.zip
-  #
-  # ubuntu-2004-opencv4:
-  #   runs-on: ubuntu-20.04
-  #   env:
-  #     OPENCV_VERSION: 4.8.0
-  #     PACKAGENAME: opencv-mobile-4.8.0-ubuntu-2004
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: opencv-source
-  #     run: |
-  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-  #       cd opencv-${{ env.OPENCV_VERSION }}
-  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-  #       rm -rf modules/gapi
-  #       patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-  #       rm -rf modules/highgui
-  #       cp -r ../highgui modules/
-  #   - name: build
-  #     run: |
-  #       cd opencv-${{ env.OPENCV_VERSION }}
-  #       mkdir build && cd build
-  #       cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-  #       cmake --build . -j 2
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       rm -rf ${{ env.PACKAGENAME }}
-  #       mkdir -p ${{ env.PACKAGENAME }}
-  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
-  #       rm -rf ${{ env.PACKAGENAME }}/share/opencv4
-  #       rm -f ${{ env.PACKAGENAME }}.zip
-  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-  #   - name: test
-  #     run: |
-  #       cd test
-  #       mkdir build && cd build
-  #       cmake -DOpenCV_DIR=../../${{ env.PACKAGENAME }}/share/OpenCV ..
-  #       cmake --build . -j 2
-  #   - name: upload
-  #     uses: actions/upload-artifact@v3
-  #     with:
-  #       name: ${{ env.PACKAGENAME }}
-  #       path: ${{ env.PACKAGENAME }}.zip
-  #
-  # ubuntu-2004-opencv3:
-  #   runs-on: ubuntu-20.04
-  #   env:
-  #     OPENCV_VERSION: 3.4.20
-  #     PACKAGENAME: opencv-mobile-3.4.20-ubuntu-2004
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: opencv-source
-  #     run: |
-  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-  #       cd opencv-${{ env.OPENCV_VERSION }}
-  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-  #       patch -p1 -i ../opencv-3.4.20-no-zlib.patch
-  #       rm -rf modules/highgui
-  #       cp -r ../highgui modules/
-  #   - name: build
-  #     run: |
-  #       cd opencv-${{ env.OPENCV_VERSION }}
-  #       mkdir build && cd build
-  #       cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-  #       cmake --build . -j 2
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       rm -rf ${{ env.PACKAGENAME }}
-  #       mkdir -p ${{ env.PACKAGENAME }}
-  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
-  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
-  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
-  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind.supp
-  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind_3rdparty.supp
-  #       rm -f ${{ env.PACKAGENAME }}.zip
-  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-  #   - name: test
-  #     run: |
-  #       cd test
-  #       mkdir build && cd build
-  #       cmake -DOpenCV_DIR=../../${{ env.PACKAGENAME }}/share/OpenCV ..
-  #       cmake --build . -j 2
-  #   - name: upload
-  #     uses: actions/upload-artifact@v3
-  #     with:
-  #       name: ${{ env.PACKAGENAME }}
-  #       path: ${{ env.PACKAGENAME }}.zip
-  #
-  # ubuntu-2004-opencv2:
-  #   runs-on: ubuntu-20.04
-  #   env:
-  #     OPENCV_VERSION: 2.4.13.7
-  #     PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-2004
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: opencv-source
-  #     run: |
-  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-  #       cd opencv-${{ env.OPENCV_VERSION }}
-  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-  #       patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
-  #       patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
-  #       patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
-  #       patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
-  #       rm -rf modules/highgui
-  #       cp -r ../highgui modules/
-  #   - name: build
-  #     run: |
-  #       cd opencv-${{ env.OPENCV_VERSION }}
-  #       mkdir build && cd build
-  #       cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-  #       cmake --build . -j 2
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       rm -rf ${{ env.PACKAGENAME }}
-  #       mkdir -p ${{ env.PACKAGENAME }}
-  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
-  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
-  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
-  #       rm -f ${{ env.PACKAGENAME }}.zip
-  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-  #   - name: test
-  #     run: |
-  #       cd test
-  #       mkdir build && cd build
-  #       cmake -DOpenCV_DIR=../../${{ env.PACKAGENAME }}/share/OpenCV ..
-  #       cmake --build . -j 2
-  #   - name: upload
-  #     uses: actions/upload-artifact@v3
-  #     with:
-  #       name: ${{ env.PACKAGENAME }}
-  #       path: ${{ env.PACKAGENAME }}.zip
+
+  ubuntu-2004-opencv4:
+    runs-on: ubuntu-20.04
+    env:
+      OPENCV_VERSION: 4.8.0
+      PACKAGENAME: opencv-mobile-4.8.0-ubuntu-2004
+    steps:
+    - uses: actions/checkout@v3
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        rm -rf modules/gapi
+        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf ${{ env.PACKAGENAME }}
+        mkdir -p ${{ env.PACKAGENAME }}
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/opencv4
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        cmake -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/lib/cmake/opencv4 ..
+        cmake --build . -j 2
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  ubuntu-2004-opencv3:
+    runs-on: ubuntu-20.04
+    env:
+      OPENCV_VERSION: 3.4.20
+      PACKAGENAME: opencv-mobile-3.4.20-ubuntu-2004
+    steps:
+    - uses: actions/checkout@v3
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        patch -p1 -i ../opencv-3.4.20-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.20-link-openmp.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf ${{ env.PACKAGENAME }}
+        mkdir -p ${{ env.PACKAGENAME }}
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind.supp
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/valgrind_3rdparty.supp
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        cmake -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/share/OpenCV ..
+        cmake --build . -j 2
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  ubuntu-2004-opencv2:
+    runs-on: ubuntu-20.04
+    env:
+      OPENCV_VERSION: 2.4.13.7
+      PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-2004
+    steps:
+    - uses: actions/checkout@v3
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
+        patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
+        patch -p1 -i ../opencv-2.4.13.7-link-openmp.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf ${{ env.PACKAGENAME }}
+        mkdir -p ${{ env.PACKAGENAME }}
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        cmake -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/share/OpenCV ..
+        cmake --build . -j 2
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
 
   ubuntu-2204-opencv4:
     runs-on: ubuntu-22.04
@@ -3098,53 +3100,53 @@ jobs:
         name: ${{ env.PACKAGENAME }}
         path: ${{ env.PACKAGENAME }}.zip
 
-  # ubuntu-2204-opencv2:
-  #   runs-on: ubuntu-22.04
-  #   env:
-  #     OPENCV_VERSION: 2.4.13.7
-  #     PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-2204
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: opencv-source
-  #     run: |
-  #       wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
-  #       unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
-  #       cd opencv-${{ env.OPENCV_VERSION }}
-  #       truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-  #       patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
-  #       patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
-  #       patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
-  #       patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
-  #       patch -p1 -i ../opencv-2.4.13.7-link-openmp.patch
-  #       rm -rf modules/highgui
-  #       cp -r ../highgui modules/
-  #   - name: build
-  #     run: |
-  #       cd opencv-${{ env.OPENCV_VERSION }}
-  #       mkdir build && cd build
-  #       cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
-  #       cmake --build . -j 2
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       rm -rf ${{ env.PACKAGENAME }}
-  #       mkdir -p ${{ env.PACKAGENAME }}
-  #       cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
-  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
-  #       rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
-  #       rm -f ${{ env.PACKAGENAME }}.zip
-  #       zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
-  #   - name: test
-  #     run: |
-  #       cd test
-  #       mkdir build && cd build
-  #       cmake -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/share/OpenCV ..
-  #       cmake --build . -j 2
-  #   - name: upload
-  #     uses: actions/upload-artifact@v3
-  #     with:
-  #       name: ${{ env.PACKAGENAME }}
-  #       path: ${{ env.PACKAGENAME }}.zip
+  ubuntu-2204-opencv2:
+    runs-on: ubuntu-22.04
+    env:
+      OPENCV_VERSION: 2.4.13.7
+      PACKAGENAME: opencv-mobile-2.4.13.7-ubuntu-2204
+    steps:
+    - uses: actions/checkout@v3
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
+        patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
+        patch -p1 -i ../opencv-2.4.13.7-link-openmp.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build && cd build
+        cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf ${{ env.PACKAGENAME }}
+        mkdir -p ${{ env.PACKAGENAME }}
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/haarcascades
+        rm -rf ${{ env.PACKAGENAME }}/share/OpenCV/lbpcascades
+        rm -f ${{ env.PACKAGENAME }}.zip
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        cmake -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/share/OpenCV ..
+        cmake --build . -j 2
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
 
   # webassembly-opencv4:
   #   runs-on: ubuntu-20.04
