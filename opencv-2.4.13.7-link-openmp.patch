@@ -1,0 +1,16 @@
+diff -Nuarp opencv-2.4.13.7.orig/modules/core/CMakeLists.txt opencv-2.4.13.7/modules/core/CMakeLists.txt
+--- opencv-2.4.13.7.orig/modules/core/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/modules/core/CMakeLists.txt	2023-08-13 19:26:51.073833956 +0800
+@@ -52,7 +52,11 @@ else()
+                           HEADERS ${lib_cuda_hdrs} ${lib_cuda_hdrs_detail})
+ endif()
+ 
+-ocv_create_module()
++if(HAVE_OPENMP AND DEFINED OpenMP_CXX_LIBRARIES AND OpenMP_CXX_LIBRARIES)
++  ocv_create_module(${OpenMP_CXX_LIBRARIES})
++else()
++  ocv_create_module()
++endif()
+ ocv_add_precompiled_headers(${the_module})
+ 
+ ocv_add_accuracy_tests()

@@ -3114,6 +3114,7 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
         patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
         patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
+        patch -p1 -i ../opencv-2.4.13.7-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -3134,10 +3135,6 @@ jobs:
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: test
       run: |
-        ls
-        ls ${{ env.PACKAGENAME }}/
-        ls $GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/
-        ls $GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/share/OpenCV
         cd test
         mkdir build && cd build
         cmake -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/share/OpenCV ..
