@@ -3136,9 +3136,11 @@ jobs:
       run: |
         ls
         ls ${{ env.PACKAGENAME }}/
+        ls $GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/
+        ls $GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/share/OpenCV
         cd test
         mkdir build && cd build
-        cmake -DOpenCV_DIR=../../${{ env.PACKAGENAME }}/share/OpenCV ..
+        cmake -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/share/OpenCV ..
         cmake --build . -j 2
     - name: upload
       uses: actions/upload-artifact@v3
