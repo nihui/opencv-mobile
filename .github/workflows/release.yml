@@ -2156,6 +2156,7 @@ jobs:
     env:
       OPENCV_VERSION: 4.8.0
       PACKAGENAME: opencv-mobile-4.8.0-windows-vs2015
+      UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -2196,13 +2197,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v140,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v140,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v140,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v140,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
@@ -2215,6 +2216,7 @@ jobs:
     env:
       OPENCV_VERSION: 3.4.20
       PACKAGENAME: opencv-mobile-3.4.20-windows-vs2015
+      UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -2255,13 +2257,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v140,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v140,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v140,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v140,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
@@ -2274,6 +2276,7 @@ jobs:
     env:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2015
+      UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -2316,13 +2319,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v140,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v140,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v140,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v140,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
@@ -2335,6 +2338,7 @@ jobs:
     env:
       OPENCV_VERSION: 4.8.0
       PACKAGENAME: opencv-mobile-4.8.0-windows-vs2017
+      UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -2375,13 +2379,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v141,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v141,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v141,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v141,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
@@ -2394,6 +2398,7 @@ jobs:
     env:
       OPENCV_VERSION: 3.4.20
       PACKAGENAME: opencv-mobile-3.4.20-windows-vs2017
+      UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -2434,13 +2439,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v141,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v141,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v141,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v141,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
@@ -2453,6 +2458,7 @@ jobs:
     env:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2017
+      UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -2495,13 +2501,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v141,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v141,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v141,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v141,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
@@ -2514,6 +2520,7 @@ jobs:
     env:
       OPENCV_VERSION: 4.8.0
       PACKAGENAME: opencv-mobile-4.8.0-windows-vs2019
+      UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -2554,13 +2561,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v142,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v142,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v142,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v142,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
@@ -2573,6 +2580,7 @@ jobs:
     env:
       OPENCV_VERSION: 3.4.20
       PACKAGENAME: opencv-mobile-3.4.20-windows-vs2019
+      UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -2613,13 +2621,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v142,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v142,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v142,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v142,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
@@ -2632,6 +2640,7 @@ jobs:
     env:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2019
+      UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -2674,13 +2683,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v142,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v142,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v142,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v142,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
@@ -2693,6 +2702,7 @@ jobs:
     env:
       OPENCV_VERSION: 4.8.0
       PACKAGENAME: opencv-mobile-4.8.0-windows-vs2022
+      UseMultiToolTask: true
     steps:
     - uses: msys2/setup-msys2@v2
       with:
@@ -2738,13 +2748,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v143,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v143,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v143,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v143,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
@@ -2757,6 +2767,7 @@ jobs:
     env:
       OPENCV_VERSION: 3.4.20
       PACKAGENAME: opencv-mobile-3.4.20-windows-vs2022
+      UseMultiToolTask: true
     steps:
     - uses: msys2/setup-msys2@v2
       with:
@@ -2802,13 +2813,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v143,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v143,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v143,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v143,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
@@ -2821,6 +2832,7 @@ jobs:
     env:
       OPENCV_VERSION: 2.4.13.7
       PACKAGENAME: opencv-mobile-2.4.13.7-windows-vs2022
+      UseMultiToolTask: true
     steps:
     - uses: msys2/setup-msys2@v2
       with:
@@ -2868,13 +2880,13 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake -T v143,host=x64 -A Win32 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x86 -DOpenCV_STATIC=ON ..
+        cmake -T v143,host=x64 -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake -T v143,host=x64 -A x64 -DOpenCV_DIR=$env:GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/x64 -DOpenCV_STATIC=ON ..
+        cmake -T v143,host=x64 -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGENAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . -j 2
     - name: upload-zip
       uses: actions/upload-artifact@v3
