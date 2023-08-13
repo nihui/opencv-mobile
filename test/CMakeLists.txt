@@ -1,7 +1,12 @@
 project(opencv-mobile-test)
 cmake_minimum_required(VERSION 2.8.12)
 
-find_package(OpenCV REQUIRED)
+if(APPLE OR IOS)
+    # copy opencv2.framework to this project dir
+    find_library(OpenCV_LIBS NAMES opencv2 PATHS ${OpenCV_DIR})
+else()
+    find_package(OpenCV REQUIRED)
+endif()
 
 add_executable(opencv-mobile-test main.cpp)
 

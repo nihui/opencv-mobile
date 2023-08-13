@@ -1781,8 +1781,6 @@ jobs:
         lipo -create opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/lib/libopencv_world.a opencv-${{ env.OPENCV_VERSION }}/build-arm64/install/lib/libopencv_world.a -o opencv2.framework/Versions/A/opencv2
         cp -r opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/
         sed -e 's/__NAME__/OpenCV/g' -e 's/__IDENTIFIER__/org.opencv/g' -e 's/__VERSION__/${{ env.OPENCV_VERSION }}/g' Info.plist > opencv2.framework/Versions/A/Resources/Info.plist
-        mkdir -p opencv2.framework/Versions/A/Resources/CMake
-        cp opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/share/OpenCV/*.cmake opencv2.framework/Versions/A/Resources/CMake/
         rm -f ${{ env.PACKAGENAME }}.zip
         zip -9 -y -r ${{ env.PACKAGENAME }}.zip opencv2.framework
     - name: test-x86_64
@@ -1791,7 +1789,7 @@ jobs:
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=MAC -DARCHS="x86_64" \
             -DDEPLOYMENT_TARGET=$MAC_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/opencv2.framework/Versions/A/Resources/CMake ..
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 3
     - name: test-arm64
       run: |
@@ -1799,7 +1797,7 @@ jobs:
         mkdir build-arm64 && cd build-arm64
         cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake -DPLATFORM=MAC_ARM64 -DARCHS="arm64" \
             -DDEPLOYMENT_TARGET=$MAC_DEPLOYMENT_TARGET -DENABLE_BITCODE=$ENABLE_BITCODE -DENABLE_ARC=$ENABLE_ARC -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
-            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/opencv2.framework/Versions/A/Resources/CMake ..
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 3
     - name: upload-zip
       uses: actions/upload-artifact@v3
