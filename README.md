@@ -13,17 +13,17 @@
 ![Firefox](https://img.shields.io/badge/Firefox-FF7139?style=for-the-badge&logo=Firefox-Browser&logoColor=white)
 ![Chrome](https://img.shields.io/badge/Chrome-4285F4?style=for-the-badge&logo=Google-chrome&logoColor=white)
 
-✔️ This project provides the minimal build of opencv library for the **Android**, **iOS** and **ARM Linux** platforms.
+:heavy_check_mark: This project provides the minimal build of opencv library for the **Android**, **iOS** and **ARM Linux** platforms.
 
-✔️ Packages for **Windows**, **Linux**, **MacOS** and **WebAssembly** are available now.
+:heavy_check_mark: Packages for **Windows**, **Linux**, **MacOS** and **WebAssembly** are available now.
 
-✔️ We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.20** and **4.8.0**.
+:heavy_check_mark: We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.20** and **4.8.0**.
 
-✔️ We also provide prebuild binary package for **iOS/iOS-Simulator with bitcode enabled**, that the official package lacks.
+:heavy_check_mark: We also provide prebuild binary package for **iOS/iOS-Simulator with bitcode enabled**, that the official package lacks.
 
-✔️ We also provide prebuild binary package for **Mac-Catalyst** and **Apple xcframework**, that the official package lacks.
+:heavy_check_mark: We also provide prebuild binary package for **Mac-Catalyst** and **Apple xcframework**, that the official package lacks.
 
-✔️ All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secret code**.
+:heavy_check_mark: All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secret code**.
 
 |opencv 4.8.0 android|package size|
 |:-:|:-:|
@@ -150,7 +150,7 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 
 # Usage iOS and MacOS
 
-1. Extract archive, and drag ```opencv2.framework``` into your project
+1. Extract archive, and drag ```opencv2.framework``` or ```opencv2.xcframework``` into your project
 
 # Usage ARM Linux, Windows, Linux, WebAssembly
 
