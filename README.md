@@ -136,7 +136,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 [opencv3-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/download/v17/opencv-mobile-3.4.20-webassembly.zip
 [opencv4-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/download/v17/opencv-mobile-4.8.0-webassembly.zip
 
-* Android package build with ndk r25b and android api 24
+* Android package build with ndk r25c and android api 24
 * iOS / iOS-Simulator / MacOS / Mac-Catalyst package build with Xcode 13.4.1
 * ARM Linux package build with cross compiler on Ubuntu-22.04
 * WebAssembly package build with Emscripten 3.1.28
@@ -260,5 +260,3 @@ zip -r -9 opencv-mobile-4.8.0.zip install
 |opencv_videoio|use android MediaCodec or ios AVFoundation api instead|
 |opencv_videostab|do video stablization on powerful pc or server|
 |opencv_viz|vtk is not available on mobile, write your own data visualization routines|
-
-
