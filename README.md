@@ -13,111 +13,128 @@
 ![Firefox](https://img.shields.io/badge/Firefox-FF7139?style=for-the-badge&logo=Firefox-Browser&logoColor=white)
 ![Chrome](https://img.shields.io/badge/Chrome-4285F4?style=for-the-badge&logo=Google-chrome&logoColor=white)
 
-✔️ This project provides the minimal build of opencv library for the **Android**, **iOS** and **ARM Linux** platforms.
+:heavy_check_mark: This project provides the minimal build of opencv library for the **Android**, **iOS** and **ARM Linux** platforms.
 
-✔️ Packages for **Windows**, **Linux**, **MacOS** and **WebAssembly** are available now.
+:heavy_check_mark: Packages for **Windows**, **Linux**, **MacOS** and **WebAssembly** are available now.
 
-✔️ We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.18** and **4.6.0**.
+:heavy_check_mark: We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.20** and **4.8.0**.
 
-✔️ We also provide prebuild binary package for **iOS with bitcode enabled**, that the official package lacks.
+:heavy_check_mark: We also provide prebuild binary package for **iOS/iOS-Simulator with bitcode enabled**, that the official package lacks.
 
-✔️ All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secret code**.
+:heavy_check_mark: We also provide prebuild binary package for **Mac-Catalyst** and **Apple xcframework**, that the official package lacks.
 
-|opencv 4.6.0 android|package size|
-|---|---|
-|The official opencv|225MB|
-|opencv-mobile|17.1MB|
+:heavy_check_mark: All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secret code**.
 
-|opencv 4.6.0 ios|package size|
-|---|---|
-|The official opencv|182MB|
-|opencv-mobile|15.6MB|
+|opencv 4.8.0 android|package size|
+|:-:|:-:|
+|The official opencv|189 MB|
+|opencv-mobile|17.7 MB|
 
-|opencv 4.6.0 ios with bitcode|package size|
-|---|---|
-|The official opencv|missing :(|
-|opencv-mobile|54.6MB|
+|opencv 4.8.0 ios|package size|package size with bitcode|
+|:-:|:-:|:-:|
+|The official opencv|197 MB|missing :(|
+|opencv-mobile|9.88 MB|34 MB|
 
 # Download
 
-## Android
+https://github.com/nihui/opencv-mobile/releases/latest
 
-(armeabi-v7a, arm64-v8a, x86, x86_64) build with ndk r25b and android api 24.
+|Platform|Arch|opencv-2.4.13.7|opencv-3.4.20|opencv-4.8.0|
+|:-:|:-:|:-:|:-:|:-:|
+|Android|armeabi-v7a<br />arm64-v8a<br />x86<br />x86_64|[![download-icon]][opencv2-android-url]|[![download-icon]][opencv3-android-url]|[![download-icon]][opencv4-android-url]|
+|iOS|armv7<br />arm64<br />arm64e|[![download-icon]][opencv2-ios-url]<br />[![bitcode-icon]][opencv2-ios-bitcode-url]|[![download-icon]][opencv3-ios-url]<br />[![bitcode-icon]][opencv3-ios-bitcode-url]|[![download-icon]][opencv4-ios-url]<br />[![bitcode-icon]][opencv4-ios-bitcode-url]|
+|iOS-Simulator|i386<br />x86_64<br />arm64|[![download-icon]][opencv2-ios-simulator-url]<br />[![bitcode-icon]][opencv2-ios-simulator-bitcode-url]|[![download-icon]][opencv3-ios-simulator-url]<br />[![bitcode-icon]][opencv3-ios-simulator-bitcode-url]|[![download-icon]][opencv4-ios-simulator-url]<br />[![bitcode-icon]][opencv4-ios-simulator-bitcode-url]|
+|MacOS|x86_64<br />arm64|[![download-icon]][opencv2-macos-url]|[![download-icon]][opencv3-macos-url]|[![download-icon]][opencv4-macos-url]|
+|Mac-Catalyst|x86_64<br />arm64|[![download-icon]][opencv2-mac-catalyst-url]<br />[![bitcode-icon]][opencv2-mac-catalyst-bitcode-url]|[![download-icon]][opencv3-mac-catalyst-url]<br />[![bitcode-icon]][opencv3-mac-catalyst-bitcode-url]|[![download-icon]][opencv4-mac-catalyst-url]<br />[![bitcode-icon]][opencv4-mac-catalyst-bitcode-url]|
+|Apple<br />xcframework|ios<br />(armv7,arm64,arm64e)<br />ios-simulator<br />(i386,x86_64,arm64)<br />ios-maccatalyst<br />(x86_64,arm64)<br />macos<br />(x86_64,arm64)|[![download-icon]][opencv2-apple-url]<br />[![bitcode-icon]][opencv2-apple-bitcode-url]|[![download-icon]][opencv3-apple-url]<br />[![bitcode-icon]][opencv3-apple-bitcode-url]|[![download-icon]][opencv4-apple-url]<br />[![bitcode-icon]][opencv4-apple-bitcode-url]|
+|ARM-Linux|arm-linux-gnueabi<br />arm-linux-gnueabihf<br />aarch64-linux-gnu|[![download-icon]][opencv2-armlinux-url]|[![download-icon]][opencv3-armlinux-url]|[![download-icon]][opencv4-armlinux-url]|
+|Windows-VS2015|x86<br />x64|[![download-icon]][opencv2-windows-vs2015-url]|[![download-icon]][opencv3-windows-vs2015-url]|[![download-icon]][opencv4-windows-vs2015-url]|
+|Windows-VS2017|x86<br />x64|[![download-icon]][opencv2-windows-vs2017-url]|[![download-icon]][opencv3-windows-vs2017-url]|[![download-icon]][opencv4-windows-vs2017-url]|
+|Windows-VS2019|x86<br />x64|[![download-icon]][opencv2-windows-vs2019-url]|[![download-icon]][opencv3-windows-vs2019-url]|[![download-icon]][opencv4-windows-vs2019-url]|
+|Windows-VS2022|x86<br />x64|[![download-icon]][opencv2-windows-vs2022-url]|[![download-icon]][opencv3-windows-vs2022-url]|[![download-icon]][opencv4-windows-vs2022-url]|
+|Ubuntu-20.04|x86_64|[![download-icon]][opencv2-ubuntu-2004-url]|[![download-icon]][opencv3-ubuntu-2004-url]|[![download-icon]][opencv4-ubuntu-2004-url]|
+|Ubuntu-22.04|x86_64|[![download-icon]][opencv2-ubuntu-2204-url]|[![download-icon]][opencv3-ubuntu-2204-url]|[![download-icon]][opencv4-ubuntu-2204-url]|
+|WebAssembly|basic<br />simd<br />threads<br />simd+threads|[![download-icon]][opencv2-webassembly-url]|[![download-icon]][opencv3-webassembly-url]|[![download-icon]][opencv4-webassembly-url]|
 
-* [opencv-mobile-2.4.13.7-android.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-android.zip)
-* [opencv-mobile-3.4.18-android.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-android.zip)
-* [opencv-mobile-4.6.0-android.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-android.zip)
+[download-icon]: https://img.shields.io/badge/download-blue?style=for-the-badge
+[bitcode-icon]: https://img.shields.io/badge/+bitcode-blue?style=for-the-badge
 
-## iOS
+[opencv2-android-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-android.zip
+[opencv3-android-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-android.zip
+[opencv4-android-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-android.zip
 
-(armv7, arm64, arm64e, i386, x86_64) build with Xcode 12.4.
+[opencv2-ios-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios.zip
+[opencv3-ios-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios.zip
+[opencv4-ios-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-ios.zip
 
-* [opencv-mobile-2.4.13.7-ios.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-ios.zip)
-* [opencv-mobile-3.4.18-ios.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-ios.zip)
-* [opencv-mobile-4.6.0-ios.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-ios.zip)
+[opencv2-ios-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-bitcode.zip
+[opencv3-ios-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-bitcode.zip
+[opencv4-ios-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-ios-bitcode.zip
 
-## iOS with bitcode
+[opencv2-ios-simulator-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-simulator.zip
+[opencv3-ios-simulator-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-simulator.zip
+[opencv4-ios-simulator-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-ios-simulator.zip
 
-(armv7, arm64, arm64e, i386, x86_64) build with Xcode 12.4.
+[opencv2-ios-simulator-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-simulator-bitcode.zip
+[opencv3-ios-simulator-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-simulator-bitcode.zip
+[opencv4-ios-simulator-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-ios-simulator-bitcode.zip
 
-* [opencv-mobile-2.4.13.7-ios-bitcode.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-ios-bitcode.zip)
-* [opencv-mobile-3.4.18-ios-bitcode.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-ios-bitcode.zip)
-* [opencv-mobile-4.6.0-ios-bitcode.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-ios-bitcode.zip)
+[opencv2-macos-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-macos.zip
+[opencv3-macos-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-macos.zip
+[opencv4-macos-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-macos.zip
 
-## ARM Linux
+[opencv2-mac-catalyst-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-mac-catalyst.zip
+[opencv3-mac-catalyst-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-mac-catalyst.zip
+[opencv4-mac-catalyst-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-mac-catalyst.zip
 
-(arm-linux-gnueabi, arm-linux-gnueabihf, aarch64-linux-gnu) build with ubuntu cross compiler.
+[opencv2-mac-catalyst-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-mac-catalyst-bitcode.zip
+[opencv3-mac-catalyst-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-mac-catalyst-bitcode.zip
+[opencv4-mac-catalyst-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-mac-catalyst-bitcode.zip
 
-* [opencv-mobile-2.4.13.7-armlinux.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-armlinux.zip)
-* [opencv-mobile-3.4.18-armlinux.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-armlinux.zip)
-* [opencv-mobile-4.6.0-armlinux.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-armlinux.zip)
+[opencv2-apple-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-apple.zip
+[opencv3-apple-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-apple.zip
+[opencv4-apple-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-apple.zip
 
-## Windows
+[opencv2-apple-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-apple-bitcode.zip
+[opencv3-apple-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-apple-bitcode.zip
+[opencv4-apple-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-apple-bitcode.zip
 
-(x86, x64) build with VS2015, VS2017, VS2019 and VS2022.
+[opencv2-armlinux-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-armlinux.zip
+[opencv3-armlinux-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-armlinux.zip
+[opencv4-armlinux-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-armlinux.zip
 
-* [opencv-mobile-2.4.13.7-windows-vs2015.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-windows-vs2015.zip)
-* [opencv-mobile-2.4.13.7-windows-vs2017.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-windows-vs2017.zip)
-* [opencv-mobile-2.4.13.7-windows-vs2019.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-windows-vs2019.zip)
-* [opencv-mobile-2.4.13.7-windows-vs2022.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-windows-vs2022.zip)
-* [opencv-mobile-3.4.18-windows-vs2015.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-windows-vs2015.zip)
-* [opencv-mobile-3.4.18-windows-vs2017.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-windows-vs2017.zip)
-* [opencv-mobile-3.4.18-windows-vs2019.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-windows-vs2019.zip)
-* [opencv-mobile-3.4.18-windows-vs2022.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-windows-vs2022.zip)
-* [opencv-mobile-4.6.0-windows-vs2015.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-windows-vs2015.zip)
-* [opencv-mobile-4.6.0-windows-vs2017.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-windows-vs2017.zip)
-* [opencv-mobile-4.6.0-windows-vs2019.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-windows-vs2019.zip)
-* [opencv-mobile-4.6.0-windows-vs2022.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-windows-vs2022.zip)
+[opencv2-windows-vs2015-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2015.zip
+[opencv3-windows-vs2015-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2015.zip
+[opencv4-windows-vs2015-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-windows-vs2015.zip
 
-## Linux
+[opencv2-windows-vs2017-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2017.zip
+[opencv3-windows-vs2017-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2017.zip
+[opencv4-windows-vs2017-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-windows-vs2017.zip
 
-(x86_64) build on Ubuntu-18.04, 20.04 and 22.04.
+[opencv2-windows-vs2019-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2019.zip
+[opencv3-windows-vs2019-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2019.zip
+[opencv4-windows-vs2019-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-windows-vs2019.zip
 
-* [opencv-mobile-2.4.13.7-ubuntu-1804.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-ubuntu-1804.zip)
-* [opencv-mobile-2.4.13.7-ubuntu-2004.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-ubuntu-2004.zip)
-* [opencv-mobile-2.4.13.7-ubuntu-2204.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-ubuntu-2204.zip)
-* [opencv-mobile-3.4.18-ubuntu-1804.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-ubuntu-1804.zip)
-* [opencv-mobile-3.4.18-ubuntu-2004.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-ubuntu-2004.zip)
-* [opencv-mobile-3.4.18-ubuntu-2204.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-ubuntu-2204.zip)
-* [opencv-mobile-4.6.0-ubuntu-1804.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-ubuntu-1804.zip)
-* [opencv-mobile-4.6.0-ubuntu-2004.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-ubuntu-2004.zip)
-* [opencv-mobile-4.6.0-ubuntu-2204.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-ubuntu-2204.zip)
+[opencv2-windows-vs2022-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2022.zip
+[opencv3-windows-vs2022-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2022.zip
+[opencv4-windows-vs2022-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-windows-vs2022.zip
 
-## MacOS
+[opencv2-ubuntu-2004-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2004.zip
+[opencv3-ubuntu-2004-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2004.zip
+[opencv4-ubuntu-2004-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-ubuntu-2004.zip
 
-(x86_64, arm64) build with Xcode 12.4.
+[opencv2-ubuntu-2204-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2204.zip
+[opencv3-ubuntu-2204-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2204.zip
+[opencv4-ubuntu-2204-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-ubuntu-2204.zip
 
-* [opencv-mobile-2.4.13.7-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-macos.zip)
-* [opencv-mobile-3.4.18-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-macos.zip)
-* [opencv-mobile-4.6.0-macos.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-macos.zip)
+[opencv2-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-webassembly.zip
+[opencv3-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-webassembly.zip
+[opencv4-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-webassembly.zip
 
-## WebAssembly
-
-(basic, simd, threads, simd+threads) build with Emscripten 2.0.8.
-
-* [opencv-mobile-2.4.13.7-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-2.4.13.7-webassembly.zip)
-* [opencv-mobile-3.4.18-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-3.4.18-webassembly.zip)
-* [opencv-mobile-4.6.0-webassembly.zip](https://github.com/nihui/opencv-mobile/releases/download/v16/opencv-mobile-4.6.0-webassembly.zip)
+* Android package build with ndk r25c and android api 24
+* iOS / iOS-Simulator / MacOS / Mac-Catalyst package build with Xcode 13.4.1
+* ARM Linux package build with cross compiler on Ubuntu-22.04
+* WebAssembly package build with Emscripten 3.1.28
 
 # Usage Android
 
@@ -125,7 +142,7 @@
 2. Modify ```<project dir>/app/src/main/jni/CMakeListst.txt``` to find and link opencv
 
 ```cmake
-set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.6.0-android/sdk/native/jni)
+set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.8.0-android/sdk/native/jni)
 find_package(OpenCV REQUIRED)
 
 target_link_libraries(your_jni_target ${OpenCV_LIBS})
@@ -133,15 +150,16 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 
 # Usage iOS and MacOS
 
-1. Extract archive, and drag ```opencv2.framework``` into your project
+1. Extract archive, and drag ```opencv2.framework``` or ```opencv2.xcframework``` into your project
 
 # Usage ARM Linux, Windows, Linux, WebAssembly
 
 1. Extract archive to ```<project dir>/```
 2. Modify ```<project dir>/CMakeListst.txt``` to find and link opencv
+3. Pass ```-DOpenCV_STATIC=ON``` to cmake option for windows build
 
 ```cmake
-set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.6.0-armlinux/arm-linux-gnueabihf/lib/cmake/opencv4)
+set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.8.0-armlinux/arm-linux-gnueabihf/lib/cmake/opencv4)
 find_package(OpenCV REQUIRED)
 
 target_link_libraries(your_target ${OpenCV_LIBS})
@@ -151,14 +169,14 @@ target_link_libraries(your_target ${OpenCV_LIBS})
 
 **step 1. download opencv source**
 ```shell
-wget -q https://github.com/opencv/opencv/archive/4.6.0.zip -O opencv-4.6.0.zip
-unzip -q opencv-4.6.0.zip
-cd opencv-4.6.0
+wget -q https://github.com/opencv/opencv/archive/4.8.0.zip -O opencv-4.8.0.zip
+unzip -q opencv-4.8.0.zip
+cd opencv-4.8.0
 ```
 
 **step 2. strip zlib dependency and use stb-based highgui implementation (optional)**
 ```shell
-patch -p1 -i ../opencv-4.6.0-no-zlib.patch
+patch -p1 -i ../opencv-4.8.0-no-zlib.patch
 truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
 rm -rf modules/gapi
 rm -rf modules/highgui
@@ -167,7 +185,7 @@ cp -r ../highgui modules/
 
 **step 3. patch opencv source for no-rtti build (optional)**
 ```shell
-patch -p1 -i ../opencv-4.6.0-no-rtti.patch
+patch -p1 -i ../opencv-4.8.0-no-rtti.patch
 ```
 
 **step 4. apply your opencv options to opencv4_cmake_options.txt**
@@ -184,7 +202,7 @@ cmake -DCMAKE_INSTALL_PREFIX=install \
 
 **step 6. make a package**
 ```shell
-zip -r -9 opencv-mobile-4.6.0.zip install
+zip -r -9 opencv-mobile-4.8.0.zip install
 ```
 
 # Some notes
@@ -238,5 +256,3 @@ zip -r -9 opencv-mobile-4.6.0.zip install
 |opencv_videoio|use android MediaCodec or ios AVFoundation api instead|
 |opencv_videostab|do video stablization on powerful pc or server|
 |opencv_viz|vtk is not available on mobile, write your own data visualization routines|
-
-

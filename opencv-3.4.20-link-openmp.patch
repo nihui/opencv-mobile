@@ -1,0 +1,14 @@
+diff -Nuarp opencv-3.4.20.orig/modules/core/CMakeLists.txt opencv-3.4.20/modules/core/CMakeLists.txt
+--- opencv-3.4.20.orig/modules/core/CMakeLists.txt	2023-06-27 19:29:13.000000000 +0800
++++ opencv-3.4.20/modules/core/CMakeLists.txt	2023-08-13 19:39:56.659037366 +0800
+@@ -31,6 +31,10 @@ if(HAVE_TBB)
+   list(APPEND extra_libs tbb)
+ endif()
+ 
++if(HAVE_OPENMP AND DEFINED OpenMP_CXX_LIBRARIES AND OpenMP_CXX_LIBRARIES)
++  list(APPEND extra_libs ${OpenMP_CXX_LIBRARIES})
++endif()
++
+ if(DEFINED WINRT AND NOT DEFINED ENABLE_WINRT_MODE_NATIVE)
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /ZW")
+ endif()

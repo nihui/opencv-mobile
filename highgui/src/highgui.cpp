@@ -23,6 +23,9 @@
 #include "exif.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
+#if __ARM_NEON
+#define STBI_NEON
+#endif
 #define STBI_NO_THREAD_LOCALS
 #define STBI_ONLY_JPEG
 #define STBI_ONLY_PNG
@@ -201,12 +204,16 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
     else if (img.type() == CV_8UC3)
     {
         c = 3;
-        cvtColor(img, img, COLOR_BGR2RGB);
+        Mat img2;
+        cvtColor(img, img2, COLOR_BGR2RGB);
+        img = img2;
     }
     else if (img.type() == CV_8UC4)
     {
         c = 4;
-        cvtColor(img, img, COLOR_BGRA2RGBA);
+        Mat img2;
+        cvtColor(img, img2, COLOR_BGRA2RGBA);
+        img = img2;
     }
     else
     {
@@ -368,12 +375,16 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
     else if (img.type() == CV_8UC3)
     {
         c = 3;
-        cvtColor(img, img, COLOR_BGR2RGB);
+        Mat img2;
+        cvtColor(img, img2, COLOR_BGR2RGB);
+        img = img2;
     }
     else if (img.type() == CV_8UC4)
     {
         c = 4;
-        cvtColor(img, img, COLOR_BGRA2RGBA);
+        Mat img2;
+        cvtColor(img, img2, COLOR_BGRA2RGBA);
+        img = img2;
     }
     else
     {

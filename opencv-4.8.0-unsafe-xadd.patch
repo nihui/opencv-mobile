@@ -1,7 +1,7 @@
-diff -Nuarp opencv-3.4.18.orig/modules/core/include/opencv2/core/cvdef.h opencv-3.4.18/modules/core/include/opencv2/core/cvdef.h
---- opencv-3.4.18.orig/modules/core/include/opencv2/core/cvdef.h	2022-06-05 00:52:44.000000000 +0800
-+++ opencv-3.4.18/modules/core/include/opencv2/core/cvdef.h	2022-11-16 17:36:04.411050025 +0800
-@@ -532,33 +532,7 @@ Cv64suf;
+diff -Nuarp opencv-4.8.0.orig/modules/core/include/opencv2/core/cvdef.h opencv-4.8.0/modules/core/include/opencv2/core/cvdef.h
+--- opencv-4.8.0.orig/modules/core/include/opencv2/core/cvdef.h	2023-06-28 19:53:33.000000000 +0800
++++ opencv-4.8.0/modules/core/include/opencv2/core/cvdef.h	2023-08-06 11:22:45.396836446 +0800
+@@ -669,33 +669,7 @@ __CV_ENUM_FLAGS_BITWISE_XOR_EQ   (EnumTy
  *          exchange-add operation for atomic operations on reference counters            *
  \****************************************************************************************/
  
