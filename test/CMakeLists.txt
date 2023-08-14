@@ -1,5 +1,6 @@
 project(opencv-mobile-test)
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.5)
+set(CMAKE_CXX_STANDARD 11)
 
 if(APPLE OR IOS)
     # copy opencv2.framework to this project dir
