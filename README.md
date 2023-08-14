@@ -21,7 +21,7 @@
 
 ✔️ We also provide prebuild binary package for **iOS/iOS-Simulator with bitcode enabled**, that the official package lacks.
 
-✔️ We also provide prebuild binary package for **Mac Catalyst w/o bitcode enabled**, that the official package lacks.
+✔️ We also provide prebuild binary package for **Mac-Catalyst** and **Apple xcframework**, that the official package lacks.
 
 ✔️ All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secret code**.
 
