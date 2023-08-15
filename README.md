@@ -133,7 +133,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
 * Android package build with ndk r25c and android api 24
 * iOS / iOS-Simulator / MacOS / Mac-Catalyst package build with Xcode 13.4.1
-* ARM Linux package build with cross compiler on Ubuntu-22.04
+* ARM Linux package build with cross-compiler on Ubuntu-22.04
 * WebAssembly package build with Emscripten 3.1.28
 
 # Usage Android
@@ -209,7 +209,7 @@ zip -r -9 opencv-mobile-4.8.0.zip install
 
 * The minimal opencv build contains most basic opencv operators and common image processing functions, with some handy additions like keypoint feature extraction and matching, image inpainting and opticalflow estimation.
 
-* Many computer vision algorithms that reside in dedicated modules are discarded, such as face detection etc. [You could try deep-learning based algorithms with nerual network inference library optimized for mobile.](https://github.com/Tencent/ncnn)
+* Many computer vision algorithms that reside in dedicated modules are discarded, such as face detection etc. [You could try deep-learning based algorithms with neural network inference library optimized for mobile.](https://github.com/Tencent/ncnn)
 
 * Image IO functions in highgui module, like ```cv::imread``` and ```cv::imwrite```, are re-implemented using [stb](https://github.com/nothings/stb) for smaller code size. GUI functions, like ```cv::imshow```, are discarded.
 
@@ -235,7 +235,7 @@ zip -r -9 opencv-mobile-4.8.0.zip install
 |opencv_androidcamera|use android Camera api instead|
 |opencv_calib3d|camera calibration, rare uses on mobile|
 |opencv_contrib|experimental functions, build part of the source externally if you need|
-|opencv_dnn|very slow on mobile, try ncnn for nerual network inference on mobile|
+|opencv_dnn|very slow on mobile, try ncnn for neural network inference on mobile|
 |opencv_dynamicuda|no cuda on mobile|
 |opencv_flann|feature matching, rare uses on mobile, build the source externally if you need|
 |opencv_gapi|graph based image processing, little gain on mobile|
@@ -243,7 +243,7 @@ zip -r -9 opencv-mobile-4.8.0.zip install
 |opencv_imgcodecs|link with opencv_highgui instead|
 |opencv_java|wrap your c++ code with jni|
 |opencv_js|write native code on mobile|
-|opencv_lagacy|various good-old cv routines, build part of the source externally if you need|
+|opencv_legacy|various good-old cv routines, build part of the source externally if you need|
 |opencv_ml|train your ML algorithm on powerful pc or server|
 |opencv_nonfree|the SIFT and SURF, use ORB which is faster and better|
 |opencv_objdetect|HOG, cascade detector, use deep learning detector which is faster and better|
