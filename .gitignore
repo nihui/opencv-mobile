@@ -1,0 +1,5 @@
+# IDE generated directories
+.idea/
+cmake-build-debug
+cmake-build-release
+.vscode
