@@ -15,6 +15,7 @@ env:
 permissions:
   contents: read
 
+jobs:
   android-opencv2:
     runs-on: ubuntu-latest
     env:
