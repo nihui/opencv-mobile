@@ -49,6 +49,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-armeabi-v7a
@@ -371,6 +372,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-armv7
@@ -640,6 +642,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-armv7
@@ -909,6 +912,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-i386
@@ -1178,6 +1182,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-i386
@@ -1452,6 +1457,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-arm-linux-gnueabi
@@ -1741,6 +1747,7 @@ jobs:
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-x86_64
@@ -1974,6 +1981,7 @@ jobs:
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-x86_64
@@ -2183,6 +2191,7 @@ jobs:
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-x86_64
@@ -2393,6 +2402,7 @@ jobs:
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         Remove-Item "modules\gapi" -Recurse
         C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-link-openmp.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -2576,6 +2586,7 @@ jobs:
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         Remove-Item "modules\gapi" -Recurse
         C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-link-openmp.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -2759,6 +2770,7 @@ jobs:
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         Remove-Item "modules\gapi" -Recurse
         C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-link-openmp.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -2947,6 +2959,7 @@ jobs:
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         Remove-Item "modules\gapi" -Recurse
         C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-link-openmp.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -3139,6 +3152,7 @@ jobs:
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -3279,6 +3293,7 @@ jobs:
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -3426,6 +3441,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         patch -p1 -i ../opencv-4.8.0-fix-emscripten-include.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
