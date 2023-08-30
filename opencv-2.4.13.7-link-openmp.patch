@@ -1,13 +1,41 @@
+diff -Nuarp opencv-2.4.13.7.orig/cmake/templates/OpenCVConfig.cmake.in opencv-2.4.13.7/cmake/templates/OpenCVConfig.cmake.in
+--- opencv-2.4.13.7.orig/cmake/templates/OpenCVConfig.cmake.in	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/cmake/templates/OpenCVConfig.cmake.in	2023-08-30 11:25:24.227478073 +0800
+@@ -80,6 +80,7 @@ set(OpenCV_CUDA_VERSION @OpenCV_CUDA_VER
+ set(OpenCV_USE_CUBLAS   @HAVE_CUBLAS@)
+ set(OpenCV_USE_CUFFT    @HAVE_CUFFT@)
+ set(OpenCV_USE_NVCUVID  @HAVE_NVCUVID@)
++set(OpenCV_USE_OPENMP   @HAVE_OPENMP@)
+ 
+ # Android API level from which OpenCV has been compiled is remembered
+ if(ANDROID)
+@@ -291,6 +292,10 @@ if(OpenCV_CUDA_VERSION)
+   endforeach()
+ endif()
+ 
++if(OpenCV_USE_OPENMP)
++  find_package(OpenMP)
++endif()
++
+ # ==============================================================
+ #  Android camera helper macro
+ # ==============================================================
 diff -Nuarp opencv-2.4.13.7.orig/modules/core/CMakeLists.txt opencv-2.4.13.7/modules/core/CMakeLists.txt
 --- opencv-2.4.13.7.orig/modules/core/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
-+++ opencv-2.4.13.7/modules/core/CMakeLists.txt	2023-08-13 19:26:51.073833956 +0800
-@@ -52,7 +52,11 @@ else()
++++ opencv-2.4.13.7/modules/core/CMakeLists.txt	2023-08-30 11:41:25.374790126 +0800
+@@ -52,7 +52,17 @@ else()
                            HEADERS ${lib_cuda_hdrs} ${lib_cuda_hdrs_detail})
  endif()
  
 -ocv_create_module()
-+if(HAVE_OPENMP AND DEFINED OpenMP_CXX_LIBRARIES AND OpenMP_CXX_LIBRARIES)
-+  ocv_create_module(${OpenMP_CXX_LIBRARIES})
++if(HAVE_OPENMP)
++  if(ANDROID_NDK_MAJOR AND (ANDROID_NDK_MAJOR GREATER 20))
++    ocv_create_module(-fopenmp -static-openmp)
++  elseif(OpenMP_CXX_FOUND)
++    ocv_create_module(OpenMP::OpenMP_CXX)
++  else()
++    ocv_create_module(${OpenMP_CXX_FLAGS})
++  endif()
 +else()
 +  ocv_create_module()
 +endif()
