@@ -22,13 +22,13 @@ diff -Nuarp opencv-2.4.13.7.orig/cmake/templates/OpenCVConfig.cmake.in opencv-2.
  # ==============================================================
 diff -Nuarp opencv-2.4.13.7.orig/modules/core/CMakeLists.txt opencv-2.4.13.7/modules/core/CMakeLists.txt
 --- opencv-2.4.13.7.orig/modules/core/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
-+++ opencv-2.4.13.7/modules/core/CMakeLists.txt	2023-08-30 11:26:59.718019632 +0800
-@@ -52,7 +52,15 @@ else()
++++ opencv-2.4.13.7/modules/core/CMakeLists.txt	2023-08-30 11:41:25.374790126 +0800
+@@ -52,7 +52,17 @@ else()
                            HEADERS ${lib_cuda_hdrs} ${lib_cuda_hdrs_detail})
  endif()
  
 -ocv_create_module()
-+if(HAVE_OPENMP AND DEFINED OpenMP_CXX_LIBRARIES AND OpenMP_CXX_LIBRARIES)
++if(HAVE_OPENMP)
 +  if(ANDROID_NDK_MAJOR AND (ANDROID_NDK_MAJOR GREATER 20))
 +    ocv_create_module(-fopenmp -static-openmp)
 +  elseif(OpenMP_CXX_FOUND)
@@ -36,6 +36,8 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/CMakeLists.txt opencv-2.4.13.7/mod
 +  else()
 +    ocv_create_module(${OpenMP_CXX_FLAGS})
 +  endif()
++else()
++  ocv_create_module()
 +endif()
  ocv_add_precompiled_headers(${the_module})
  
