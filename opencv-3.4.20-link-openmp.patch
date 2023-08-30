@@ -41,7 +41,7 @@ diff -Nuarp opencv-3.4.20.orig/modules/core/CMakeLists.txt opencv-3.4.20/modules
  
 +if(HAVE_OPENMP)
 +  if(ANDROID_NDK_MAJOR AND (ANDROID_NDK_MAJOR GREATER 20))
-+    ocv_target_link_libraries(${the_module} PUBLIC "-fopenmp -static-openmp")
++    ocv_target_link_libraries(${the_module} PUBLIC "-fopenmp" "-static-openmp")
 +  elseif(OpenMP_CXX_FOUND)
 +    ocv_target_link_libraries(${the_module} PUBLIC OpenMP::OpenMP_CXX)
 +  else()
