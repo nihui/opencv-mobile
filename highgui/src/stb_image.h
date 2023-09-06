@@ -3978,7 +3978,47 @@ static void stbi__YCbCr_to_RGB_simd(stbi_uc *out, stbi_uc const *y, stbi_uc cons
 #endif
 
 #ifdef STBI_NEON
-   // in this version, step=3 support would be easy to add. but is there demand?
+   if (step == 3) {
+      // this is a fairly straightforward implementation and not super-optimized.
+      uint8x8_t signflip = vdup_n_u8(0x80);
+      int16x8_t cr_const0 = vdupq_n_s16(   (short) ( 1.40200f*4096.0f+0.5f));
+      int16x8_t cr_const1 = vdupq_n_s16( - (short) ( 0.71414f*4096.0f+0.5f));
+      int16x8_t cb_const0 = vdupq_n_s16( - (short) ( 0.34414f*4096.0f+0.5f));
+      int16x8_t cb_const1 = vdupq_n_s16(   (short) ( 1.77200f*4096.0f+0.5f));
+
+      for (; i+7 < count; i += 8) {
+         // load
+         uint8x8_t y_bytes  = vld1_u8(y + i);
+         uint8x8_t cr_bytes = vld1_u8(pcr + i);
+         uint8x8_t cb_bytes = vld1_u8(pcb + i);
+         int8x8_t cr_biased = vreinterpret_s8_u8(vsub_u8(cr_bytes, signflip));
+         int8x8_t cb_biased = vreinterpret_s8_u8(vsub_u8(cb_bytes, signflip));
+
+         // expand to s16
+         int16x8_t yws = vreinterpretq_s16_u16(vshll_n_u8(y_bytes, 4));
+         int16x8_t crw = vshll_n_s8(cr_biased, 7);
+         int16x8_t cbw = vshll_n_s8(cb_biased, 7);
+
+         // color transform
+         int16x8_t cr0 = vqdmulhq_s16(crw, cr_const0);
+         int16x8_t cb0 = vqdmulhq_s16(cbw, cb_const0);
+         int16x8_t cr1 = vqdmulhq_s16(crw, cr_const1);
+         int16x8_t cb1 = vqdmulhq_s16(cbw, cb_const1);
+         int16x8_t rws = vaddq_s16(yws, cr0);
+         int16x8_t gws = vaddq_s16(vaddq_s16(yws, cb0), cr1);
+         int16x8_t bws = vaddq_s16(yws, cb1);
+
+         // undo scaling, round, convert to byte
+         uint8x8x3_t o;
+         o.val[0] = vqrshrun_n_s16(rws, 4);
+         o.val[1] = vqrshrun_n_s16(gws, 4);
+         o.val[2] = vqrshrun_n_s16(bws, 4);
+
+         // store, interleaving r/g/b
+         vst3_u8(out, o);
+         out += 8*3;
+      }
+   }
    if (step == 4) {
       // this is a fairly straightforward implementation and not super-optimized.
       uint8x8_t signflip = vdup_n_u8(0x80);
