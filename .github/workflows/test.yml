@@ -113,7 +113,7 @@ jobs:
       run: |
         cd test
         mkdir build && cd build
-        export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
+        export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
         cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/lib/cmake/opencv4 ..
