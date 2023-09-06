@@ -55,7 +55,6 @@ https://github.com/nihui/opencv-mobile/releases/latest
 |Ubuntu-20.04|x86_64|[![download-icon]][opencv2-ubuntu-2004-url]|[![download-icon]][opencv3-ubuntu-2004-url]|[![download-icon]][opencv4-ubuntu-2004-url]|
 |Ubuntu-22.04|x86_64|[![download-icon]][opencv2-ubuntu-2204-url]|[![download-icon]][opencv3-ubuntu-2204-url]|[![download-icon]][opencv4-ubuntu-2204-url]|
 |WebAssembly|basic<br />simd<br />threads<br />simd+threads|[![download-icon]][opencv2-webassembly-url]|[![download-icon]][opencv3-webassembly-url]|[![download-icon]][opencv4-webassembly-url]|
-|RISCV-Linux|milkv-duo| | |[![download-icon]][opencv4-milkv-duo-url]|
 
 [download-icon]: https://img.shields.io/badge/download-blue?style=for-the-badge
 [bitcode-icon]: https://img.shields.io/badge/+bitcode-blue?style=for-the-badge
@@ -132,7 +131,13 @@ https://github.com/nihui/opencv-mobile/releases/latest
 [opencv3-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-webassembly.zip
 [opencv4-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-webassembly.zip
 
+|Board|Target|opencv-4.8.0|
+|:-:|:-:|:-:|
+|milkv-duo|riscv64-linux-musl|[![download-icon]][opencv4-milkv-duo-url]|
+|luckfox-pico|arm-linux-uclibcgnueabihf|[![download-icon]][opencv4-luckfox-pico-url]|
+
 [opencv4-milkv-duo-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-milkv-duo.zip
+[opencv4-luckfox-pico-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-luckfox-pico.zip
 
 * Android package build with ndk r25c and android api 24
 * iOS / iOS-Simulator / MacOS / Mac-Catalyst package build with Xcode 13.4.1
