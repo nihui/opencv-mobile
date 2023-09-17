@@ -135,9 +135,11 @@ https://github.com/nihui/opencv-mobile/releases/latest
 |:-:|:-:|:-:|
 |milkv-duo|riscv64-linux-musl|[![download-icon]][opencv4-milkv-duo-url]|
 |luckfox-pico|arm-linux-uclibcgnueabihf|[![download-icon]][opencv4-luckfox-pico-url]|
+|yuzuki-lizard|arm-openwrt-linux-muslgnueabi|[![download-icon]][opencv4-yuzuki-lizard-url]|
 
 [opencv4-milkv-duo-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-milkv-duo.zip
 [opencv4-luckfox-pico-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-luckfox-pico.zip
+[opencv4-yuzuki-lizard-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.0-yuzuki-lizard.zip
 
 * Android package build with ndk r25c and android api 24
 * iOS / iOS-Simulator / MacOS / Mac-Catalyst package build with Xcode 13.4.1
