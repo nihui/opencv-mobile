@@ -37,6 +37,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-no-atomic.patch
         patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -91,6 +92,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-no-atomic.patch
         patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -146,6 +148,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-no-atomic.patch
         patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
