@@ -4072,6 +4072,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-no-atomic.patch
         patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -4082,7 +4083,8 @@ jobs:
         export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/riscv64-unknown-linux-musl.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF \
+            -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON -DWITH_OPENMP=OFF -DOPENCV_DISABLE_THREAD_SUPPORT=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -4125,6 +4127,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-no-atomic.patch
         patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -4135,7 +4138,8 @@ jobs:
         export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
         cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF \
+            -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON -DWITH_OPENMP=OFF -DOPENCV_DISABLE_THREAD_SUPPORT=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
@@ -4179,6 +4183,7 @@ jobs:
         rm -rf modules/gapi
         patch -p1 -i ../opencv-4.8.0-no-rtti.patch
         patch -p1 -i ../opencv-4.8.0-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.0-no-atomic.patch
         patch -p1 -i ../opencv-4.8.0-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
@@ -4190,7 +4195,8 @@ jobs:
         export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
         cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-openwrt-linux-muslgnueabi.toolchain.cmake \
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF \
+            -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON -DWITH_OPENMP=OFF -DOPENCV_DISABLE_THREAD_SUPPORT=ON ..
         cmake --build . -j 2
         cmake --build . --target install
     - name: package
