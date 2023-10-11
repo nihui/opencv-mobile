@@ -34,8 +34,8 @@ jobs:
   android-opencv4:
     runs-on: ubuntu-latest
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-android
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-android
     steps:
     - uses: actions/checkout@v3
     - name: ndk-fix-debug
@@ -47,9 +47,9 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-armeabi-v7a
@@ -359,8 +359,8 @@ jobs:
   ios-opencv4:
     runs-on: macos-12
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-ios
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-ios
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -370,9 +370,9 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-armv7
@@ -629,8 +629,8 @@ jobs:
   ios-opencv4-bitcode:
     runs-on: macos-12
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-ios-bitcode
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-ios-bitcode
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -640,9 +640,9 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-armv7
@@ -899,8 +899,8 @@ jobs:
   ios-simulator-opencv4:
     runs-on: macos-12
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-ios-simulator
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-ios-simulator
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -910,9 +910,9 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-i386
@@ -1169,8 +1169,8 @@ jobs:
   ios-simulator-opencv4-bitcode:
     runs-on: macos-12
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-ios-simulator-bitcode
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-ios-simulator-bitcode
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -1180,9 +1180,9 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-i386
@@ -1439,8 +1439,8 @@ jobs:
   armlinux-opencv4:
     runs-on: ubuntu-latest
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-armlinux
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-armlinux
     steps:
     - name: arm-gnu-toolchain
       run: |
@@ -1455,9 +1455,9 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-arm-linux-gnueabi
@@ -1735,8 +1735,8 @@ jobs:
   macos-opencv4:
     runs-on: macos-12
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-macos
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-macos
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -1746,8 +1746,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-x86_64
@@ -1969,8 +1969,8 @@ jobs:
   mac-catalyst-opencv4:
     runs-on: macos-12
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-mac-catalyst
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-mac-catalyst
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -1980,8 +1980,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-x86_64
@@ -2179,8 +2179,8 @@ jobs:
   mac-catalyst-opencv4-bitcode:
     runs-on: macos-12
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-mac-catalyst-bitcode
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-mac-catalyst-bitcode
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -2190,8 +2190,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         echo -n > cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build-x86_64
@@ -2389,8 +2389,8 @@ jobs:
   windows-vs2015-opencv4:
     runs-on: windows-2019
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-windows-vs2015
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-windows-vs2015
       UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
@@ -2401,8 +2401,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         Remove-Item "modules\gapi" -Recurse
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-link-openmp.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.1-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.1-link-openmp.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -2573,8 +2573,8 @@ jobs:
   windows-vs2017-opencv4:
     runs-on: windows-2019
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-windows-vs2017
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-windows-vs2017
       UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
@@ -2585,8 +2585,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         Remove-Item "modules\gapi" -Recurse
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-link-openmp.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.1-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.1-link-openmp.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -2757,8 +2757,8 @@ jobs:
   windows-vs2019-opencv4:
     runs-on: windows-2019
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-windows-vs2019
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-windows-vs2019
       UseMultiToolTask: true
     steps:
     - uses: actions/checkout@v3
@@ -2769,8 +2769,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         Remove-Item "modules\gapi" -Recurse
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-link-openmp.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.1-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.1-link-openmp.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -2941,8 +2941,8 @@ jobs:
   windows-vs2022-opencv4:
     runs-on: windows-2022
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-windows-vs2022
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-windows-vs2022
       UseMultiToolTask: true
     steps:
     - uses: msys2/setup-msys2@v2
@@ -2958,8 +2958,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         Clear-Content "cmake\OpenCVFindLibsGrfmt.cmake"
         Remove-Item "modules\gapi" -Recurse
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-no-zlib.patch
-        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.0-link-openmp.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.1-no-zlib.patch
+        C:\msys64\usr\bin\patch.exe -p1 -i ..\opencv-4.8.1-link-openmp.patch
         Remove-Item "modules\highgui" -Recurse
         Copy-Item -Recurse -Path "..\highgui" -Destination "modules\"
     - name: build-x86
@@ -3140,8 +3140,8 @@ jobs:
   ubuntu-2004-opencv4:
     runs-on: ubuntu-20.04
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-ubuntu-2004
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-ubuntu-2004
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -3151,8 +3151,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -3281,8 +3281,8 @@ jobs:
   ubuntu-2204-opencv4:
     runs-on: ubuntu-22.04
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-ubuntu-2204
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-ubuntu-2204
     steps:
     - uses: actions/checkout@v3
     - name: opencv-source
@@ -3292,8 +3292,8 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -3422,8 +3422,8 @@ jobs:
   webassembly-opencv4:
     runs-on: ubuntu-20.04
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-webassembly
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-webassembly
     steps:
     - uses: actions/checkout@v3
     - name: emsdk
@@ -3439,17 +3439,17 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
-        patch -p1 -i ../opencv-4.8.0-fix-emscripten-include.patch
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-fix-emscripten-include.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -i ../opencv-4.8.0-unsafe-xadd.patch
+        patch -p1 -i ../opencv-4.8.1-unsafe-xadd.patch
         mkdir build && cd build
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -3472,7 +3472,7 @@ jobs:
       run: |
         source emsdk/emsdk_env.sh
         cd opencv-${{ env.OPENCV_VERSION }}
-        patch -p1 -R -i ../opencv-4.8.0-unsafe-xadd.patch
+        patch -p1 -R -i ../opencv-4.8.1-unsafe-xadd.patch
         mkdir build-threads && cd build-threads
         cmake -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
@@ -3816,8 +3816,8 @@ jobs:
     needs: [macos-opencv4, ios-opencv4, ios-simulator-opencv4, mac-catalyst-opencv4]
     runs-on: macos-12
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-apple
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-apple
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_13.4.1.app
     - name: download
@@ -3936,8 +3936,8 @@ jobs:
     needs: [macos-opencv4, ios-opencv4-bitcode, ios-simulator-opencv4-bitcode, mac-catalyst-opencv4-bitcode]
     runs-on: macos-12
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-apple-bitcode
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-apple-bitcode
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_13.4.1.app
     - name: download
@@ -4055,8 +4055,8 @@ jobs:
   milkv-duo-opencv4:
     runs-on: ubuntu-latest
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-milkv-duo
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-milkv-duo
     steps:
     - uses: actions/checkout@v3
     - name: toolchain
@@ -4070,10 +4070,10 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-no-atomic.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-no-atomic.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -4111,8 +4111,8 @@ jobs:
   luckfox-pico-opencv4:
     runs-on: ubuntu-latest
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-luckfox-pico
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-luckfox-pico
     steps:
     - uses: actions/checkout@v3
     - name: toolchain
@@ -4125,10 +4125,10 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-no-atomic.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-no-atomic.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -4166,8 +4166,8 @@ jobs:
   yuzuki-lizard-opencv4:
     runs-on: ubuntu-latest
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-yuzuki-lizard
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-yuzuki-lizard
     steps:
     - uses: actions/checkout@v3
     - name: toolchain
@@ -4181,10 +4181,10 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-no-atomic.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-no-atomic.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
@@ -4224,8 +4224,8 @@ jobs:
   purple-pi-opencv4:
     runs-on: ubuntu-latest
     env:
-      OPENCV_VERSION: 4.8.0
-      PACKAGENAME: opencv-mobile-4.8.0-purple-pi
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-purple-pi
     steps:
     - uses: actions/checkout@v3
     - name: toolchain
@@ -4240,9 +4240,9 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.0-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.0-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.0-link-openmp.patch
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
     - name: build
