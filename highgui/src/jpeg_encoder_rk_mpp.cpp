@@ -41,7 +41,8 @@ extern "C" {
 #define MPP_CTX_ENC 1
 #define MPP_VIDEO_CodingMJPEG 8
 
-#define MPP_FMT_BGR888  0x10007
+#define MPP_FMT_YUV420SP 0x0
+#define MPP_FMT_BGR888   0x10007
 
 #define MPP_ENC_SET_CFG 0x320001
 #define MPP_ENC_GET_CFG 0x320002
@@ -322,7 +323,7 @@ public:
     jpeg_encoder_rk_mpp_impl();
     ~jpeg_encoder_rk_mpp_impl();
 
-    int init(int width, int height, int quality);
+    int init(int width, int height, int ch, int quality);
 
     int encode(const unsigned char* bgrdata, std::vector<unsigned char>& outdata) const;
 
@@ -341,6 +342,8 @@ protected:
     MppBuffer buffer;
     int width;
     int height;
+    int ch;
+    MppFrameFormat format;
     int hor_stride;
     int ver_stride;
     int frame_size;
@@ -358,6 +361,8 @@ jpeg_encoder_rk_mpp_impl::jpeg_encoder_rk_mpp_impl()
     buffer = 0;
     width = 0;
     height = 0;
+    ch = 0;
+    format = 0;
     hor_stride = 0;
     ver_stride = 0;
     frame_size = 0;
@@ -368,7 +373,7 @@ jpeg_encoder_rk_mpp_impl::~jpeg_encoder_rk_mpp_impl()
     deinit();
 }
 
-int jpeg_encoder_rk_mpp_impl::init(int _width, int _height, int quality)
+int jpeg_encoder_rk_mpp_impl::init(int _width, int _height, int _ch, int quality)
 {
     if (!rkmpp.ready)
     {
@@ -388,10 +393,22 @@ int jpeg_encoder_rk_mpp_impl::init(int _width, int _height, int quality)
 
     width = _width;
     height = _height;
+    ch = _ch;
 
-    hor_stride = MPP_ALIGN(width, 8) * 3;// for vepu limitation
-    ver_stride = height;
-    frame_size = MPP_ALIGN(hor_stride, 64) * MPP_ALIGN(ver_stride, 64);
+    if (ch == 1)
+    {
+        format = MPP_FMT_YUV420SP;
+        hor_stride = MPP_ALIGN(width, 8);
+        ver_stride = height;
+        frame_size = MPP_ALIGN(hor_stride, 64) * MPP_ALIGN(ver_stride, 64) * 3 / 2;
+    }
+    if (ch == 3 || ch == 4)
+    {
+        format = MPP_FMT_BGR888;
+        hor_stride = MPP_ALIGN(width, 8) * 3;// for vepu limitation
+        ver_stride = height;
+        frame_size = MPP_ALIGN(hor_stride, 64) * MPP_ALIGN(ver_stride, 64);
+    }
 
     fprintf(stderr, "width = %d\n", width);
     fprintf(stderr, "height = %d\n", height);
@@ -462,7 +479,7 @@ int jpeg_encoder_rk_mpp_impl::init(int _width, int _height, int quality)
         mpp_enc_cfg_set_s32(cfg, "prep:height", height);
         mpp_enc_cfg_set_s32(cfg, "prep:hor_stride", hor_stride);
         mpp_enc_cfg_set_s32(cfg, "prep:ver_stride", ver_stride);
-        mpp_enc_cfg_set_s32(cfg, "prep:format", MPP_FMT_BGR888);
+        mpp_enc_cfg_set_s32(cfg, "prep:format", format);
         mpp_enc_cfg_set_s32(cfg, "prep:rotation", 0);
         mpp_enc_cfg_set_s32(cfg, "prep:mirroring", 0);
 
@@ -512,7 +529,7 @@ int jpeg_encoder_rk_mpp_impl::init(int _width, int _height, int quality)
         mpp_frame_set_height(frame, height);
         mpp_frame_set_hor_stride(frame, hor_stride);
         mpp_frame_set_ver_stride(frame, ver_stride);
-        mpp_frame_set_fmt(frame, MPP_FMT_BGR888);
+        mpp_frame_set_fmt(frame, format);
         mpp_frame_set_pts(frame, 0);
         mpp_frame_set_eos(frame, 1);
         mpp_frame_set_jpege_chan_id(frame, -1);
@@ -525,6 +542,41 @@ int jpeg_encoder_rk_mpp_impl::init(int _width, int _height, int quality)
     inited = 1;
 
     return 0;
+}
+
+static inline void my_memset(unsigned char* dst, unsigned char c, int size)
+{
+#if __ARM_NEON
+    uint8x16_t _p = vdupq_n_u8(c);
+    int nn = size / 64;
+    size -= nn * 64;
+    while (nn--)
+    {
+        vst1q_u8(dst, _p);
+        vst1q_u8(dst + 16, _p);
+        vst1q_u8(dst + 32, _p);
+        vst1q_u8(dst + 48, _p);
+        dst += 64;
+    }
+    if (size > 16)
+    {
+        vst1q_u8(dst, _p);
+        dst += 16;
+        size -= 16;
+    }
+    if (size > 8)
+    {
+        vst1_u8(dst, _p);
+        dst += 8;
+        size -= 8;
+    }
+    while (size--)
+    {
+        *dst++ = c;
+    }
+#else
+    memset(dst, c, size);
+#endif
 }
 
 static inline void my_memcpy(unsigned char* dst, const unsigned char* src, int size)
@@ -571,6 +623,46 @@ static inline void my_memcpy(unsigned char* dst, const unsigned char* src, int s
 #endif
 }
 
+static inline void my_memcpy_drop_alpha(unsigned char* dst, const unsigned char* src, int w)
+{
+#if __ARM_NEON
+    int nn = w / 16;
+    w -= nn * 16;
+    while (nn--)
+    {
+        __builtin_prefetch(src + 64);
+        uint8x16x4_t _p0 = vld4q_u8(src);
+        uint8x16x3_t _p1;
+        _p1.val[0] = _p0.val[0];
+        _p1.val[1] = _p0.val[1];
+        _p1.val[2] = _p0.val[2];
+        vst3q_u8(dst, _p1);
+        src += 64;
+        dst += 48;
+    }
+    if (w > 8)
+    {
+        uint8x8x4_t _p0 = vld4_u8(src);
+        uint8x8x3_t _p1;
+        _p1.val[0] = _p0.val[0];
+        _p1.val[1] = _p0.val[1];
+        _p1.val[2] = _p0.val[2];
+        vst3_u8(dst, _p1);
+        src += 32;
+        dst += 24;
+        w -= 8;
+    }
+#endif
+    while (w--)
+    {
+        dst[0] = src[0];
+        dst[1] = src[1];
+        dst[2] = src[2];
+        src += 4;
+        dst += 3;
+    }
+}
+
 int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* bgrdata, std::vector<unsigned char>& outdata) const
 {
     outdata.clear();
@@ -593,9 +685,33 @@ int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* bgrdata, std::vector<u
     {
         void* mapped_ptr = mpp_buffer_get_ptr(buffer);
 
-        for (int i = 0; i < height; i++)
+        if (format == MPP_FMT_YUV420SP)
         {
-            my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width * 3, width * 3);
+            for (int i = 0; i < height; i++)
+            {
+                my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width, width);
+            }
+            for (int i = 0; i < height; i++)
+            {
+                my_memset((unsigned char*)mapped_ptr + height * hor_stride, 128, height * hor_stride / 2);
+            }
+        }
+        if (format == MPP_FMT_BGR888)
+        {
+            if (ch == 3)
+            {
+                for (int i = 0; i < height; i++)
+                {
+                    my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width * 3, width * 3);
+                }
+            }
+            if (ch == 4)
+            {
+                for (int i = 0; i < height; i++)
+                {
+                    my_memcpy_drop_alpha((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width * 4, width);
+                }
+            }
         }
     }
 
@@ -874,6 +990,8 @@ int jpeg_encoder_rk_mpp_impl::deinit()
     mpi = 0;
     width = 0;
     height = 0;
+    ch = 0;
+    format = 0;
     hor_stride = 0;
     ver_stride = 0;
     frame_size = 0;
@@ -897,9 +1015,9 @@ jpeg_encoder_rk_mpp::~jpeg_encoder_rk_mpp()
     delete d;
 }
 
-int jpeg_encoder_rk_mpp::init(int width, int height, int quality)
+int jpeg_encoder_rk_mpp::init(int width, int height, int ch, int quality)
 {
-    return d->init(width, height, quality);
+    return d->init(width, height, ch, quality);
 }
 
 int jpeg_encoder_rk_mpp::encode(const unsigned char* bgrdata, std::vector<unsigned char>& outdata) const

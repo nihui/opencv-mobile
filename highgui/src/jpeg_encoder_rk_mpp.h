@@ -28,7 +28,7 @@ public:
     jpeg_encoder_rk_mpp();
     ~jpeg_encoder_rk_mpp();
 
-    int init(int width, int height, int quality);
+    int init(int width, int height, int ch, int quality);
 
     int encode(const unsigned char* bgrdata, std::vector<unsigned char>& outdata) const;
 

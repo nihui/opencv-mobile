@@ -200,31 +200,28 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
     String ext = _ext;
     Mat img = _img.getMat();
 
+    int c = 0;
+    if (img.type() == CV_8UC1)
+    {
+        c = 1;
+    }
+    else if (img.type() == CV_8UC3)
+    {
+        c = 3;
+    }
+    else if (img.type() == CV_8UC4)
+    {
+        c = 4;
+    }
+    else
+    {
+        // unexpected image channels
+        return false;
+    }
+
     if (jpeg_encoder_rk_mpp::supported() && (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG"))
     {
         // anything to bgr
-        if (img.type() == CV_8UC1)
-        {
-            Mat img2;
-            cvtColor(img, img2, COLOR_GRAY2BGR);
-            img = img2;
-        }
-        else if (img.type() == CV_8UC3)
-        {
-            // bgr
-        }
-        else if (img.type() == CV_8UC4)
-        {
-            Mat img2;
-            cvtColor(img, img2, COLOR_BGRA2BGR);
-            img = img2;
-        }
-        else
-        {
-            // unexpected image channels
-            return false;
-        }
-
         if (!img.isContinuous())
         {
             img = img.clone();
@@ -241,7 +238,7 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
         }
 
         jpeg_encoder_rk_mpp e;
-        int ret = e.init(img.cols, img.rows, quality);
+        int ret = e.init(img.cols, img.rows, c, quality);
         if (ret == 0)
         {
             ret = e.encode(img.data, filename.c_str());
@@ -256,29 +253,17 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
     }
 
     // bgr to rgb
-    int c = 0;
-    if (img.type() == CV_8UC1)
+    if (c == 3)
     {
-        c = 1;
-    }
-    else if (img.type() == CV_8UC3)
-    {
-        c = 3;
         Mat img2;
         cvtColor(img, img2, COLOR_BGR2RGB);
         img = img2;
     }
-    else if (img.type() == CV_8UC4)
+    if (c == 4)
     {
-        c = 4;
         Mat img2;
         cvtColor(img, img2, COLOR_BGRA2RGBA);
         img = img2;
-    }
-    else
-    {
-        // unexpected image channels
-        return false;
     }
 
     if (!img.isContinuous())
@@ -426,31 +411,28 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
 {
     Mat img = _img.getMat();
 
+    int c = 0;
+    if (img.type() == CV_8UC1)
+    {
+        c = 1;
+    }
+    else if (img.type() == CV_8UC3)
+    {
+        c = 3;
+    }
+    else if (img.type() == CV_8UC4)
+    {
+        c = 4;
+    }
+    else
+    {
+        // unexpected image channels
+        return false;
+    }
+
     if (jpeg_encoder_rk_mpp::supported() && (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG"))
     {
         // anything to bgr
-        if (img.type() == CV_8UC1)
-        {
-            Mat img2;
-            cvtColor(img, img2, COLOR_GRAY2BGR);
-            img = img2;
-        }
-        else if (img.type() == CV_8UC3)
-        {
-            // bgr
-        }
-        else if (img.type() == CV_8UC4)
-        {
-            Mat img2;
-            cvtColor(img, img2, COLOR_BGRA2BGR);
-            img = img2;
-        }
-        else
-        {
-            // unexpected image channels
-            return false;
-        }
-
         if (!img.isContinuous())
         {
             img = img.clone();
@@ -467,7 +449,7 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
         }
 
         jpeg_encoder_rk_mpp e;
-        int ret = e.init(img.cols, img.rows, quality);
+        int ret = e.init(img.cols, img.rows, c, quality);
         if (ret == 0)
         {
             ret = e.encode(img.data, buf);
@@ -482,29 +464,17 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
     }
 
     // bgr to rgb
-    int c = 0;
-    if (img.type() == CV_8UC1)
+    if (c == 3)
     {
-        c = 1;
-    }
-    else if (img.type() == CV_8UC3)
-    {
-        c = 3;
         Mat img2;
         cvtColor(img, img2, COLOR_BGR2RGB);
         img = img2;
     }
-    else if (img.type() == CV_8UC4)
+    if (c == 4)
     {
-        c = 4;
         Mat img2;
         cvtColor(img, img2, COLOR_BGRA2RGBA);
         img = img2;
-    }
-    else
-    {
-        // unexpected image channels
-        return false;
     }
 
     if (!img.isContinuous())
