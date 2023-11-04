@@ -16,9 +16,14 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 
 #include <string>
 #include <vector>
+
+#if __ARM_NEON
+#include <arm_neon.h>
+#endif
 
 #include <dlfcn.h>
 #include <fcntl.h>
@@ -520,6 +525,7 @@ int jpeg_encoder_rk_mpp_impl::init(int _width, int _height, int quality)
 
 static inline void my_memcpy(unsigned char* dst, const unsigned char* src, int size)
 {
+#if __ARM_NEON
     int nn = size / 64;
     size -= nn * 64;
     while (nn--)
@@ -556,6 +562,9 @@ static inline void my_memcpy(unsigned char* dst, const unsigned char* src, int s
     {
         *dst++ = *src++;
     }
+#else
+    memcpy(dst, src, size);
+#endif
 }
 
 int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* rgbdata, std::vector<unsigned char>& outdata) const
@@ -749,17 +758,17 @@ jpeg_encoder_rk_mpp::~jpeg_encoder_rk_mpp()
     delete d;
 }
 
-int jpeg_encoder_rk_mpp_impl::init(int width, int height, int quality)
+int jpeg_encoder_rk_mpp::init(int width, int height, int quality)
 {
     return d->init(width, height, quality);
 }
 
-int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* rgbdata, std::vector<unsigned char>& outdata) const
+int jpeg_encoder_rk_mpp::encode(const unsigned char* rgbdata, std::vector<unsigned char>& outdata) const
 {
     return d->encode(rgbdata, outdata);
 }
 
-int jpeg_encoder_rk_mpp_impl::deinit()
+int jpeg_encoder_rk_mpp::deinit()
 {
     return d->deinit();
 }
