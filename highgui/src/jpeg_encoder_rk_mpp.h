@@ -30,9 +30,9 @@ public:
 
     int init(int width, int height, int quality);
 
-    int encode(const unsigned char* rgbdata, std::vector<unsigned char>& outdata) const;
+    int encode(const unsigned char* bgrdata, std::vector<unsigned char>& outdata) const;
 
-    int encode(const unsigned char* rgbdata, const char* outfilepath) const;
+    int encode(const unsigned char* bgrdata, const char* outfilepath) const;
 
     int deinit();
 

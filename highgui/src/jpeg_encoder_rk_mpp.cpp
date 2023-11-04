@@ -324,9 +324,9 @@ public:
 
     int init(int width, int height, int quality);
 
-    int encode(const unsigned char* rgbdata, std::vector<unsigned char>& outdata) const;
+    int encode(const unsigned char* bgrdata, std::vector<unsigned char>& outdata) const;
 
-    int encode(const unsigned char* rgbdata, const char* outfilepath) const;
+    int encode(const unsigned char* bgrdata, const char* outfilepath) const;
 
     int deinit();
 
@@ -571,7 +571,7 @@ static inline void my_memcpy(unsigned char* dst, const unsigned char* src, int s
 #endif
 }
 
-int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* rgbdata, std::vector<unsigned char>& outdata) const
+int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* bgrdata, std::vector<unsigned char>& outdata) const
 {
     outdata.clear();
 
@@ -595,7 +595,7 @@ int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* rgbdata, std::vector<u
 
         for (int i = 0; i < height; i++)
         {
-            my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, rgbdata + i * width * 3, width * 3);
+            my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width * 3, width * 3);
         }
     }
 
@@ -679,7 +679,7 @@ OUT:
     return ret_val;
 }
 
-int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* rgbdata, const char* outfilepath) const
+int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* bgrdata, const char* outfilepath) const
 {
     if (!inited)
     {
@@ -703,7 +703,7 @@ int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* rgbdata, const char* o
 
         for (int i = 0; i < height; i++)
         {
-            my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, rgbdata + i * width * 3, width * 3);
+            my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width * 3, width * 3);
         }
     }
 
@@ -902,14 +902,14 @@ int jpeg_encoder_rk_mpp::init(int width, int height, int quality)
     return d->init(width, height, quality);
 }
 
-int jpeg_encoder_rk_mpp::encode(const unsigned char* rgbdata, std::vector<unsigned char>& outdata) const
+int jpeg_encoder_rk_mpp::encode(const unsigned char* bgrdata, std::vector<unsigned char>& outdata) const
 {
-    return d->encode(rgbdata, outdata);
+    return d->encode(bgrdata, outdata);
 }
 
-int jpeg_encoder_rk_mpp::encode(const unsigned char* rgbdata, const char* outfilepath) const
+int jpeg_encoder_rk_mpp::encode(const unsigned char* bgrdata, const char* outfilepath) const
 {
-    return d->encode(rgbdata, outfilepath);
+    return d->encode(bgrdata, outfilepath);
 }
 
 int jpeg_encoder_rk_mpp::deinit()
