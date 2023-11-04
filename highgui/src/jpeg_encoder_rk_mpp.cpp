@@ -744,7 +744,7 @@ int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* bgrdata, const char* o
         {
             fprintf(stderr, "fopen %s failed\n", outfilepath);
             ret_val = -1;
-            return OUT;
+            goto OUT;
         }
     }
 
@@ -781,7 +781,7 @@ int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* bgrdata, const char* o
             munmap(src_ptr, enc_packet.buf_size);
             close(mb.dma_buf_fd);
             ret_val = -1;
-            return OUT;
+            goto OUT;
         }
 
         munmap(src_ptr, enc_packet.buf_size);
