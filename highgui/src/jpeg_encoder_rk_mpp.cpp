@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+#include "jpeg_encoder_rk_mpp.h"
+
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>

@@ -14,6 +14,9 @@
 // limitations under the License.
 //
 
+#ifndef JPEG_ENCODER_RK_MPP_H
+#define JPEG_ENCODER_RK_MPP_H
+
 #include <vector>
 
 class jpeg_encoder_rk_mpp_impl;
@@ -32,3 +35,5 @@ public:
 private:
     jpeg_encoder_rk_mpp_impl* const d;
 };
+
+#endif // JPEG_ENCODER_RK_MPP_H
