@@ -39,6 +39,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#include "jpeg_encoder_rk_mpp.h"
+
 namespace cv {
 //
 //     1        2       3      4         5            6           7          8
@@ -413,7 +415,16 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
                 break;
             }
         }
-        success = stbi_write_jpg_to_func(imencode_write_func, (void*)&buf, img.cols, img.rows, c, img.data, quality);
+
+        {
+            jpeg_encoder_rk_mpp e;
+            e.init(img.cols, img.rows, quality);
+            e.encode(img.data, buf);
+            e.deinit();
+            success = true;
+        }
+
+        // success = stbi_write_jpg_to_func(imencode_write_func, (void*)&buf, img.cols, img.rows, c, img.data, quality);
     }
     else if (ext == ".png" || ext == ".PNG")
     {
