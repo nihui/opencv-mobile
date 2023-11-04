@@ -200,6 +200,61 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
     String ext = _ext;
     Mat img = _img.getMat();
 
+    if (jpeg_encoder_rk_mpp::supported() && (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG"))
+    {
+        // anything to bgr
+        if (img.type() == CV_8UC1)
+        {
+            Mat img2;
+            cvtColor(img, img2, COLOR_GRAY2BGR);
+            img = img2;
+        }
+        else if (img.type() == CV_8UC3)
+        {
+            // bgr
+        }
+        else if (img.type() == CV_8UC4)
+        {
+            Mat img2;
+            cvtColor(img, img2, COLOR_BGRA2BGR);
+            img = img2;
+        }
+        else
+        {
+            // unexpected image channels
+            return false;
+        }
+
+        if (!img.isContinuous())
+        {
+            img = img.clone();
+        }
+
+        int quality = 95;
+        for (size_t i = 0; i < params.size(); i += 2)
+        {
+            if (params[i] == IMWRITE_JPEG_QUALITY)
+            {
+                quality = params[i + 1];
+                break;
+            }
+        }
+
+        jpeg_encoder_rk_mpp e;
+        int ret = e.init(img.cols, img.rows, quality);
+        if (ret == 0)
+        {
+            ret = e.encode(img.data, filename.c_str());
+            if (ret == 0)
+            {
+                e.deinit();
+                return true;
+            }
+        }
+
+        // fallback to stb_image_write
+    }
+
     // bgr to rgb
     int c = 0;
     if (img.type() == CV_8UC1)
@@ -371,6 +426,61 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
 {
     Mat img = _img.getMat();
 
+    if (jpeg_encoder_rk_mpp::supported() && (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG"))
+    {
+        // anything to bgr
+        if (img.type() == CV_8UC1)
+        {
+            Mat img2;
+            cvtColor(img, img2, COLOR_GRAY2BGR);
+            img = img2;
+        }
+        else if (img.type() == CV_8UC3)
+        {
+            // bgr
+        }
+        else if (img.type() == CV_8UC4)
+        {
+            Mat img2;
+            cvtColor(img, img2, COLOR_BGRA2BGR);
+            img = img2;
+        }
+        else
+        {
+            // unexpected image channels
+            return false;
+        }
+
+        if (!img.isContinuous())
+        {
+            img = img.clone();
+        }
+
+        int quality = 95;
+        for (size_t i = 0; i < params.size(); i += 2)
+        {
+            if (params[i] == IMWRITE_JPEG_QUALITY)
+            {
+                quality = params[i + 1];
+                break;
+            }
+        }
+
+        jpeg_encoder_rk_mpp e;
+        int ret = e.init(img.cols, img.rows, quality);
+        if (ret == 0)
+        {
+            ret = e.encode(img.data, buf);
+            if (ret == 0)
+            {
+                e.deinit();
+                return true;
+            }
+        }
+
+        // fallback to stb_image_write
+    }
+
     // bgr to rgb
     int c = 0;
     if (img.type() == CV_8UC1)
@@ -416,15 +526,7 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
             }
         }
 
-        {
-            jpeg_encoder_rk_mpp e;
-            e.init(img.cols, img.rows, quality);
-            e.encode(img.data, buf);
-            e.deinit();
-            success = true;
-        }
-
-        // success = stbi_write_jpg_to_func(imencode_write_func, (void*)&buf, img.cols, img.rows, c, img.data, quality);
+        success = stbi_write_jpg_to_func(imencode_write_func, (void*)&buf, img.cols, img.rows, c, img.data, quality);
     }
     else if (ext == ".png" || ext == ".PNG")
     {

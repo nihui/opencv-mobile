@@ -41,7 +41,7 @@ extern "C" {
 #define MPP_CTX_ENC 1
 #define MPP_VIDEO_CodingMJPEG 8
 
-#define MPP_FMT_RGB888  0x10006
+#define MPP_FMT_BGR888  0x10007
 
 #define MPP_ENC_SET_CFG 0x320001
 #define MPP_ENC_GET_CFG 0x320002
@@ -301,11 +301,11 @@ static int unload_rkmpp_library()
 class rkmpp_library_loader
 {
 public:
-    int ready;
+    bool ready;
 
     rkmpp_library_loader()
     {
-        ready = load_rkmpp_library() == 0 ? 1 : 0;
+        ready = (load_rkmpp_library() == 0);
     }
 
     ~rkmpp_library_loader()
@@ -325,6 +325,8 @@ public:
     int init(int width, int height, int quality);
 
     int encode(const unsigned char* rgbdata, std::vector<unsigned char>& outdata) const;
+
+    int encode(const unsigned char* rgbdata, const char* outfilepath) const;
 
     int deinit();
 
@@ -460,7 +462,7 @@ int jpeg_encoder_rk_mpp_impl::init(int _width, int _height, int quality)
         mpp_enc_cfg_set_s32(cfg, "prep:height", height);
         mpp_enc_cfg_set_s32(cfg, "prep:hor_stride", hor_stride);
         mpp_enc_cfg_set_s32(cfg, "prep:ver_stride", ver_stride);
-        mpp_enc_cfg_set_s32(cfg, "prep:format", MPP_FMT_RGB888);
+        mpp_enc_cfg_set_s32(cfg, "prep:format", MPP_FMT_BGR888);
         mpp_enc_cfg_set_s32(cfg, "prep:rotation", 0);
         mpp_enc_cfg_set_s32(cfg, "prep:mirroring", 0);
 
@@ -510,7 +512,7 @@ int jpeg_encoder_rk_mpp_impl::init(int _width, int _height, int quality)
         mpp_frame_set_height(frame, height);
         mpp_frame_set_hor_stride(frame, hor_stride);
         mpp_frame_set_ver_stride(frame, ver_stride);
-        mpp_frame_set_fmt(frame, MPP_FMT_RGB888);
+        mpp_frame_set_fmt(frame, MPP_FMT_BGR888);
         mpp_frame_set_pts(frame, 0);
         mpp_frame_set_eos(frame, 1);
         mpp_frame_set_jpege_chan_id(frame, -1);
@@ -677,6 +679,136 @@ OUT:
     return ret_val;
 }
 
+int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* rgbdata, const char* outfilepath) const
+{
+    if (!inited)
+    {
+        fprintf(stderr, "not inited\n");
+        return -1;
+    }
+
+    int ret_val = 0;
+
+    struct venc_packet enc_packet;
+    memset(&enc_packet, 0, sizeof(enc_packet));
+
+    MppPacket packet = &enc_packet;
+
+    int b_packet_got = 0;
+
+    FILE* outfp = 0;
+
+    {
+        void* mapped_ptr = mpp_buffer_get_ptr(buffer);
+
+        for (int i = 0; i < height; i++)
+        {
+            my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, rgbdata + i * width * 3, width * 3);
+        }
+    }
+
+    // fprintf(stderr, "before encode\n");
+
+    {
+        MPP_RET ret = mpi->encode_put_frame(ctx, frame);
+        if (ret != MPP_SUCCESS)
+        {
+            fprintf(stderr, "mpi encode_put_frame failed %d\n", ret);
+            ret_val = -1;
+            goto OUT;
+        }
+    }
+
+    {
+        MPP_RET ret = mpi->encode_get_packet(ctx, &packet);
+        if (ret != MPP_SUCCESS)
+        {
+            fprintf(stderr, "mpi encode_get_packet failed %d\n", ret);
+            ret_val = -1;
+            goto OUT;
+        }
+
+        b_packet_got = 1;
+    }
+
+    if (enc_packet.len <= 0)
+    {
+        fprintf(stderr, "enc_packet empty\n");
+        ret_val = -1;
+        goto OUT;
+    }
+
+    {
+        outfp = fopen(outfilepath, "wb");
+        if (!outfp)
+        {
+            fprintf(stderr, "fopen %s failed\n", outfilepath);
+            ret_val = -1;
+            return OUT;
+        }
+    }
+
+    // consume packet
+    {
+        struct valloc_mb mb;
+        memset(&mb, 0, sizeof(mb));
+        mb.struct_size = sizeof(mb);
+        mb.mpi_buf_id = enc_packet.u64priv_data;
+
+        int ret = ioctl(mem_fd, VALLOC_IOCTL_MB_GET_FD, &mb);
+        if (ret == -1)
+        {
+            fprintf(stderr, "ioctl VALLOC_IOCTL_MB_GET_FD failed\n");
+            ret_val = -1;
+            goto OUT;
+        }
+
+        void* src_ptr = mmap(NULL, enc_packet.buf_size, PROT_READ, MAP_SHARED, mb.dma_buf_fd, 0);
+        if (src_ptr == MAP_FAILED)
+        {
+            fprintf(stderr, "mmap %d failed\n", enc_packet.buf_size);
+            close(mb.dma_buf_fd);
+            ret_val = -1;
+            goto OUT;
+        }
+
+        const unsigned char* p0 = (const unsigned char*)src_ptr + enc_packet.offset;
+
+        size_t nwrite = fwrite(p0, 1, enc_packet.len, outfp);
+        if (nwrite != enc_packet.len)
+        {
+            fprintf(stderr, "fwrite %d failed\n", enc_packet.len);
+            munmap(src_ptr, enc_packet.buf_size);
+            close(mb.dma_buf_fd);
+            ret_val = -1;
+            return OUT;
+        }
+
+        munmap(src_ptr, enc_packet.buf_size);
+
+        close(mb.dma_buf_fd);
+    }
+
+OUT:
+
+    if (b_packet_got)
+    {
+        MPP_RET ret = mpi->encode_release_packet(ctx, &packet);
+        if (ret != MPP_SUCCESS)
+        {
+            fprintf(stderr, "mpi encode_release_packet failed %d\n", ret);
+            return -1;
+        }
+    }
+
+    if (outfp)
+    {
+        fclose(outfp);
+    }
+
+    return ret_val;
+}
+
 int jpeg_encoder_rk_mpp_impl::deinit()
 {
     if (!inited)
@@ -751,6 +883,11 @@ int jpeg_encoder_rk_mpp_impl::deinit()
     return ret_val;
 }
 
+bool jpeg_encoder_rk_mpp::supported()
+{
+    return rkmpp.ready;
+}
+
 jpeg_encoder_rk_mpp::jpeg_encoder_rk_mpp() : d(new jpeg_encoder_rk_mpp_impl)
 {
 }
@@ -768,6 +905,11 @@ int jpeg_encoder_rk_mpp::init(int width, int height, int quality)
 int jpeg_encoder_rk_mpp::encode(const unsigned char* rgbdata, std::vector<unsigned char>& outdata) const
 {
     return d->encode(rgbdata, outdata);
+}
+
+int jpeg_encoder_rk_mpp::encode(const unsigned char* rgbdata, const char* outfilepath) const
+{
+    return d->encode(rgbdata, outfilepath);
 }
 
 int jpeg_encoder_rk_mpp::deinit()

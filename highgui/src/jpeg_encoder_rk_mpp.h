@@ -23,12 +23,16 @@ class jpeg_encoder_rk_mpp_impl;
 class jpeg_encoder_rk_mpp
 {
 public:
+    static bool supported();
+
     jpeg_encoder_rk_mpp();
     ~jpeg_encoder_rk_mpp();
 
     int init(int width, int height, int quality);
 
     int encode(const unsigned char* rgbdata, std::vector<unsigned char>& outdata) const;
+
+    int encode(const unsigned char* rgbdata, const char* outfilepath) const;
 
     int deinit();
 
