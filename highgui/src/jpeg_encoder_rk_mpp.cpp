@@ -150,7 +150,7 @@ typedef void (*PFN_mpp_frame_set_jpege_chan_id)(MppFrame frame, RK_S32 chan_id);
 typedef void (*PFN_mpp_frame_set_buffer)(MppFrame frame, MppBuffer buffer);
 typedef void (*PFN_mpp_frame_set_fmt)(MppFrame frame, MppFrameFormat fmt);
 
-typedef MPP_RET (*PFN_mpp_create)(MppCtx *ctx, MppApi **mpi);
+typedef MPP_RET (*PFN_mpp_create_ext)(MppCtx *ctx, MppApi **mpi, int flags);
 typedef MPP_RET (*PFN_mpp_init)(MppCtx ctx, MppCtxType type, MppCodingType coding);
 typedef MPP_RET (*PFN_mpp_destroy)(MppCtx ctx);
 
@@ -179,7 +179,7 @@ static PFN_mpp_frame_set_jpege_chan_id mpp_frame_set_jpege_chan_id  = 0;
 static PFN_mpp_frame_set_buffer mpp_frame_set_buffer  = 0;
 static PFN_mpp_frame_set_fmt mpp_frame_set_fmt = 0;
 
-static PFN_mpp_create mpp_create = 0;
+static PFN_mpp_create_ext mpp_create_ext = 0;
 static PFN_mpp_init mpp_init = 0;
 static PFN_mpp_destroy mpp_destroy = 0;
 
@@ -251,7 +251,7 @@ static int load_rkmpp_library()
     mpp_frame_set_buffer = (PFN_mpp_frame_set_buffer)dlsym(librockchip_mpp, "mpp_frame_set_buffer");
     mpp_frame_set_fmt = (PFN_mpp_frame_set_fmt)dlsym(librockchip_mpp, "mpp_frame_set_fmt");
 
-    mpp_create = (PFN_mpp_create)dlsym(librockchip_mpp, "mpp_create");
+    mpp_create_ext = (PFN_mpp_create_ext)dlsym(librockchip_mpp, "mpp_create_ext");
     mpp_init = (PFN_mpp_init)dlsym(librockchip_mpp, "mpp_init");
     mpp_destroy = (PFN_mpp_destroy)dlsym(librockchip_mpp, "mpp_destroy");
 
@@ -287,7 +287,7 @@ static int unload_rkmpp_library()
     mpp_frame_set_buffer = 0;
     mpp_frame_set_fmt = 0;
 
-    mpp_create = 0;
+    mpp_create_ext = 0;
     mpp_init = 0;
     mpp_destroy = 0;
 
@@ -410,11 +410,12 @@ int jpeg_encoder_rk_mpp_impl::init(int _width, int _height, int _ch, int quality
         frame_size = MPP_ALIGN(hor_stride, 64) * MPP_ALIGN(ver_stride, 64);
     }
 
-    fprintf(stderr, "width = %d\n", width);
-    fprintf(stderr, "height = %d\n", height);
-    fprintf(stderr, "hor_stride = %d\n", hor_stride);
-    fprintf(stderr, "ver_stride = %d\n", ver_stride);
-    fprintf(stderr, "frame_size = %d\n", frame_size);
+    // fprintf(stderr, "width = %d\n", width);
+    // fprintf(stderr, "height = %d\n", height);
+    // fprintf(stderr, "ch = %d\n", ch);
+    // fprintf(stderr, "hor_stride = %d\n", hor_stride);
+    // fprintf(stderr, "ver_stride = %d\n", ver_stride);
+    // fprintf(stderr, "frame_size = %d\n", frame_size);
 
     {
         mem_fd = open("/dev/mpi/valloc", O_RDWR | O_CLOEXEC);
@@ -437,10 +438,10 @@ int jpeg_encoder_rk_mpp_impl::init(int _width, int _height, int _ch, int quality
     // fprintf(stderr, "buffer got\n");
 
     {
-        MPP_RET ret = mpp_create(&ctx, &mpi);
+        MPP_RET ret = mpp_create_ext(&ctx, &mpi, 0);
         if (ret != MPP_SUCCESS)
         {
-            fprintf(stderr, "mpp_create failed %d\n", ret);
+            fprintf(stderr, "mpp_create_ext failed %d\n", ret);
             return -1;
         }
     }
@@ -1025,9 +1026,24 @@ int jpeg_encoder_rk_mpp_impl::deinit()
     return ret_val;
 }
 
-bool jpeg_encoder_rk_mpp::supported()
+bool jpeg_encoder_rk_mpp::supported(int width, int height, int ch)
 {
-    return rkmpp.ready;
+    if (!rkmpp.ready)
+        return false;
+
+    if (ch != 1 && ch != 3 && ch != 4)
+        return false;
+
+    if (width % 2 != 0 || height % 2 != 0)
+        return false;
+
+    if (width < 8 || height < 8)
+        return false;
+
+    if (width * height > 4000 * 4000)
+        return false;
+
+    return true;
 }
 
 jpeg_encoder_rk_mpp::jpeg_encoder_rk_mpp() : d(new jpeg_encoder_rk_mpp_impl)

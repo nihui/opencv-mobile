@@ -219,37 +219,40 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
         return false;
     }
 
-    if (jpeg_encoder_rk_mpp::supported() && (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG"))
+    if (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG")
     {
-        // anything to bgr
-        if (!img.isContinuous())
+        if (jpeg_encoder_rk_mpp::supported(img.cols, img.rows, c))
         {
-            img = img.clone();
-        }
-
-        int quality = 95;
-        for (size_t i = 0; i < params.size(); i += 2)
-        {
-            if (params[i] == IMWRITE_JPEG_QUALITY)
+            // anything to bgr
+            if (!img.isContinuous())
             {
-                quality = params[i + 1];
-                break;
+                img = img.clone();
             }
-        }
 
-        jpeg_encoder_rk_mpp e;
-        int ret = e.init(img.cols, img.rows, c, quality);
-        if (ret == 0)
-        {
-            ret = e.encode(img.data, filename.c_str());
+            int quality = 95;
+            for (size_t i = 0; i < params.size(); i += 2)
+            {
+                if (params[i] == IMWRITE_JPEG_QUALITY)
+                {
+                    quality = params[i + 1];
+                    break;
+                }
+            }
+
+            jpeg_encoder_rk_mpp e;
+            int ret = e.init(img.cols, img.rows, c, quality);
             if (ret == 0)
             {
-                e.deinit();
-                return true;
+                ret = e.encode(img.data, filename.c_str());
+                if (ret == 0)
+                {
+                    e.deinit();
+                    return true;
+                }
             }
-        }
 
-        // fallback to stb_image_write
+            // fallback to stb_image_write
+        }
     }
 
     // bgr to rgb
@@ -430,37 +433,40 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
         return false;
     }
 
-    if (jpeg_encoder_rk_mpp::supported() && (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG"))
+    if (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG")
     {
-        // anything to bgr
-        if (!img.isContinuous())
+        if (jpeg_encoder_rk_mpp::supported(img.cols, img.rows, c))
         {
-            img = img.clone();
-        }
-
-        int quality = 95;
-        for (size_t i = 0; i < params.size(); i += 2)
-        {
-            if (params[i] == IMWRITE_JPEG_QUALITY)
+            // anything to bgr
+            if (!img.isContinuous())
             {
-                quality = params[i + 1];
-                break;
+                img = img.clone();
             }
-        }
 
-        jpeg_encoder_rk_mpp e;
-        int ret = e.init(img.cols, img.rows, c, quality);
-        if (ret == 0)
-        {
-            ret = e.encode(img.data, buf);
+            int quality = 95;
+            for (size_t i = 0; i < params.size(); i += 2)
+            {
+                if (params[i] == IMWRITE_JPEG_QUALITY)
+                {
+                    quality = params[i + 1];
+                    break;
+                }
+            }
+
+            jpeg_encoder_rk_mpp e;
+            int ret = e.init(img.cols, img.rows, c, quality);
             if (ret == 0)
             {
-                e.deinit();
-                return true;
+                ret = e.encode(img.data, buf);
+                if (ret == 0)
+                {
+                    e.deinit();
+                    return true;
+                }
             }
-        }
 
-        // fallback to stb_image_write
+            // fallback to stb_image_write
+        }
     }
 
     // bgr to rgb

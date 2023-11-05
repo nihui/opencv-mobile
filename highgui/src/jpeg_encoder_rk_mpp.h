@@ -23,7 +23,7 @@ class jpeg_encoder_rk_mpp_impl;
 class jpeg_encoder_rk_mpp
 {
 public:
-    static bool supported();
+    static bool supported(int width, int height, int ch);
 
     jpeg_encoder_rk_mpp();
     ~jpeg_encoder_rk_mpp();
