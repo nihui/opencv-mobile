@@ -16,6 +16,7 @@
 
 #include "jpeg_encoder_rk_mpp.h"
 
+#if defined __linux__
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -1074,3 +1075,40 @@ int jpeg_encoder_rk_mpp::deinit()
 {
     return d->deinit();
 }
+
+#else // defined __linux__
+
+bool jpeg_encoder_rk_mpp::supported(int /*width*/, int /*height*/, int /*ch*/)
+{
+    return false;
+}
+
+jpeg_encoder_rk_mpp::jpeg_encoder_rk_mpp()
+{
+}
+
+jpeg_encoder_rk_mpp::~jpeg_encoder_rk_mpp()
+{
+}
+
+int jpeg_encoder_rk_mpp::init(int /*width*/, int /*height*/, int /*ch*/, int /*quality*/)
+{
+    return -1;
+}
+
+int jpeg_encoder_rk_mpp::encode(const unsigned char* /*bgrdata*/, std::vector<unsigned char>& /*outdata*/) const
+{
+    return -1;
+}
+
+int jpeg_encoder_rk_mpp::encode(const unsigned char* /*bgrdata*/, const char* /*outfilepath*/) const
+{
+    return -1;
+}
+
+int jpeg_encoder_rk_mpp::deinit()
+{
+    return -1;
+}
+
+#endif // defined __linux__

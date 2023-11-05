@@ -39,7 +39,9 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#if defined __linux__
 #include "jpeg_encoder_rk_mpp.h"
+#endif
 
 namespace cv {
 //
@@ -219,6 +221,7 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
         return false;
     }
 
+#if defined __linux__
     if (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG")
     {
         if (jpeg_encoder_rk_mpp::supported(img.cols, img.rows, c))
@@ -254,6 +257,7 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
             // fallback to stb_image_write
         }
     }
+#endif
 
     // bgr to rgb
     if (c == 3)
@@ -433,6 +437,7 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
         return false;
     }
 
+#if defined __linux__
     if (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG")
     {
         if (jpeg_encoder_rk_mpp::supported(img.cols, img.rows, c))
@@ -468,6 +473,7 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
             // fallback to stb_image_write
         }
     }
+#endif
 
     // bgr to rgb
     if (c == 3)
