@@ -817,9 +817,33 @@ int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* bgrdata, const char* o
     {
         void* mapped_ptr = mpp_buffer_get_ptr(buffer);
 
-        for (int i = 0; i < height; i++)
+        if (format == MPP_FMT_YUV420SP)
         {
-            my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width * 3, width * 3);
+            for (int i = 0; i < height; i++)
+            {
+                my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width, width);
+            }
+            for (int i = 0; i < height; i++)
+            {
+                my_memset((unsigned char*)mapped_ptr + height * hor_stride, 128, height * hor_stride / 2);
+            }
+        }
+        if (format == MPP_FMT_BGR888)
+        {
+            if (ch == 3)
+            {
+                for (int i = 0; i < height; i++)
+                {
+                    my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width * 3, width * 3);
+                }
+            }
+            if (ch == 4)
+            {
+                for (int i = 0; i < height; i++)
+                {
+                    my_memcpy_drop_alpha((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width * 4, width);
+                }
+            }
         }
     }
 
