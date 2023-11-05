@@ -693,10 +693,7 @@ int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* bgrdata, std::vector<u
             {
                 my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width, width);
             }
-            for (int i = 0; i < height; i++)
-            {
-                my_memset((unsigned char*)mapped_ptr + height * hor_stride, 128, height * hor_stride / 2);
-            }
+            my_memset((unsigned char*)mapped_ptr + height * hor_stride, 128, height * hor_stride / 2);
         }
         if (format == MPP_FMT_BGR888)
         {
@@ -825,10 +822,7 @@ int jpeg_encoder_rk_mpp_impl::encode(const unsigned char* bgrdata, const char* o
             {
                 my_memcpy((unsigned char*)mapped_ptr + i * hor_stride, bgrdata + i * width, width);
             }
-            for (int i = 0; i < height; i++)
-            {
-                my_memset((unsigned char*)mapped_ptr + height * hor_stride, 128, height * hor_stride / 2);
-            }
+            my_memset((unsigned char*)mapped_ptr + height * hor_stride, 128, height * hor_stride / 2);
         }
         if (format == MPP_FMT_BGR888)
         {
