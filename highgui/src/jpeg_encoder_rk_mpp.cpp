@@ -566,7 +566,7 @@ static inline void my_memset(unsigned char* dst, unsigned char c, int size)
     }
     if (size > 8)
     {
-        vst1_u8(dst, _p);
+        vst1_u8(dst, vget_low_u8(_p));
         dst += 8;
         size -= 8;
     }
