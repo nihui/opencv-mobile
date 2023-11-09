@@ -1,0 +1,343 @@
+name: test
+on: [push, pull_request]
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_13.4.1.app/Contents/Developer
+  IOS_DEPLOYMENT_TARGET: '9.0'
+  MAC_DEPLOYMENT_TARGET: '10.9'
+  MAC_ARM64_DEPLOYMENT_TARGET: '11.0'
+  MAC_CATALYST_DEPLOYMENT_TARGET: '13.1'
+  ENABLE_BITCODE: OFF
+  ENABLE_ARC: OFF
+  ENABLE_VISIBILITY: OFF
+  EMSCRIPTEN_VERSION: 3.1.28
+
+permissions:
+  contents: read
+
+jobs:
+  android-opencv4:
+    runs-on: ubuntu-latest
+    env:
+      OPENCV_VERSION: 4.8.1
+      PACKAGENAME: opencv-mobile-4.8.1-android
+    steps:
+    - uses: actions/checkout@v3
+    - name: ndk-fix-debug
+      run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        rm -rf modules/gapi
+        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build-armeabi-v7a
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-arm64-v8a
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-x86
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86 && cd build-x86
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-x86_64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGENAME }}
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/sdk/etc
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: test-armeabi-v7a
+      run: |
+        cd test
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: test-arm64-v8a
+      run: |
+        cd test
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: test-x86
+      run: |
+        cd test
+        mkdir build-x86 && cd build-x86
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: test-x86_64
+      run: |
+        cd test
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  android-opencv3:
+    runs-on: ubuntu-latest
+    env:
+      OPENCV_VERSION: 3.4.20
+      PACKAGENAME: opencv-mobile-3.4.20-android
+    steps:
+    - uses: actions/checkout@v3
+    - name: ndk-fix-debug
+      run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        patch -p1 -i ../opencv-3.4.20-no-rtti.patch
+        patch -p1 -i ../opencv-3.4.20-no-zlib.patch
+        patch -p1 -i ../opencv-3.4.20-link-openmp.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build-armeabi-v7a
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-arm64-v8a
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-x86
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86 && cd build-x86
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-x86_64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGENAME }}
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
+        rm -rf ${{ env.PACKAGENAME }}/apk
+        rm -rf ${{ env.PACKAGENAME }}/sdk/etc
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: test-armeabi-v7a
+      run: |
+        cd test
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: test-arm64-v8a
+      run: |
+        cd test
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: test-x86
+      run: |
+        cd test
+        mkdir build-x86 && cd build-x86
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: test-x86_64
+      run: |
+        cd test
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
+  android-opencv2:
+    runs-on: ubuntu-latest
+    env:
+      OPENCV_VERSION: 2.4.13.7
+      PACKAGENAME: opencv-mobile-2.4.13.7-android
+    steps:
+    - uses: actions/checkout@v3
+    - name: ndk-fix-debug
+      run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
+    - name: opencv-source
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.OPENCV_VERSION }}.zip -O opencv-${{ env.OPENCV_VERSION }}.zip
+        unzip -q opencv-${{ env.OPENCV_VERSION }}.zip
+        cd opencv-${{ env.OPENCV_VERSION }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
+        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
+        patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
+        patch -p1 -i ../opencv-2.4.13.7-link-openmp.patch
+        patch -p1 -i ../opencv-2.4.13.7-newer-msvc.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+    - name: build-armeabi-v7a
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-arm64-v8a
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-x86
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86 && cd build-x86
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: build-x86_64
+      run: |
+        cd opencv-${{ env.OPENCV_VERSION }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j 2
+        cmake --build . --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGENAME }}
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
+        cp -rf opencv-${{ env.OPENCV_VERSION }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/armeabi-v7a/libopencv_info.so
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/arm64-v8a/libopencv_info.so
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/x86/libopencv_info.so
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/libs/x86_64/libopencv_info.so
+        rm -rf ${{ env.PACKAGENAME }}/sdk/etc
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/*.mk
+        rm -f ${{ env.PACKAGENAME }}/sdk/native/jni/android.toolchain.cmake
+        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+    - name: test-armeabi-v7a
+      run: |
+        cd test
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: test-arm64-v8a
+      run: |
+        cd test
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: test-x86
+      run: |
+        cd test
+        mkdir build-x86 && cd build-x86
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: test-x86_64
+      run: |
+        cd test
+        mkdir build-x86_64 && cd build-x86_64
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+        cmake --build . -j 2
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGENAME }}
+        path: ${{ env.PACKAGENAME }}.zip
+
