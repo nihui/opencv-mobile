@@ -57,7 +57,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -66,7 +66,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -75,7 +75,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x86 && cd build-x86
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -84,7 +84,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv4_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -104,7 +104,7 @@ jobs:
         cd test
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-arm64-v8a
@@ -112,7 +112,7 @@ jobs:
         cd test
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-x86
@@ -120,7 +120,7 @@ jobs:
         cd test
         mkdir build-x86 && cd build-x86
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-x86_64
@@ -128,7 +128,7 @@ jobs:
         cd test
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: upload
@@ -162,7 +162,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -171,7 +171,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -180,7 +180,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x86 && cd build-x86
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -189,7 +189,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv3_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -210,7 +210,7 @@ jobs:
         cd test
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-arm64-v8a
@@ -218,7 +218,7 @@ jobs:
         cd test
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-x86
@@ -226,7 +226,7 @@ jobs:
         cd test
         mkdir build-x86 && cd build-x86
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-x86_64
@@ -234,7 +234,7 @@ jobs:
         cd test
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: upload
@@ -272,7 +272,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -281,7 +281,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -290,7 +290,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x86 && cd build-x86
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -299,7 +299,7 @@ jobs:
         cd opencv-${{ env.OPENCV_VERSION }}
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release `cat ../../opencv2_cmake_options.txt` -DBUILD_opencv_world=OFF ..
         cmake --build . -j 2
         cmake --build . --target install
@@ -323,7 +323,7 @@ jobs:
         cd test
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-arm64-v8a
@@ -331,7 +331,7 @@ jobs:
         cd test
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-x86
@@ -339,7 +339,7 @@ jobs:
         cd test
         mkdir build-x86 && cd build-x86
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-x86_64
@@ -347,7 +347,7 @@ jobs:
         cd test
         mkdir build-x86_64 && cd build-x86_64
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
-            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-24 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+            -DANDROID_ABI="x86_64" -DANDROID_PLATFORM=android-21 -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
             -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: upload
