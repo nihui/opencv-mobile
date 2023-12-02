@@ -5,6 +5,8 @@ set(highgui_srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/exif.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/highgui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/jpeg_encoder_rk_mpp.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/v4l2_capture_rk_aiq.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/videocapture.cpp
     )
 
 file(GLOB highgui_ext_hdrs

@@ -31,6 +31,13 @@ enum
     CV_IMWRITE_JPEG_QUALITY     = 1
 };
 
+enum
+{
+    CV_CAP_PROP_FRAME_WIDTH     = 3,
+    CV_CAP_PROP_FRAME_HEIGHT    = 4,
+    CV_CAP_PROP_FPS             = 5,
+};
+
 namespace cv {
 
 enum ImreadModes
@@ -45,6 +52,13 @@ enum ImwriteFlags
     IMWRITE_JPEG_QUALITY        = 1
 };
 
+enum VideoCaptureProperties
+{
+    CAP_PROP_FRAME_WIDTH        = 3,
+    CAP_PROP_FRAME_HEIGHT       = 4,
+    CAP_PROP_FPS                = 5,
+};
+
 CV_EXPORTS_W Mat imread(const String& filename, int flags = IMREAD_COLOR);
 
 CV_EXPORTS_W bool imwrite(const String& filename, InputArray img, const std::vector<int>& params = std::vector<int>());
@@ -56,6 +70,30 @@ CV_EXPORTS_W bool imencode(const String& ext, InputArray img, CV_OUT std::vector
 CV_EXPORTS_W void imshow(const String& winname, InputArray mat);
 
 CV_EXPORTS_W int waitKey(int delay = 0);
+
+class VideoCaptureImpl;
+class CV_EXPORTS_W VideoCapture
+{
+public:
+    VideoCapture();
+
+    ~VideoCapture();
+
+    bool open(int index);
+
+    bool isOpened() const;
+
+    void release();
+
+    VideoCapture& operator>>(Mat& bgr_image);
+
+    bool set(int propId, double value);
+
+    double get(int propId) const;
+
+private:
+    VideoCaptureImpl* const d;
+};
 
 } // namespace cv
 
