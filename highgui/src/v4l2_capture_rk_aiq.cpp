@@ -435,146 +435,146 @@ extern "C"
 {
 
 typedef enum {
-  IM_STATUS_NOERROR = 2,
-  IM_STATUS_SUCCESS = 1,
-  IM_STATUS_NOT_SUPPORTED = -1,
-  IM_STATUS_OUT_OF_MEMORY = -2,
-  IM_STATUS_INVALID_PARAM = -3,
-  IM_STATUS_ILLEGAL_PARAM = -4,
-  IM_STATUS_ERROR_VERSION = -5,
-  IM_STATUS_FAILED = 0,
+    IM_STATUS_NOERROR = 2,
+    IM_STATUS_SUCCESS = 1,
+    IM_STATUS_NOT_SUPPORTED = -1,
+    IM_STATUS_OUT_OF_MEMORY = -2,
+    IM_STATUS_INVALID_PARAM = -3,
+    IM_STATUS_ILLEGAL_PARAM = -4,
+    IM_STATUS_ERROR_VERSION = -5,
+    IM_STATUS_FAILED = 0,
 } IM_STATUS;
 
 /* In order to be compatible with RK_FORMAT_XX and HAL_PIXEL_FORMAT_XX,
  * RK_FORMAT_XX is shifted to the left by 8 bits to distinguish.  */
 typedef enum _Rga_SURF_FORMAT {
-  RK_FORMAT_RGBA_8888 = 0x0 << 8,
-  RK_FORMAT_RGBX_8888 = 0x1 << 8,
-  RK_FORMAT_RGB_888 = 0x2 << 8,
-  RK_FORMAT_BGRA_8888 = 0x3 << 8,
-  RK_FORMAT_RGB_565 = 0x4 << 8,
-  RK_FORMAT_RGBA_5551 = 0x5 << 8,
-  RK_FORMAT_RGBA_4444 = 0x6 << 8,
-  RK_FORMAT_BGR_888 = 0x7 << 8,
+    RK_FORMAT_RGBA_8888 = 0x0 << 8,
+    RK_FORMAT_RGBX_8888 = 0x1 << 8,
+    RK_FORMAT_RGB_888 = 0x2 << 8,
+    RK_FORMAT_BGRA_8888 = 0x3 << 8,
+    RK_FORMAT_RGB_565 = 0x4 << 8,
+    RK_FORMAT_RGBA_5551 = 0x5 << 8,
+    RK_FORMAT_RGBA_4444 = 0x6 << 8,
+    RK_FORMAT_BGR_888 = 0x7 << 8,
 
-  RK_FORMAT_YCbCr_422_SP = 0x8 << 8,
-  RK_FORMAT_YCbCr_422_P = 0x9 << 8,
-  RK_FORMAT_YCbCr_420_SP = 0xa << 8,
-  RK_FORMAT_YCbCr_420_P = 0xb << 8,
+    RK_FORMAT_YCbCr_422_SP = 0x8 << 8,
+    RK_FORMAT_YCbCr_422_P = 0x9 << 8,
+    RK_FORMAT_YCbCr_420_SP = 0xa << 8,
+    RK_FORMAT_YCbCr_420_P = 0xb << 8,
 
-  RK_FORMAT_YCrCb_422_SP = 0xc << 8,
-  RK_FORMAT_YCrCb_422_P = 0xd << 8,
-  RK_FORMAT_YCrCb_420_SP = 0xe << 8,
-  RK_FORMAT_YCrCb_420_P = 0xf << 8,
+    RK_FORMAT_YCrCb_422_SP = 0xc << 8,
+    RK_FORMAT_YCrCb_422_P = 0xd << 8,
+    RK_FORMAT_YCrCb_420_SP = 0xe << 8,
+    RK_FORMAT_YCrCb_420_P = 0xf << 8,
 
-  RK_FORMAT_BPP1 = 0x10 << 8,
-  RK_FORMAT_BPP2 = 0x11 << 8,
-  RK_FORMAT_BPP4 = 0x12 << 8,
-  RK_FORMAT_BPP8 = 0x13 << 8,
+    RK_FORMAT_BPP1 = 0x10 << 8,
+    RK_FORMAT_BPP2 = 0x11 << 8,
+    RK_FORMAT_BPP4 = 0x12 << 8,
+    RK_FORMAT_BPP8 = 0x13 << 8,
 
-  RK_FORMAT_Y4 = 0x14 << 8,
-  RK_FORMAT_YCbCr_400 = 0x15 << 8,
+    RK_FORMAT_Y4 = 0x14 << 8,
+    RK_FORMAT_YCbCr_400 = 0x15 << 8,
 
-  RK_FORMAT_BGRX_8888 = 0x16 << 8,
+    RK_FORMAT_BGRX_8888 = 0x16 << 8,
 
-  RK_FORMAT_YVYU_422 = 0x18 << 8,
-  RK_FORMAT_YVYU_420 = 0x19 << 8,
-  RK_FORMAT_VYUY_422 = 0x1a << 8,
-  RK_FORMAT_VYUY_420 = 0x1b << 8,
-  RK_FORMAT_YUYV_422 = 0x1c << 8,
-  RK_FORMAT_YUYV_420 = 0x1d << 8,
-  RK_FORMAT_UYVY_422 = 0x1e << 8,
-  RK_FORMAT_UYVY_420 = 0x1f << 8,
+    RK_FORMAT_YVYU_422 = 0x18 << 8,
+    RK_FORMAT_YVYU_420 = 0x19 << 8,
+    RK_FORMAT_VYUY_422 = 0x1a << 8,
+    RK_FORMAT_VYUY_420 = 0x1b << 8,
+    RK_FORMAT_YUYV_422 = 0x1c << 8,
+    RK_FORMAT_YUYV_420 = 0x1d << 8,
+    RK_FORMAT_UYVY_422 = 0x1e << 8,
+    RK_FORMAT_UYVY_420 = 0x1f << 8,
 
-  RK_FORMAT_YCbCr_420_SP_10B = 0x20 << 8,
-  RK_FORMAT_YCrCb_420_SP_10B = 0x21 << 8,
-  RK_FORMAT_YCbCr_422_SP_10B = 0x22 << 8,
-  RK_FORMAT_YCrCb_422_SP_10B = 0x23 << 8,
-  /* For compatibility with misspellings */
-  RK_FORMAT_YCbCr_422_10b_SP = RK_FORMAT_YCbCr_422_SP_10B,
-  RK_FORMAT_YCrCb_422_10b_SP = RK_FORMAT_YCrCb_422_SP_10B,
+    RK_FORMAT_YCbCr_420_SP_10B = 0x20 << 8,
+    RK_FORMAT_YCrCb_420_SP_10B = 0x21 << 8,
+    RK_FORMAT_YCbCr_422_SP_10B = 0x22 << 8,
+    RK_FORMAT_YCrCb_422_SP_10B = 0x23 << 8,
+    /* For compatibility with misspellings */
+    RK_FORMAT_YCbCr_422_10b_SP = RK_FORMAT_YCbCr_422_SP_10B,
+    RK_FORMAT_YCrCb_422_10b_SP = RK_FORMAT_YCrCb_422_SP_10B,
 
-  RK_FORMAT_BGR_565 = 0x24 << 8,
-  RK_FORMAT_BGRA_5551 = 0x25 << 8,
-  RK_FORMAT_BGRA_4444 = 0x26 << 8,
+    RK_FORMAT_BGR_565 = 0x24 << 8,
+    RK_FORMAT_BGRA_5551 = 0x25 << 8,
+    RK_FORMAT_BGRA_4444 = 0x26 << 8,
 
-  RK_FORMAT_ARGB_8888 = 0x28 << 8,
-  RK_FORMAT_XRGB_8888 = 0x29 << 8,
-  RK_FORMAT_ARGB_5551 = 0x2a << 8,
-  RK_FORMAT_ARGB_4444 = 0x2b << 8,
-  RK_FORMAT_ABGR_8888 = 0x2c << 8,
-  RK_FORMAT_XBGR_8888 = 0x2d << 8,
-  RK_FORMAT_ABGR_5551 = 0x2e << 8,
-  RK_FORMAT_ABGR_4444 = 0x2f << 8,
+    RK_FORMAT_ARGB_8888 = 0x28 << 8,
+    RK_FORMAT_XRGB_8888 = 0x29 << 8,
+    RK_FORMAT_ARGB_5551 = 0x2a << 8,
+    RK_FORMAT_ARGB_4444 = 0x2b << 8,
+    RK_FORMAT_ABGR_8888 = 0x2c << 8,
+    RK_FORMAT_XBGR_8888 = 0x2d << 8,
+    RK_FORMAT_ABGR_5551 = 0x2e << 8,
+    RK_FORMAT_ABGR_4444 = 0x2f << 8,
 
-  RK_FORMAT_RGBA2BPP = 0x30 << 8,
+    RK_FORMAT_RGBA2BPP = 0x30 << 8,
 
-  RK_FORMAT_UNKNOWN = 0x100 << 8,
+    RK_FORMAT_UNKNOWN = 0x100 << 8,
 } RgaSURF_FORMAT;
 
 /* Status codes, returned by any blit function */
 typedef enum {
-  IM_YUV_TO_RGB_BT601_LIMIT = 1 << 0,
-  IM_YUV_TO_RGB_BT601_FULL = 2 << 0,
-  IM_YUV_TO_RGB_BT709_LIMIT = 3 << 0,
-  IM_YUV_TO_RGB_MASK = 3 << 0,
-  IM_RGB_TO_YUV_BT601_FULL = 1 << 2,
-  IM_RGB_TO_YUV_BT601_LIMIT = 2 << 2,
-  IM_RGB_TO_YUV_BT709_LIMIT = 3 << 2,
-  IM_RGB_TO_YUV_MASK = 3 << 2,
-  IM_RGB_TO_Y4 = 1 << 4,
-  IM_RGB_TO_Y4_DITHER = 2 << 4,
-  IM_RGB_TO_Y1_DITHER = 3 << 4,
-  IM_Y4_MASK = 3 << 4,
-  IM_RGB_FULL = 1 << 8,
-  IM_RGB_CLIP = 2 << 8,
-  IM_YUV_BT601_LIMIT_RANGE = 3 << 8,
-  IM_YUV_BT601_FULL_RANGE = 4 << 8,
-  IM_YUV_BT709_LIMIT_RANGE = 5 << 8,
-  IM_YUV_BT709_FULL_RANGE = 6 << 8,
-  IM_FULL_CSC_MASK = 0xf << 8,
-  IM_COLOR_SPACE_DEFAULT = 0,
-} IM_COLOR_SPACE_MODE;
+    IM_YUV_TO_RGB_BT601_LIMIT = 1 << 0,
+    IM_YUV_TO_RGB_BT601_FULL = 2 << 0,
+    IM_YUV_TO_RGB_BT709_LIMIT = 3 << 0,
+    IM_YUV_TO_RGB_MASK = 3 << 0,
+    IM_RGB_TO_YUV_BT601_FULL = 1 << 2,
+    IM_RGB_TO_YUV_BT601_LIMIT = 2 << 2,
+    IM_RGB_TO_YUV_BT709_LIMIT = 3 << 2,
+    IM_RGB_TO_YUV_MASK = 3 << 2,
+    IM_RGB_TO_Y4 = 1 << 4,
+    IM_RGB_TO_Y4_DITHER = 2 << 4,
+    IM_RGB_TO_Y1_DITHER = 3 << 4,
+    IM_Y4_MASK = 3 << 4,
+    IM_RGB_FULL = 1 << 8,
+    IM_RGB_CLIP = 2 << 8,
+    IM_YUV_BT601_LIMIT_RANGE = 3 << 8,
+    IM_YUV_BT601_FULL_RANGE = 4 << 8,
+    IM_YUV_BT709_LIMIT_RANGE = 5 << 8,
+    IM_YUV_BT709_FULL_RANGE = 6 << 8,
+    IM_FULL_CSC_MASK = 0xf << 8,
+    IM_COLOR_SPACE_DEFAULT = 0,
+    } IM_COLOR_SPACE_MODE;
 
 typedef uint32_t rga_buffer_handle_t;
 
 typedef struct {
-  int max; /* The Maximum value of the color key */
-  int min; /* The minimum value of the color key */
+    int max; /* The Maximum value of the color key */
+    int min; /* The minimum value of the color key */
 } im_colorkey_range;
 
 typedef struct im_nn {
-  int scale_r;  /* scaling factor on R channal */
-  int scale_g;  /* scaling factor on G channal */
-  int scale_b;  /* scaling factor on B channal */
-  int offset_r; /* offset on R channal */
-  int offset_g; /* offset on G channal */
-  int offset_b; /* offset on B channal */
+    int scale_r;  /* scaling factor on R channal */
+    int scale_g;  /* scaling factor on G channal */
+    int scale_b;  /* scaling factor on B channal */
+    int offset_r; /* offset on R channal */
+    int offset_g; /* offset on G channal */
+    int offset_b; /* offset on B channal */
 } im_nn_t;
 
 /* im_info definition */
 typedef struct {
-  void *vir_addr; /* virtual address */
-  void *phy_addr; /* physical address */
-  int fd;         /* shared fd */
+    void *vir_addr; /* virtual address */
+    void *phy_addr; /* physical address */
+    int fd;         /* shared fd */
 
-  int width;   /* width */
-  int height;  /* height */
-  int wstride; /* wstride */
-  int hstride; /* hstride */
-  int format;  /* format */
+    int width;   /* width */
+    int height;  /* height */
+    int wstride; /* wstride */
+    int hstride; /* hstride */
+    int format;  /* format */
 
-  int color_space_mode; /* color_space_mode */
-  int global_alpha;     /* global_alpha */
-  int rd_mode;
+    int color_space_mode; /* color_space_mode */
+    int global_alpha;     /* global_alpha */
+    int rd_mode;
 
-  /* legarcy */
-  int color;                        /* color, used by color fill */
-  im_colorkey_range colorkey_range; /* range value of color key */
-  im_nn_t nn;
-  int rop_code;
+    /* legarcy */
+    int color;                        /* color, used by color fill */
+    im_colorkey_range colorkey_range; /* range value of color key */
+    im_nn_t nn;
+    int rop_code;
 
-  rga_buffer_handle_t handle; /* buffer handle */
+    rga_buffer_handle_t handle; /* buffer handle */
 } rga_buffer_t;
 
 typedef rga_buffer_t (*PFN_wrapbuffer_handle_t)(rga_buffer_handle_t handle, int width, int height, int wstride, int hstride, int format);
@@ -587,8 +587,6 @@ typedef IM_STATUS (*PFN_imcvtcolor_t)(rga_buffer_t src, rga_buffer_t dst, int sf
 }
 
 typedef rga_buffer_handle_t (*PFN_importbuffer_fd)(int fd, int size);
-
-typedef float (*PFN_get_bpp_from_format)(int format);
 
 static void* librga = 0;
 
@@ -687,14 +685,14 @@ static rga_library_loader rga;
 
 struct dma_heap_allocation_data
 {
-	__u64 len;
-	__u32 fd;
-	__u32 fd_flags;
-	__u64 heap_flags;
+    __u64 len;
+    __u32 fd;
+    __u32 fd_flags;
+    __u64 heap_flags;
 };
 
-#define DMA_HEAP_IOC_MAGIC		'H'
-#define DMA_HEAP_IOCTL_ALLOC	_IOWR(DMA_HEAP_IOC_MAGIC, 0x0, struct dma_heap_allocation_data)
+#define DMA_HEAP_IOC_MAGIC     'H'
+#define DMA_HEAP_IOCTL_ALLOC   _IOWR(DMA_HEAP_IOC_MAGIC, 0x0, struct dma_heap_allocation_data)
 
 #define DMA_BUF_SYNC_READ      (1 << 0)
 #define DMA_BUF_SYNC_WRITE     (2 << 0)
@@ -704,11 +702,11 @@ struct dma_heap_allocation_data
 
 struct dma_buf_sync
 {
-	__u64 flags;
+    __u64 flags;
 };
 
-#define DMA_BUF_BASE		'b'
-#define DMA_BUF_IOCTL_SYNC	_IOW(DMA_BUF_BASE, 0, struct dma_buf_sync)
+#define DMA_BUF_BASE          'b'
+#define DMA_BUF_IOCTL_SYNC    _IOW(DMA_BUF_BASE, 0, struct dma_buf_sync)
 
 static int dma_sync_device_to_cpu(int fd)
 {
@@ -855,6 +853,23 @@ v4l2_capture_rk_aiq_impl::~v4l2_capture_rk_aiq_impl()
     close();
 }
 
+static inline size_t least_common_multiple(size_t a, size_t b)
+{
+    if (a == b)
+        return a;
+
+    if (a > b)
+        return least_common_multiple(b, a);
+
+    size_t lcm = b;
+    while (lcm % a != 0)
+    {
+        lcm += b;
+    }
+
+    return lcm;
+}
+
 int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
 {
     if (!rkaiq.ready)
@@ -918,7 +933,7 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
             goto OUT;
         }
 
-        fprintf(stderr, "%s <----- video capture\n", devpath);
+        fprintf(stderr, "   devpath = %s\n", devpath);
         fprintf(stderr, "   driver = %s\n", caps.driver);
         fprintf(stderr, "   card = %s\n", caps.card);
         fprintf(stderr, "   bus_info = %s\n", caps.bus_info);
@@ -947,32 +962,6 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
         }
     }
 
-    // pick the supported width height
-    // pick the supported fps
-    // prefer BGR/RGB
-    // prefer uncompressed
-
-    // pick area
-    // pick aspect ratio
-
-    // __u32 area = width * height;
-    // float ratio = width / (float)height;
-
-    // conditions
-    // 1. w >= width && h >= height
-    // 2. denominator / numerator >= fps
-    // 3. BGR or RGB
-
-    // pixelformat + width + height + numerator + denominator
-    // struct format_type
-    // {
-    //     __u32 pixelformat;
-    //     __u32 width;
-    //     __u32 height;
-    //     __u32 numerator;
-    //     __u32 denominator;
-    // };
-
     // enumerate format
     for (int i = 0; ; i++)
     {
@@ -989,10 +978,16 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
             goto OUT;
         }
 
-        // fprintf(stderr, "   fmt = %s  %x\n", fmtdesc.description, fmtdesc.pixelformat);
+        fprintf(stderr, "   fmt = %s  %x\n", fmtdesc.description, fmtdesc.pixelformat);
 
         if (fmtdesc.flags & V4L2_FMT_FLAG_COMPRESSED)
         {
+            continue;
+        }
+
+        if (fmtdesc.pixelformat != V4L2_PIX_FMT_NV21)
+        {
+            // we could only handle nv21 atm
             continue;
         }
 
@@ -1017,11 +1012,14 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
                 goto OUT;
             }
 
+            // NOTE
+            // cap_width must be a multiple of 16
+            // cap_height must be a multiple of 2
             if (frmsizeenum.type == V4L2_FRMSIZE_TYPE_DISCRETE)
             {
                 __u32 w = frmsizeenum.discrete.width;
                 __u32 h = frmsizeenum.discrete.height;
-                // fprintf(stderr, "       size = %d x %d\n", w, h);
+                fprintf(stderr, "       size = %d x %d\n", w, h);
 
                 if (cap_width == 0 || cap_height == 0)
                 {
@@ -1035,14 +1033,28 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
                 __u32 maxw = frmsizeenum.stepwise.max_width;
                 __u32 minh = frmsizeenum.stepwise.min_height;
                 __u32 maxh = frmsizeenum.stepwise.max_height;
-                // fprintf(stderr, "       size = %d x %d  ~  %d x %d\n", minw, minh, maxw, maxh);
+                fprintf(stderr, "       size = %d x %d  ~  %d x %d\n", minw, minh, maxw, maxh);
 
                 if (cap_width == 0 || cap_height == 0)
                 {
-                    // cap_width = std::max(minw, maxw / 2);
-                    // cap_height = std::max(minh, maxh / 2);
-                    cap_width = maxw;
-                    cap_height = maxh;
+                    if (width / (float)height > maxw / (float)maxh)
+                    {
+                        // fatter
+                        cap_height = (width * maxh / maxw + 1) / 2 * 2;
+                        cap_width = (width + 15) / 16 * 16;
+                    }
+                    else
+                    {
+                        // thinner
+                        cap_width = (height * maxw / maxh + 15) / 16 * 16;
+                        cap_height = (height + 1) / 2 * 2;
+                    }
+
+                    if (cap_width < minw || cap_height < minh)
+                    {
+                        cap_width = minw;
+                        cap_height = minh;
+                    }
                 }
             }
             if (frmsizeenum.type == V4L2_FRMSIZE_TYPE_STEPWISE)
@@ -1053,14 +1065,31 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
                 __u32 minh = frmsizeenum.stepwise.min_height;
                 __u32 maxh = frmsizeenum.stepwise.max_height;
                 __u32 sh = frmsizeenum.stepwise.step_height;
-                // fprintf(stderr, "       size = %d x %d  ~  %d x %d  (+%d +%d)\n", minw, minh, maxw, maxh, sw, sh);
+                fprintf(stderr, "       size = %d x %d  ~  %d x %d  (+%d +%d)\n", minw, minh, maxw, maxh, sw, sh);
+
+                sw = least_common_multiple(sw, 16);
+                sh = least_common_multiple(sh, 2);
 
                 if (cap_width == 0 || cap_height == 0)
                 {
-                    // cap_width = std::max(minw, maxw - maxw / 2 / sh * sh);
-                    // cap_height = std::max(minh, maxh - maxh / 2 / sh * sh);
-                    cap_width = maxw;
-                    cap_height = maxh;
+                    if (width / (float)height > maxw / (float)maxh)
+                    {
+                        // fatter
+                        cap_height = (width * maxh / maxw + sh - 1) / sh * sh;
+                        cap_width = (width + sw - 1) / sw * sw;
+                    }
+                    else
+                    {
+                        // thinner
+                        cap_width = (height * maxw / maxh + sw - 1) / sw * sw;
+                        cap_height = (height + sh - 1) / sh * sh;
+                    }
+
+                    if (cap_width < minw || cap_height < minh)
+                    {
+                        cap_width = minw;
+                        cap_height = minh;
+                    }
                 }
             }
 
@@ -1087,7 +1116,7 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
                 {
                     __u32 numer = frmivalenum.discrete.numerator;
                     __u32 denom = frmivalenum.discrete.denominator;
-                    // fprintf(stderr, "           fps = %d / %d\n", numer, denom);
+                    fprintf(stderr, "           fps = %d / %d\n", numer, denom);
 
                     if (cap_numerator == 0 || cap_denominator == 0)
                     {
@@ -1101,7 +1130,7 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
                     __u32 max_numer = frmivalenum.stepwise.max.numerator;
                     __u32 min_denom = frmivalenum.stepwise.min.denominator;
                     __u32 max_denom = frmivalenum.stepwise.max.denominator;
-                    // fprintf(stderr, "           fps = %d / %d  ~   %d / %d\n", min_numer, min_denom, max_numer, max_denom);
+                    fprintf(stderr, "           fps = %d / %d  ~   %d / %d\n", min_numer, min_denom, max_numer, max_denom);
 
                     if (cap_numerator == 0 || cap_denominator == 0)
                     {
@@ -1117,7 +1146,7 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
                     __u32 min_denom = frmivalenum.stepwise.min.denominator;
                     __u32 max_denom = frmivalenum.stepwise.max.denominator;
                     __u32 sdenom = frmivalenum.stepwise.step.denominator;
-                    // fprintf(stderr, "           fps = %d / %d  ~   %d / %d  (+%d +%d)\n", min_numer, min_denom, max_numer, max_denom, snumer, sdenom);
+                    fprintf(stderr, "           fps = %d / %d  ~   %d / %d  (+%d +%d)\n", min_numer, min_denom, max_numer, max_denom, snumer, sdenom);
 
                     if (cap_numerator == 0 || cap_denominator == 0)
                     {
@@ -1128,24 +1157,6 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
             }
         }
     }
-
-    // NOTE
-    // width must be a multiple of 16
-    // height must be a multiple of 2
-    if (width / (float)height > cap_width / (float)cap_height)
-    {
-        // fatter
-        cap_height = (width * cap_height / cap_width + 1) / 2 * 2;
-        cap_width = (width + 15) / 16 * 16;
-    }
-    else
-    {
-        // thinner
-        cap_width = (height * cap_width / cap_height + 15) / 16 * 16;
-        cap_height = (height + 1) / 2 * 2;
-    }
-
-    cap_pixelformat = V4L2_PIX_FMT_NV21;
 
     // {
     //     const char* pp = (const char*)&cap_pixelformat;
@@ -1194,6 +1205,7 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
         if (ret != XCAM_RETURN_NO_ERROR)
         {
             fprintf(stderr, "rk_aiq_uapi2_sysctl_preInit_tb_info %s failed %d\n", sns_entity_name, ret);
+            goto OUT;
         }
     }
 
@@ -1205,6 +1217,7 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
         if (ret != XCAM_RETURN_NO_ERROR)
         {
             fprintf(stderr, "rk_aiq_uapi2_sysctl_preInit_scene %s failed %d\n", sns_entity_name, ret);
+            goto OUT;
         }
     }
 
@@ -1216,6 +1229,7 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
         if (!aiq_ctx)
         {
             fprintf(stderr, "rk_aiq_uapi2_sysctl_init %s failed\n", sns_entity_name);
+            goto OUT;
         }
     }
 
@@ -1231,6 +1245,7 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
         if (ret != XCAM_RETURN_NO_ERROR)
         {
             fprintf(stderr, "rk_aiq_uapi2_sysctl_prepare failed %d\n", ret);
+            goto OUT;
         }
     }
 
@@ -1248,7 +1263,6 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
         fmt.fmt.pix.width = cap_width;
         fmt.fmt.pix.height = cap_height;
         fmt.fmt.pix.pixelformat = cap_pixelformat;
-        // fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 
         if (ioctl(fd, VIDIOC_S_FMT, &fmt))
         {
@@ -1270,9 +1284,6 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
         // fprintf(stderr, "cap_pixelformat = %x  %c%c%c%c\n", cap_pixelformat, pp[0], pp[1], pp[2], pp[3]);
         // fprintf(stderr, "cap_width = %d\n", cap_width);
         // fprintf(stderr, "cap_height = %d\n", cap_height);
-        // fprintf(stderr, "fmt.fmt.pix.field = %d\n", fmt.fmt.pix.field);
-        //
-        //
         // fprintf(stderr, "bytesperline: %d\n", fmt.fmt.pix.bytesperline);
 
         output_width = std::min((int)cap_width, width);
@@ -1431,8 +1442,18 @@ int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
     // setup rga handle
     {
         src_handle = importbuffer_fd(dmafd, data_length);
+        if (!src_handle)
+        {
+            fprintf(stderr, "importbuffer_fd src_handle %d failed\n", data_length);
+            goto OUT;
+        }
 
         dst_handle = importbuffer_fd(dst_dmafd, dst_data_length);
+        if (!dst_handle)
+        {
+            fprintf(stderr, "importbuffer_fd dst_handle %d failed\n", dst_data_length);
+            goto OUT;
+        }
 
         src_img = wrapbuffer_handle(src_handle, cap_width, cap_height, RK_FORMAT_YCrCb_420_SP);
 
@@ -1449,7 +1470,6 @@ OUT:
 
 int v4l2_capture_rk_aiq_impl::start_streaming()
 {
-
     {
         XCamReturn ret = rk_aiq_uapi2_sysctl_start(aiq_ctx);
         if (ret != XCAM_RETURN_NO_ERROR)
@@ -1457,8 +1477,6 @@ int v4l2_capture_rk_aiq_impl::start_streaming()
             fprintf(stderr, "rk_aiq_uapi2_sysctl_start failed %d\n", ret);
         }
     }
-
-    // printf("rk_aiq_uapi2_sysctl_start done\n");
 
     v4l2_buf_type type = buf_type;
     if (ioctl(fd, VIDIOC_STREAMON, &type))
@@ -1570,7 +1588,11 @@ int v4l2_capture_rk_aiq_impl::read_frame(unsigned char* bgrdata)
             return -1;
         }
 
-        dma_sync_device_to_cpu(dst_dmafd);
+        if (dma_sync_device_to_cpu(dst_dmafd))
+        {
+            fprintf(stderr, "%s dma_sync_device_to_cpu failed %d %s\n", devpath, errno, strerror(errno));
+            return -1;
+        }
 
         // crop and copy to bgrdata
         {
@@ -1623,22 +1645,26 @@ int v4l2_capture_rk_aiq_impl::stop_streaming()
         }
     }
 
-    // printf("rk_aiq_uapi2_sysctl_stop done\n");
-
     return 0;
 }
 
 int v4l2_capture_rk_aiq_impl::close()
 {
-
-    {
     if (aiq_ctx)
     {
         rk_aiq_uapi2_sysctl_deinit(aiq_ctx);
         aiq_ctx = 0;
     }
 
-    // printf("rk_aiq_uapi2_sysctl_deinit done\n");
+    if (src_handle)
+    {
+        releasebuffer_handle(src_handle);
+        src_handle = 0;
+    }
+    if (dst_handle)
+    {
+        releasebuffer_handle(dst_handle);
+        dst_handle = 0;
     }
 
     if (data)
@@ -1657,25 +1683,12 @@ int v4l2_capture_rk_aiq_impl::close()
         dst_dmafd = 0;
     }
 
-    if (src_handle)
-    {
-        releasebuffer_handle(src_handle);
-        src_handle = 0;
-    }
-    if (dst_handle)
-    {
-        releasebuffer_handle(dst_handle);
-        dst_handle = 0;
-    }
-
-    // printf("munmap done\n");
     if (fd >= 0)
     {
         ::close(fd);
         fd = -1;
     }
 
-    // printf("close done\n");
     buf_type = (v4l2_buf_type)0;
 
     cap_pixelformat = 0;
