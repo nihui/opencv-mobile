@@ -1077,7 +1077,7 @@ bool jpeg_encoder_rk_mpp::supported(int /*width*/, int /*height*/, int /*ch*/)
     return false;
 }
 
-jpeg_encoder_rk_mpp::jpeg_encoder_rk_mpp()
+jpeg_encoder_rk_mpp::jpeg_encoder_rk_mpp() : d(0)
 {
 }
 

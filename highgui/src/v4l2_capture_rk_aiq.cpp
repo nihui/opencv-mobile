@@ -19,6 +19,7 @@
 #if defined __linux__
 #include <errno.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -1770,7 +1771,7 @@ bool v4l2_capture_rk_aiq::supported()
     return false;
 }
 
-v4l2_capture_rk_aiq::v4l2_capture_rk_aiq()
+v4l2_capture_rk_aiq::v4l2_capture_rk_aiq() : d(0)
 {
 }
 
