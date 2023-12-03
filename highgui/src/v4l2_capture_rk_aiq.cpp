@@ -1779,7 +1779,7 @@ v4l2_capture_rk_aiq::~v4l2_capture_rk_aiq()
 {
 }
 
-int v4l2_capture_rk_aiq::open(int width, int height, int fps)
+int v4l2_capture_rk_aiq::open(int width, int height, float fps)
 {
     return -1;
 }

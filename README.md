@@ -143,7 +143,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 [opencv4-yuzuki-lizard-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-yuzuki-lizard.zip
 [opencv4-purple-pi-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-purple-pi.zip
 
-* Android package build with ndk r25c and android api 24
+* Android package build with ndk r26b and android api 21
 * iOS / iOS-Simulator / MacOS / Mac-Catalyst package build with Xcode 13.4.1
 * ARM Linux package build with cross-compiler on Ubuntu-22.04
 * WebAssembly package build with Emscripten 3.1.28
