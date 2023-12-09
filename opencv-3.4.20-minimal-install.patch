@@ -1,0 +1,58 @@
+diff -Nuarp opencv-3.4.20.orig/cmake/OpenCVGenAndroidMK.cmake opencv-3.4.20/cmake/OpenCVGenAndroidMK.cmake
+--- opencv-3.4.20.orig/cmake/OpenCVGenAndroidMK.cmake	2023-06-27 19:29:13.000000000 +0800
++++ opencv-3.4.20/cmake/OpenCVGenAndroidMK.cmake	2023-12-09 21:22:23.522506093 +0800
+@@ -76,6 +76,4 @@ if(ANDROID)
+ 
+   configure_file("${OpenCV_SOURCE_DIR}/cmake/templates/OpenCV.mk.in" "${CMAKE_BINARY_DIR}/unix-install/OpenCV.mk" @ONLY)
+   configure_file("${OpenCV_SOURCE_DIR}/cmake/templates/OpenCV-abi.mk.in" "${CMAKE_BINARY_DIR}/unix-install/OpenCV-${ANDROID_NDK_ABI_NAME}.mk" @ONLY)
+-  install(FILES ${CMAKE_BINARY_DIR}/unix-install/OpenCV.mk DESTINATION ${OPENCV_CONFIG_INSTALL_PATH} COMPONENT dev)
+-  install(FILES ${CMAKE_BINARY_DIR}/unix-install/OpenCV-${ANDROID_NDK_ABI_NAME}.mk DESTINATION ${OPENCV_CONFIG_INSTALL_PATH} COMPONENT dev)
+ endif(ANDROID)
+diff -Nuarp opencv-3.4.20.orig/cmake/OpenCVGenConfig.cmake opencv-3.4.20/cmake/OpenCVGenConfig.cmake
+--- opencv-3.4.20.orig/cmake/OpenCVGenConfig.cmake	2023-12-09 16:58:42.567073866 +0800
++++ opencv-3.4.20/cmake/OpenCVGenConfig.cmake	2023-12-09 21:22:42.614401178 +0800
+@@ -119,7 +119,6 @@ endif()
+ 
+ if(ANDROID)
+   ocv_gen_config("${CMAKE_BINARY_DIR}/unix-install" "abi-${ANDROID_NDK_ABI_NAME}" "OpenCVConfig.root-ANDROID.cmake.in")
+-  install(FILES "${OpenCV_SOURCE_DIR}/platforms/android/android.toolchain.cmake" DESTINATION "${OPENCV_CONFIG_INSTALL_PATH}" COMPONENT dev)
+ endif()
+ 
+ # --------------------------------------------------------------------------------------------
+diff -Nuarp opencv-3.4.20.orig/cmake/OpenCVUtils.cmake opencv-3.4.20/cmake/OpenCVUtils.cmake
+--- opencv-3.4.20.orig/cmake/OpenCVUtils.cmake	2023-06-27 19:29:13.000000000 +0800
++++ opencv-3.4.20/cmake/OpenCVUtils.cmake	2023-12-09 21:24:36.516775258 +0800
+@@ -976,11 +976,6 @@ macro(ocv_finalize_status)
+     endif()
+   endif()
+ 
+-  if(UNIX)
+-    install(FILES "${OpenCV_SOURCE_DIR}/platforms/scripts/valgrind.supp"
+-                  "${OpenCV_SOURCE_DIR}/platforms/scripts/valgrind_3rdparty.supp"
+-            DESTINATION "${OPENCV_OTHER_INSTALL_PATH}" COMPONENT "dev")
+-  endif()
+ endmacro()
+ 
+ 
+diff -Nuarp opencv-3.4.20.orig/data/CMakeLists.txt opencv-3.4.20/data/CMakeLists.txt
+--- opencv-3.4.20.orig/data/CMakeLists.txt	2023-06-27 19:29:13.000000000 +0800
++++ opencv-3.4.20/data/CMakeLists.txt	2023-12-09 21:23:02.838290043 +0800
+@@ -1,9 +1,6 @@
+ file(GLOB HAAR_CASCADES haarcascades/*.xml)
+ file(GLOB LBP_CASCADES lbpcascades/*.xml)
+ 
+-install(FILES ${HAAR_CASCADES} DESTINATION ${OPENCV_OTHER_INSTALL_PATH}/haarcascades COMPONENT libs)
+-install(FILES ${LBP_CASCADES}  DESTINATION ${OPENCV_OTHER_INSTALL_PATH}/lbpcascades  COMPONENT libs)
+-
+ if(INSTALL_TESTS AND OPENCV_TEST_DATA_PATH)
+   install(DIRECTORY "${OPENCV_TEST_DATA_PATH}/" DESTINATION "${OPENCV_TEST_DATA_INSTALL_PATH}" COMPONENT "tests")
+ endif()
+diff -Nuarp opencv-3.4.20.orig/platforms/android/service/CMakeLists.txt opencv-3.4.20/platforms/android/service/CMakeLists.txt
+--- opencv-3.4.20.orig/platforms/android/service/CMakeLists.txt	2023-06-27 19:29:13.000000000 +0800
++++ opencv-3.4.20/platforms/android/service/CMakeLists.txt	2023-12-09 21:23:41.098079796 +0800
+@@ -1,5 +1,3 @@
+ if(BUILD_ANDROID_SERVICE)
+   add_subdirectory(engine)
+ endif()
+-
+-install(FILES "readme.txt" DESTINATION "apk/" COMPONENT libs)

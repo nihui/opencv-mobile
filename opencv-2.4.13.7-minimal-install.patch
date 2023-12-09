@@ -1,0 +1,59 @@
+diff -Nuarp opencv-2.4.13.7.orig/cmake/OpenCVGenAndroidMK.cmake opencv-2.4.13.7/cmake/OpenCVGenAndroidMK.cmake
+--- opencv-2.4.13.7.orig/cmake/OpenCVGenAndroidMK.cmake	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/cmake/OpenCVGenAndroidMK.cmake	2023-12-09 21:14:50.771014374 +0800
+@@ -161,5 +161,4 @@ if(ANDROID)
+   set(OPENCV_3RDPARTY_LIBS_DIR_CONFIGCMAKE "\$(OPENCV_THIS_DIR)/../3rdparty/libs/\$(OPENCV_TARGET_ARCH_ABI)")
+ 
+   configure_file("${OpenCV_SOURCE_DIR}/cmake/templates/OpenCV.mk.in" "${CMAKE_BINARY_DIR}/unix-install/OpenCV.mk" @ONLY)
+-  install(FILES ${CMAKE_BINARY_DIR}/unix-install/OpenCV.mk DESTINATION ${OPENCV_CONFIG_INSTALL_PATH} COMPONENT dev)
+ endif(ANDROID)
+diff -Nuarp opencv-2.4.13.7.orig/cmake/OpenCVGenConfig.cmake opencv-2.4.13.7/cmake/OpenCVGenConfig.cmake
+--- opencv-2.4.13.7.orig/cmake/OpenCVGenConfig.cmake	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/cmake/OpenCVGenConfig.cmake	2023-12-09 21:10:49.425388446 +0800
+@@ -119,10 +119,6 @@ if(UNIX) # ANDROID configuration is crea
+   endif()
+ endif()
+ 
+-if(ANDROID)
+-  install(FILES "${OpenCV_SOURCE_DIR}/platforms/android/android.toolchain.cmake" DESTINATION ${OPENCV_CONFIG_INSTALL_PATH}/ COMPONENT dev)
+-endif()
+-
+ # --------------------------------------------------------------------------------------------
+ #  Part 3/3: ${BIN_DIR}/win-install/OpenCVConfig.cmake  -> For use within binary installers/packages
+ # --------------------------------------------------------------------------------------------
+diff -Nuarp opencv-2.4.13.7.orig/data/CMakeLists.txt opencv-2.4.13.7/data/CMakeLists.txt
+--- opencv-2.4.13.7.orig/data/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/data/CMakeLists.txt	2023-12-09 21:07:33.901501638 +0800
+@@ -1,14 +1,6 @@
+ file(GLOB HAAR_CASCADES haarcascades/*.xml)
+ file(GLOB LBP_CASCADES lbpcascades/*.xml)
+ 
+-if(ANDROID)
+-  install(FILES ${HAAR_CASCADES} DESTINATION sdk/etc/haarcascades COMPONENT libs)
+-  install(FILES ${LBP_CASCADES}  DESTINATION sdk/etc/lbpcascades  COMPONENT libs)
+-else()
+-  install(FILES ${HAAR_CASCADES} DESTINATION share/OpenCV/haarcascades COMPONENT libs)
+-  install(FILES ${LBP_CASCADES}  DESTINATION share/OpenCV/lbpcascades  COMPONENT libs)
+-endif()
+-
+ if(INSTALL_TESTS AND OPENCV_TEST_DATA_PATH)
+   if(ANDROID)
+     install(DIRECTORY ${OPENCV_TEST_DATA_PATH} DESTINATION sdk/etc/testdata COMPONENT tests)
+diff -Nuarp opencv-2.4.13.7.orig/platforms/android/libinfo/CMakeLists.txt opencv-2.4.13.7/platforms/android/libinfo/CMakeLists.txt
+--- opencv-2.4.13.7.orig/platforms/android/libinfo/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/platforms/android/libinfo/CMakeLists.txt	2023-12-09 21:02:53.976095360 +0800
+@@ -37,4 +37,3 @@ set_target_properties(${the_module} PROP
+   )
+ 
+ get_filename_component(lib_name "libopencv_info.so" NAME)
+-install(FILES "${LIBRARY_OUTPUT_PATH}/${lib_name}" DESTINATION ${OPENCV_LIB_INSTALL_PATH} COMPONENT libs)
+diff -Nuarp opencv-2.4.13.7.orig/platforms/android/package/CMakeLists.txt opencv-2.4.13.7/platforms/android/package/CMakeLists.txt
+--- opencv-2.4.13.7.orig/platforms/android/package/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/platforms/android/package/CMakeLists.txt	2023-12-09 21:13:29.379477767 +0800
+@@ -89,6 +89,5 @@ add_custom_command(
+          DEPENDS "${OpenCV_BINARY_DIR}/bin/classes.jar.dephelper" "${PACKAGE_DIR}/res/values/strings.xml" "${PACKAGE_DIR}/res/drawable/icon.png" ${camera_wrappers} opencv_java
+        )
+ 
+-install(FILES "${APK_NAME}" DESTINATION "apk/" COMPONENT libs)
+ add_custom_target(android_package ALL SOURCES "${APK_NAME}" )
+ add_dependencies(android_package opencv_java)
