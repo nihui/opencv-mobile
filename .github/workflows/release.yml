@@ -36,16 +36,16 @@ jobs:
         rm opencv-2.4.13.7.zip
         cd opencv-2.4.13.7
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-2.4.13.7-no-rtti.patch
-        patch -p1 -i ../opencv-2.4.13.7-no-zlib.patch
-        patch -p1 -i ../opencv-2.4.13.7-fix-highgui-include.patch
-        patch -p1 -i ../opencv-2.4.13.7-no-link-stdc++.patch
-        patch -p1 -i ../opencv-2.4.13.7-enable-cxx11.patch
-        patch -p1 -i ../opencv-2.4.13.7-link-openmp.patch
-        patch -p1 -i ../opencv-2.4.13.7-newer-msvc.patch
-        patch -p1 -i ../opencv-2.4.13.7-minimal-install.patch
-        cp ../misc/draw_text.h ../misc/mono_font_data.h modules/core/src/
-        patch -p1 -i ../opencv-2.4.13.7-drawing-mono-font.patch
+        patch -p1 -i ../patches/opencv-2.4.13.7-no-rtti.patch
+        patch -p1 -i ../patches/opencv-2.4.13.7-no-zlib.patch
+        patch -p1 -i ../patches/opencv-2.4.13.7-fix-highgui-include.patch
+        patch -p1 -i ../patches/opencv-2.4.13.7-no-link-stdc++.patch
+        patch -p1 -i ../patches/opencv-2.4.13.7-enable-cxx11.patch
+        patch -p1 -i ../patches/opencv-2.4.13.7-link-openmp.patch
+        patch -p1 -i ../patches/opencv-2.4.13.7-newer-msvc.patch
+        patch -p1 -i ../patches/opencv-2.4.13.7-minimal-install.patch
+        cp ../patches/draw_text.h ../patches/mono_font_data.h modules/core/src/
+        patch -p1 -i ../patches/opencv-2.4.13.7-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
         rm -rf 3rdparty apps data doc samples platforms
@@ -62,12 +62,12 @@ jobs:
         rm opencv-3.4.20.zip
         cd opencv-3.4.20
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../opencv-3.4.20-no-rtti.patch
-        patch -p1 -i ../opencv-3.4.20-no-zlib.patch
-        patch -p1 -i ../opencv-3.4.20-link-openmp.patch
-        patch -p1 -i ../opencv-3.4.20-minimal-install.patch
-        cp ../misc/draw_text.h ../misc/mono_font_data.h modules/imgproc/src/
-        patch -p1 -i ../opencv-3.4.20-drawing-mono-font.patch
+        patch -p1 -i ../patches/opencv-3.4.20-no-rtti.patch
+        patch -p1 -i ../patches/opencv-3.4.20-no-zlib.patch
+        patch -p1 -i ../patches/opencv-3.4.20-link-openmp.patch
+        patch -p1 -i ../patches/opencv-3.4.20-minimal-install.patch
+        cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
+        patch -p1 -i ../patches/opencv-3.4.20-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
         rm -rf 3rdparty apps data doc samples platforms
@@ -86,12 +86,12 @@ jobs:
         cd opencv-4.8.1
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../opencv-4.8.1-no-rtti.patch
-        patch -p1 -i ../opencv-4.8.1-no-zlib.patch
-        patch -p1 -i ../opencv-4.8.1-link-openmp.patch
-        patch -p1 -i ../opencv-4.8.1-minimal-install.patch
-        cp ../misc/draw_text.h ../misc/mono_font_data.h modules/imgproc/src/
-        patch -p1 -i ../opencv-4.8.1-drawing-mono-font.patch
+        patch -p1 -i ../patches/opencv-4.8.1-no-rtti.patch
+        patch -p1 -i ../patches/opencv-4.8.1-no-zlib.patch
+        patch -p1 -i ../patches/opencv-4.8.1-link-openmp.patch
+        patch -p1 -i ../patches/opencv-4.8.1-minimal-install.patch
+        cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
+        patch -p1 -i ../patches/opencv-4.8.1-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
         rm -rf 3rdparty apps data doc samples platforms
