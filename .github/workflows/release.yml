@@ -147,8 +147,8 @@ jobs:
     - name: setup-opencv-source
       run: |
         unzip -q opencv-${{ matrix.opencv-version }}.zip
-        echo "SOURCE_DIR=opencv-${{ matrix.opencv-version }}" >> $GITHUB_OUTPUT
-        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-android" >> $GITHUB_OUTPUT
+        echo "SOURCE_DIR=opencv-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-android" >> $GITHUB_ENV
     - name: build-armeabi-v7a
       run: |
         cd ${{ env.SOURCE_DIR }}
