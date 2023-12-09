@@ -23,8 +23,8 @@ diff -Nuarp opencv-2.4.13.7.orig/cmake/OpenCVGenConfig.cmake opencv-2.4.13.7/cma
  # --------------------------------------------------------------------------------------------
 diff -Nuarp opencv-2.4.13.7.orig/CMakeLists.txt opencv-2.4.13.7/CMakeLists.txt
 --- opencv-2.4.13.7.orig/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
-+++ opencv-2.4.13.7/CMakeLists.txt	2023-12-09 21:40:04.109733626 +0800
-@@ -569,20 +569,12 @@ add_subdirectory(include)
++++ opencv-2.4.13.7/CMakeLists.txt	2023-12-09 22:07:36.217894944 +0800
+@@ -569,32 +569,13 @@ add_subdirectory(include)
  add_subdirectory(modules)
  
  # Generate targets for documentation
@@ -42,9 +42,46 @@ diff -Nuarp opencv-2.4.13.7.orig/CMakeLists.txt opencv-2.4.13.7/CMakeLists.txt
 -if(BUILD_EXAMPLES OR BUILD_ANDROID_EXAMPLES OR INSTALL_PYTHON_EXAMPLES)
 -  add_subdirectory(samples)
 -endif()
+-
+-if(ANDROID)
+-  add_subdirectory(platforms/android/service)
+-endif()
+-
+-if(BUILD_ANDROID_PACKAGE)
+-  add_subdirectory(platforms/android/package)
+-endif()
  
- if(ANDROID)
-   add_subdirectory(platforms/android/service)
+-if (ANDROID)
+-  add_subdirectory(platforms/android/libinfo)
+-endif()
+ 
+ # ----------------------------------------------------------------------------
+ # Finalization: generate configuration-based files
+@@ -649,12 +630,6 @@ if(INSTALL_TESTS AND OPENCV_TEST_DATA_PA
+   endif()
+ endif()
+ 
+-if(NOT OPENCV_README_FILE)
+-  if(ANDROID)
+-    set(OPENCV_README_FILE ${CMAKE_CURRENT_SOURCE_DIR}/platforms/android/README.android)
+-  endif()
+-endif()
+-
+ if(NOT OPENCV_LICENSE_FILE)
+   set(OPENCV_LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
+ endif()
+@@ -664,11 +639,6 @@ if(ANDROID OR NOT UNIX)
+   install(FILES ${OPENCV_LICENSE_FILE}
+         PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
+         DESTINATION . COMPONENT libs)
+-  if(OPENCV_README_FILE)
+-    install(FILES ${OPENCV_README_FILE}
+-            PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
+-            DESTINATION . COMPONENT libs)
+-  endif()
+ endif()
+ 
+ # ----------------------------------------------------------------------------
 diff -Nuarp opencv-2.4.13.7.orig/data/CMakeLists.txt opencv-2.4.13.7/data/CMakeLists.txt
 --- opencv-2.4.13.7.orig/data/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
 +++ opencv-2.4.13.7/data/CMakeLists.txt	2023-12-09 21:07:33.901501638 +0800

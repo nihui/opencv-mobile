@@ -48,7 +48,7 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-        rm -rf 3rdparty apps data doc samples
+        rm -rf 3rdparty apps data doc samples platforms
         rm -rf modules/java
         rm -rf modules/python
         rm -rf modules/ts
@@ -70,7 +70,7 @@ jobs:
         patch -p1 -i ../opencv-3.4.20-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-        rm -rf 3rdparty apps data doc samples
+        rm -rf 3rdparty apps data doc samples platforms
         rm -rf modules/java
         rm -rf modules/js
         rm -rf modules/python
@@ -94,7 +94,7 @@ jobs:
         patch -p1 -i ../opencv-4.8.1-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-        rm -rf 3rdparty apps data doc samples
+        rm -rf 3rdparty apps data doc samples platforms
         rm -rf modules/java
         rm -rf modules/js
         rm -rf modules/python
