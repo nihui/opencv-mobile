@@ -34,6 +34,35 @@ diff -Nuarp opencv-4.8.1.orig/cmake/OpenCVUtils.cmake opencv-4.8.1/cmake/OpenCVU
  endmacro()
  
  
+diff -Nuarp opencv-4.8.1.orig/CMakeLists.txt opencv-4.8.1/CMakeLists.txt
+--- opencv-4.8.1.orig/CMakeLists.txt	2023-09-27 18:18:31.000000000 +0800
++++ opencv-4.8.1/CMakeLists.txt	2023-12-09 23:10:35.893746090 +0800
+@@ -967,24 +967,13 @@ ocv_add_modules_compiler_options()
+ ocv_register_modules()
+ 
+ # Generate targets for documentation
+-add_subdirectory(doc)
+ 
+ # various data that is used by cv libraries and/or demo applications.
+-add_subdirectory(data)
+ 
+ # extra applications
+-if(BUILD_opencv_apps)
+-  add_subdirectory(apps)
+-endif()
+ 
+ # examples
+-if(BUILD_EXAMPLES OR BUILD_ANDROID_EXAMPLES OR INSTALL_ANDROID_EXAMPLES OR INSTALL_PYTHON_EXAMPLES OR INSTALL_C_EXAMPLES)
+-  add_subdirectory(samples)
+-endif()
+-
+-if(ANDROID)
+-  add_subdirectory(platforms/android/service)
+-endif()
++
+ 
+ # ----------------------------------------------------------------------------
+ # Finalization: generate configuration-based files
 diff -Nuarp opencv-4.8.1.orig/data/CMakeLists.txt opencv-4.8.1/data/CMakeLists.txt
 --- opencv-4.8.1.orig/data/CMakeLists.txt	2023-09-27 18:18:31.000000000 +0800
 +++ opencv-4.8.1/data/CMakeLists.txt	2023-12-09 21:26:45.381067118 +0800
