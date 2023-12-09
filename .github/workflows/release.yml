@@ -52,6 +52,7 @@ jobs:
         rm -rf modules/java
         rm -rf modules/python
         rm -rf modules/ts
+        cp ../patches/Info.plist ./
         cp ../opencv2_cmake_options.txt ./
         cd ..
         zip -9 -r opencv-2.4.13.7.zip opencv-2.4.13.7
@@ -75,6 +76,7 @@ jobs:
         rm -rf modules/js
         rm -rf modules/python
         rm -rf modules/ts
+        cp ../patches/Info.plist ./
         cp ../opencv3_cmake_options.txt ./
         cd ..
         zip -9 -r opencv-3.4.20.zip opencv-3.4.20
@@ -99,6 +101,7 @@ jobs:
         rm -rf modules/js
         rm -rf modules/python
         rm -rf modules/ts
+        cp ../patches/Info.plist ./
         cp ../opencv4_cmake_options.txt ./
         cd ..
         zip -9 -r opencv-4.8.1.zip opencv-4.8.1
