@@ -30,46 +30,49 @@ jobs:
       id: get_version
       run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
     - name: opencv2-source
+      env:
+        opencv-version: 2.4.13.7
       run: |
-        wget -q https://github.com/opencv/opencv/archive/2.4.13.7.zip -O opencv-2.4.13.7.zip
-        unzip -q opencv-2.4.13.7.zip
-        rm opencv-2.4.13.7.zip
-        cd opencv-2.4.13.7
+        wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
+        unzip -q opencv-${{ env.opencv-version }}.zip
+        rm opencv-${{ env.opencv-version }}.zip
+        cd opencv-${{ env.opencv-version }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../patches/opencv-2.4.13.7-no-rtti.patch
-        patch -p1 -i ../patches/opencv-2.4.13.7-no-zlib.patch
-        patch -p1 -i ../patches/opencv-2.4.13.7-fix-highgui-include.patch
-        patch -p1 -i ../patches/opencv-2.4.13.7-no-link-stdc++.patch
-        patch -p1 -i ../patches/opencv-2.4.13.7-enable-cxx11.patch
-        patch -p1 -i ../patches/opencv-2.4.13.7-link-openmp.patch
-        patch -p1 -i ../patches/opencv-2.4.13.7-newer-msvc.patch
-        patch -p1 -i ../patches/opencv-2.4.13.7-minimal-install.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-highgui-include.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-link-stdc++.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-enable-cxx11.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-newer-msvc.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
         cp ../patches/draw_text.h ../patches/mono_font_data.h modules/core/src/
-        patch -p1 -i ../patches/opencv-2.4.13.7-drawing-mono-font.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
         rm -rf 3rdparty apps data doc samples platforms
         rm -rf modules/java
         rm -rf modules/python
         rm -rf modules/ts
-        cp ../patches/Info.plist ./
+        sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
         cp ../opencv2_cmake_options.txt ./options.txt
-        cp -r ../test ./
         cd ..
-        zip -9 -r opencv-2.4.13.7.zip opencv-2.4.13.7
+        zip -9 -r opencv-${{ env.opencv-version }}.zip opencv-${{ env.opencv-version }}
     - name: opencv3-source
+      env:
+        opencv-version: 3.4.20
       run: |
-        wget -q https://github.com/opencv/opencv/archive/3.4.20.zip -O opencv-3.4.20.zip
-        unzip -q opencv-3.4.20.zip
-        rm opencv-3.4.20.zip
-        cd opencv-3.4.20
+        wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
+        unzip -q opencv-${{ env.opencv-version }}.zip
+        rm opencv-${{ env.opencv-version }}.zip
+        cd opencv-${{ env.opencv-version }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        patch -p1 -i ../patches/opencv-3.4.20-no-rtti.patch
-        patch -p1 -i ../patches/opencv-3.4.20-no-zlib.patch
-        patch -p1 -i ../patches/opencv-3.4.20-link-openmp.patch
-        patch -p1 -i ../patches/opencv-3.4.20-minimal-install.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
         cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
-        patch -p1 -i ../patches/opencv-3.4.20-drawing-mono-font.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
         rm -rf 3rdparty apps data doc samples platforms
@@ -77,25 +80,26 @@ jobs:
         rm -rf modules/js
         rm -rf modules/python
         rm -rf modules/ts
-        cp ../patches/Info.plist ./
+        sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
         cp ../opencv3_cmake_options.txt ./options.txt
-        cp -r ../test ./
         cd ..
-        zip -9 -r opencv-3.4.20.zip opencv-3.4.20
+        zip -9 -r opencv-${{ env.opencv-version }}.zip opencv-${{ env.opencv-version }}
     - name: opencv4-source
+      env:
+        opencv-version: 4.8.1
       run: |
-        wget -q https://github.com/opencv/opencv/archive/4.8.1.zip -O opencv-4.8.1.zip
-        unzip -q opencv-4.8.1.zip
-        rm opencv-4.8.1.zip
-        cd opencv-4.8.1
+        wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
+        unzip -q opencv-${{ env.opencv-version }}.zip
+        rm opencv-${{ env.opencv-version }}.zip
+        cd opencv-${{ env.opencv-version }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
-        patch -p1 -i ../patches/opencv-4.8.1-no-rtti.patch
-        patch -p1 -i ../patches/opencv-4.8.1-no-zlib.patch
-        patch -p1 -i ../patches/opencv-4.8.1-link-openmp.patch
-        patch -p1 -i ../patches/opencv-4.8.1-minimal-install.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
         cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
-        patch -p1 -i ../patches/opencv-4.8.1-drawing-mono-font.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
         rm -rf 3rdparty apps data doc samples platforms
@@ -103,11 +107,10 @@ jobs:
         rm -rf modules/js
         rm -rf modules/python
         rm -rf modules/ts
-        cp ../patches/Info.plist ./
+        sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
         cp ../opencv4_cmake_options.txt ./options.txt
-        cp -r ../test ./
         cd ..
-        zip -9 -r opencv-4.8.1.zip opencv-4.8.1
+        zip -9 -r opencv-${{ env.opencv-version }}.zip opencv-${{ env.opencv-version }}
     - name: upload-opencv2-source
       uses: actions/upload-artifact@v3
       with:
@@ -139,6 +142,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release
     steps:
+    - uses: actions/checkout@v3
     - name: ndk-fix-debug
       run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
     - uses: actions/download-artifact@v3
@@ -191,28 +195,28 @@ jobs:
         zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
     - name: test-armeabi-v7a
       run: |
-        cd ${{ env.SOURCE_DIR }}/test
+        cd test
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-arm64-v8a
       run: |
-        cd ${{ env.SOURCE_DIR }}/test
+        cd test
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="arm64-v8a" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-x86
       run: |
-        cd ${{ env.SOURCE_DIR }}/test
+        cd test
         mkdir build-x86 && cd build-x86
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-x86_64
       run: |
-        cd ${{ env.SOURCE_DIR }}/test
+        cd test
         mkdir build-x86_64 && cd build-x86_64
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86_64" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
