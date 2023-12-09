@@ -44,10 +44,11 @@ jobs:
         patch -p1 -i ../opencv-2.4.13.7-link-openmp.patch
         patch -p1 -i ../opencv-2.4.13.7-newer-msvc.patch
         patch -p1 -i ../opencv-2.4.13.7-minimal-install.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
         cp ../misc/draw_text.h ../misc/mono_font_data.h modules/core/src/
         patch -p1 -i ../opencv-2.4.13.7-drawing-mono-font.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+        rm -rf 3rdparty apps data doc samples
         cd ..
         zip -9 -r opencv-2.4.13.7.zip opencv-2.4.13.7
     - name: opencv3-source
@@ -61,10 +62,11 @@ jobs:
         patch -p1 -i ../opencv-3.4.20-no-zlib.patch
         patch -p1 -i ../opencv-3.4.20-link-openmp.patch
         patch -p1 -i ../opencv-3.4.20-minimal-install.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
         cp ../misc/draw_text.h ../misc/mono_font_data.h modules/imgproc/src/
         patch -p1 -i ../opencv-3.4.20-drawing-mono-font.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+        rm -rf 3rdparty apps data doc samples
         cd ..
         zip -9 -r opencv-3.4.20.zip opencv-3.4.20
     - name: opencv4-source
@@ -79,10 +81,11 @@ jobs:
         patch -p1 -i ../opencv-4.8.1-no-zlib.patch
         patch -p1 -i ../opencv-4.8.1-link-openmp.patch
         patch -p1 -i ../opencv-4.8.1-minimal-install.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
         cp ../misc/draw_text.h ../misc/mono_font_data.h modules/imgproc/src/
         patch -p1 -i ../opencv-4.8.1-drawing-mono-font.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+        rm -rf 3rdparty apps data doc samples
         cd ..
         zip -9 -r opencv-4.8.1.zip opencv-4.8.1
     - name: upload-opencv2-source

@@ -21,6 +21,30 @@ diff -Nuarp opencv-2.4.13.7.orig/cmake/OpenCVGenConfig.cmake opencv-2.4.13.7/cma
  # --------------------------------------------------------------------------------------------
  #  Part 3/3: ${BIN_DIR}/win-install/OpenCVConfig.cmake  -> For use within binary installers/packages
  # --------------------------------------------------------------------------------------------
+diff -Nuarp opencv-2.4.13.7.orig/CMakeLists.txt opencv-2.4.13.7/CMakeLists.txt
+--- opencv-2.4.13.7.orig/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/CMakeLists.txt	2023-12-09 21:40:04.109733626 +0800
+@@ -569,20 +569,12 @@ add_subdirectory(include)
+ add_subdirectory(modules)
+ 
+ # Generate targets for documentation
+-add_subdirectory(doc)
+ 
+ # various data that is used by cv libraries and/or demo applications.
+-add_subdirectory(data)
+ 
+ # extra applications
+-if(BUILD_opencv_apps)
+-  add_subdirectory(apps)
+-endif()
+ 
+ # examples
+-if(BUILD_EXAMPLES OR BUILD_ANDROID_EXAMPLES OR INSTALL_PYTHON_EXAMPLES)
+-  add_subdirectory(samples)
+-endif()
+ 
+ if(ANDROID)
+   add_subdirectory(platforms/android/service)
 diff -Nuarp opencv-2.4.13.7.orig/data/CMakeLists.txt opencv-2.4.13.7/data/CMakeLists.txt
 --- opencv-2.4.13.7.orig/data/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
 +++ opencv-2.4.13.7/data/CMakeLists.txt	2023-12-09 21:07:33.901501638 +0800
