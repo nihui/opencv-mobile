@@ -25,6 +25,7 @@ jobs:
     outputs:
       VERSION: ${{ steps.get_version.outputs.VERSION }}
     steps:
+    - uses: actions/checkout@v3
     - name: get-version
       id: get_version
       run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
