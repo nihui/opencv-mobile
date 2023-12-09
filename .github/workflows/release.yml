@@ -187,43 +187,43 @@ jobs:
         cmake --build . --target install
     - name: package
       run: |
-        mkdir ${{ env.PACKAGENAME }}
-        cp -rf ${{ env.SOURCE_DIR }}/build-x86/install/* ${{ env.PACKAGENAME }}/
-        cp -rf ${{ env.SOURCE_DIR }}/build-x86_64/install/* ${{ env.PACKAGENAME }}/
-        cp -rf ${{ env.SOURCE_DIR }}/build-armeabi-v7a/install/* ${{ env.PACKAGENAME }}/
-        cp -rf ${{ env.SOURCE_DIR }}/build-arm64-v8a/install/* ${{ env.PACKAGENAME }}/
-        zip -9 -r ${{ env.PACKAGENAME }}.zip ${{ env.PACKAGENAME }}
+        mkdir ${{ env.PACKAGE_NAME }}
+        cp -rf ${{ env.SOURCE_DIR }}/build-x86/install/* ${{ env.PACKAGE_NAME }}/
+        cp -rf ${{ env.SOURCE_DIR }}/build-x86_64/install/* ${{ env.PACKAGE_NAME }}/
+        cp -rf ${{ env.SOURCE_DIR }}/build-armeabi-v7a/install/* ${{ env.PACKAGE_NAME }}/
+        cp -rf ${{ env.SOURCE_DIR }}/build-arm64-v8a/install/* ${{ env.PACKAGE_NAME }}/
+        zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
     - name: test-armeabi-v7a
       run: |
         cd test
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-arm64-v8a
       run: |
         cd test
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="arm64-v8a" \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-x86
       run: |
         cd test
         mkdir build-x86 && cd build-x86
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86" \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: test-x86_64
       run: |
         cd test
         mkdir build-x86_64 && cd build-x86_64
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86_64" \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/sdk/native/jni ..
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
         cmake --build . -j 2
     - name: upload
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}.zip
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
 
