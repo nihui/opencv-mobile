@@ -49,6 +49,10 @@ jobs:
         rm -rf modules/highgui
         cp -r ../highgui modules/
         rm -rf 3rdparty apps data doc samples
+        rm -rf modules/java
+        rm -rf modules/python
+        rm -rf modules/ts
+        cp ../opencv2_cmake_options.txt ./
         cd ..
         zip -9 -r opencv-2.4.13.7.zip opencv-2.4.13.7
     - name: opencv3-source
@@ -67,6 +71,11 @@ jobs:
         rm -rf modules/highgui
         cp -r ../highgui modules/
         rm -rf 3rdparty apps data doc samples
+        rm -rf modules/java
+        rm -rf modules/js
+        rm -rf modules/python
+        rm -rf modules/ts
+        cp ../opencv3_cmake_options.txt ./
         cd ..
         zip -9 -r opencv-3.4.20.zip opencv-3.4.20
     - name: opencv4-source
@@ -86,21 +95,26 @@ jobs:
         rm -rf modules/highgui
         cp -r ../highgui modules/
         rm -rf 3rdparty apps data doc samples
+        rm -rf modules/java
+        rm -rf modules/js
+        rm -rf modules/python
+        rm -rf modules/ts
+        cp ../opencv4_cmake_options.txt ./
         cd ..
         zip -9 -r opencv-4.8.1.zip opencv-4.8.1
     - name: upload-opencv2-source
       uses: actions/upload-artifact@v3
       with:
-        name: opencv2-source
+        name: opencv-2.4.13.7-source
         path: opencv-2.4.13.7.zip
     - name: upload-opencv3-source
       uses: actions/upload-artifact@v3
       with:
-        name: opencv3-source
+        name: opencv-3.4.20-source
         path: opencv-3.4.20.zip
     - name: upload-opencv4-source
       uses: actions/upload-artifact@v3
       with:
-        name: opencv4-source
+        name: opencv-4.8.1-source
         path: opencv-4.8.1.zip
 
