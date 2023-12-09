@@ -140,7 +140,7 @@ jobs:
         -DANDROID_PLATFORM=android-21 \
         -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
         -DCMAKE_INSTALL_PREFIX=install \
-        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v3
     - name: ndk-fix-debug
