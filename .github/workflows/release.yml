@@ -125,6 +125,7 @@ jobs:
         path: opencv-4.8.1.zip
 
   android:
+    needs: [setup]
     runs-on: ubuntu-latest
     strategy:
       matrix:
