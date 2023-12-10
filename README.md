@@ -25,15 +25,20 @@
 
 :heavy_check_mark: All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secret code**.
 
+|opencv 4.8.1 source|package size|
+|:-:|:-:|
+|The official opencv|92.2 MB|
+|opencv-mobile|10.5 MB|
+
 |opencv 4.8.1 android|package size|
 |:-:|:-:|
 |The official opencv|189 MB|
-|opencv-mobile|18.1 MB|
+|opencv-mobile|17.9 MB|
 
 |opencv 4.8.1 ios|package size|package size with bitcode|
 |:-:|:-:|:-:|
 |The official opencv|197 MB|missing :(|
-|opencv-mobile|10 MB|34.7 MB|
+|opencv-mobile|9.9 MB|34.3 MB|
 
 # Download
 
@@ -41,6 +46,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
 |Platform|Arch|opencv-2.4.13.7|opencv-3.4.20|opencv-4.8.1|
 |:-:|:-:|:-:|:-:|:-:|
+|Source| |[![download-icon]][opencv2-source-url]|[![download-icon]][opencv3-source-url]|[![download-icon]][opencv4-source-url]|
 |Android|armeabi-v7a<br />arm64-v8a<br />x86<br />x86_64|[![download-icon]][opencv2-android-url]|[![download-icon]][opencv3-android-url]|[![download-icon]][opencv4-android-url]|
 |iOS|armv7<br />arm64<br />arm64e|[![download-icon]][opencv2-ios-url]<br />[![bitcode-icon]][opencv2-ios-bitcode-url]|[![download-icon]][opencv3-ios-url]<br />[![bitcode-icon]][opencv3-ios-bitcode-url]|[![download-icon]][opencv4-ios-url]<br />[![bitcode-icon]][opencv4-ios-bitcode-url]|
 |iOS-Simulator|i386<br />x86_64<br />arm64|[![download-icon]][opencv2-ios-simulator-url]<br />[![bitcode-icon]][opencv2-ios-simulator-bitcode-url]|[![download-icon]][opencv3-ios-simulator-url]<br />[![bitcode-icon]][opencv3-ios-simulator-bitcode-url]|[![download-icon]][opencv4-ios-simulator-url]<br />[![bitcode-icon]][opencv4-ios-simulator-bitcode-url]|
@@ -58,6 +64,10 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
 [download-icon]: https://img.shields.io/badge/download-blue?style=for-the-badge
 [bitcode-icon]: https://img.shields.io/badge/+bitcode-blue?style=for-the-badge
+
+[opencv2-source-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7.zip
+[opencv3-source-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20.zip
+[opencv4-source-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1.zip
 
 [opencv2-android-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-android.zip
 [opencv3-android-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-android.zip

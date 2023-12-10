@@ -1,9 +1,9 @@
 name: release
-on: [push, pull_request]
-# on:
-#   push:
-#     tags:
-#       - '*'
+# on: [push, pull_request]
+on:
+  push:
+    tags:
+      - '*'
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_13.4.1.app/Contents/Developer
@@ -1138,10 +1138,10 @@ jobs:
       with:
         path: artifacts
 
-    # - name: create-release
-    #   uses: softprops/action-gh-release@v1
-    #   with:
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     tag_name: ${{ needs.setup.outputs.VERSION }}
-    #     name: Release ${{ needs.setup.outputs.VERSION }}
-    #     files: artifacts/*/*.zip
+    - name: create-release
+      uses: softprops/action-gh-release@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag_name: ${{ needs.setup.outputs.VERSION }}
+        name: Release ${{ needs.setup.outputs.VERSION }}
+        files: artifacts/*/*.zip
