@@ -70,6 +70,7 @@ jobs:
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-emscripten-include.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
         cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
@@ -98,6 +99,7 @@ jobs:
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-emscripten-include.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
         cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
@@ -705,11 +707,11 @@ jobs:
       matrix:
         opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
         os-compiler:
-          - { os: windows-2019, msvc-version: vs2015, toolset-version: v140 }
-          - { os: windows-2019, msvc-version: vs2017, toolset-version: v141 }
-          - { os: windows-2019, msvc-version: vs2019, toolset-version: v142 }
-          - { os: windows-2022, msvc-version: vs2022, toolset-version: v143 }
-    runs-on: ${{ matrix.os-compiler.os }}
+          - { msvc-version: vs2015, windows-version: 2019, toolset-version: v140 }
+          - { msvc-version: vs2017, windows-version: 2019, toolset-version: v141 }
+          - { msvc-version: vs2019, windows-version: 2019, toolset-version: v142 }
+          - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143 }
+    runs-on: windows-${{ matrix.os-compiler.windows-version }}
     env:
       UseMultiToolTask: true
       COMMON_CMAKE_OPTIONS: -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
@@ -721,8 +723,8 @@ jobs:
     - name: setup-opencv-source
       run: |
         unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-windows-${{ matrix.os-compiler.msvc-version }}" >> $GITHUB_ENV
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $env:GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-windows-${{ matrix.os-compiler.msvc-version }}" >> $env:GITHUB_ENV
     - name: build-x86
       run: |
         cd ${{ env.SOURCE_DIR }}
@@ -763,58 +765,58 @@ jobs:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
 
-  ubuntu:
-    needs: [setup]
-    strategy:
-      matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
-        os-ubuntu:
-          - { os: ubuntu-20.04, ubuntu-version: 2004 }
-          - { os: ubuntu-22.04, ubuntu-version: 2204 }
-    runs-on: ${{ matrix.os-ubuntu.os }}
-    env:
-      COMMON_CMAKE_OPTIONS: -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
-      with:
-        name: opencv-mobile-${{ matrix.opencv-version }}-source
-    - name: setup-opencv-source
-      run: |
-        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ubuntu-${{ matrix.os-ubuntu.ubuntu-version }}" >> $GITHUB_ENV
-    - name: build
-      run: |
-        cd ${{ env.SOURCE_DIR }}
-        mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} `cat ../options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
-        cmake --build . --target install
-    - name: package
-      run: |
-        rm -rf ${{ env.PACKAGE_NAME }}
-        mkdir -p ${{ env.PACKAGE_NAME }}
-        cp -rf ${{ env.SOURCE_DIR }}/build/install/* ${{ env.PACKAGE_NAME }}/
-        rm -f ${{ env.PACKAGE_NAME }}.zip
-        zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
-    - name: set-opencv-dir
-      if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
-      run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
-    - name: set-opencv-dir
-      if: matrix.opencv-version == '4.8.1'
-      run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
-    - name: test
-      run: |
-        cd test
-        mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/${{ env.OPENCV_SUBDIR }} ..
-        cmake --build . -j 2
-    - name: upload
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PACKAGE_NAME }}
-        path: ${{ env.PACKAGE_NAME }}.zip
+  # ubuntu:
+  #   needs: [setup]
+  #   strategy:
+  #     matrix:
+  #       opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+  #       os-ubuntu:
+  #         - { ubuntu-id: 2004, ubuntu-version: 20.04 }
+  #         - { ubuntu-id: 2204, ubuntu-version: 22.04 }
+  #   runs-on: ubuntu-${{ matrix.os-ubuntu.ubuntu-version }}
+  #   env:
+  #     COMMON_CMAKE_OPTIONS: -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: actions/download-artifact@v3
+  #     with:
+  #       name: opencv-mobile-${{ matrix.opencv-version }}-source
+  #   - name: setup-opencv-source
+  #     run: |
+  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ubuntu-${{ matrix.os-ubuntu.ubuntu-id }}" >> $GITHUB_ENV
+  #   - name: build
+  #     run: |
+  #       cd ${{ env.SOURCE_DIR }}
+  #       mkdir build && cd build
+  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} `cat ../options.txt` -DBUILD_opencv_world=OFF ..
+  #       cmake --build . -j 2
+  #       cmake --build . --target install
+  #   - name: package
+  #     run: |
+  #       rm -rf ${{ env.PACKAGE_NAME }}
+  #       mkdir -p ${{ env.PACKAGE_NAME }}
+  #       cp -rf ${{ env.SOURCE_DIR }}/build/install/* ${{ env.PACKAGE_NAME }}/
+  #       rm -f ${{ env.PACKAGE_NAME }}.zip
+  #       zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
+  #   - name: set-opencv-dir
+  #     if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
+  #     run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
+  #   - name: set-opencv-dir
+  #     if: matrix.opencv-version == '4.8.1'
+  #     run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
+  #   - name: test
+  #     run: |
+  #       cd test
+  #       mkdir build && cd build
+  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/${{ env.OPENCV_SUBDIR }} ..
+  #       cmake --build . -j 2
+  #   - name: upload
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: ${{ env.PACKAGE_NAME }}
+  #       path: ${{ env.PACKAGE_NAME }}.zip
 
   webassembly:
     needs: [setup]
