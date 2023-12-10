@@ -269,7 +269,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7'
       run: |
         # workaround ar @list issue on macos
-        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' modules/world/CMakeLists.txt
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' ${{ env.SOURCE_DIR }}/modules/world/CMakeLists.txt
     - name: build-armv7
       run: |
         cd ${{ env.SOURCE_DIR }}
