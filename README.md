@@ -189,42 +189,42 @@ target_link_libraries(your_target ${OpenCV_LIBS})
 
 # How-to-build your custom package
 
-**step 1. download opencv source**
+We reduce the binary size of opencv-mobile in 3 ways
+1. Reimplement some modules (such as highgui) and functions (such as putText)
+2. Apply patches to disable rtti/exceptions and do not install non-essential files
+3. Carefully select cmake options to retain only the modules and functions you want
+
+Steps 1 and 2 are relatively cumbersome and difficult, and require intrusive changes to the opencv source code. If you want to know the details, please refer to the steps in `.github/workflows/release.yml`
+
+The opencv-mobile source code package is the result of steps 1 and 2. Based on it, we can adjust the cmake option to compile our own package and further delete and add modules and other functions.
+
+**step 1. download opencv-mobile source**
 ```shell
-wget -q https://github.com/opencv/opencv/archive/4.8.1.zip -O opencv-4.8.1.zip
-unzip -q opencv-4.8.1.zip
-cd opencv-4.8.1
+wget -q https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1.zip
+unzip -q opencv-mobile-4.8.1.zip
+cd opencv-mobile-4.8.1
 ```
 
-**step 2. strip zlib dependency and use stb-based highgui implementation (optional)**
+**step 2. apply your opencv option changes to options.txt**
 ```shell
-patch -p1 -i ../opencv-4.8.1-no-zlib.patch
-truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-rm -rf modules/gapi
-rm -rf modules/highgui
-cp -r ../highgui modules/
+vim options.txt
 ```
 
-**step 3. patch opencv source for no-rtti build (optional)**
-```shell
-patch -p1 -i ../opencv-4.8.1-no-rtti.patch
-```
-
-**step 4. apply your opencv options to opencv4_cmake_options.txt**
-
-**step 5. build your opencv package with cmake**
+**step 3. build your opencv package with cmake**
 ```shell
 mkdir -p build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=install \
--DCMAKE_BUILD_TYPE=Release \
-`cat ../../opencv4_cmake_options.txt` \
--DBUILD_opencv_world=OFF ..
+  -DCMAKE_BUILD_TYPE=Release \
+  `cat ../options.txt` \
+  -DBUILD_opencv_world=OFF ..
+make -j4
+make install
 ```
 
-**step 6. make a package**
+**step 4. make a package**
 ```shell
-zip -r -9 opencv-mobile-4.8.1.zip install
+zip -r -9 opencv-mobile-4.8.1-mypackage.zip install
 ```
 
 # Some notes
