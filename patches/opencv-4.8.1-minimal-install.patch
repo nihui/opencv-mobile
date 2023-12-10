@@ -36,7 +36,7 @@ diff -Nuarp opencv-4.8.1.orig/cmake/OpenCVUtils.cmake opencv-4.8.1/cmake/OpenCVU
  
 diff -Nuarp opencv-4.8.1.orig/CMakeLists.txt opencv-4.8.1/CMakeLists.txt
 --- opencv-4.8.1.orig/CMakeLists.txt	2023-09-27 18:18:31.000000000 +0800
-+++ opencv-4.8.1/CMakeLists.txt	2023-12-10 00:03:50.757791063 +0800
++++ opencv-4.8.1/CMakeLists.txt	2023-12-10 12:43:42.006337472 +0800
 @@ -967,24 +967,13 @@ ocv_add_modules_compiler_options()
  ocv_register_modules()
  
@@ -62,7 +62,28 @@ diff -Nuarp opencv-4.8.1.orig/CMakeLists.txt opencv-4.8.1/CMakeLists.txt
  
  # ----------------------------------------------------------------------------
  # Finalization: generate configuration-based files
-@@ -1035,12 +1024,6 @@ if(INSTALL_TESTS AND OPENCV_TEST_DATA_PA
+@@ -996,20 +985,13 @@ ocv_cmake_hook(PRE_FINALIZE)
+ include(cmake/OpenCVGenHeaders.cmake)
+ 
+ # Generate opencv.pc for pkg-config command
+-if(OPENCV_GENERATE_PKGCONFIG)
+-  include(cmake/OpenCVGenPkgconfig.cmake)
+-endif()
+ 
+ # Generate OpenCV.mk for ndk-build (Android build tool)
+-include(cmake/OpenCVGenAndroidMK.cmake)
+ 
+ # Generate OpenCVConfig.cmake and OpenCVConfig-version.cmake for cmake projects
+ include(cmake/OpenCVGenConfig.cmake)
+ 
+ # Generate Info.plist for the IOS framework
+-if(APPLE_FRAMEWORK)
+-  include(cmake/OpenCVGenInfoPlist.cmake)
+-endif()
+ 
+ # Generate ABI descriptor
+ include(cmake/OpenCVGenABI.cmake)
+@@ -1035,12 +1017,6 @@ if(INSTALL_TESTS AND OPENCV_TEST_DATA_PA
    endif()
  endif()
  
@@ -75,7 +96,7 @@ diff -Nuarp opencv-4.8.1.orig/CMakeLists.txt opencv-4.8.1/CMakeLists.txt
  if(NOT OPENCV_LICENSE_FILE)
    set(OPENCV_LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
  endif()
-@@ -1050,11 +1033,6 @@ if(ANDROID OR NOT UNIX)
+@@ -1050,11 +1026,6 @@ if(ANDROID OR NOT UNIX)
    install(FILES ${OPENCV_LICENSE_FILE}
          PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
          DESTINATION ./ COMPONENT libs)

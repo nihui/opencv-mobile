@@ -23,7 +23,7 @@ diff -Nuarp opencv-2.4.13.7.orig/cmake/OpenCVGenConfig.cmake opencv-2.4.13.7/cma
  # --------------------------------------------------------------------------------------------
 diff -Nuarp opencv-2.4.13.7.orig/CMakeLists.txt opencv-2.4.13.7/CMakeLists.txt
 --- opencv-2.4.13.7.orig/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
-+++ opencv-2.4.13.7/CMakeLists.txt	2023-12-09 22:07:36.217894944 +0800
++++ opencv-2.4.13.7/CMakeLists.txt	2023-12-10 12:41:39.219962895 +0800
 @@ -569,32 +569,13 @@ add_subdirectory(include)
  add_subdirectory(modules)
  
@@ -57,7 +57,24 @@ diff -Nuarp opencv-2.4.13.7.orig/CMakeLists.txt opencv-2.4.13.7/CMakeLists.txt
  
  # ----------------------------------------------------------------------------
  # Finalization: generate configuration-based files
-@@ -649,12 +630,6 @@ if(INSTALL_TESTS AND OPENCV_TEST_DATA_PA
+@@ -605,16 +586,13 @@ ocv_track_build_dependencies()
+ include(cmake/OpenCVGenHeaders.cmake)
+ 
+ # Generate opencv.pc for pkg-config command
+-include(cmake/OpenCVGenPkgconfig.cmake)
+ 
+ # Generate OpenCV.mk for ndk-build (Android build tool)
+-include(cmake/OpenCVGenAndroidMK.cmake)
+ 
+ # Generate OpenCVСonfig.cmake and OpenCVConfig-version.cmake for cmake projects
+ include(cmake/OpenCVGenConfig.cmake)
+ 
+ # Generate Info.plist for the IOS framework
+-include(cmake/OpenCVGenInfoPlist.cmake)
+ 
+ # Generate environment setup file
+ if(INSTALL_TESTS AND OPENCV_TEST_DATA_PATH)
+@@ -649,12 +627,6 @@ if(INSTALL_TESTS AND OPENCV_TEST_DATA_PA
    endif()
  endif()
  
@@ -70,7 +87,7 @@ diff -Nuarp opencv-2.4.13.7.orig/CMakeLists.txt opencv-2.4.13.7/CMakeLists.txt
  if(NOT OPENCV_LICENSE_FILE)
    set(OPENCV_LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
  endif()
-@@ -664,11 +639,6 @@ if(ANDROID OR NOT UNIX)
+@@ -664,11 +636,6 @@ if(ANDROID OR NOT UNIX)
    install(FILES ${OPENCV_LICENSE_FILE}
          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
          DESTINATION . COMPONENT libs)
