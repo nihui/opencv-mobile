@@ -1084,7 +1084,7 @@ jobs:
       run: ${{ matrix.setup-toolchain-cmd }}
 
     - name: build-disable-thread
-      if: matrix.single-core
+      if: ${{ matrix.single-core }}
       run: |
         cd ${{ env.SOURCE_DIR }}
         patch -p1 -i ../patches/opencv-4.8.1-no-atomic.patch
@@ -1097,7 +1097,7 @@ jobs:
         cmake --build . --target install
 
     - name: build-enable-thread
-      if: !matrix.single-core
+      if: ${{ ! matrix.single-core }}
       run: |
         cd ${{ env.SOURCE_DIR }}
         mkdir build && cd build
