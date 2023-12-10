@@ -11,7 +11,6 @@ env:
   MAC_DEPLOYMENT_TARGET: '10.9'
   MAC_ARM64_DEPLOYMENT_TARGET: '11.0'
   MAC_CATALYST_DEPLOYMENT_TARGET: '13.1'
-  ENABLE_BITCODE: OFF
   ENABLE_ARC: OFF
   ENABLE_VISIBILITY: OFF
   EMSCRIPTEN_VERSION: 3.1.28
@@ -266,13 +265,19 @@ jobs:
         unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
         echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
         echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-bitcode" >> $GITHUB_ENV
+    - name: workaround-opencv2-list
+      if: matrix.opencv-version == '2.4.13.7'
+      run: |
+        # workaround ar @list issue on macos
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' modules/world/CMakeLists.txt
     - name: build-armv7
       run: |
         cd ${{ env.SOURCE_DIR }}
         mkdir build-armv7 && cd build-armv7
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="armv7" \
             `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 3
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: build-arm64
       run: |
@@ -280,7 +285,8 @@ jobs:
         mkdir build-arm64 && cd build-arm64
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64" \
             `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 3
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: build-arm64e
       run: |
@@ -288,7 +294,8 @@ jobs:
         mkdir build-arm64e && cd build-arm64e
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64e" \
             `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 3
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; /Applications/Xcode_13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: package
       run: |
