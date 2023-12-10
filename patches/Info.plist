@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>__NAME__</string>
+    <string>OpenCV</string>
     <key>CFBundleIdentifier</key>
-    <string>__IDENTIFIER__</string>
+    <string>org.opencv</string>
     <key>CFBundleVersion</key>
     <string>__VERSION__</string>
     <key>CFBundleShortVersionString</key>

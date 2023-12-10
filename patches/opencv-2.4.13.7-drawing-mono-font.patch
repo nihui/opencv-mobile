@@ -1,0 +1,120 @@
+diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/modules/core/src/drawing.cpp
+--- opencv-2.4.13.7.orig/modules/core/src/drawing.cpp	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/modules/core/src/drawing.cpp	2023-12-09 15:52:28.808104579 +0800
+@@ -40,6 +40,8 @@
+ //M*/
+ #include "precomp.hpp"
+ 
++#include "draw_text.h"
++
+ namespace cv
+ {
+ 
+@@ -1992,6 +1994,7 @@ void polylines( Mat& img, const Point**
+ }
+ 
+ 
++#if 0
+ enum { FONT_SIZE_SHIFT=8, FONT_ITALIC_ALPHA=(1 << 8),
+        FONT_ITALIC_DIGIT=(2 << 8), FONT_ITALIC_PUNCT=(4 << 8),
+        FONT_ITALIC_BRACES=(8 << 8), FONT_HAVE_GREEK=(16 << 8),
+@@ -2204,12 +2207,41 @@ inline void readCheck(int &c, int &i, co
+     if(c >= rightBoundary || c < leftBoundary)
+         c = '?';
+ }
++#endif
+ 
+ void putText( Mat& img, const string& text, Point org,
+               int fontFace, double fontScale, Scalar color,
+               int thickness, int line_type, bool bottomLeftOrigin )
+ 
+ {
++    const int fontpixelsize = 8 * fontScale;
++    const int base_line = 4 * fontScale;
++    const int yoffset = bottomLeftOrigin ? img.rows - org.y - fontpixelsize * 2 + base_line : org.y - fontpixelsize * 2 + base_line;
++
++    unsigned int _color = 0;
++    unsigned char* border_color = (unsigned char*)&_color;
++
++    if (img.channels() == 1)
++    {
++        border_color[0] = color[0];
++        draw_text_c1(img.data, img.cols, img.rows, text.c_str(), org.x, yoffset, fontpixelsize, _color);
++    }
++    else if (img.channels() == 3)
++    {
++        border_color[0] = color[0];
++        border_color[1] = color[1];
++        border_color[2] = color[2];
++        draw_text_c3(img.data, img.cols, img.rows, text.c_str(), org.x, yoffset, fontpixelsize, _color);
++    }
++    else if (img.channels() == 4)
++    {
++        border_color[0] = color[0];
++        border_color[1] = color[1];
++        border_color[2] = color[2];
++        border_color[3] = color[3];
++        draw_text_c4(img.data, img.cols, img.rows, text.c_str(), org.x, yoffset, fontpixelsize, _color);
++    }
++#if 0
+     const int* ascii = getFontData(fontFace);
+ 
+     double buf[4];
+@@ -2264,10 +2296,21 @@ void putText( Mat& img, const string& te
+         }
+         view_x += dx;
+     }
++#endif
+ }
+ 
+ Size getTextSize( const string& text, int fontFace, double fontScale, int thickness, int* _base_line)
+ {
++    const int fontpixelsize = 8 * fontScale;
++
++    int w;
++    int h;
++    get_text_drawing_size(text.c_str(), fontpixelsize, &w, &h);
++
++    *_base_line = 4 * fontScale;
++
++    return Size(w, h);
++#if 0
+     Size size;
+     double view_x = 0;
+     const char **faces = cv::g_HersheyGlyphs;
+@@ -2294,6 +2337,7 @@ Size getTextSize( const string& text, in
+     if( _base_line )
+         *_base_line = cvRound(base_line*fontScale + thickness*0.5);
+     return size;
++#endif
+ }
+ 
+ }
+@@ -2679,7 +2723,7 @@ cvInitFont( CvFont *font, int font_face,
+ {
+     CV_Assert( font != 0 && hscale > 0 && vscale > 0 && thickness >= 0 );
+ 
+-    font->ascii = cv::getFontData(font_face);
++    font->ascii = 0;
+     font->font_face = font_face;
+     font->hscale = (float)hscale;
+     font->vscale = (float)vscale;
+diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/tables.cpp opencv-2.4.13.7/modules/core/src/tables.cpp
+--- opencv-2.4.13.7.orig/modules/core/src/tables.cpp	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/modules/core/src/tables.cpp	2023-12-09 14:51:50.948704080 +0800
+@@ -204,6 +204,7 @@ const uchar g_Saturate8u[] =
+     255
+ };
+ 
++#if 0
+ const char* g_HersheyGlyphs[] = {
+  "",
+  "MWRMNV RMVV PSTS",
+@@ -3506,6 +3507,7 @@ const char* g_HersheyGlyphs[] = {
+  "",
+  "",
+  0 };
++#endif
+ 
+ }
+ 
