@@ -57,7 +57,8 @@ jobs:
         sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
         cp ../opencv2_cmake_options.txt ./options.txt
         cd ..
-        zip -9 -r opencv-${{ env.opencv-version }}.zip opencv-${{ env.opencv-version }}
+        mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
+        zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
     - name: opencv3-source
       env:
         opencv-version: 3.4.20
@@ -83,7 +84,8 @@ jobs:
         sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
         cp ../opencv3_cmake_options.txt ./options.txt
         cd ..
-        zip -9 -r opencv-${{ env.opencv-version }}.zip opencv-${{ env.opencv-version }}
+        mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
+        zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
     - name: opencv4-source
       env:
         opencv-version: 4.8.1
@@ -110,22 +112,23 @@ jobs:
         sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
         cp ../opencv4_cmake_options.txt ./options.txt
         cd ..
-        zip -9 -r opencv-${{ env.opencv-version }}.zip opencv-${{ env.opencv-version }}
+        mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
+        zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
     - name: upload-opencv2-source
       uses: actions/upload-artifact@v3
       with:
-        name: opencv-2.4.13.7-source
-        path: opencv-2.4.13.7.zip
+        name: opencv-mobile-2.4.13.7-source
+        path: opencv-mobile-2.4.13.7.zip
     - name: upload-opencv3-source
       uses: actions/upload-artifact@v3
       with:
-        name: opencv-3.4.20-source
-        path: opencv-3.4.20.zip
+        name: opencv-mobile-3.4.20-source
+        path: opencv-mobile-3.4.20.zip
     - name: upload-opencv4-source
       uses: actions/upload-artifact@v3
       with:
-        name: opencv-4.8.1-source
-        path: opencv-4.8.1.zip
+        name: opencv-mobile-4.8.1-source
+        path: opencv-mobile-4.8.1.zip
 
   android:
     needs: [setup]
@@ -147,11 +150,11 @@ jobs:
       run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
     - uses: actions/download-artifact@v3
       with:
-        name: opencv-${{ matrix.opencv-version }}-source
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
       run: |
-        unzip -q opencv-${{ matrix.opencv-version }}.zip
-        echo "SOURCE_DIR=opencv-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
         echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-android" >> $GITHUB_ENV
     - name: build-armeabi-v7a
       run: |
@@ -227,3 +230,85 @@ jobs:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
 
+  ios:
+    needs: [setup]
+    runs-on: macos-12
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+    env:
+      COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
+        -DPLATFORM=OS \
+        -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET \
+        -DENABLE_BITCODE=$ENABLE_BITCODE \
+        -DENABLE_ARC=$ENABLE_ARC \
+        -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+        -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_BUILD_TYPE=Release \
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+      with:
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
+    - name: setup-opencv-source
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios" >> $GITHUB_ENV
+    - name: build-armv7
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-armv7 && cd build-armv7
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="armv7" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-arm64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm64 && cd build-arm64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: build-arm64e
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm64e && cd build-arm64e
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64e" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j 3
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create \
+            ${{ env.SOURCE_DIR }}/build-armv7/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64e/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/
+        cp ${{ env.SOURCE_DIR }}/Info.plist opencv2.framework/Versions/A/Resources/
+        rm -f ${{ env.PACKAGE_NAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.framework
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="armv7;arm64;arm64e" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+        cmake --build . -j 3
+    - name: upload-zip
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
