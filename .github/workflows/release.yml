@@ -1118,7 +1118,7 @@ jobs:
         cd test
         mkdir build && cd build
         ${{ matrix.setup-env-cmd }}
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGENAME }}/lib/cmake/opencv4 ..
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/lib/cmake/opencv4 ..
         cmake --build . -j 2
 
     - name: upload-zip
