@@ -25,20 +25,12 @@
 
 :heavy_check_mark: All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secret code**.
 
-|opencv 4.8.1 source|package size|
-|:-:|:-:|
-|The official opencv|92.2 MB|
-|opencv-mobile|10.5 MB|
-
-|opencv 4.8.1 android|package size|
-|:-:|:-:|
-|The official opencv|189 MB|
-|opencv-mobile|17.9 MB|
-
-|opencv 4.8.1 ios|package size|package size with bitcode|
+|opencv 4.8.1 package size|The official opencv|opencv-mobile|
 |:-:|:-:|:-:|
-|The official opencv|197 MB|missing :(|
-|opencv-mobile|9.9 MB|34.3 MB|
+|source zip|92.2 MB|10.5 MB|
+|android|189 MB|17.9 MB|
+|ios|197 MB|9.9 MB|
+|ios+bitcode|missing :(|34.3 MB|
 
 # Download
 
