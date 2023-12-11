@@ -143,10 +143,15 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
 |Board|Target|opencv-4.8.1|
 |:-:|:-:|:-:|
-|milkv-duo|riscv64-linux-musl|[![download-icon]][opencv4-milkv-duo-url]|
-|luckfox-pico|arm-linux-uclibcgnueabihf|[![download-icon]][opencv4-luckfox-pico-url]|
-|yuzuki-lizard|arm-openwrt-linux-muslgnueabi|[![download-icon]][opencv4-yuzuki-lizard-url]|
-|purple-pi|arm-linux-gnueabihf|[![download-icon]][opencv4-purple-pi-url]|
+|[milkv-duo][milkv-duo-url]|riscv64-linux-musl|[![download-icon]][opencv4-milkv-duo-url]|
+|[luckfox-pico][luckfox-pico-url]|arm-linux-uclibcgnueabihf|[![download-icon]][opencv4-luckfox-pico-url]|
+|[yuzuki-lizard][yuzuki-lizard-url]|arm-openwrt-linux-muslgnueabi|[![download-icon]][opencv4-yuzuki-lizard-url]|
+|[purple-pi][purple-pi-url]|arm-linux-gnueabihf|[![download-icon]][opencv4-purple-pi-url]|
+
+[milkv-duo-url]: https://milkv.io/duo
+[luckfox-pico-url]: https://www.luckfox.com/Luckfox-Pico
+[yuzuki-lizard-url]: https://github.com/YuzukiHD/Yuzukilizard
+[purple-pi-url]: http://www.industio.cn/product-item-5.html
 
 [opencv4-milkv-duo-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-milkv-duo.zip
 [opencv4-luckfox-pico-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-luckfox-pico.zip
