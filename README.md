@@ -44,6 +44,95 @@
 
 https://github.com/nihui/opencv-mobile/releases/latest
 
+
+<table>
+<tr>
+<td rowspan=2>
+  <img alt="android" src="https://user-images.githubusercontent.com/25181517/117269608-b7dcfb80-ae58-11eb-8e66-6cc8753553f0.png" width="120" height="auto">
+</td>
+<td>
+  <b>Android </b>(armeabi-v7a, arm64-v8a, x86, x86_64)
+</td>
+</tr>
+<tr>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-android.zip">
+    <img alt="opencv2-android" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-android.zip">
+    <img alt="opencv3-android" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-android.zip">
+    <img alt="opencv4-android" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
+</table>
+
+
+
+<table>
+<tr>
+<td rowspan=2>
+  <img alt="ios" src="https://user-images.githubusercontent.com/25181517/121406611-a8246b80-c95e-11eb-9b11-b771486377f6.png" width="120" height="auto">
+</td>
+<td>
+  <b>iOS </b>(armv7, arm64, arm64e)
+</td>
+<td>
+  <b>iOS-Simulator </b>(i386, x86_64, arm64)
+</td>
+</tr>
+<tr>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios.zip">
+    <img alt="opencv2-ios" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-bitcode.zip">
+    <img alt="opencv2-ios-bitcode" src="https://img.shields.io/badge/download-2.4.13.7+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios.zip">
+    <img alt="opencv3-ios" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-bitcode.zip">
+    <img alt="opencv3-ios-bitcode" src="https://img.shields.io/badge/download-3.4.20+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios.zip">
+    <img alt="opencv4-ios" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios-bitcode.zip">
+    <img alt="opencv4-ios-bitcode" src="https://img.shields.io/badge/download-4.8.1+bitcode-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-simulator.zip">
+    <img alt="opencv2-ios-simulator" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-simulator-bitcode.zip">
+    <img alt="opencv2-ios-simulator-bitcode" src="https://img.shields.io/badge/download-2.4.13.7+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-simulator.zip">
+    <img alt="opencv3-ios-simulator" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-simulator-bitcode.zip">
+    <img alt="opencv3-ios-simulator-bitcode" src="https://img.shields.io/badge/download-3.4.20+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios-simulator.zip">
+    <img alt="opencv4-ios-simulator" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios-simulator-bitcode.zip">
+    <img alt="opencv4-ios-simulator-bitcode" src="https://img.shields.io/badge/download-4.8.1+bitcode-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
+</table>
+
+
+
+
+
+
+
 |Platform|Arch|opencv-2.4.13.7|opencv-3.4.20|opencv-4.8.1|
 |:-:|:-:|:-:|:-:|:-:|
 |Source| |[![download-icon]][opencv2-source-url]|[![download-icon]][opencv3-source-url]|[![download-icon]][opencv4-source-url]|
