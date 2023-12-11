@@ -25,121 +25,333 @@
 
 :heavy_check_mark: All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secret code**.
 
-|opencv 4.8.1 source|package size|
-|:-:|:-:|
-|The official opencv|92.2 MB|
-|opencv-mobile|10.5 MB|
-
-|opencv 4.8.1 android|package size|
-|:-:|:-:|
-|The official opencv|189 MB|
-|opencv-mobile|17.9 MB|
-
-|opencv 4.8.1 ios|package size|package size with bitcode|
+|opencv 4.8.1 package size|The official opencv|opencv-mobile|
 |:-:|:-:|:-:|
-|The official opencv|197 MB|missing :(|
-|opencv-mobile|9.9 MB|34.3 MB|
+|source zip|92.2 MB|10.5 MB|
+|android|189 MB|17.9 MB|
+|ios|197 MB|9.9 MB|
+|ios+bitcode|missing :(|34.3 MB|
 
 # Download
 
 https://github.com/nihui/opencv-mobile/releases/latest
 
-|Platform|Arch|opencv-2.4.13.7|opencv-3.4.20|opencv-4.8.1|
-|:-:|:-:|:-:|:-:|:-:|
-|Source| |[![download-icon]][opencv2-source-url]|[![download-icon]][opencv3-source-url]|[![download-icon]][opencv4-source-url]|
-|Android|armeabi-v7a<br />arm64-v8a<br />x86<br />x86_64|[![download-icon]][opencv2-android-url]|[![download-icon]][opencv3-android-url]|[![download-icon]][opencv4-android-url]|
-|iOS|armv7<br />arm64<br />arm64e|[![download-icon]][opencv2-ios-url]<br />[![bitcode-icon]][opencv2-ios-bitcode-url]|[![download-icon]][opencv3-ios-url]<br />[![bitcode-icon]][opencv3-ios-bitcode-url]|[![download-icon]][opencv4-ios-url]<br />[![bitcode-icon]][opencv4-ios-bitcode-url]|
-|iOS-Simulator|i386<br />x86_64<br />arm64|[![download-icon]][opencv2-ios-simulator-url]<br />[![bitcode-icon]][opencv2-ios-simulator-bitcode-url]|[![download-icon]][opencv3-ios-simulator-url]<br />[![bitcode-icon]][opencv3-ios-simulator-bitcode-url]|[![download-icon]][opencv4-ios-simulator-url]<br />[![bitcode-icon]][opencv4-ios-simulator-bitcode-url]|
-|MacOS|x86_64<br />arm64|[![download-icon]][opencv2-macos-url]|[![download-icon]][opencv3-macos-url]|[![download-icon]][opencv4-macos-url]|
-|Mac-Catalyst|x86_64<br />arm64|[![download-icon]][opencv2-mac-catalyst-url]<br />[![bitcode-icon]][opencv2-mac-catalyst-bitcode-url]|[![download-icon]][opencv3-mac-catalyst-url]<br />[![bitcode-icon]][opencv3-mac-catalyst-bitcode-url]|[![download-icon]][opencv4-mac-catalyst-url]<br />[![bitcode-icon]][opencv4-mac-catalyst-bitcode-url]|
-|Apple<br />xcframework|ios<br />(armv7,arm64,arm64e)<br />ios-simulator<br />(i386,x86_64,arm64)<br />ios-maccatalyst<br />(x86_64,arm64)<br />macos<br />(x86_64,arm64)|[![download-icon]][opencv2-apple-url]<br />[![bitcode-icon]][opencv2-apple-bitcode-url]|[![download-icon]][opencv3-apple-url]<br />[![bitcode-icon]][opencv3-apple-bitcode-url]|[![download-icon]][opencv4-apple-url]<br />[![bitcode-icon]][opencv4-apple-bitcode-url]|
-|ARM-Linux|arm-linux-gnueabi<br />arm-linux-gnueabihf<br />aarch64-linux-gnu|[![download-icon]][opencv2-armlinux-url]|[![download-icon]][opencv3-armlinux-url]|[![download-icon]][opencv4-armlinux-url]|
-|Windows-VS2015|x86<br />x64|[![download-icon]][opencv2-windows-vs2015-url]|[![download-icon]][opencv3-windows-vs2015-url]|[![download-icon]][opencv4-windows-vs2015-url]|
-|Windows-VS2017|x86<br />x64|[![download-icon]][opencv2-windows-vs2017-url]|[![download-icon]][opencv3-windows-vs2017-url]|[![download-icon]][opencv4-windows-vs2017-url]|
-|Windows-VS2019|x86<br />x64|[![download-icon]][opencv2-windows-vs2019-url]|[![download-icon]][opencv3-windows-vs2019-url]|[![download-icon]][opencv4-windows-vs2019-url]|
-|Windows-VS2022|x86<br />x64|[![download-icon]][opencv2-windows-vs2022-url]|[![download-icon]][opencv3-windows-vs2022-url]|[![download-icon]][opencv4-windows-vs2022-url]|
-|Ubuntu-20.04|x86_64|[![download-icon]][opencv2-ubuntu-2004-url]|[![download-icon]][opencv3-ubuntu-2004-url]|[![download-icon]][opencv4-ubuntu-2004-url]|
-|Ubuntu-22.04|x86_64|[![download-icon]][opencv2-ubuntu-2204-url]|[![download-icon]][opencv3-ubuntu-2204-url]|[![download-icon]][opencv4-ubuntu-2204-url]|
-|WebAssembly|basic<br />simd<br />threads<br />simd+threads|[![download-icon]][opencv2-webassembly-url]|[![download-icon]][opencv3-webassembly-url]|[![download-icon]][opencv4-webassembly-url]|
+<table>
+<tr>
+<td rowspan=2>
+  <img alt="source" src="https://user-images.githubusercontent.com/25181517/192108372-f71d70ac-7ae6-4c0d-8395-51d8870c2ef0.png" width="120" height="auto">
+</td>
+<td colspan=4>
+  <b>Source </b>
+</td>
+</tr>
+<tr>
+<td colspan=4>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7.zip">
+    <img alt="opencv2-source" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20.zip">
+    <img alt="opencv3-source" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1.zip">
+    <img alt="opencv4-source" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
 
-[download-icon]: https://img.shields.io/badge/download-blue?style=for-the-badge
-[bitcode-icon]: https://img.shields.io/badge/+bitcode-blue?style=for-the-badge
+<tr>
+<td rowspan=2>
+  <img alt="android" src="https://user-images.githubusercontent.com/25181517/117269608-b7dcfb80-ae58-11eb-8e66-6cc8753553f0.png" width="120" height="auto">
+</td>
+<td colspan=4>
+  <b>Android </b>(armeabi-v7a, arm64-v8a, x86, x86_64)
+</td>
+</tr>
+<tr>
+<td colspan=4>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-android.zip">
+    <img alt="opencv2-android" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-android.zip">
+    <img alt="opencv3-android" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-android.zip">
+    <img alt="opencv4-android" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
 
-[opencv2-source-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7.zip
-[opencv3-source-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20.zip
-[opencv4-source-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1.zip
+<tr>
+<td rowspan=2>
+  <img alt="ios" src="https://user-images.githubusercontent.com/25181517/121406611-a8246b80-c95e-11eb-9b11-b771486377f6.png" width="120" height="auto">
+</td>
+<td colspan=2>
+  <b>iOS </b>(armv7, arm64, arm64e)
+</td>
+<td colspan=2>
+  <b>iOS-Simulator </b>(i386, x86_64, arm64)
+</td>
+</tr>
+<tr>
+<td colspan=2>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios.zip">
+    <img alt="opencv2-ios" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-bitcode.zip">
+    <img alt="opencv2-ios-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios.zip">
+    <img alt="opencv3-ios" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-bitcode.zip">
+    <img alt="opencv3-ios-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios.zip">
+    <img alt="opencv4-ios" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios-bitcode.zip">
+    <img alt="opencv4-ios-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a>
+</td>
+<td colspan=2>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-simulator.zip">
+    <img alt="opencv2-ios-simulator" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-simulator-bitcode.zip">
+    <img alt="opencv2-ios-simulator-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-simulator.zip">
+    <img alt="opencv3-ios-simulator" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-simulator-bitcode.zip">
+    <img alt="opencv3-ios-simulator-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios-simulator.zip">
+    <img alt="opencv4-ios-simulator" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios-simulator-bitcode.zip">
+    <img alt="opencv4-ios-simulator-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
 
-[opencv2-android-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-android.zip
-[opencv3-android-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-android.zip
-[opencv4-android-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-android.zip
+<tr>
+<td rowspan=4>
+  <img alt="macos" src="https://user-images.githubusercontent.com/25181517/186884152-ae609cca-8cf1-4175-8d60-1ce1fa078ca2.png" width="120" height="auto">
+</td>
+<td colspan=2>
+  <b>macOS </b>(x86_64, arm64)
+</td>
+<td colspan=2>
+  <b>Mac-Catalyst </b>(x86_64, arm64)
+</td>
+</tr>
+<tr>
+<td colspan=2>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-macos.zip">
+    <img alt="opencv2-macos" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-macos.zip">
+    <img alt="opencv3-macos" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-macos.zip">
+    <img alt="opencv4-macos" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+<td colspan=2>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-mac-catalyst.zip">
+    <img alt="opencv2-mac-catalyst" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-mac-catalyst-bitcode.zip">
+    <img alt="opencv2-mac-catalyst-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-mac-catalyst.zip">
+    <img alt="opencv3-mac-catalyst" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-mac-catalyst-bitcode.zip">
+    <img alt="opencv3-mac-catalyst-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-mac-catalyst.zip">
+    <img alt="opencv4-mac-catalyst" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-mac-catalyst-bitcode.zip">
+    <img alt="opencv4-mac-catalyst-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
 
-[opencv2-ios-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios.zip
-[opencv3-ios-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios.zip
-[opencv4-ios-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios.zip
+<tr>
+<td colspan=4>
+  <b>Apple xcframework </b>(ios, ios-simulator, ios-maccatalyst, macos)
+</td>
+</tr>
+<tr>
+<td colspan=4>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-apple.zip">
+    <img alt="opencv2-apple" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-apple-bitcode.zip">
+    <img alt="opencv2-apple-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-apple.zip">
+    <img alt="opencv3-apple" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-apple-bitcode.zip">
+    <img alt="opencv3-apple-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-apple.zip">
+    <img alt="opencv4-apple" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-apple-bitcode.zip">
+    <img alt="opencv4-apple-bitcode" src="https://img.shields.io/badge/+bitcode-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
 
-[opencv2-ios-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-bitcode.zip
-[opencv3-ios-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-bitcode.zip
-[opencv4-ios-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios-bitcode.zip
+<tr>
+<td rowspan=2>
+  <img alt="armlinux" src="https://github.com/marwin1991/profile-technology-icons/assets/76662862/2481dc48-be6b-4ebb-9e8c-3b957efe69fa" width="120" height="auto">
+</td>
+<td colspan=4>
+  <b>ARM-Linux </b>(arm-linux-gnueabi, arm-linux-gnueabihf, aarch64-linux-gnu)
+</td>
+</tr>
+<tr>
+<td colspan=4>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-armlinux.zip">
+    <img alt="opencv2-armlinux" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-armlinux.zip">
+    <img alt="opencv3-armlinux" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-armlinux.zip">
+    <img alt="opencv4-armlinux" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
 
-[opencv2-ios-simulator-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-simulator.zip
-[opencv3-ios-simulator-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-simulator.zip
-[opencv4-ios-simulator-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios-simulator.zip
+<tr>
+<td rowspan=2>
+  <img alt="windows" src="https://user-images.githubusercontent.com/25181517/186884150-05e9ff6d-340e-4802-9533-2c3f02363ee3.png" width="120" height="auto">
+</td>
+<td>
+  <b>VS2015 </b>(x86, x64)
+</td>
+<td>
+  <b>VS2017 </b>(x86, x64)
+</td>
+<td>
+  <b>VS2019 </b>(x86, x64)
+</td>
+<td>
+  <b>VS2022 </b>(x86, x64)
+</td>
+</tr>
+<tr>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2015.zip">
+    <img alt="opencv2-windows-vs2015" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2015.zip">
+    <img alt="opencv3-windows-vs2015" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2015.zip">
+    <img alt="opencv4-windows-vs2015" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2017.zip">
+    <img alt="opencv2-windows-vs2017" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2017.zip">
+    <img alt="opencv3-windows-vs2017" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2017.zip">
+    <img alt="opencv4-windows-vs2017" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2019.zip">
+    <img alt="opencv2-windows-vs2019" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2019.zip">
+    <img alt="opencv3-windows-vs2019" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2019.zip">
+    <img alt="opencv4-windows-vs2019" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2022.zip">
+    <img alt="opencv2-windows-vs2022" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2022.zip">
+    <img alt="opencv3-windows-vs2022" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2022.zip">
+    <img alt="opencv4-windows-vs2022" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
 
-[opencv2-ios-simulator-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-simulator-bitcode.zip
-[opencv3-ios-simulator-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-simulator-bitcode.zip
-[opencv4-ios-simulator-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ios-simulator-bitcode.zip
+<tr>
+<td rowspan=2>
+  <img alt="ubuntu" src="https://user-images.githubusercontent.com/25181517/186884153-99edc188-e4aa-4c84-91b0-e2df260ebc33.png" width="120" height="auto">
+</td>
+<td colspan=2>
+  <b>20.04 </b>(x86_64)
+</td>
+<td colspan=2>
+  <b>22.04 </b>(x86_64)
+</td>
+</tr>
+<tr>
+<td colspan=2>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2004.zip">
+    <img alt="opencv2-ubuntu-2004" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2004.zip">
+    <img alt="opencv3-ubuntu-2004" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ubuntu-2004.zip">
+    <img alt="opencv4-ubuntu-2004" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+<td colspan=2>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2204.zip">
+    <img alt="opencv2-ubuntu-2204" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2204.zip">
+    <img alt="opencv3-ubuntu-2204" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ubuntu-2204.zip">
+    <img alt="opencv4-ubuntu-2204" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
 
-[opencv2-macos-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-macos.zip
-[opencv3-macos-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-macos.zip
-[opencv4-macos-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-macos.zip
-
-[opencv2-mac-catalyst-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-mac-catalyst.zip
-[opencv3-mac-catalyst-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-mac-catalyst.zip
-[opencv4-mac-catalyst-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-mac-catalyst.zip
-
-[opencv2-mac-catalyst-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-mac-catalyst-bitcode.zip
-[opencv3-mac-catalyst-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-mac-catalyst-bitcode.zip
-[opencv4-mac-catalyst-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-mac-catalyst-bitcode.zip
-
-[opencv2-apple-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-apple.zip
-[opencv3-apple-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-apple.zip
-[opencv4-apple-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-apple.zip
-
-[opencv2-apple-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-apple-bitcode.zip
-[opencv3-apple-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-apple-bitcode.zip
-[opencv4-apple-bitcode-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-apple-bitcode.zip
-
-[opencv2-armlinux-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-armlinux.zip
-[opencv3-armlinux-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-armlinux.zip
-[opencv4-armlinux-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-armlinux.zip
-
-[opencv2-windows-vs2015-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2015.zip
-[opencv3-windows-vs2015-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2015.zip
-[opencv4-windows-vs2015-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2015.zip
-
-[opencv2-windows-vs2017-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2017.zip
-[opencv3-windows-vs2017-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2017.zip
-[opencv4-windows-vs2017-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2017.zip
-
-[opencv2-windows-vs2019-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2019.zip
-[opencv3-windows-vs2019-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2019.zip
-[opencv4-windows-vs2019-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2019.zip
-
-[opencv2-windows-vs2022-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2022.zip
-[opencv3-windows-vs2022-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2022.zip
-[opencv4-windows-vs2022-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2022.zip
-
-[opencv2-ubuntu-2004-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2004.zip
-[opencv3-ubuntu-2004-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2004.zip
-[opencv4-ubuntu-2004-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ubuntu-2004.zip
-
-[opencv2-ubuntu-2204-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2204.zip
-[opencv3-ubuntu-2204-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2204.zip
-[opencv4-ubuntu-2204-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ubuntu-2204.zip
-
-[opencv2-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-webassembly.zip
-[opencv3-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-webassembly.zip
-[opencv4-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-webassembly.zip
+<tr>
+<td rowspan=2>
+  <img alt="webassembly" src="https://user-images.githubusercontent.com/25181517/188324036-d704ac9a-6e61-4722-b978-254b25b61bed.png" width="120" height="auto">
+</td>
+<td colspan=4>
+  <b>WebAssembly </b>(basic, simd, threads, simd+threads)
+</td>
+</tr>
+<tr>
+<td colspan=4>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-webassembly.zip">
+    <img alt="opencv2-webassembly" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-webassembly.zip">
+    <img alt="opencv3-webassembly" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-webassembly.zip">
+    <img alt="opencv4-webassembly" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
+</table>
 
 * Android package build with ndk r26b and android api 21
 * iOS / iOS-Simulator / MacOS / Mac-Catalyst package build with Xcode 13.4.1
@@ -152,46 +364,46 @@ https://github.com/nihui/opencv-mobile/releases/latest
 <tr>
 <td>
   <a href="https://milkv.io/duo">
-    <img alt="milkv-duo" src="https://milkv.io/assets/images/duo-v1.2-9bf1d36ef7632ffba032796978cda903.png" width="120" height="auto" class="center">
+    <img alt="milkv-duo" src="https://milkv.io/assets/images/duo-v1.2-9bf1d36ef7632ffba032796978cda903.png" width="auto" height="120">
     <br /><b>milkv-duo</b>
   </a>
   <br />riscv64-linux-musl<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-milkv-duo.zip">
-    <img alt="opencv4-milkv-duo" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-milkv-duo" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
   </a>
 </td>
 <td>
   <a href="https://www.luckfox.com/Luckfox-Pico">
-    <img alt="luckfox-pico" src="https://www.luckfox.com/image/cache/catalog/Luckfox-Pico-Plus/Luckfox-Pico-Plus-1-1600x1200.jpg" width="120" height="auto" class="center">
+    <img alt="luckfox-pico" src="https://www.luckfox.com/image/cache/catalog/Luckfox-Pico-Plus/Luckfox-Pico-Plus-1-1600x1200.jpg" width="auto" height="120">
     <br /><b>luckfox-pico</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
   &#9989; HW JPG encoder<br />
   &#9989; MIPI CSI camera<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-luckfox-pico.zip">
-    <img alt="opencv4-luckfox-pico" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-luckfox-pico" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
   </a>
 </td>
 </tr>
 <tr>
 <td>
   <a href="https://yuzukihd.top">
-    <img alt="yuzuki-lizard" src="https://yuzukihd.top/images/yuzukilizard.jpg" width="120" height="auto" class="center">
+    <img alt="yuzuki-lizard" src="https://yuzukihd.top/images/yuzukilizard.jpg" width="auto" height="120">
     <br /><b>yuzuki-lizard</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-yuzuki-lizard.zip">
-    <img alt="opencv4-yuzuki-lizard" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-yuzuki-lizard" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
   </a>
 </td>
 <td>
   <a href="http://www.industio.cn/product-item-5.html">
-    <img alt="purple-pi" src="https://img01.71360.com/file/read/www2/M00/38/09/wKj2K2MMbSKAXKhHAAJMw0S-VfY400.jpg" width="120" height="auto" class="center">
+    <img alt="purple-pi" src="https://img01.71360.com/file/read/www2/M00/38/09/wKj2K2MMbSKAXKhHAAJMw0S-VfY400.jpg" width="auto" height="120">
     <br /><b>purple-pi</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-purple-pi.zip">
-    <img alt="opencv4-purple-pi" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-purple-pi" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
   </a>
 </td>
 </tr>
