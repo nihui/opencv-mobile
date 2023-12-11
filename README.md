@@ -228,7 +228,29 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </tr>
 </table>
 
-
+<table>
+<tr>
+<td rowspan=2>
+  <img alt="armlinux" src="https://github.com/marwin1991/profile-technology-icons/assets/76662862/2481dc48-be6b-4ebb-9e8c-3b957efe69fa" width="120" height="auto">
+</td>
+<td>
+  <b>ARM-Linux </b>(arm-linux-gnueabi, arm-linux-gnueabihf, aarch64-linux-gnu)
+</td>
+</tr>
+<tr>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-armlinux.zip">
+    <img alt="opencv2-armlinux" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-armlinux.zip">
+    <img alt="opencv3-armlinux" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-armlinux.zip">
+    <img alt="opencv4-armlinux" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
+</table>
 
 <table>
 <tr>
@@ -236,16 +258,16 @@ https://github.com/nihui/opencv-mobile/releases/latest
   <img alt="windows" src="https://user-images.githubusercontent.com/25181517/186884150-05e9ff6d-340e-4802-9533-2c3f02363ee3.png" width="120" height="auto">
 </td>
 <td>
-  <b>VS2015 </b>(x86, 64)
+  <b>VS2015 </b>(x86, x64)
 </td>
 <td>
-  <b>VS2017 </b>(x86, 64)
+  <b>VS2017 </b>(x86, x64)
 </td>
 <td>
-  <b>VS2019 </b>(x86, 64)
+  <b>VS2019 </b>(x86, x64)
 </td>
 <td>
-  <b>VS2022 </b>(x86, 64)
+  <b>VS2022 </b>(x86, x64)
 </td>
 </tr>
 <tr>
@@ -357,18 +379,6 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </td>
 </tr>
 </table>
-
-
-|Platform|Arch|opencv-2.4.13.7|opencv-3.4.20|opencv-4.8.1|
-|:-:|:-:|:-:|:-:|:-:|
-|ARM-Linux|arm-linux-gnueabi<br />arm-linux-gnueabihf<br />aarch64-linux-gnu|[![download-icon]][opencv2-armlinux-url]|[![download-icon]][opencv3-armlinux-url]|[![download-icon]][opencv4-armlinux-url]|
-
-[download-icon]: https://img.shields.io/badge/download-blue?style=for-the-badge
-[bitcode-icon]: https://img.shields.io/badge/+bitcode-blue?style=for-the-badge
-
-[opencv2-armlinux-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-armlinux.zip
-[opencv3-armlinux-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-armlinux.zip
-[opencv4-armlinux-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-armlinux.zip
 
 * Android package build with ndk r26b and android api 21
 * iOS / iOS-Simulator / MacOS / Mac-Catalyst package build with Xcode 13.4.1
