@@ -364,46 +364,46 @@ https://github.com/nihui/opencv-mobile/releases/latest
 <tr>
 <td>
   <a href="https://milkv.io/duo">
-    <img alt="milkv-duo" src="https://milkv.io/assets/images/duo-v1.2-9bf1d36ef7632ffba032796978cda903.png" width="120" height="auto" class="center">
+    <img alt="milkv-duo" src="https://milkv.io/assets/images/duo-v1.2-9bf1d36ef7632ffba032796978cda903.png" width="auto" height="120">
     <br /><b>milkv-duo</b>
   </a>
   <br />riscv64-linux-musl<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-milkv-duo.zip">
-    <img alt="opencv4-milkv-duo" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-milkv-duo" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
   </a>
 </td>
 <td>
   <a href="https://www.luckfox.com/Luckfox-Pico">
-    <img alt="luckfox-pico" src="https://www.luckfox.com/image/cache/catalog/Luckfox-Pico-Plus/Luckfox-Pico-Plus-1-1600x1200.jpg" width="120" height="auto" class="center">
+    <img alt="luckfox-pico" src="https://www.luckfox.com/image/cache/catalog/Luckfox-Pico-Plus/Luckfox-Pico-Plus-1-1600x1200.jpg" width="auto" height="120">
     <br /><b>luckfox-pico</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
   &#9989; HW JPG encoder<br />
   &#9989; MIPI CSI camera<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-luckfox-pico.zip">
-    <img alt="opencv4-luckfox-pico" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-luckfox-pico" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
   </a>
 </td>
 </tr>
 <tr>
 <td>
   <a href="https://yuzukihd.top">
-    <img alt="yuzuki-lizard" src="https://yuzukihd.top/images/yuzukilizard.jpg" width="120" height="auto" class="center">
+    <img alt="yuzuki-lizard" src="https://yuzukihd.top/images/yuzukilizard.jpg" width="auto" height="120">
     <br /><b>yuzuki-lizard</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-yuzuki-lizard.zip">
-    <img alt="opencv4-yuzuki-lizard" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-yuzuki-lizard" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
   </a>
 </td>
 <td>
   <a href="http://www.industio.cn/product-item-5.html">
-    <img alt="purple-pi" src="https://img01.71360.com/file/read/www2/M00/38/09/wKj2K2MMbSKAXKhHAAJMw0S-VfY400.jpg" width="120" height="auto" class="center">
+    <img alt="purple-pi" src="https://img01.71360.com/file/read/www2/M00/38/09/wKj2K2MMbSKAXKhHAAJMw0S-VfY400.jpg" width="auto" height="120">
     <br /><b>purple-pi</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-purple-pi.zip">
-    <img alt="opencv4-purple-pi" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-purple-pi" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
   </a>
 </td>
 </tr>
