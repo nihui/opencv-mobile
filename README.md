@@ -141,27 +141,61 @@ https://github.com/nihui/opencv-mobile/releases/latest
 [opencv3-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-webassembly.zip
 [opencv4-webassembly-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-webassembly.zip
 
-|Board|Target|opencv-4.8.1|
-|:-:|:-:|:-:|
-|[milkv-duo][milkv-duo-url]|riscv64-linux-musl|[![download-icon]][opencv4-milkv-duo-url]|
-|[luckfox-pico][luckfox-pico-url]|arm-linux-uclibcgnueabihf|[![download-icon]][opencv4-luckfox-pico-url]|
-|[yuzuki-lizard][yuzuki-lizard-url]|arm-openwrt-linux-muslgnueabi|[![download-icon]][opencv4-yuzuki-lizard-url]|
-|[purple-pi][purple-pi-url]|arm-linux-gnueabihf|[![download-icon]][opencv4-purple-pi-url]|
-
-[milkv-duo-url]: https://milkv.io/duo
-[luckfox-pico-url]: https://www.luckfox.com/Luckfox-Pico
-[yuzuki-lizard-url]: https://github.com/YuzukiHD/Yuzukilizard
-[purple-pi-url]: http://www.industio.cn/product-item-5.html
-
-[opencv4-milkv-duo-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-milkv-duo.zip
-[opencv4-luckfox-pico-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-luckfox-pico.zip
-[opencv4-yuzuki-lizard-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-yuzuki-lizard.zip
-[opencv4-purple-pi-url]: https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-purple-pi.zip
-
 * Android package build with ndk r26b and android api 21
 * iOS / iOS-Simulator / MacOS / Mac-Catalyst package build with Xcode 13.4.1
 * ARM Linux package build with cross-compiler on Ubuntu-22.04
 * WebAssembly package build with Emscripten 3.1.28
+
+### opencv-mobile package for development boards
+
+<table>
+<tr>
+<td>
+  <a href="https://milkv.io/duo">
+    <img alt="milkv-duo" src="https://milkv.io/assets/images/duo-v1.2-9bf1d36ef7632ffba032796978cda903.png" width="120" height="auto" class="center">
+    <br /><b>milkv-duo</b>
+  </a>
+  <br />riscv64-linux-musl<br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-milkv-duo.zip">
+    <img alt="opencv4-milkv-duo" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+  </a>
+</td>
+<td>
+  <a href="https://www.luckfox.com/Luckfox-Pico">
+    <img alt="luckfox-pico" src="https://www.luckfox.com/image/cache/catalog/Luckfox-Pico-Plus/Luckfox-Pico-Plus-1-1600x1200.jpg" width="120" height="auto" class="center">
+    <br /><b>luckfox-pico</b>
+  </a>
+  <br />arm-linux-uclibcgnueabihf<br />
+  &#9989; HW JPG encoder<br />
+  &#9989; MIPI CSI camera<br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-luckfox-pico.zip">
+    <img alt="opencv4-luckfox-pico" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+  </a>
+</td>
+</tr>
+<tr>
+<td>
+  <a href="https://yuzukihd.top">
+    <img alt="yuzuki-lizard" src="https://yuzukihd.top/images/yuzukilizard.jpg" width="120" height="auto" class="center">
+    <br /><b>yuzuki-lizard</b>
+  </a>
+  <br />arm-linux-uclibcgnueabihf<br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-yuzuki-lizard.zip">
+    <img alt="opencv4-yuzuki-lizard" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+  </a>
+</td>
+<td>
+  <a href="http://www.industio.cn/product-item-5.html">
+    <img alt="purple-pi" src="https://img01.71360.com/file/read/www2/M00/38/09/wKj2K2MMbSKAXKhHAAJMw0S-VfY400.jpg" width="120" height="auto" class="center">
+    <br /><b>purple-pi</b>
+  </a>
+  <br />arm-linux-uclibcgnueabihf<br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-purple-pi.zip">
+    <img alt="opencv4-purple-pi" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+  </a>
+</td>
+</tr>
+</table>
 
 # Usage Android
 
