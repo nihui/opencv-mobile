@@ -206,18 +206,116 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
 
 
+<table>
+<tr>
+<td rowspan=2>
+  <img alt="windows" src="https://user-images.githubusercontent.com/25181517/186884150-05e9ff6d-340e-4802-9533-2c3f02363ee3.png" width="120" height="auto">
+</td>
+<td>
+  <b>VS2015 </b>(x86, 64)
+</td>
+<td>
+  <b>VS2017 </b>(x86, 64)
+</td>
+<td>
+  <b>VS2019 </b>(x86, 64)
+</td>
+<td>
+  <b>VS2022 </b>(x86, 64)
+</td>
+</tr>
+<tr>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2015.zip">
+    <img alt="opencv2-windows-vs2015" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2015.zip">
+    <img alt="opencv3-windows-vs2015" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2015.zip">
+    <img alt="opencv4-windows-vs2015" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2017.zip">
+    <img alt="opencv2-windows-vs2017" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2017.zip">
+    <img alt="opencv3-windows-vs2017" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2017.zip">
+    <img alt="opencv4-windows-vs2017" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2019.zip">
+    <img alt="opencv2-windows-vs2019" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2019.zip">
+    <img alt="opencv3-windows-vs2019" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2019.zip">
+    <img alt="opencv4-windows-vs2019" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2022.zip">
+    <img alt="opencv2-windows-vs2022" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2022.zip">
+    <img alt="opencv3-windows-vs2022" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2022.zip">
+    <img alt="opencv4-windows-vs2022" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td rowspan=2>
+  <img alt="ubuntu" src="https://user-images.githubusercontent.com/25181517/186884153-99edc188-e4aa-4c84-91b0-e2df260ebc33.png" width="120" height="auto">
+</td>
+<td>
+  <b>20.04 </b>(x86_64)
+</td>
+<td>
+  <b>22.04 </b>(x86_64)
+</td>
+</tr>
+<tr>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2004.zip">
+    <img alt="opencv2-ubuntu-2004" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2004.zip">
+    <img alt="opencv3-ubuntu-2004" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ubuntu-2004.zip">
+    <img alt="opencv4-ubuntu-2004" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2204.zip">
+    <img alt="opencv2-ubuntu-2204" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2204.zip">
+    <img alt="opencv3-ubuntu-2204" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ubuntu-2204.zip">
+    <img alt="opencv4-ubuntu-2204" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
+</table>
+
 
 
 |Platform|Arch|opencv-2.4.13.7|opencv-3.4.20|opencv-4.8.1|
 |:-:|:-:|:-:|:-:|:-:|
 |Source| |[![download-icon]][opencv2-source-url]|[![download-icon]][opencv3-source-url]|[![download-icon]][opencv4-source-url]|
 |ARM-Linux|arm-linux-gnueabi<br />arm-linux-gnueabihf<br />aarch64-linux-gnu|[![download-icon]][opencv2-armlinux-url]|[![download-icon]][opencv3-armlinux-url]|[![download-icon]][opencv4-armlinux-url]|
-|Windows-VS2015|x86<br />x64|[![download-icon]][opencv2-windows-vs2015-url]|[![download-icon]][opencv3-windows-vs2015-url]|[![download-icon]][opencv4-windows-vs2015-url]|
-|Windows-VS2017|x86<br />x64|[![download-icon]][opencv2-windows-vs2017-url]|[![download-icon]][opencv3-windows-vs2017-url]|[![download-icon]][opencv4-windows-vs2017-url]|
-|Windows-VS2019|x86<br />x64|[![download-icon]][opencv2-windows-vs2019-url]|[![download-icon]][opencv3-windows-vs2019-url]|[![download-icon]][opencv4-windows-vs2019-url]|
-|Windows-VS2022|x86<br />x64|[![download-icon]][opencv2-windows-vs2022-url]|[![download-icon]][opencv3-windows-vs2022-url]|[![download-icon]][opencv4-windows-vs2022-url]|
-|Ubuntu-20.04|x86_64|[![download-icon]][opencv2-ubuntu-2004-url]|[![download-icon]][opencv3-ubuntu-2004-url]|[![download-icon]][opencv4-ubuntu-2004-url]|
-|Ubuntu-22.04|x86_64|[![download-icon]][opencv2-ubuntu-2204-url]|[![download-icon]][opencv3-ubuntu-2204-url]|[![download-icon]][opencv4-ubuntu-2204-url]|
 |WebAssembly|basic<br />simd<br />threads<br />simd+threads|[![download-icon]][opencv2-webassembly-url]|[![download-icon]][opencv3-webassembly-url]|[![download-icon]][opencv4-webassembly-url]|
 
 [download-icon]: https://img.shields.io/badge/download-blue?style=for-the-badge
