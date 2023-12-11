@@ -299,10 +299,10 @@ https://github.com/nihui/opencv-mobile/releases/latest
   <img alt="ubuntu" src="https://user-images.githubusercontent.com/25181517/186884153-99edc188-e4aa-4c84-91b0-e2df260ebc33.png" width="120" height="auto">
 </td>
 <td colspan=2>
-  <b>20.04 </b>(x86_64)
+  <b>Ubuntu-20.04 </b>(x86_64)
 </td>
 <td colspan=2>
-  <b>22.04 </b>(x86_64)
+  <b>Ubuntu-22.04 </b>(x86_64)
 </td>
 </tr>
 <tr>
