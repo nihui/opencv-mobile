@@ -246,7 +246,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
   </a>
   <br />riscv64-linux-musl<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-milkv-duo.zip">
-    <img alt="opencv4-milkv-duo" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-milkv-duo" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge" class="center">
   </a>
 </td>
 <td>
@@ -258,7 +258,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
   &#9989; HW JPG encoder<br />
   &#9989; MIPI CSI camera<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-luckfox-pico.zip">
-    <img alt="opencv4-luckfox-pico" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-luckfox-pico" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge" class="center">
   </a>
 </td>
 </tr>
@@ -270,7 +270,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-yuzuki-lizard.zip">
-    <img alt="opencv4-yuzuki-lizard" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-yuzuki-lizard" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge" class="center">
   </a>
 </td>
 <td>
@@ -280,7 +280,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-purple-pi.zip">
-    <img alt="opencv4-purple-pi" src="https://img.shields.io/badge/download-blue?style=for-the-badge" class="center">
+    <img alt="opencv4-purple-pi" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge" class="center">
   </a>
 </td>
 </tr>
