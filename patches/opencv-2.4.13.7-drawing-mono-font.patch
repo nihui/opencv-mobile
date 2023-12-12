@@ -29,8 +29,8 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
                int thickness, int line_type, bool bottomLeftOrigin )
  
  {
-+    const int fontpixelsize = 8 * fontScale;
-+    const int base_line = 4 * fontScale;
++    const int fontpixelsize = (fontFace == 1 ? 8 : (fontFace == 5 ? 12 : 20)) * fontScale;
++    const int base_line = 0;
 +    const int yoffset = bottomLeftOrigin ? img.rows - org.y - fontpixelsize * 2 + base_line : org.y - fontpixelsize * 2 + base_line;
 +
 +    unsigned int _color = 0;
@@ -69,13 +69,13 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
  
  Size getTextSize( const string& text, int fontFace, double fontScale, int thickness, int* _base_line)
  {
-+    const int fontpixelsize = 8 * fontScale;
++    const int fontpixelsize = (fontFace == 1 ? 8 : (fontFace == 5 ? 12 : 20)) * fontScale;
 +
 +    int w;
 +    int h;
 +    get_text_drawing_size(text.c_str(), fontpixelsize, &w, &h);
 +
-+    *_base_line = 4 * fontScale;
++    *_base_line = 0;
 +
 +    return Size(w, h);
 +#if 0
