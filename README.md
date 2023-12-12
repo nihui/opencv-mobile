@@ -209,9 +209,41 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </tr>
 
 <tr>
-<td rowspan=2>
-  <img alt="armlinux" src="https://github.com/marwin1991/profile-technology-icons/assets/76662862/2481dc48-be6b-4ebb-9e8c-3b957efe69fa" width="120" height="auto">
+<td rowspan=4>
+  <img alt="linux" src="https://github.com/marwin1991/profile-technology-icons/assets/76662862/2481dc48-be6b-4ebb-9e8c-3b957efe69fa" width="120" height="auto">
 </td>
+<td colspan=2>
+  <b>Ubuntu-20.04 </b>(x86_64)
+</td>
+<td colspan=2>
+  <b>Ubuntu-22.04 </b>(x86_64)
+</td>
+</tr>
+<tr>
+<td colspan=2>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2004.zip">
+    <img alt="opencv2-ubuntu-2004" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2004.zip">
+    <img alt="opencv3-ubuntu-2004" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ubuntu-2004.zip">
+    <img alt="opencv4-ubuntu-2004" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+<td colspan=2>
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2204.zip">
+    <img alt="opencv2-ubuntu-2204" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2204.zip">
+    <img alt="opencv3-ubuntu-2204" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
+  </a><br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ubuntu-2204.zip">
+    <img alt="opencv4-ubuntu-2204" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
+  </a>
+</td>
+</tr>
+<tr>
 <td colspan=4>
   <b>ARM-Linux </b>(arm-linux-gnueabi, arm-linux-gnueabihf, aarch64-linux-gnu)
 </td>
@@ -290,42 +322,6 @@ https://github.com/nihui/opencv-mobile/releases/latest
   </a><br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-windows-vs2022.zip">
     <img alt="opencv4-windows-vs2022" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
-  </a>
-</td>
-</tr>
-
-<tr>
-<td rowspan=2>
-  <img alt="ubuntu" src="https://user-images.githubusercontent.com/25181517/186884153-99edc188-e4aa-4c84-91b0-e2df260ebc33.png" width="120" height="auto">
-</td>
-<td colspan=2>
-  <b>Ubuntu-20.04 </b>(x86_64)
-</td>
-<td colspan=2>
-  <b>Ubuntu-22.04 </b>(x86_64)
-</td>
-</tr>
-<tr>
-<td colspan=2>
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2004.zip">
-    <img alt="opencv2-ubuntu-2004" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
-  </a><br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2004.zip">
-    <img alt="opencv3-ubuntu-2004" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
-  </a><br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ubuntu-2004.zip">
-    <img alt="opencv4-ubuntu-2004" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
-  </a>
-</td>
-<td colspan=2>
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2204.zip">
-    <img alt="opencv2-ubuntu-2204" src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">
-  </a><br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2204.zip">
-    <img alt="opencv3-ubuntu-2204" src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">
-  </a><br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-ubuntu-2204.zip">
-    <img alt="opencv4-ubuntu-2204" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
   </a>
 </td>
 </tr>
