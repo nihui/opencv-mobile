@@ -40,6 +40,7 @@
 #include "stb_image_write.h"
 
 #if defined __linux__
+#include "jpeg_decoder_cvi.h"
 #include "jpeg_encoder_rk_mpp.h"
 #endif
 
@@ -117,10 +118,79 @@ Mat imread(const String& filename, int flags)
         return Mat();
     }
 
+    FILE* fp = fopen(filename.c_str(), "rb");
+    if (!fp)
+    {
+        fprintf(stderr, "fopen %s failed\n", filename.c_str());
+        return Mat();
+    }
+
+    std::vector<unsigned char> filedata;
+    {
+        fseek(fp, 0, SEEK_END);
+        size_t len = ftell(fp);
+        rewind(fp);
+        filedata.resize(len);
+        size_t nread = fread(filedata.data(), 1, len, fp);
+        if (nread != len)
+        {
+            filedata.clear();
+        }
+    }
+
+    fclose(fp);
+
+    if (filedata.empty())
+    {
+        // empty file
+        fprintf(stderr, "filedata empty\n");
+        return Mat();
+    }
+
+    const unsigned char* buf_data = (const unsigned char*)filedata.data();
+    size_t buf_size = filedata.size();
+
+#if defined __linux__
+    if (buf_size > 4 && buf_data[0] == 0xFF && buf_data[1] == 0xD8)
+    {
+        // jpg magic
+        if (jpeg_decoder_cvi::supported(buf_data, buf_size))
+        {
+            int w = 0;
+            int h = 0;
+            int c = desired_channels;
+
+            jpeg_decoder_cvi d;
+            int ret = d.init(buf_data, buf_size, &w, &h, &c);
+            if (ret == 0 && (c == 1 || c == 3))
+            {
+                Mat img;
+                if (c == 1)
+                {
+                    img.create(h, w, CV_8UC1);
+                }
+                else // if (c == 3)
+                {
+                    img.create(h, w, CV_8UC3);
+                }
+
+                ret = d.decode(buf_data, buf_size, img.data);
+                if (ret == 0)
+                {
+                    d.deinit();
+                    return img;
+                }
+            }
+
+            // fallback to stbi_load_from_memory
+        }
+    }
+#endif
+
     int w;
     int h;
     int c;
-    unsigned char* pixeldata = stbi_load(filename.c_str(), &w, &h, &c, desired_channels);
+    unsigned char* pixeldata = stbi_load_from_memory(buf_data, buf_size, &w, &h, &c, desired_channels);
     if (!pixeldata)
     {
         // load failed
@@ -159,22 +229,17 @@ Mat imread(const String& filename, int flags)
 
     // resolve exif orientation
     {
-        std::ifstream ifs;
-        ifs.open(filename.c_str(), std::ifstream::in);
+        std::string s((const char*)buf_data, buf_size);
+        std::istringstream iss(s);
 
-        if (ifs.good())
+        ExifReader exif_reader(iss);
+        if (exif_reader.parse())
         {
-            ExifReader exif_reader(ifs);
-            if (exif_reader.parse())
-            {
-                ExifEntry_t e = exif_reader.getTag(ORIENTATION);
-                int orientation = e.field_u16;
-                if (orientation >= 1 && orientation <= 8)
-                    rotate_by_orientation(img, img, orientation);
-            }
+            ExifEntry_t e = exif_reader.getTag(ORIENTATION);
+            int orientation = e.field_u16;
+            if (orientation >= 1 && orientation <= 8)
+                rotate_by_orientation(img, img, orientation);
         }
-
-        ifs.close();
     }
 
     // rgb to bgr
@@ -338,12 +403,50 @@ Mat imdecode(InputArray _buf, int flags)
         buf = buf.clone();
     }
 
+    const unsigned char* buf_data = (const unsigned char*)buf.data;
     size_t buf_size = buf.cols * buf.rows * buf.elemSize();
+
+#if defined __linux__
+    if (buf_size > 4 && buf_data[0] == 0xFF && buf_data[1] == 0xD8)
+    {
+        // jpg magic
+        if (jpeg_decoder_cvi::supported(buf_data, buf_size))
+        {
+            int w = 0;
+            int h = 0;
+            int c = desired_channels;
+
+            jpeg_decoder_cvi d;
+            int ret = d.init(buf_data, buf_size, &w, &h, &c);
+            if (ret == 0 && (c == 1 || c == 3))
+            {
+                Mat img;
+                if (c == 1)
+                {
+                    img.create(h, w, CV_8UC1);
+                }
+                else // if (c == 3)
+                {
+                    img.create(h, w, CV_8UC3);
+                }
+
+                ret = d.decode(buf_data, buf_size, img.data);
+                if (ret == 0)
+                {
+                    d.deinit();
+                    return img;
+                }
+            }
+
+            // fallback to stbi_load_from_memory
+        }
+    }
+#endif
 
     int w;
     int h;
     int c;
-    unsigned char* pixeldata = stbi_load_from_memory((const unsigned char*)buf.data, buf_size, &w, &h, &c, desired_channels);
+    unsigned char* pixeldata = stbi_load_from_memory(buf_data, buf_size, &w, &h, &c, desired_channels);
     if (!pixeldata)
     {
         // load failed
@@ -382,7 +485,7 @@ Mat imdecode(InputArray _buf, int flags)
 
     // resolve exif orientation
     {
-        std::string s((const char*)buf.data, buf_size);
+        std::string s((const char*)buf_data, buf_size);
         std::istringstream iss(s);
 
         ExifReader exif_reader(iss);
