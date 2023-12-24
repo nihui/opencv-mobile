@@ -186,7 +186,7 @@ static int load_sys_library()
         }
         if (strncmp(buf, "Cvitek. CV181X ASIC. C906.", 36) == 0)
         {
-            // milkv duo s
+            // milkv duo 256
             whitelisted = true;
         }
     }
@@ -616,7 +616,7 @@ static int load_vdec_library()
         }
         if (strncmp(buf, "Cvitek. CV181X ASIC. C906.", 36) == 0)
         {
-            // milkv duo s
+            // milkv duo 256
             whitelisted = true;
         }
     }
@@ -905,7 +905,7 @@ static int load_vpu_library()
         }
         if (strncmp(buf, "Cvitek. CV181X ASIC. C906.", 36) == 0)
         {
-            // milkv duo s
+            // milkv duo 256
             whitelisted = true;
         }
     }
