@@ -280,7 +280,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 <td>
   <a href="https://milkv.io/duo">
     <img alt="milkv-duo" src="https://milkv.io/assets/images/duo-v1.2-9bf1d36ef7632ffba032796978cda903.png" width="auto" height="120">
-    <br /><b>milkv-duo / milkv-duo-s</b>
+    <br /><b>milkv-duo</b>
   </a>
   <br />riscv64-linux-musl<br />
   &#9989; HW JPG decoder<br />
