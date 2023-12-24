@@ -1027,9 +1027,9 @@ public:
     jpeg_decoder_cvi_impl();
     ~jpeg_decoder_cvi_impl();
 
-    int init(const unsigned char* jpgdata, size_t size, int* width, int* height, int* ch);
+    int init(const unsigned char* jpgdata, int size, int* width, int* height, int* ch);
 
-    int decode(const unsigned char* jpgdata, size_t size, unsigned char* outbgr) const;
+    int decode(const unsigned char* jpgdata, int size, unsigned char* outbgr) const;
 
     int deinit();
 
@@ -1081,7 +1081,7 @@ jpeg_decoder_cvi_impl::~jpeg_decoder_cvi_impl()
     deinit();
 }
 
-int jpeg_decoder_cvi_impl::init(const unsigned char* jpgdata, size_t jpgsize, int* _width, int* _height, int* _ch)
+int jpeg_decoder_cvi_impl::init(const unsigned char* jpgdata, int jpgsize, int* _width, int* _height, int* _ch)
 {
     if (!jpgdata || jpgsize < 4)
         return -1;
@@ -1197,7 +1197,7 @@ int jpeg_decoder_cvi_impl::init(const unsigned char* jpgdata, size_t jpgsize, in
     if (width % 2 != 0 || height % 2 != 0)
         return -1;
 
-    if (width < 4 && height < 4)
+    if (width < 8 && height < 8)
         return -1;
 
     switch (sampling_factor)
@@ -1281,7 +1281,7 @@ int jpeg_decoder_cvi_impl::init(const unsigned char* jpgdata, size_t jpgsize, in
     return 0;
 }
 
-int jpeg_decoder_cvi_impl::decode(const unsigned char* jpgdata, size_t jpgsize, unsigned char* outbgr) const
+int jpeg_decoder_cvi_impl::decode(const unsigned char* jpgdata, int jpgsize, unsigned char* outbgr) const
 {
     if (!outbgr)
         return -1;
@@ -1305,7 +1305,7 @@ int jpeg_decoder_cvi_impl::decode(const unsigned char* jpgdata, size_t jpgsize, 
     if (width % 2 != 0 || height % 2 != 0)
         return -1;
 
-    if (width < 4 && height < 4)
+    if (width < 8 && height < 8)
         return -1;
 
     // flag
@@ -2513,7 +2513,7 @@ int jpeg_decoder_cvi_impl::deinit()
     return 0;
 }
 
-bool jpeg_decoder_cvi::supported(const unsigned char* jpgdata, size_t jpgsize)
+bool jpeg_decoder_cvi::supported(const unsigned char* jpgdata, int jpgsize)
 {
     if (!jpgdata || jpgsize < 4)
         return false;
@@ -2543,12 +2543,12 @@ jpeg_decoder_cvi::~jpeg_decoder_cvi()
     delete d;
 }
 
-int jpeg_decoder_cvi::init(const unsigned char* jpgdata, size_t jpgsize, int* width, int* height, int* ch)
+int jpeg_decoder_cvi::init(const unsigned char* jpgdata, int jpgsize, int* width, int* height, int* ch)
 {
     return d->init(jpgdata, jpgsize, width, height, ch);
 }
 
-int jpeg_decoder_cvi::decode(const unsigned char* jpgdata, size_t jpgsize, unsigned char* outbgr) const
+int jpeg_decoder_cvi::decode(const unsigned char* jpgdata, int jpgsize, unsigned char* outbgr) const
 {
     return d->decode(jpgdata, jpgsize, outbgr);
 }
@@ -2560,7 +2560,7 @@ int jpeg_decoder_cvi::deinit()
 
 #else // defined __linux__
 
-bool jpeg_decoder_cvi::supported(const unsigned char* /*jpgdata*/, size_t /*jpgsize*/)
+bool jpeg_decoder_cvi::supported(const unsigned char* /*jpgdata*/, int /*jpgsize*/)
 {
     return false;
 }
@@ -2573,12 +2573,12 @@ jpeg_decoder_cvi::~jpeg_decoder_cvi()
 {
 }
 
-int jpeg_decoder_cvi::init(const unsigned char* /*jpgdata*/, size_t /*jpgsize*/, int* /*width*/, int* /*height*/, int* /*ch*/)
+int jpeg_decoder_cvi::init(const unsigned char* /*jpgdata*/, int /*jpgsize*/, int* /*width*/, int* /*height*/, int* /*ch*/)
 {
     return -1;
 }
 
-int jpeg_decoder_cvi::decode(const unsigned char* /*jpgdata*/, size_t /*jpgsize*/, unsigned char* /*outbgr*/) const
+int jpeg_decoder_cvi::decode(const unsigned char* /*jpgdata*/, int /*jpgsize*/, unsigned char* /*outbgr*/) const
 {
     return -1;
 }

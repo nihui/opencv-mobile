@@ -17,20 +17,18 @@
 #ifndef JPEG_DECODER_CVI_H
 #define JPEG_DECODER_CVI_H
 
-#include <vector>
-
 class jpeg_decoder_cvi_impl;
 class jpeg_decoder_cvi
 {
 public:
-    static bool supported(const unsigned char* jpgdata, size_t jpgsize);
+    static bool supported(const unsigned char* jpgdata, int jpgsize);
 
     jpeg_decoder_cvi();
     ~jpeg_decoder_cvi();
 
-    int init(const unsigned char* jpgdata, size_t jpgsize, int* width, int* height, int* ch);
+    int init(const unsigned char* jpgdata, int jpgsize, int* width, int* height, int* ch);
 
-    int decode(const unsigned char* jpgdata, size_t jpgsize, unsigned char* outbgr) const;
+    int decode(const unsigned char* jpgdata, int jpgsize, unsigned char* outbgr) const;
 
     int deinit();
 
