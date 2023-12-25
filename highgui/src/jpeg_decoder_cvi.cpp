@@ -193,7 +193,7 @@ static int load_sys_library()
 
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not \n");
+        fprintf(stderr, "this device is not whitelisted for jpeg decoder cvi\n");
         return -1;
     }
 
@@ -623,7 +623,7 @@ static int load_vdec_library()
 
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not \n");
+        fprintf(stderr, "this device is not whitelisted for jpeg decoder cvi\n");
         return -1;
     }
 
@@ -912,7 +912,7 @@ static int load_vpu_library()
 
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not \n");
+        fprintf(stderr, "this device is not whitelisted for jpeg decoder cvi\n");
         return -1;
     }
 

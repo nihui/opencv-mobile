@@ -366,7 +366,7 @@ static int load_rkaiq_library()
 
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not \n");
+        fprintf(stderr, "this device is not whitelisted for v4l2 capture rkaiq\n");
         return -1;
     }
 
@@ -624,7 +624,7 @@ static int load_rga_library()
 
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not \n");
+        fprintf(stderr, "this device is not whitelisted for v4l2 capture rkaiq\n");
         return -1;
     }
 

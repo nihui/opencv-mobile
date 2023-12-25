@@ -214,7 +214,7 @@ static int load_rkmpp_library()
 
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not \n");
+        fprintf(stderr, "this device is not whitelisted for jpeg encoder rkmpp\n");
         return -1;
     }
 
