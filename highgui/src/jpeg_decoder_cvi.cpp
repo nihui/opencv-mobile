@@ -1611,7 +1611,7 @@ int jpeg_decoder_cvi_impl::decode(const unsigned char* jpgdata, int jpgsize, uns
             stChnAttr.stFrameRate.s32DstFrameRate = -1;
             stChnAttr.bMirror = need_mirror;
             stChnAttr.bFlip = need_flip;
-            stChnAttr.u32Depth = 0;
+            stChnAttr.u32Depth = 1;
             stChnAttr.stAspectRatio.enMode = ASPECT_RATIO_NONE;
             stChnAttr.stAspectRatio.bEnableBgColor = CVI_FALSE;
             stChnAttr.stAspectRatio.u32BgColor = 0;
@@ -1740,7 +1740,7 @@ int jpeg_decoder_cvi_impl::decode(const unsigned char* jpgdata, int jpgsize, uns
             stChnAttr.stFrameRate.s32DstFrameRate = -1;
             stChnAttr.bMirror = need_mirror;
             stChnAttr.bFlip = need_flip;
-            stChnAttr.u32Depth = 0;
+            stChnAttr.u32Depth = 1;
             stChnAttr.stAspectRatio.enMode = ASPECT_RATIO_NONE;
             stChnAttr.stAspectRatio.bEnableBgColor = CVI_FALSE;
             stChnAttr.stAspectRatio.u32BgColor = 0;
