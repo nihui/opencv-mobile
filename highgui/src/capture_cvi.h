@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2023 nihui
+// Copyright (C) 2024 nihui
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,21 +14,21 @@
 // limitations under the License.
 //
 
-#ifndef V4L2_CAPTURE_RK_AIQ_H
-#define V4L2_CAPTURE_RK_AIQ_H
+#ifndef CAPTURE_CVI_H
+#define CAPTURE_CVI_H
 
 #include <vector>
 
-class v4l2_capture_rk_aiq_impl;
-class v4l2_capture_rk_aiq
+class capture_cvi_impl;
+class capture_cvi
 {
 public:
     static bool supported();
 
-    v4l2_capture_rk_aiq();
-    ~v4l2_capture_rk_aiq();
+    capture_cvi();
+    ~capture_cvi();
 
-    int open(int width = 640, int height = 480, float fps = 30);
+    int open(int width = 1920, int height = 1080, float fps = 30);
 
     int get_width() const;
     int get_height() const;
@@ -43,7 +43,7 @@ public:
     int close();
 
 private:
-    v4l2_capture_rk_aiq_impl* const d;
+    capture_cvi_impl* const d;
 };
 
-#endif // V4L2_CAPTURE_RK_AIQ_H
+#endif // CAPTURE_CVI_H
