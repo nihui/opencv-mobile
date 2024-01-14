@@ -279,11 +279,12 @@ https://github.com/nihui/opencv-mobile/releases/latest
 <tr>
 <td>
   <a href="https://milkv.io/duo">
-    <img alt="milkv-duo" src="https://milkv.io/assets/images/duo-v1.2-9bf1d36ef7632ffba032796978cda903.png" width="auto" height="120">
+    <img alt="milkv-duo" src="https://milkv.io/docs/duo/duo-v1.2-top.webp" width="auto" height="120">
     <br /><b>milkv-duo</b>
   </a>
   <br />riscv64-linux-musl<br />
   &#9989; HW JPG decoder<br />
+  &#9989; MIPI CSI camera<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.8.1-milkv-duo.zip">
     <img alt="opencv4-milkv-duo" src="https://img.shields.io/badge/download-4.8.1-blue?style=for-the-badge">
   </a>
