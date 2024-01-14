@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#include "v4l2_capture_rk_aiq.h"
+#include "capture_v4l2_rk_aiq.h"
 
 #if defined __linux__
 #include <errno.h>
@@ -366,7 +366,7 @@ static int load_rkaiq_library()
 
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for v4l2 capture rkaiq\n");
+        fprintf(stderr, "this device is not whitelisted for capture v4l2 rkaiq\n");
         return -1;
     }
 
@@ -624,7 +624,7 @@ static int load_rga_library()
 
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for v4l2 capture rkaiq\n");
+        fprintf(stderr, "this device is not whitelisted for capture v4l2 rkaiq\n");
         return -1;
     }
 
@@ -777,11 +777,11 @@ static void dma_buf_free(size_t size, int *fd, void *va)
     *fd = -1;
 }
 
-class v4l2_capture_rk_aiq_impl
+class capture_v4l2_rk_aiq_impl
 {
 public:
-    v4l2_capture_rk_aiq_impl();
-    ~v4l2_capture_rk_aiq_impl();
+    capture_v4l2_rk_aiq_impl();
+    ~capture_v4l2_rk_aiq_impl();
 
     int open(int width, int height, float fps);
 
@@ -822,7 +822,7 @@ public:
     rga_buffer_t dst_img;
 };
 
-v4l2_capture_rk_aiq_impl::v4l2_capture_rk_aiq_impl()
+capture_v4l2_rk_aiq_impl::capture_v4l2_rk_aiq_impl()
 {
     aiq_ctx = 0;
     fd = -1;
@@ -849,7 +849,7 @@ v4l2_capture_rk_aiq_impl::v4l2_capture_rk_aiq_impl()
     dst_handle = 0;
 }
 
-v4l2_capture_rk_aiq_impl::~v4l2_capture_rk_aiq_impl()
+capture_v4l2_rk_aiq_impl::~capture_v4l2_rk_aiq_impl()
 {
     close();
 }
@@ -871,7 +871,7 @@ static inline size_t least_common_multiple(size_t a, size_t b)
     return lcm;
 }
 
-int v4l2_capture_rk_aiq_impl::open(int width, int height, float fps)
+int capture_v4l2_rk_aiq_impl::open(int width, int height, float fps)
 {
     if (!rkaiq.ready)
     {
@@ -1469,7 +1469,7 @@ OUT:
     return -1;
 }
 
-int v4l2_capture_rk_aiq_impl::start_streaming()
+int capture_v4l2_rk_aiq_impl::start_streaming()
 {
     {
         XCamReturn ret = rk_aiq_uapi2_sysctl_start(aiq_ctx);
@@ -1533,7 +1533,7 @@ static inline void my_memcpy(unsigned char* dst, const unsigned char* src, int s
 #endif
 }
 
-int v4l2_capture_rk_aiq_impl::read_frame(unsigned char* bgrdata)
+int capture_v4l2_rk_aiq_impl::read_frame(unsigned char* bgrdata)
 {
     fd_set fds;
     FD_ZERO(&fds);
@@ -1629,7 +1629,7 @@ int v4l2_capture_rk_aiq_impl::read_frame(unsigned char* bgrdata)
     return 0;
 }
 
-int v4l2_capture_rk_aiq_impl::stop_streaming()
+int capture_v4l2_rk_aiq_impl::stop_streaming()
 {
     v4l2_buf_type type = buf_type;
     if (ioctl(fd, VIDIOC_STREAMOFF, &type))
@@ -1649,7 +1649,7 @@ int v4l2_capture_rk_aiq_impl::stop_streaming()
     return 0;
 }
 
-int v4l2_capture_rk_aiq_impl::close()
+int capture_v4l2_rk_aiq_impl::close()
 {
     if (aiq_ctx)
     {
@@ -1704,7 +1704,7 @@ int v4l2_capture_rk_aiq_impl::close()
     return 0;
 }
 
-bool v4l2_capture_rk_aiq::supported()
+bool capture_v4l2_rk_aiq::supported()
 {
     if (!rkaiq.ready)
         return false;
@@ -1715,106 +1715,106 @@ bool v4l2_capture_rk_aiq::supported()
     return true;
 }
 
-v4l2_capture_rk_aiq::v4l2_capture_rk_aiq() : d(new v4l2_capture_rk_aiq_impl)
+capture_v4l2_rk_aiq::capture_v4l2_rk_aiq() : d(new capture_v4l2_rk_aiq_impl)
 {
 }
 
-v4l2_capture_rk_aiq::~v4l2_capture_rk_aiq()
+capture_v4l2_rk_aiq::~capture_v4l2_rk_aiq()
 {
     delete d;
 }
 
-int v4l2_capture_rk_aiq::open(int width, int height, float fps)
+int capture_v4l2_rk_aiq::open(int width, int height, float fps)
 {
     return d->open(width, height, fps);
 }
 
-int v4l2_capture_rk_aiq::get_width() const
+int capture_v4l2_rk_aiq::get_width() const
 {
     return d->output_width;
 }
 
-int v4l2_capture_rk_aiq::get_height() const
+int capture_v4l2_rk_aiq::get_height() const
 {
     return d->output_height;
 }
 
-float v4l2_capture_rk_aiq::get_fps() const
+float capture_v4l2_rk_aiq::get_fps() const
 {
     return d->cap_numerator ? d->cap_denominator / (float)d->cap_numerator : 0;
 }
 
-int v4l2_capture_rk_aiq::start_streaming()
+int capture_v4l2_rk_aiq::start_streaming()
 {
     return d->start_streaming();
 }
 
-int v4l2_capture_rk_aiq::read_frame(unsigned char* bgrdata)
+int capture_v4l2_rk_aiq::read_frame(unsigned char* bgrdata)
 {
     return d->read_frame(bgrdata);
 }
 
-int v4l2_capture_rk_aiq::stop_streaming()
+int capture_v4l2_rk_aiq::stop_streaming()
 {
     return d->stop_streaming();
 }
 
-int v4l2_capture_rk_aiq::close()
+int capture_v4l2_rk_aiq::close()
 {
     return d->close();
 }
 
 #else // defined __linux__
 
-bool v4l2_capture_rk_aiq::supported()
+bool capture_v4l2_rk_aiq::supported()
 {
     return false;
 }
 
-v4l2_capture_rk_aiq::v4l2_capture_rk_aiq() : d(0)
+capture_v4l2_rk_aiq::capture_v4l2_rk_aiq() : d(0)
 {
 }
 
-v4l2_capture_rk_aiq::~v4l2_capture_rk_aiq()
+capture_v4l2_rk_aiq::~capture_v4l2_rk_aiq()
 {
 }
 
-int v4l2_capture_rk_aiq::open(int width, int height, float fps)
-{
-    return -1;
-}
-
-int v4l2_capture_rk_aiq::get_width() const
+int capture_v4l2_rk_aiq::open(int width, int height, float fps)
 {
     return -1;
 }
 
-int v4l2_capture_rk_aiq::get_height() const
+int capture_v4l2_rk_aiq::get_width() const
 {
     return -1;
 }
 
-float v4l2_capture_rk_aiq::get_fps() const
+int capture_v4l2_rk_aiq::get_height() const
+{
+    return -1;
+}
+
+float capture_v4l2_rk_aiq::get_fps() const
 {
     return 0.f;
 }
 
-int v4l2_capture_rk_aiq::start_streaming()
+int capture_v4l2_rk_aiq::start_streaming()
 {
     return -1;
 }
 
-int v4l2_capture_rk_aiq::read_frame(unsigned char* bgrdata)
+int capture_v4l2_rk_aiq::read_frame(unsigned char* bgrdata)
 {
     return -1;
 }
 
-int v4l2_capture_rk_aiq::stop_streaming()
+int capture_v4l2_rk_aiq::stop_streaming()
 {
     return -1;
 }
 
-int v4l2_capture_rk_aiq::close()
+int capture_v4l2_rk_aiq::close()
 {
     return -1;
 }

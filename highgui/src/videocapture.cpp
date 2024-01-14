@@ -21,7 +21,8 @@
 #include <string.h>
 
 #if defined __linux__
-#include "v4l2_capture_rk_aiq.h"
+#include "capture_cvi.h"
+#include "capture_v4l2_rk_aiq.h"
 #endif
 
 namespace cv {
@@ -38,7 +39,8 @@ public:
     float fps;
 
 #if defined __linux__
-    v4l2_capture_rk_aiq cap;
+    capture_v4l2_rk_aiq cap_v4l2_rk_aiq;
+    capture_cvi cap_cvi;
 #endif
 };
 
@@ -69,23 +71,44 @@ bool VideoCapture::open(int index)
     }
 
 #if defined __linux__
-    if (v4l2_capture_rk_aiq::supported())
+    if (capture_v4l2_rk_aiq::supported())
     {
-        int ret = d->cap.open(d->width, d->height, d->fps);
+        int ret = d->cap_v4l2_rk_aiq.open(d->width, d->height, d->fps);
         if (ret == 0)
         {
-            d->width = d->cap.get_width();
-            d->height = d->cap.get_height();
-            d->fps = d->cap.get_fps();
+            d->width = d->cap_v4l2_rk_aiq.get_width();
+            d->height = d->cap_v4l2_rk_aiq.get_height();
+            d->fps = d->cap_v4l2_rk_aiq.get_fps();
 
-            ret = d->cap.start_streaming();
+            ret = d->cap_v4l2_rk_aiq.start_streaming();
             if (ret == 0)
             {
                 d->is_opened = true;
             }
             else
             {
-                d->cap.close();
+                d->cap_v4l2_rk_aiq.close();
+            }
+        }
+    }
+
+    if (capture_cvi::supported())
+    {
+        int ret = d->cap_cvi.open(d->width, d->height, d->fps);
+        if (ret == 0)
+        {
+            d->width = d->cap_cvi.get_width();
+            d->height = d->cap_cvi.get_height();
+            d->fps = d->cap_cvi.get_fps();
+
+            ret = d->cap_cvi.start_streaming();
+            if (ret == 0)
+            {
+                d->is_opened = true;
+            }
+            else
+            {
+                d->cap_cvi.close();
             }
         }
     }
@@ -105,11 +128,18 @@ void VideoCapture::release()
         return;
 
 #if defined __linux__
-    if (v4l2_capture_rk_aiq::supported())
+    if (capture_v4l2_rk_aiq::supported())
     {
-        d->cap.stop_streaming();
+        d->cap_v4l2_rk_aiq.stop_streaming();
 
-        d->cap.close();
+        d->cap_v4l2_rk_aiq.close();
+    }
+
+    if (capture_cvi::supported())
+    {
+        d->cap_cvi.stop_streaming();
+
+        d->cap_cvi.close();
     }
 #endif
 
@@ -125,11 +155,18 @@ VideoCapture& VideoCapture::operator>>(Mat& image)
         return *this;
 
 #if defined __linux__
-    if (v4l2_capture_rk_aiq::supported())
+    if (capture_v4l2_rk_aiq::supported())
     {
         image.create(d->height, d->width, CV_8UC3);
 
-        d->cap.read_frame((unsigned char*)image.data);
+        d->cap_v4l2_rk_aiq.read_frame((unsigned char*)image.data);
+    }
+
+    if (capture_cvi::supported())
+    {
+        image.create(d->height, d->width, CV_8UC3);
+
+        d->cap_cvi.read_frame((unsigned char*)image.data);
     }
 #endif
 

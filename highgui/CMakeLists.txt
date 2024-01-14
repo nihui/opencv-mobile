@@ -2,11 +2,12 @@ set(the_description "High-level GUI")
 ocv_add_module(highgui opencv_imgproc)
 
 set(highgui_srcs
+    ${CMAKE_CURRENT_LIST_DIR}/src/capture_cvi.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/capture_v4l2_rk_aiq.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/exif.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/highgui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/jpeg_decoder_cvi.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/jpeg_encoder_rk_mpp.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/v4l2_capture_rk_aiq.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/videocapture.cpp
     )
 
