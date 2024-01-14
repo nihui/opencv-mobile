@@ -662,7 +662,7 @@ typedef struct _VIDEO_FRAME_S {
     CVI_U64 u64PhyAddr[3];
     CVI_U8 *pu8VirAddr[3];
 #ifdef __arm__
-    __u32 u32VirAddrPadding[3];
+    CVI_U32 u32VirAddrPadding[3];
 #endif
     CVI_U32 u32Length[3];
 
@@ -676,7 +676,7 @@ typedef struct _VIDEO_FRAME_S {
 
     void *pPrivateData;
 #ifdef __arm__
-    __u32 u32PrivateDataPadding;
+    CVI_U32 u32PrivateDataPadding;
 #endif
     CVI_U32 u32FrameFlag;
 } VIDEO_FRAME_S;
