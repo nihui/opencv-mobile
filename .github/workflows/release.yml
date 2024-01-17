@@ -88,7 +88,7 @@ jobs:
         zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
     - name: opencv4-source
       env:
-        opencv-version: 4.8.1
+        opencv-version: 4.9.0
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
         unzip -q opencv-${{ env.opencv-version }}.zip
@@ -99,7 +99,6 @@ jobs:
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-emscripten-include.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
         cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
@@ -128,15 +127,15 @@ jobs:
     - name: upload-opencv4-source
       uses: actions/upload-artifact@v3
       with:
-        name: opencv-mobile-4.8.1-source
-        path: opencv-mobile-4.8.1.zip
+        name: opencv-mobile-4.9.0-source
+        path: opencv-mobile-4.9.0.zip
 
   android:
     needs: [setup]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
@@ -236,7 +235,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
         bitcode: [OFF, ON]
     env:
       COMMON_CMAKE_OPTIONS: |
@@ -336,7 +335,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
         bitcode: [OFF, ON]
     env:
       COMMON_CMAKE_OPTIONS: |
@@ -436,7 +435,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
@@ -496,7 +495,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.8.1'
+      if: matrix.opencv-version == '4.9.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: test-arm-linux-gnueabi
       run: |
@@ -530,7 +529,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -616,7 +615,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
         bitcode: [OFF, ON]
     env:
       COMMON_CMAKE_OPTIONS: |
@@ -705,7 +704,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
         os-compiler:
           - { msvc-version: vs2015, windows-version: 2019, toolset-version: v140 }
           - { msvc-version: vs2017, windows-version: 2019, toolset-version: v141 }
@@ -769,7 +768,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
         os-ubuntu:
           - { ubuntu-id: 2004, ubuntu-version: 20.04 }
           - { ubuntu-id: 2204, ubuntu-version: 22.04 }
@@ -804,7 +803,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.8.1'
+      if: matrix.opencv-version == '4.9.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: test
       run: |
@@ -823,7 +822,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
@@ -909,7 +908,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.8.1'
+      if: matrix.opencv-version == '4.9.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: test
       run: |
@@ -958,7 +957,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.8.1]
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
         bitcode: [OFF, ON]
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_13.4.1.app
@@ -1074,12 +1073,12 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
-        name: opencv-mobile-4.8.1-source
+        name: opencv-mobile-4.9.0-source
     - name: setup-opencv-source
       run: |
-        unzip -q opencv-mobile-4.8.1.zip
-        echo "SOURCE_DIR=opencv-mobile-4.8.1" >> $GITHUB_ENV
-        echo "PACKAGE_NAME=opencv-mobile-4.8.1-${{ matrix.name }}" >> $GITHUB_ENV
+        unzip -q opencv-mobile-4.9.0.zip
+        echo "SOURCE_DIR=opencv-mobile-4.9.0" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-4.9.0-${{ matrix.name }}" >> $GITHUB_ENV
     - name: setup-toolchain
       run: ${{ matrix.setup-toolchain-cmd }}
 
@@ -1087,7 +1086,7 @@ jobs:
       if: ${{ matrix.single-core }}
       run: |
         cd ${{ env.SOURCE_DIR }}
-        patch -p1 -i ../patches/opencv-4.8.1-no-atomic.patch
+        patch -p1 -i ../patches/opencv-4.9.0-no-atomic.patch
         mkdir build && cd build
         ${{ matrix.setup-env-cmd }}
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \

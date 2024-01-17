@@ -1,6 +1,6 @@
-diff -Nuarp opencv-4.8.1.orig/modules/imgproc/src/drawing.cpp opencv-4.8.1/modules/imgproc/src/drawing.cpp
---- opencv-4.8.1.orig/modules/imgproc/src/drawing.cpp	2023-09-27 18:18:31.000000000 +0800
-+++ opencv-4.8.1/modules/imgproc/src/drawing.cpp	2023-12-09 17:24:35.811627301 +0800
+diff -Nuarp opencv-4.9.0.orig/modules/imgproc/src/drawing.cpp opencv-4.9.0/modules/imgproc/src/drawing.cpp
+--- opencv-4.9.0.orig/modules/imgproc/src/drawing.cpp	2023-12-28 00:46:55.000000000 +0800
++++ opencv-4.9.0/modules/imgproc/src/drawing.cpp	2024-01-17 19:33:56.027209779 +0800
 @@ -40,6 +40,8 @@
  //M*/
  #include "precomp.hpp"
@@ -10,7 +10,7 @@ diff -Nuarp opencv-4.8.1.orig/modules/imgproc/src/drawing.cpp opencv-4.8.1/modul
  namespace cv
  {
  
-@@ -2074,6 +2076,7 @@ void polylines( InputOutputArray _img, c
+@@ -2075,6 +2077,7 @@ void polylines( InputOutputArray _img, c
  }
  
  
@@ -18,7 +18,7 @@ diff -Nuarp opencv-4.8.1.orig/modules/imgproc/src/drawing.cpp opencv-4.8.1/modul
  enum { FONT_SIZE_SHIFT=8, FONT_ITALIC_ALPHA=(1 << 8),
         FONT_ITALIC_DIGIT=(2 << 8), FONT_ITALIC_PUNCT=(4 << 8),
         FONT_ITALIC_BRACES=(8 << 8), FONT_HAVE_GREEK=(16 << 8),
-@@ -2288,6 +2291,7 @@ inline void readCheck(int &c, int &i, co
+@@ -2289,6 +2292,7 @@ inline void readCheck(int &c, int &i, co
  }
  
  extern const char* g_HersheyGlyphs[];
@@ -26,7 +26,7 @@ diff -Nuarp opencv-4.8.1.orig/modules/imgproc/src/drawing.cpp opencv-4.8.1/modul
  
  void putText( InputOutputArray _img, const String& text, Point org,
                int fontFace, double fontScale, Scalar color,
-@@ -2301,6 +2305,35 @@ void putText( InputOutputArray _img, con
+@@ -2302,6 +2306,35 @@ void putText( InputOutputArray _img, con
          return;
      }
      Mat img = _img.getMat();
@@ -62,7 +62,7 @@ diff -Nuarp opencv-4.8.1.orig/modules/imgproc/src/drawing.cpp opencv-4.8.1/modul
      const int* ascii = getFontData(fontFace);
  
      double buf[4];
-@@ -2355,10 +2388,21 @@ void putText( InputOutputArray _img, con
+@@ -2356,10 +2389,21 @@ void putText( InputOutputArray _img, con
          }
          view_x += dx;
      }
@@ -84,7 +84,7 @@ diff -Nuarp opencv-4.8.1.orig/modules/imgproc/src/drawing.cpp opencv-4.8.1/modul
      Size size;
      double view_x = 0;
      const char **faces = cv::g_HersheyGlyphs;
-@@ -2385,10 +2429,13 @@ Size getTextSize( const String& text, in
+@@ -2386,10 +2430,13 @@ Size getTextSize( const String& text, in
      if( _base_line )
          *_base_line = cvRound(base_line*fontScale + thickness*0.5);
      return size;
@@ -98,7 +98,7 @@ diff -Nuarp opencv-4.8.1.orig/modules/imgproc/src/drawing.cpp opencv-4.8.1/modul
      // By https://stackoverflow.com/a/27898487/1531708
      const int* ascii = getFontData(fontFace);
  
-@@ -2396,6 +2443,7 @@ double getFontScaleFromHeight(const int
+@@ -2397,6 +2444,7 @@ double getFontScaleFromHeight(const int
      int cap_line = (ascii[0] >> 4) & 15;
  
      return static_cast<double>(pixelHeight - static_cast<double>((thickness + 1)) / 2.0) / static_cast<double>(cap_line + base_line);
@@ -106,7 +106,7 @@ diff -Nuarp opencv-4.8.1.orig/modules/imgproc/src/drawing.cpp opencv-4.8.1/modul
  }
  
  }
-@@ -2897,7 +2945,7 @@ cvInitFont( CvFont *font, int font_face,
+@@ -2895,7 +2943,7 @@ cvInitFont( CvFont *font, int font_face,
  {
      CV_Assert( font != 0 && hscale > 0 && vscale > 0 && thickness >= 0 );
  
@@ -115,9 +115,9 @@ diff -Nuarp opencv-4.8.1.orig/modules/imgproc/src/drawing.cpp opencv-4.8.1/modul
      font->font_face = font_face;
      font->hscale = (float)hscale;
      font->vscale = (float)vscale;
-diff -Nuarp opencv-4.8.1.orig/modules/imgproc/src/hershey_fonts.cpp opencv-4.8.1/modules/imgproc/src/hershey_fonts.cpp
---- opencv-4.8.1.orig/modules/imgproc/src/hershey_fonts.cpp	2023-09-27 18:18:31.000000000 +0800
-+++ opencv-4.8.1/modules/imgproc/src/hershey_fonts.cpp	2023-12-09 17:22:38.027235607 +0800
+diff -Nuarp opencv-4.9.0.orig/modules/imgproc/src/hershey_fonts.cpp opencv-4.9.0/modules/imgproc/src/hershey_fonts.cpp
+--- opencv-4.9.0.orig/modules/imgproc/src/hershey_fonts.cpp	2023-12-28 00:46:55.000000000 +0800
++++ opencv-4.9.0/modules/imgproc/src/hershey_fonts.cpp	2024-01-17 19:33:56.027209779 +0800
 @@ -51,6 +51,7 @@
  namespace cv
  {
