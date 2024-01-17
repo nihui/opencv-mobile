@@ -135,7 +135,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        opencv-version: [4.9.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
@@ -235,7 +235,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        opencv-version: [4.9.0]
         bitcode: [OFF, ON]
     env:
       COMMON_CMAKE_OPTIONS: |
@@ -335,7 +335,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        opencv-version: [4.9.0]
         bitcode: [OFF, ON]
     env:
       COMMON_CMAKE_OPTIONS: |
@@ -435,7 +435,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        opencv-version: [4.9.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
@@ -529,7 +529,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        opencv-version: [4.9.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -615,7 +615,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        opencv-version: [4.9.0]
         bitcode: [OFF, ON]
     env:
       COMMON_CMAKE_OPTIONS: |
@@ -704,7 +704,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        opencv-version: [4.9.0]
         os-compiler:
           - { msvc-version: vs2015, windows-version: 2019, toolset-version: v140 }
           - { msvc-version: vs2017, windows-version: 2019, toolset-version: v141 }
@@ -768,7 +768,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        opencv-version: [4.9.0]
         os-ubuntu:
           - { ubuntu-id: 2004, ubuntu-version: 20.04 }
           - { ubuntu-id: 2204, ubuntu-version: 22.04 }
@@ -822,7 +822,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        opencv-version: [4.9.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
@@ -957,7 +957,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        opencv-version: [4.9.0]
         bitcode: [OFF, ON]
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_13.4.1.app
