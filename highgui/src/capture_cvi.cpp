@@ -42,6 +42,7 @@
 // 0 = unknown
 // 1 = milkv-duo
 // 2 = milkv-duo256m
+// 3 = licheerv-nano
 static int get_device_model()
 {
     static int device_model = -1;
@@ -65,8 +66,16 @@ static int get_device_model()
         }
         if (strncmp(buf, "Cvitek. CV181X ASIC. C906.", 36) == 0)
         {
-            // milkv duo 256
-            device_model = 2;
+            if (access("/mnt/system/lib/libsns_gc4653.so", F_OK) == 0)
+            {
+                // licheerv nano
+                device_model = 3;
+            }
+            else
+            {
+                // milkv duo 256
+                device_model = 2;
+            }
         }
     }
 
@@ -85,6 +94,11 @@ static bool is_device_whitelisted()
     if (device_model == 2)
     {
         // milkv duo 256
+        return true;
+    }
+    if (device_model == 3)
+    {
+        // licheerv nano
         return true;
     }
 
@@ -489,6 +503,12 @@ typedef struct _VI_DEV_ATTR_S {
     CVI_U32 chn_num; /* R; total chnannels sended from dev */
 
     CVI_U32 snrFps; /* R; snr init fps from isp pub attr */
+
+    CVI_BOOL isMux; /* multi sensor use same dev*/
+
+    CVI_U32 switchGpioPin; /*switch pin*/
+
+    CVI_U8 switchGPioPol; /*switch pol*/
 } VI_DEV_ATTR_S;
 
 typedef enum _VI_PIPE_BYPASS_MODE_E {
@@ -1743,44 +1763,44 @@ typedef struct _ISP_SNS_OBJ_S {
 
 }
 
-static void* libsns_gc2083_sys = 0;
-static void* libsns_gc2083_ae = 0;
-static void* libsns_gc2083_awb = 0;
-static void* libsns_gc2083_isp = 0;
-static void* libsns_gc2083 = 0;
+static void* libsns_obj_sys = 0;
+static void* libsns_obj_ae = 0;
+static void* libsns_obj_awb = 0;
+static void* libsns_obj_isp = 0;
+static void* libsns_obj = 0;
 
 static ISP_SNS_OBJ_S* pstSnsObj = 0;
 
-static int unload_sns_gc2083_library()
+static int unload_sns_obj_library()
 {
-    if (libsns_gc2083_sys)
+    if (libsns_obj_sys)
     {
-        dlclose(libsns_gc2083_sys);
-        libsns_gc2083_sys = 0;
+        dlclose(libsns_obj_sys);
+        libsns_obj_sys = 0;
     }
 
-    if (libsns_gc2083_ae)
+    if (libsns_obj_ae)
     {
-        dlclose(libsns_gc2083_ae);
-        libsns_gc2083_ae = 0;
+        dlclose(libsns_obj_ae);
+        libsns_obj_ae = 0;
     }
 
-    if (libsns_gc2083_awb)
+    if (libsns_obj_awb)
     {
-        dlclose(libsns_gc2083_awb);
-        libsns_gc2083_awb = 0;
+        dlclose(libsns_obj_awb);
+        libsns_obj_awb = 0;
     }
 
-    if (libsns_gc2083_isp)
+    if (libsns_obj_isp)
     {
-        dlclose(libsns_gc2083_isp);
-        libsns_gc2083_isp = 0;
+        dlclose(libsns_obj_isp);
+        libsns_obj_isp = 0;
     }
 
-    if (libsns_gc2083)
+    if (libsns_obj)
     {
-        dlclose(libsns_gc2083);
-        libsns_gc2083 = 0;
+        dlclose(libsns_obj);
+        libsns_obj = 0;
     }
 
     pstSnsObj = 0;
@@ -1788,9 +1808,9 @@ static int unload_sns_gc2083_library()
     return 0;
 }
 
-static int load_sns_gc2083_library()
+static int load_sns_obj_library()
 {
-    if (libsns_gc2083)
+    if (libsns_obj)
         return 0;
 
     // check device whitelist
@@ -1801,88 +1821,115 @@ static int load_sns_gc2083_library()
         return -1;
     }
 
-    libsns_gc2083_sys = dlopen("libsys.so", RTLD_GLOBAL | RTLD_LAZY);
-    if (!libsns_gc2083_sys)
+    const int device_model = get_device_model();
+
+    libsns_obj_sys = dlopen("libsys.so", RTLD_GLOBAL | RTLD_LAZY);
+    if (!libsns_obj_sys)
     {
-        libsns_gc2083_sys = dlopen("/mnt/system/lib/libsys.so", RTLD_GLOBAL | RTLD_LAZY);
+        libsns_obj_sys = dlopen("/mnt/system/lib/libsys.so", RTLD_GLOBAL | RTLD_LAZY);
     }
-    if (!libsns_gc2083_sys)
+    if (!libsns_obj_sys)
     {
         fprintf(stderr, "%s\n", dlerror());
         goto OUT;
     }
 
-    libsns_gc2083_ae = dlopen("libae.so", RTLD_GLOBAL | RTLD_LAZY);
-    if (!libsns_gc2083_ae)
+    libsns_obj_ae = dlopen("libae.so", RTLD_GLOBAL | RTLD_LAZY);
+    if (!libsns_obj_ae)
     {
-        libsns_gc2083_ae = dlopen("/mnt/system/lib/libae.so", RTLD_GLOBAL | RTLD_LAZY);
+        libsns_obj_ae = dlopen("/mnt/system/lib/libae.so", RTLD_GLOBAL | RTLD_LAZY);
     }
-    if (!libsns_gc2083_ae)
-    {
-        fprintf(stderr, "%s\n", dlerror());
-        goto OUT;
-    }
-
-    libsns_gc2083_awb = dlopen("libawb.so", RTLD_GLOBAL | RTLD_LAZY);
-    if (!libsns_gc2083_awb)
-    {
-        libsns_gc2083_awb = dlopen("/mnt/system/lib/libawb.so", RTLD_GLOBAL | RTLD_LAZY);
-    }
-    if (!libsns_gc2083_awb)
+    if (!libsns_obj_ae)
     {
         fprintf(stderr, "%s\n", dlerror());
         goto OUT;
     }
 
-    libsns_gc2083_isp = dlopen("libisp.so", RTLD_GLOBAL | RTLD_LAZY);
-    if (!libsns_gc2083_isp)
+    libsns_obj_awb = dlopen("libawb.so", RTLD_GLOBAL | RTLD_LAZY);
+    if (!libsns_obj_awb)
     {
-        libsns_gc2083_isp = dlopen("/mnt/system/lib/libisp.so", RTLD_GLOBAL | RTLD_LAZY);
+        libsns_obj_awb = dlopen("/mnt/system/lib/libawb.so", RTLD_GLOBAL | RTLD_LAZY);
     }
-    if (!libsns_gc2083_isp)
-    {
-        fprintf(stderr, "%s\n", dlerror());
-        goto OUT;
-    }
-
-    libsns_gc2083 = dlopen("libsns_gc2083.so", RTLD_LOCAL | RTLD_NOW);
-    if (!libsns_gc2083)
-    {
-        libsns_gc2083 = dlopen("/mnt/system/lib/libsns_gc2083.so", RTLD_LOCAL | RTLD_NOW);
-    }
-    if (!libsns_gc2083)
+    if (!libsns_obj_awb)
     {
         fprintf(stderr, "%s\n", dlerror());
         goto OUT;
     }
 
-    pstSnsObj = (ISP_SNS_OBJ_S*)dlsym(libsns_gc2083, "stSnsGc2083_Obj");
+    libsns_obj_isp = dlopen("libisp.so", RTLD_GLOBAL | RTLD_LAZY);
+    if (!libsns_obj_isp)
+    {
+        libsns_obj_isp = dlopen("/mnt/system/lib/libisp.so", RTLD_GLOBAL | RTLD_LAZY);
+    }
+    if (!libsns_obj_isp)
+    {
+        fprintf(stderr, "%s\n", dlerror());
+        goto OUT;
+    }
+
+    if (device_model == 1 || device_model == 2)
+    {
+        // milkv duo or milkv duo 256
+        libsns_obj = dlopen("libsns_gc2083.so", RTLD_LOCAL | RTLD_NOW);
+        if (!libsns_obj)
+        {
+            libsns_obj = dlopen("/mnt/system/lib/libsns_gc2083.so", RTLD_LOCAL | RTLD_NOW);
+        }
+        if (!libsns_obj)
+        {
+            fprintf(stderr, "%s\n", dlerror());
+            goto OUT;
+        }
+
+        pstSnsObj = (ISP_SNS_OBJ_S*)dlsym(libsns_obj, "stSnsGc2083_Obj");
+    }
+    else if (device_model == 3)
+    {
+        // licheerv nano
+        libsns_obj = dlopen("libsns_gc4653.so", RTLD_LOCAL | RTLD_NOW);
+        if (!libsns_obj)
+        {
+            libsns_obj = dlopen("/mnt/system/lib/libsns_gc4653.so", RTLD_LOCAL | RTLD_NOW);
+        }
+        if (!libsns_obj)
+        {
+            fprintf(stderr, "%s\n", dlerror());
+            goto OUT;
+        }
+
+        pstSnsObj = (ISP_SNS_OBJ_S*)dlsym(libsns_obj, "stSnsGc4653_Obj");
+    }
+    else
+    {
+        // unknown device
+        goto OUT;
+    }
 
     return 0;
 
 OUT:
-    unload_sns_gc2083_library();
+    unload_sns_obj_library();
 
     return -1;
 }
 
-class sns_gc2083_library_loader
+class sns_obj_library_loader
 {
 public:
     bool ready;
 
-    sns_gc2083_library_loader()
+    sns_obj_library_loader()
     {
-        ready = (load_sns_gc2083_library() == 0);
+        ready = (load_sns_obj_library() == 0);
     }
 
-    ~sns_gc2083_library_loader()
+    ~sns_obj_library_loader()
     {
-        unload_sns_gc2083_library();
+        unload_sns_obj_library();
     }
 };
 
-static sns_gc2083_library_loader sns_gc2083;
+static sns_obj_library_loader sns_obj;
 
 extern "C"
 {
@@ -2471,6 +2518,8 @@ struct sns_ini_cfg
     int mipi_dev;
     short lane_id[5];
     signed char pn_swap[5];
+    bool mclk_en;
+    unsigned char mclk;
 };
 
 static const struct sns_ini_cfg* get_sns_ini_cfg()
@@ -2485,7 +2534,9 @@ static const struct sns_ini_cfg* get_sns_ini_cfg()
             37, // sns_i2c_addr
             0,  // mipi_dev
             {3, 2, 4, -1, -1},  // lane_id
-            {0, 0, 0, 0, 0}     // pn_swap
+            {0, 0, 0, 0, 0},    // pn_swap
+            false,  // mclk_en
+            0       // mclk
         };
 
         return &duo;
@@ -2498,22 +2549,79 @@ static const struct sns_ini_cfg* get_sns_ini_cfg()
             37, // sns_i2c_addr
             0,  // mipi_dev
             {1, 0, 2, -1, -1},  // lane_id
-            {0, 0, 0, 0, 0}     // pn_swap
+            {0, 0, 0, 0, 0},    // pn_swap
+            false,  // mclk_en
+            0       // mclk
         };
 
         return &duo256m;
+    }
+    if (device_model == 3)
+    {
+        // licheerv nano
+        static const struct sns_ini_cfg lpirvnano = {
+            0,  // bus_id
+            29, // sns_i2c_addr
+            0,  // mipi_dev
+            {2, 1, 0, -1, -1},  // lane_id
+            {0, 0, 0, 0, 0},    // pn_swap
+            true,   // mclk_en
+            0       // mclk
+        };
+
+        return &lpirvnano;
     }
 
     return NULL;
 }
 
-// gc2083 info
-static const CVI_U16 cap_width = 1920;
-static const CVI_U16 cap_height = 1080;
-static const float cap_fps = 30;
-static const WDR_MODE_E cap_wdr_mode = WDR_MODE_NONE;
-static const BAYER_FORMAT_E cap_bayer_format = BAYER_FORMAT_RG;
-static const ISP_BAYER_FORMAT_E isp_bayer_format = BAYER_RGGB;
+struct sensor_cfg
+{
+    CVI_U16 cap_width;
+    CVI_U16 cap_height;
+    float cap_fps;
+    WDR_MODE_E cap_wdr_mode;
+    BAYER_FORMAT_E cap_bayer_format;
+    ISP_BAYER_FORMAT_E isp_bayer_format;
+};
+
+static const struct sensor_cfg* get_sensor_cfg()
+{
+    const int device_model = get_device_model();
+
+    if (device_model == 1 || device_model == 2)
+    {
+        // milkv duo or milkv duo 256
+        // gc2083 info
+        static const struct sensor_cfg gc2083 = {
+            1920,   // cap_width
+            1080,   // cap_height
+            30,     // cap_fps
+            WDR_MODE_NONE,      // cap_wdr_mode
+            BAYER_FORMAT_RG,    // cap_bayer_format
+            BAYER_RGGB          // isp_bayer_format
+        };
+
+        return &gc2083;
+    }
+    if (device_model == 3)
+    {
+        // licheerv nano
+        // gc4653 info
+        static const struct sensor_cfg gc4653 = {
+            2560,   // cap_width
+            1440,   // cap_height
+            30,     // cap_fps
+            WDR_MODE_NONE,      // cap_wdr_mode
+            BAYER_FORMAT_RG,    // cap_bayer_format
+            BAYER_RGGB          // isp_bayer_format
+        };
+
+        return &gc4653;
+    }
+
+    return NULL;
+}
 
 static void* isp_main(void* arg)
 {
@@ -2662,6 +2770,13 @@ capture_cvi_impl::~capture_cvi_impl()
 
 int capture_cvi_impl::open(int width, int height, float fps)
 {
+    const CVI_U16 cap_width = get_sensor_cfg()->cap_width;
+    const CVI_U16 cap_height = get_sensor_cfg()->cap_height;
+    const float cap_fps = get_sensor_cfg()->cap_fps;
+    const WDR_MODE_E cap_wdr_mode = get_sensor_cfg()->cap_wdr_mode;
+    const BAYER_FORMAT_E cap_bayer_format = get_sensor_cfg()->cap_bayer_format;
+    const ISP_BAYER_FORMAT_E isp_bayer_format = get_sensor_cfg()->isp_bayer_format;
+
     // resolve output size
     {
         if (width > cap_width && height > cap_height)
@@ -2851,6 +2966,12 @@ int capture_cvi_impl::open(int width, int height, float fps)
             stRxInitAttr.as8PNSwap[3] = get_sns_ini_cfg()->pn_swap[3];
             stRxInitAttr.as8PNSwap[4] = get_sns_ini_cfg()->pn_swap[4];
 
+            if (get_sns_ini_cfg()->mclk_en)
+            {
+                stRxInitAttr.stMclkAttr.bMclkEn = CVI_TRUE;
+                stRxInitAttr.stMclkAttr.u8Mclk = get_sns_ini_cfg()->mclk;
+            }
+
             CVI_S32 ret = pstSnsObj->pfnPatchRxAttr(&stRxInitAttr);
             if (ret < 0)
             {
@@ -2953,6 +3074,7 @@ int capture_cvi_impl::open(int width, int height, float fps)
     // prepare vi
     {
         VI_DEV_ATTR_S stViDevAttr;
+        memset(&stViDevAttr, 0, sizeof(stViDevAttr));
         stViDevAttr.enIntfMode = VI_MODE_MIPI;
         stViDevAttr.enWorkMode = VI_WORK_MODE_1Multiplex;
         stViDevAttr.enScanMode = VI_SCAN_PROGRESSIVE;
@@ -3294,30 +3416,32 @@ int capture_cvi_impl::open(int width, int height, float fps)
         fprintf(stderr, "binName = %s\n", (const char*)binName);
 
         FILE* fp = fopen((const char*)binName, "rb");
-        if (!fp)
+        if (fp)
+        {
+            fseek(fp, 0, SEEK_END);
+            int len = ftell(fp);
+            rewind(fp);
+
+            std::vector<unsigned char> buf;
+            buf.resize(len);
+            fread((char*)buf.data(), 1, len, fp);
+
+            fclose(fp);
+
+            {
+                CVI_S32 ret = CVI_BIN_ImportBinData(buf.data(), buf.size());
+                if (ret != CVI_SUCCESS)
+                {
+                    fprintf(stderr, "CVI_BIN_ImportBinData failed %x\n", ret);
+                    ret_val = -1;
+                    goto OUT;
+                }
+            }
+        }
+        else
         {
             fprintf(stderr, "fopen %s failed\n", (const char*)binName);
-            ret_val = -1;
-        }
-
-        fseek(fp, 0, SEEK_END);
-        int len = ftell(fp);
-        rewind(fp);
-
-        std::vector<unsigned char> buf;
-        buf.resize(len);
-        fread((char*)buf.data(), 1, len, fp);
-
-        fclose(fp);
-
-        {
-            CVI_S32 ret = CVI_BIN_ImportBinData(buf.data(), buf.size());
-            if (ret != CVI_SUCCESS)
-            {
-                fprintf(stderr, "CVI_BIN_ImportBinData failed %x\n", ret);
-                ret_val = -1;
-                goto OUT;
-            }
+            fprintf(stderr, "fallback to default bindata\n");
         }
     }
 
@@ -4060,7 +4184,7 @@ bool capture_cvi::supported()
     if (!vpu.ready)
         return false;
 
-    if (!sns_gc2083.ready)
+    if (!sns_obj.ready)
         return false;
 
     if (!ae.ready)
@@ -4104,7 +4228,7 @@ int capture_cvi::get_height() const
 
 float capture_cvi::get_fps() const
 {
-    return cap_fps;
+    return get_sensor_cfg()->cap_fps;
 }
 
 int capture_cvi::start_streaming()
