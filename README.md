@@ -327,7 +327,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </td>
 <td>
   <a href="https://yuzukihd.top">
-    <img alt="tinyvision" src="https://yuzukihd.top/images/tinyvision.png" width="auto" height="120">
+    <img alt="tinyvision" src="https://yuzukihd.top/images/tinyvision.jpg" width="auto" height="120">
     <br /><b>tinyvision</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
