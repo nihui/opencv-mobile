@@ -1033,6 +1033,15 @@ jobs:
             setup-env-cmd: |
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
 
+          - name: licheerv-nano
+            single-core: true
+            cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
+            setup-toolchain-cmd: |
+              wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
+              tar -xf host-tools.tar.gz
+            setup-env-cmd: |
+              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
+
           - name: luckfox-pico
             single-core: true
             cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake

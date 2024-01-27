@@ -297,7 +297,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
   <br />riscv64-linux-musl<br />
   &#9989; HW JPG decoder<br />
   &#9989; MIPI CSI camera<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-milkv-duo.zip">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-licheerv-nano.zip">
     <img alt="opencv4-licheerv-nano" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
   </a>
 </td>
