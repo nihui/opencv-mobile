@@ -326,6 +326,16 @@ https://github.com/nihui/opencv-mobile/releases/latest
   </a>
 </td>
 <td>
+  <a href="https://yuzukihd.top">
+    <img alt="tinyvision" src="https://yuzukihd.top/images/tinyvision.png" width="auto" height="120">
+    <br /><b>tinyvision</b>
+  </a>
+  <br />arm-linux-uclibcgnueabihf<br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-yuzuki-lizard.zip">
+    <img alt="opencv4-tinyvision" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
   <a href="http://www.industio.cn/product-item-5.html">
     <img alt="purple-pi" src="https://img01.71360.com/file/read/www2/M00/38/09/wKj2K2MMbSKAXKhHAAJMw0S-VfY400.jpg" width="auto" height="120">
     <br /><b>purple-pi</b>
