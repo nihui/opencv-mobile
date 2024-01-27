@@ -290,6 +290,18 @@ https://github.com/nihui/opencv-mobile/releases/latest
   </a>
 </td>
 <td>
+  <a href="https://sipeed.com/licheerv-nano">
+    <img alt="licheerv-nano" src="https://sipeed.com/assets/nano2.8855215e.png" width="auto" height="120">
+    <br /><b>licheerv-nano</b>
+  </a>
+  <br />riscv64-linux-musl<br />
+  &#9989; HW JPG decoder<br />
+  &#9989; MIPI CSI camera<br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-milkv-duo.zip">
+    <img alt="opencv4-licheerv-nano" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
   <a href="https://www.luckfox.com/Luckfox-Pico">
     <img alt="luckfox-pico" src="https://www.luckfox.com/image/cache/catalog/Luckfox-Pico-Plus/Luckfox-Pico-Plus-1-1600x1200.jpg" width="auto" height="120">
     <br /><b>luckfox-pico</b>
