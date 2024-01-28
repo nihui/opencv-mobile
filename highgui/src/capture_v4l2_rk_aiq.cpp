@@ -1155,7 +1155,13 @@ int capture_v4l2_rk_aiq_impl::open(int width, int height, float fps)
                         cap_denominator = std::max(min_denom, max_denom - max_denom / 2 / sdenom * sdenom);
                     }
                 }
+
+                if (frmivalenum.type != V4L2_FRMIVAL_TYPE_DISCRETE)
+                    break;
             }
+
+            if (frmsizeenum.type != V4L2_FRMSIZE_TYPE_DISCRETE)
+                break;
         }
     }
 
