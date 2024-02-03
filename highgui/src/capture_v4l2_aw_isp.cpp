@@ -1073,50 +1073,6 @@ int capture_v4l2_aw_isp_impl::start_streaming()
     return 0;
 }
 
-static inline void my_memcpy(unsigned char* dst, const unsigned char* src, int size)
-{
-#if __ARM_NEON
-    int nn = size / 64;
-    size -= nn * 64;
-    while (nn--)
-    {
-        __builtin_prefetch(src + 64);
-        uint8x16_t _p0 = vld1q_u8(src);
-        uint8x16_t _p1 = vld1q_u8(src + 16);
-        uint8x16_t _p2 = vld1q_u8(src + 32);
-        uint8x16_t _p3 = vld1q_u8(src + 48);
-        vst1q_u8(dst, _p0);
-        vst1q_u8(dst + 16, _p1);
-        vst1q_u8(dst + 32, _p2);
-        vst1q_u8(dst + 48, _p3);
-        src += 64;
-        dst += 64;
-    }
-    if (size > 16)
-    {
-        uint8x16_t _p0 = vld1q_u8(src);
-        vst1q_u8(dst, _p0);
-        src += 16;
-        dst += 16;
-        size -= 16;
-    }
-    if (size > 8)
-    {
-        uint8x8_t _p0 = vld1_u8(src);
-        vst1_u8(dst, _p0);
-        src += 8;
-        dst += 8;
-        size -= 8;
-    }
-    while (size--)
-    {
-        *dst++ = *src++;
-    }
-#else
-    memcpy(dst, src, size);
-#endif
-}
-
 int capture_v4l2_aw_isp_impl::read_frame(unsigned char* bgrdata)
 {
     fd_set fds;
