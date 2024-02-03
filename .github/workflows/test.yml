@@ -1,0 +1,209 @@
+name: test
+on: [pull_request]
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_13.4.1.app/Contents/Developer
+  IOS_DEPLOYMENT_TARGET: '9.0'
+  MAC_DEPLOYMENT_TARGET: '10.9'
+  MAC_ARM64_DEPLOYMENT_TARGET: '11.0'
+  MAC_CATALYST_DEPLOYMENT_TARGET: '13.1'
+  ENABLE_ARC: OFF
+  ENABLE_VISIBILITY: OFF
+  EMSCRIPTEN_VERSION: 3.1.28
+
+permissions:
+  contents: read
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: get-version
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+    - name: opencv2-source
+      env:
+        opencv-version: 2.4.13.7
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
+        unzip -q opencv-${{ env.opencv-version }}.zip
+        rm opencv-${{ env.opencv-version }}.zip
+        cd opencv-${{ env.opencv-version }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-highgui-include.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-link-stdc++.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-enable-cxx11.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-newer-msvc.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
+        cp ../patches/draw_text.h ../patches/mono_font_data.h modules/core/src/
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+        rm -rf 3rdparty apps data doc samples platforms
+        rm -rf modules/java
+        rm -rf modules/python
+        rm -rf modules/ts
+        sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
+        cp ../opencv2_cmake_options.txt ./options.txt
+        cd ..
+        mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
+        zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
+    - name: opencv3-source
+      env:
+        opencv-version: 3.4.20
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
+        unzip -q opencv-${{ env.opencv-version }}.zip
+        rm opencv-${{ env.opencv-version }}.zip
+        cd opencv-${{ env.opencv-version }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-emscripten-include.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
+        cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+        rm -rf 3rdparty apps data doc samples platforms
+        rm -rf modules/java
+        rm -rf modules/js
+        rm -rf modules/python
+        rm -rf modules/ts
+        sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
+        cp ../opencv3_cmake_options.txt ./options.txt
+        cd ..
+        mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
+        zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
+    - name: opencv4-source
+      env:
+        opencv-version: 4.9.0
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
+        unzip -q opencv-${{ env.opencv-version }}.zip
+        rm opencv-${{ env.opencv-version }}.zip
+        cd opencv-${{ env.opencv-version }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        rm -rf modules/gapi
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
+        cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+        rm -rf 3rdparty apps data doc samples platforms
+        rm -rf modules/java
+        rm -rf modules/js
+        rm -rf modules/python
+        rm -rf modules/ts
+        sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
+        cp ../opencv4_cmake_options.txt ./options.txt
+        cd ..
+        mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
+        zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
+    - name: upload-opencv2-source
+      uses: actions/upload-artifact@v3
+      with:
+        name: opencv-mobile-2.4.13.7-source
+        path: opencv-mobile-2.4.13.7.zip
+    - name: upload-opencv3-source
+      uses: actions/upload-artifact@v3
+      with:
+        name: opencv-mobile-3.4.20-source
+        path: opencv-mobile-3.4.20.zip
+    - name: upload-opencv4-source
+      uses: actions/upload-artifact@v3
+      with:
+        name: opencv-mobile-4.9.0-source
+        path: opencv-mobile-4.9.0.zip
+
+
+  devboard:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: licheerv-nano
+            single-core: true
+            cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
+            setup-toolchain-cmd: |
+              wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
+              tar -xf host-tools.tar.gz
+            setup-env-cmd: |
+              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
+
+    env:
+      COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_TOOLCHAIN_FILE=../../toolchains/${{ matrix.cmake-toolchain }} \
+        -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_BUILD_TYPE=Release \
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+      with:
+        name: opencv-mobile-4.9.0-source
+    - name: setup-opencv-source
+      run: |
+        unzip -q opencv-mobile-4.9.0.zip
+        echo "SOURCE_DIR=opencv-mobile-4.9.0" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-4.9.0-${{ matrix.name }}" >> $GITHUB_ENV
+    - name: setup-toolchain
+      run: ${{ matrix.setup-toolchain-cmd }}
+
+    - name: build-disable-thread
+      if: ${{ matrix.single-core }}
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        patch -p1 -i ../patches/opencv-4.9.0-no-atomic.patch
+        mkdir build && cd build
+        ${{ matrix.setup-env-cmd }}
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON \
+            -DWITH_OPENMP=OFF -DOPENCV_DISABLE_THREAD_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+
+    - name: build-enable-thread
+      if: ${{ ! matrix.single-core }}
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build && cd build
+        ${{ matrix.setup-env-cmd }}
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGE_NAME }}
+        cp -rf ${{ env.SOURCE_DIR }}/build/install/* ${{ env.PACKAGE_NAME }}/
+        zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
+
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        ${{ matrix.setup-env-cmd }}
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/lib/cmake/opencv4 ..
+        cmake --build . -j $(nproc)
+
+    - name: upload-zip
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
+
