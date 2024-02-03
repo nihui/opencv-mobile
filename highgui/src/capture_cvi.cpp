@@ -66,16 +66,13 @@ static int get_device_model()
         }
         if (strncmp(buf, "Cvitek. CV181X ASIC. C906.", 36) == 0)
         {
-            if (access("/mnt/system/lib/libsns_gc4653.so", F_OK) == 0)
-            {
-                // licheerv nano
-                device_model = 3;
-            }
-            else
-            {
-                // milkv duo 256
-                device_model = 2;
-            }
+            // milkv duo 256
+            device_model = 2;
+        }
+        if (strncmp(buf, "LicheeRv Nano", 13) == 0)
+        {
+            // licheerv nano
+            device_model = 3;
         }
     }
 
@@ -2560,7 +2557,7 @@ static const struct sns_ini_cfg* get_sns_ini_cfg()
     {
         // licheerv nano
         static const struct sns_ini_cfg lpirvnano = {
-            0,  // bus_id
+            4,  // bus_id
             29, // sns_i2c_addr
             0,  // mipi_dev
             {2, 1, 0, -1, -1},  // lane_id
