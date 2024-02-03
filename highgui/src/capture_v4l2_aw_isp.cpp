@@ -37,16 +37,6 @@
 #include <arm_neon.h>
 #endif // __ARM_NEON
 
-// TODO
-#include <linux/g2d_driver.h>
-#include <linux/ion_uapi.h>
-#include <linux/sunxi_ion_uapi.h>
-#include <linux/cedar_ve_uapi.h>
-#include <media/sunxi_camera_v2.h>
-
-// #define V4L2_CID_SENSOR_TYPE 0x98195e
-// #define V4L2_SENSOR_TYPE_RAW 1
-
 
 // 0 = unknown
 // 1 = tinyvision
@@ -88,6 +78,310 @@ static bool is_device_whitelisted()
 
     return false;
 }
+
+extern "C" {
+
+// #include <linux/g2d_driver.h>
+
+typedef enum {
+    G2D_FORMAT_ARGB8888,
+    G2D_FORMAT_ABGR8888,
+    G2D_FORMAT_RGBA8888,
+    G2D_FORMAT_BGRA8888,
+    G2D_FORMAT_XRGB8888,
+    G2D_FORMAT_XBGR8888,
+    G2D_FORMAT_RGBX8888,
+    G2D_FORMAT_BGRX8888,
+    G2D_FORMAT_RGB888,
+    G2D_FORMAT_BGR888,
+    G2D_FORMAT_RGB565,
+    G2D_FORMAT_BGR565,
+    G2D_FORMAT_ARGB4444,
+    G2D_FORMAT_ABGR4444,
+    G2D_FORMAT_RGBA4444,
+    G2D_FORMAT_BGRA4444,
+    G2D_FORMAT_ARGB1555,
+    G2D_FORMAT_ABGR1555,
+    G2D_FORMAT_RGBA5551,
+    G2D_FORMAT_BGRA5551,
+    G2D_FORMAT_ARGB2101010,
+    G2D_FORMAT_ABGR2101010,
+    G2D_FORMAT_RGBA1010102,
+    G2D_FORMAT_BGRA1010102,
+
+    /* invailed for UI channel */
+    G2D_FORMAT_IYUV422_V0Y1U0Y0 = 0x20,
+    G2D_FORMAT_IYUV422_Y1V0Y0U0,
+    G2D_FORMAT_IYUV422_U0Y1V0Y0,
+    G2D_FORMAT_IYUV422_Y1U0Y0V0,
+
+    G2D_FORMAT_YUV422UVC_V1U1V0U0,
+    G2D_FORMAT_YUV422UVC_U1V1U0V0,
+    G2D_FORMAT_YUV422_PLANAR,
+
+    G2D_FORMAT_YUV420UVC_V1U1V0U0 = 0x28,
+    G2D_FORMAT_YUV420UVC_U1V1U0V0,
+    G2D_FORMAT_YUV420_PLANAR,
+
+    G2D_FORMAT_YUV411UVC_V1U1V0U0 = 0x2c,
+    G2D_FORMAT_YUV411UVC_U1V1U0V0,
+    G2D_FORMAT_YUV411_PLANAR,
+
+    G2D_FORMAT_Y8 = 0x30,
+
+    /* YUV 10bit format */
+    G2D_FORMAT_YVU10_P010 = 0x34,
+
+    G2D_FORMAT_YVU10_P210 = 0x36,
+
+    G2D_FORMAT_YVU10_444 = 0x38,
+    G2D_FORMAT_YUV10_444 = 0x39,
+    G2D_FORMAT_MAX,
+} g2d_fmt_enh;
+
+typedef enum {
+    G2D_BLT_NONE_H = 0x0,
+    G2D_BLT_BLACKNESS,
+    G2D_BLT_NOTMERGEPEN,
+    G2D_BLT_MASKNOTPEN,
+    G2D_BLT_NOTCOPYPEN,
+    G2D_BLT_MASKPENNOT,
+    G2D_BLT_NOT,
+    G2D_BLT_XORPEN,
+    G2D_BLT_NOTMASKPEN,
+    G2D_BLT_MASKPEN,
+    G2D_BLT_NOTXORPEN,
+    G2D_BLT_NOP,
+    G2D_BLT_MERGENOTPEN,
+    G2D_BLT_COPYPEN,
+    G2D_BLT_MERGEPENNOT,
+    G2D_BLT_MERGEPEN,
+    G2D_BLT_WHITENESS = 0x000000ff,
+
+    G2D_ROT_90  = 0x00000100,
+    G2D_ROT_180 = 0x00000200,
+    G2D_ROT_270 = 0x00000300,
+    G2D_ROT_0   = 0x00000400,
+    G2D_ROT_H = 0x00001000,
+    G2D_ROT_V = 0x00002000,
+
+/*	G2D_SM_TDLR_1  =    0x10000000, */
+    G2D_SM_DTLR_1 = 0x10000000,
+/*	G2D_SM_TDRL_1  =    0x20000000, */
+/*	G2D_SM_DTRL_1  =    0x30000000, */
+} g2d_blt_flags_h;
+
+typedef struct {
+    __s32		x;		/* left top point coordinate x */
+    __s32		y;		/* left top point coordinate y */
+    __u32		w;		/* rectangle width */
+    __u32		h;		/* rectangle height */
+} g2d_rect;
+
+typedef enum {
+    G2D_BT601,
+    G2D_BT709,
+    G2D_BT2020,
+} g2d_color_gmt;
+
+typedef enum {
+    G2D_PIXEL_ALPHA,
+    G2D_GLOBAL_ALPHA,
+    G2D_MIXER_ALPHA,
+} g2d_alpha_mode_enh;
+
+enum color_range {
+    COLOR_RANGE_0_255 = 0,
+    COLOR_RANGE_16_235 = 1,
+};
+
+typedef struct {
+    int		 bbuff;
+    __u32		 color;
+    g2d_fmt_enh	 format;
+    __u32		 laddr[3];
+    __u32		 haddr[3];
+    __u32		 width;
+    __u32		 height;
+    __u32		 align[3];
+
+    g2d_rect	 clip_rect;
+
+    g2d_color_gmt	 gamut;
+    int		 bpremul;
+    __u8		 alpha;
+    g2d_alpha_mode_enh mode;
+    int		 fd;
+    __u32 use_phy_addr;
+    enum color_range color_range;
+} g2d_image_enh;
+
+typedef struct {
+    g2d_blt_flags_h flag_h;
+    g2d_image_enh src_image_h;
+    g2d_image_enh dst_image_h;
+} g2d_blt_h;
+
+typedef enum {
+    G2D_CMD_BITBLT			=	0x50,
+    G2D_CMD_FILLRECT		=	0x51,
+    G2D_CMD_STRETCHBLT		=	0x52,
+    G2D_CMD_PALETTE_TBL		=	0x53,
+    G2D_CMD_QUEUE			=	0x54,
+    G2D_CMD_BITBLT_H		=	0x55,
+    G2D_CMD_FILLRECT_H		=	0x56,
+    G2D_CMD_BLD_H			=	0x57,
+    G2D_CMD_MASK_H			=	0x58,
+} g2d_cmd;
+
+// #include <linux/ion_uapi.h>
+
+typedef int ion_user_handle_t;
+
+enum ion_heap_type {
+    ION_HEAP_TYPE_SYSTEM,
+    ION_HEAP_TYPE_SYSTEM_CONTIG,
+    ION_HEAP_TYPE_CARVEOUT,
+    ION_HEAP_TYPE_CHUNK,
+    ION_HEAP_TYPE_DMA,
+    ION_HEAP_TYPE_CUSTOM,
+    ION_HEAP_TYPE_SECURE, /* allwinner add */
+};
+
+#define ION_HEAP_SYSTEM_MASK        (1 << ION_HEAP_TYPE_SYSTEM)
+#define ION_HEAP_SYSTEM_CONTIG_MASK (1 << ION_HEAP_TYPE_SYSTEM_CONTIG)
+#define ION_HEAP_CARVEOUT_MASK      (1 << ION_HEAP_TYPE_CARVEOUT)
+#define ION_HEAP_TYPE_DMA_MASK      (1 << ION_HEAP_TYPE_DMA)
+#define ION_NUM_HEAP_IDS            (sizeof(unsigned int) * 8)
+
+#define ION_FLAG_CACHED             1
+#define ION_FLAG_CACHED_NEEDS_SYNC  2
+
+struct ion_allocation_data {
+    size_t len;
+    size_t align;
+    unsigned int heap_id_mask;
+    unsigned int flags;
+    ion_user_handle_t handle;
+};
+
+struct ion_fd_data {
+    ion_user_handle_t handle;
+    int fd;
+};
+
+struct ion_handle_data {
+    ion_user_handle_t handle;
+};
+
+#define ION_IOC_MAGIC   'I'
+#define ION_IOC_ALLOC   _IOWR(ION_IOC_MAGIC, 0, struct ion_allocation_data)
+#define ION_IOC_FREE    _IOWR(ION_IOC_MAGIC, 1, struct ion_handle_data)
+#define ION_IOC_MAP     _IOWR(ION_IOC_MAGIC, 2, struct ion_fd_data)
+
+// #include <linux/sunxi_ion_uapi.h>
+
+struct sunxi_cache_range {
+    long start;
+    long end;
+};
+
+#define ION_IOC_SUNXI_FLUSH_RANGE   5
+
+// #include <linux/cedar_ve_uapi.h>
+
+enum IOCTL_CMD {
+    IOCTL_UNKOWN = 0x100,
+    IOCTL_GET_ENV_INFO,
+    IOCTL_WAIT_VE_DE,
+    IOCTL_WAIT_VE_EN,
+    IOCTL_RESET_VE,
+    IOCTL_ENABLE_VE,
+    IOCTL_DISABLE_VE,
+    IOCTL_SET_VE_FREQ,
+
+    IOCTL_CONFIG_AVS2 = 0x200,
+    IOCTL_GETVALUE_AVS2,
+    IOCTL_PAUSE_AVS2,
+    IOCTL_START_AVS2,
+    IOCTL_RESET_AVS2,
+    IOCTL_ADJUST_AVS2,
+    IOCTL_ENGINE_REQ,
+    IOCTL_ENGINE_REL,
+    IOCTL_ENGINE_CHECK_DELAY,
+    IOCTL_GET_IC_VER,
+    IOCTL_ADJUST_AVS2_ABS,
+    IOCTL_FLUSH_CACHE,
+    IOCTL_SET_REFCOUNT,
+    IOCTL_FLUSH_CACHE_ALL,
+    IOCTL_TEST_VERSION,
+
+    IOCTL_GET_LOCK = 0x310,
+    IOCTL_RELEASE_LOCK,
+
+    IOCTL_SET_VOL = 0x400,
+
+    IOCTL_WAIT_JPEG_DEC = 0x500,
+    /*for get the ve ref_count for ipc to delete the semphore*/
+    IOCTL_GET_REFCOUNT,
+
+    /*for iommu*/
+    IOCTL_GET_IOMMU_ADDR,
+    IOCTL_FREE_IOMMU_ADDR,
+
+    /*for debug*/
+    IOCTL_SET_PROC_INFO,
+    IOCTL_STOP_PROC_INFO,
+    IOCTL_COPY_PROC_INFO,
+
+    IOCTL_SET_DRAM_HIGH_CHANNAL = 0x600,
+
+    /* debug for decoder and encoder*/
+    IOCTL_PROC_INFO_COPY = 0x610,
+    IOCTL_PROC_INFO_STOP,
+    IOCTL_POWER_SETUP = 0x700,
+    IOCTL_POWER_SHUTDOWN,
+};
+
+struct user_iommu_param {
+    int				fd;
+    unsigned int	iommu_addr;
+};
+
+// #include <media/sunxi_camera_v2.h>
+
+#define V4L2_CID_USER_SUNXI_CAMERA_BASE (V4L2_CID_USER_BASE + 0x1050)
+
+#define V4L2_CID_AUTO_FOCUS_INIT    (V4L2_CID_USER_SUNXI_CAMERA_BASE + 2)
+#define V4L2_CID_AUTO_FOCUS_RELEASE (V4L2_CID_USER_SUNXI_CAMERA_BASE + 3)
+#define V4L2_CID_GSENSOR_ROTATION   (V4L2_CID_USER_SUNXI_CAMERA_BASE + 4)
+#define V4L2_CID_FRAME_RATE         (V4L2_CID_USER_SUNXI_CAMERA_BASE + 5)
+#define V4L2_CID_TAKE_PICTURE       (V4L2_CID_USER_SUNXI_CAMERA_BASE + 6)
+#define V4L2_CID_HOR_VISUAL_ANGLE   (V4L2_CID_USER_SUNXI_CAMERA_BASE + 7)
+#define V4L2_CID_VER_VISUAL_ANGLE   (V4L2_CID_USER_SUNXI_CAMERA_BASE + 8)
+#define V4L2_CID_FOCUS_LENGTH       (V4L2_CID_USER_SUNXI_CAMERA_BASE + 9)
+#define V4L2_CID_R_GAIN             (V4L2_CID_USER_SUNXI_CAMERA_BASE + 10)
+#define V4L2_CID_GR_GAIN            (V4L2_CID_USER_SUNXI_CAMERA_BASE + 11)
+#define V4L2_CID_GB_GAIN            (V4L2_CID_USER_SUNXI_CAMERA_BASE + 12)
+#define V4L2_CID_B_GAIN             (V4L2_CID_USER_SUNXI_CAMERA_BASE + 13)
+#define V4L2_CID_SENSOR_TYPE        (V4L2_CID_USER_SUNXI_CAMERA_BASE + 14)
+#define V4L2_CID_AE_WIN_X1          (V4L2_CID_USER_SUNXI_CAMERA_BASE + 15)
+#define V4L2_CID_AE_WIN_Y1          (V4L2_CID_USER_SUNXI_CAMERA_BASE + 16)
+#define V4L2_CID_AE_WIN_X2          (V4L2_CID_USER_SUNXI_CAMERA_BASE + 17)
+#define V4L2_CID_AE_WIN_Y2          (V4L2_CID_USER_SUNXI_CAMERA_BASE + 18)
+#define V4L2_CID_AF_WIN_X1          (V4L2_CID_USER_SUNXI_CAMERA_BASE + 19)
+#define V4L2_CID_AF_WIN_Y1          (V4L2_CID_USER_SUNXI_CAMERA_BASE + 20)
+#define V4L2_CID_AF_WIN_X2          (V4L2_CID_USER_SUNXI_CAMERA_BASE + 21)
+#define V4L2_CID_AF_WIN_Y2          (V4L2_CID_USER_SUNXI_CAMERA_BASE + 22)
+#define V4L2_CID_FLASH_LED_MODE_V1  (V4L2_CID_USER_SUNXI_CAMERA_BASE + 23)
+
+enum v4l2_sensor_type {
+    V4L2_SENSOR_TYPE_YUV = 0,
+    V4L2_SENSOR_TYPE_RAW = 1,
+};
+
+}
+
 
 extern "C" {
 
@@ -287,7 +581,7 @@ int ion_allocator::alloc(size_t size, struct ion_memory* mem)
     void* virt_addr = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd_data.fd, 0);
     if (!virt_addr)
     {
-        fprintf(stderr, "mmap %u failed %d %s\n", size, errno, strerror(errno));
+        fprintf(stderr, "mmap failed %d %s\n", errno, strerror(errno));
         return -1;
     }
 
@@ -306,7 +600,7 @@ int ion_allocator::alloc(size_t size, struct ion_memory* mem)
     mem->virt_addr = virt_addr;
     mem->phy_addr = iommu_param.iommu_addr;
 
-    fprintf(stderr, "alloc %u  at %u\n", mem->size, mem->phy_addr);
+    // fprintf(stderr, "alloc %u  at %u\n", mem->size, mem->phy_addr);
 
     return 0;
 }
@@ -316,7 +610,7 @@ int ion_allocator::free(struct ion_memory* mem)
     if (!mem->handle)
         return 0;
 
-    fprintf(stderr, "free  %u  at %u\n", mem->size, mem->phy_addr);
+    // fprintf(stderr, "free  %u  at %u\n", mem->size, mem->phy_addr);
 
     int ret = 0;
 
