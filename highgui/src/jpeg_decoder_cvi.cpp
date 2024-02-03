@@ -37,6 +37,69 @@
 
 #include "exif.hpp"
 
+// 0 = unknown
+// 1 = milkv-duo
+// 2 = milkv-duo256m
+// 3 = licheerv-nano
+static int get_device_model()
+{
+    static int device_model = -1;
+
+    if (device_model >= 0)
+        return device_model;
+
+    device_model = 0;
+
+    FILE* fp = fopen("/proc/device-tree/model", "rb");
+    if (fp)
+    {
+        char buf[1024];
+        fgets(buf, 1024, fp);
+        fclose(fp);
+
+        if (strncmp(buf, "Cvitek. CV180X ASIC. C906.", 36) == 0)
+        {
+            // milkv duo
+            device_model = 1;
+        }
+        if (strncmp(buf, "Cvitek. CV181X ASIC. C906.", 36) == 0)
+        {
+            // milkv duo 256
+            device_model = 2;
+        }
+        if (strncmp(buf, "LicheeRv Nano", 13) == 0)
+        {
+            // licheerv nano
+            device_model = 3;
+        }
+    }
+
+    return device_model;
+}
+
+static bool is_device_whitelisted()
+{
+    const int device_model = get_device_model();
+
+    if (device_model == 1)
+    {
+        // milkv duo
+        return true;
+    }
+    if (device_model == 2)
+    {
+        // milkv duo 256
+        return true;
+    }
+    if (device_model == 3)
+    {
+        // licheerv nano
+        return true;
+    }
+
+    return false;
+}
+
 extern "C"
 {
 
@@ -169,28 +232,7 @@ static int load_sys_library()
         return 0;
 
     // check device whitelist
-    bool whitelisted = false;
-    {
-        FILE* fp = fopen("/proc/device-tree/model", "rb");
-        if (!fp)
-            return -1;
-
-        char buf[1024];
-        fgets(buf, 1024, fp);
-        fclose(fp);
-
-        if (strncmp(buf, "Cvitek. CV180X ASIC. C906.", 36) == 0)
-        {
-            // milkv duo
-            whitelisted = true;
-        }
-        if (strncmp(buf, "Cvitek. CV181X ASIC. C906.", 36) == 0)
-        {
-            // milkv duo 256
-            whitelisted = true;
-        }
-    }
-
+    bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
         fprintf(stderr, "this device is not whitelisted for jpeg decoder cvi\n");
@@ -599,28 +641,7 @@ static int load_vdec_library()
         return 0;
 
     // check device whitelist
-    bool whitelisted = false;
-    {
-        FILE* fp = fopen("/proc/device-tree/model", "rb");
-        if (!fp)
-            return -1;
-
-        char buf[1024];
-        fgets(buf, 1024, fp);
-        fclose(fp);
-
-        if (strncmp(buf, "Cvitek. CV180X ASIC. C906.", 36) == 0)
-        {
-            // milkv duo
-            whitelisted = true;
-        }
-        if (strncmp(buf, "Cvitek. CV181X ASIC. C906.", 36) == 0)
-        {
-            // milkv duo 256
-            whitelisted = true;
-        }
-    }
-
+    bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
         fprintf(stderr, "this device is not whitelisted for jpeg decoder cvi\n");
@@ -888,28 +909,7 @@ static int load_vpu_library()
         return 0;
 
     // check device whitelist
-    bool whitelisted = false;
-    {
-        FILE* fp = fopen("/proc/device-tree/model", "rb");
-        if (!fp)
-            return -1;
-
-        char buf[1024];
-        fgets(buf, 1024, fp);
-        fclose(fp);
-
-        if (strncmp(buf, "Cvitek. CV180X ASIC. C906.", 36) == 0)
-        {
-            // milkv duo
-            whitelisted = true;
-        }
-        if (strncmp(buf, "Cvitek. CV181X ASIC. C906.", 36) == 0)
-        {
-            // milkv duo 256
-            whitelisted = true;
-        }
-    }
-
+    bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
         fprintf(stderr, "this device is not whitelisted for jpeg decoder cvi\n");
