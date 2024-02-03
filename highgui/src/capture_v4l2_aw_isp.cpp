@@ -490,7 +490,7 @@ public:
     int alloc(size_t size, struct ion_memory* mem);
     int free(struct ion_memory* mem);
 
-    int flush(struct ion_memory* mem);
+    int flush(struct ion_memory* mem, int offset, int size);
 
 public:
     int ion_fd;
@@ -643,11 +643,11 @@ int ion_allocator::free(struct ion_memory* mem)
     return ret;
 }
 
-int ion_allocator::flush(struct ion_memory* mem)
+int ion_allocator::flush(struct ion_memory* mem, int offset, int size)
 {
     struct sunxi_cache_range range;
-    range.start = (long)mem->virt_addr;
-    range.end = range.start + mem->size;
+    range.start = (long)mem->virt_addr + offset;
+    range.end = range.start + size;
     if (ioctl(ion_fd, ION_IOC_SUNXI_FLUSH_RANGE, (void*)&range))
     {
         fprintf(stderr, "ioctl ION_IOC_SUNXI_FLUSH_RANGE failed %d %s\n", errno, strerror(errno));
@@ -1469,7 +1469,7 @@ int capture_v4l2_aw_isp_impl::read_frame(unsigned char* bgrdata)
             fprintf(stderr, "ioctl G2D_CMD_BITBLT_H failed %d %s\n", errno, strerror(errno));
         }
 
-        ion.flush(&bgr_ion);
+        ion.flush(&bgr_ion, 0, output_width * output_height * 3);
 
         // copy to bgrdata
         memcpy(bgrdata, (const unsigned char*)bgr_ion.virt_addr, output_width * output_height * 3);
