@@ -3,6 +3,7 @@ ocv_add_module(highgui opencv_imgproc)
 
 set(highgui_srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/capture_cvi.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/capture_v4l2_aw_isp.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/capture_v4l2_rk_aiq.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/exif.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/highgui.cpp

@@ -1060,6 +1060,16 @@ jobs:
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
               export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
 
+          - name: tinyvision
+            single-core: true
+            cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
+            setup-toolchain-cmd: |
+              wget -q https://github.com/YuzukiHD/Yuzukilizard/releases/download/Toolchains/toolchain-sunxi-musl-gcc-830.tar.gz
+              tar -xf toolchain-sunxi-musl-gcc-830.tar.gz
+            setup-env-cmd: |
+              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+              export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+
           - name: purple-pi
             single-core: false
             cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake
