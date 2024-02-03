@@ -333,7 +333,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
   <br />arm-linux-uclibcgnueabihf<br />
   &#10060; HW JPG decoder (WIP)<br />
   &#10060; HW JPG encoder (WIP)<br />
-  &#10060; MIPI CSI camera (WIP)<br />
+  &#9989; MIPI CSI camera<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-yuzuki-lizard.zip">
     <img alt="opencv4-tinyvision" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
   </a>
