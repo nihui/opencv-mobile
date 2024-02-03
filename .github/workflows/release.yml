@@ -148,7 +148,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: ndk-fix-debug
       run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -251,7 +251,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -351,7 +351,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -449,7 +449,7 @@ jobs:
         sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
 
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -541,7 +541,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -631,7 +631,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -716,7 +716,7 @@ jobs:
       COMMON_CMAKE_OPTIONS: -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_INSTALL_PREFIX=install
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -777,7 +777,7 @@ jobs:
       COMMON_CMAKE_OPTIONS: -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -836,7 +836,7 @@ jobs:
         cd emsdk
         ./emsdk install $EMSCRIPTEN_VERSION
         ./emsdk activate $EMSCRIPTEN_VERSION
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -979,19 +979,19 @@ jobs:
         echo "MAC_CATALYST_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-mac-catalyst-bitcode" >> $GITHUB_ENV
         echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-apple-bitcode" >> $GITHUB_ENV
     - name: download-macos-package
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ env.MACOS_PACKAGE_NAME }}
     - name: download-ios-package
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ env.IOS_PACKAGE_NAME }}
     - name: download-ios-simulator-package
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
     - name: download-mac-catalyst-package
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ env.MAC_CATALYST_PACKAGE_NAME }}
     - name: create-xcframwork
@@ -1080,7 +1080,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-4.9.0-source
     - name: setup-opencv-source
@@ -1142,7 +1142,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: download
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         path: artifacts
 
