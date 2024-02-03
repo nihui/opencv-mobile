@@ -1069,14 +1069,14 @@ int capture_v4l2_aw_isp_impl::open(int width, int height, float fps)
         }
     }
 
-    {
-        const char* pp = (const char*)&cap_pixelformat;
-        fprintf(stderr, "cap_pixelformat = %x  %c%c%c%c\n", cap_pixelformat, pp[0], pp[1], pp[2], pp[3]);
-        fprintf(stderr, "cap_width = %d\n", cap_width);
-        fprintf(stderr, "cap_height = %d\n", cap_height);
-        fprintf(stderr, "cap_numerator = %d\n", cap_numerator);
-        fprintf(stderr, "cap_denominator = %d\n", cap_denominator);
-    }
+    // {
+    //     const char* pp = (const char*)&cap_pixelformat;
+    //     fprintf(stderr, "cap_pixelformat = %x  %c%c%c%c\n", cap_pixelformat, pp[0], pp[1], pp[2], pp[3]);
+    //     fprintf(stderr, "cap_width = %d\n", cap_width);
+    //     fprintf(stderr, "cap_height = %d\n", cap_height);
+    //     fprintf(stderr, "cap_numerator = %d\n", cap_numerator);
+    //     fprintf(stderr, "cap_denominator = %d\n", cap_denominator);
+    // }
 
     if (cap_pixelformat == 0 || cap_width == 0 || cap_height == 0)
     {
