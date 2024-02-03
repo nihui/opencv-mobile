@@ -22,6 +22,7 @@
 
 #if defined __linux__
 #include "capture_cvi.h"
+#include "capture_v4l2_aw_isp.h"
 #include "capture_v4l2_rk_aiq.h"
 #endif
 
@@ -39,6 +40,7 @@ public:
     float fps;
 
 #if defined __linux__
+    capture_v4l2_aw_isp cap_v4l2_aw_isp;
     capture_v4l2_rk_aiq cap_v4l2_rk_aiq;
     capture_cvi cap_cvi;
 #endif
@@ -71,6 +73,27 @@ bool VideoCapture::open(int index)
     }
 
 #if defined __linux__
+    if (capture_v4l2_aw_isp::supported())
+    {
+        int ret = d->cap_v4l2_aw_isp.open(d->width, d->height, d->fps);
+        if (ret == 0)
+        {
+            d->width = d->cap_v4l2_aw_isp.get_width();
+            d->height = d->cap_v4l2_aw_isp.get_height();
+            d->fps = d->cap_v4l2_aw_isp.get_fps();
+
+            ret = d->cap_v4l2_aw_isp.start_streaming();
+            if (ret == 0)
+            {
+                d->is_opened = true;
+            }
+            else
+            {
+                d->cap_v4l2_aw_isp.close();
+            }
+        }
+    }
+
     if (capture_v4l2_rk_aiq::supported())
     {
         int ret = d->cap_v4l2_rk_aiq.open(d->width, d->height, d->fps);
@@ -128,6 +151,13 @@ void VideoCapture::release()
         return;
 
 #if defined __linux__
+    if (capture_v4l2_aw_isp::supported())
+    {
+        d->cap_v4l2_aw_isp.stop_streaming();
+
+        d->cap_v4l2_aw_isp.close();
+    }
+
     if (capture_v4l2_rk_aiq::supported())
     {
         d->cap_v4l2_rk_aiq.stop_streaming();
@@ -155,6 +185,13 @@ VideoCapture& VideoCapture::operator>>(Mat& image)
         return *this;
 
 #if defined __linux__
+    if (capture_v4l2_aw_isp::supported())
+    {
+        image.create(d->height, d->width, CV_8UC3);
+
+        d->cap_v4l2_aw_isp.read_frame((unsigned char*)image.data);
+    }
+
     if (capture_v4l2_rk_aiq::supported())
     {
         image.create(d->height, d->width, CV_8UC3);
