@@ -162,7 +162,7 @@ jobs:
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: build-arm64-v8a
       run: |
@@ -170,7 +170,7 @@ jobs:
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="arm64-v8a" \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: build-x86
       run: |
@@ -178,7 +178,7 @@ jobs:
         mkdir build-x86 && cd build-x86
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86" \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: build-x86_64
       run: |
@@ -186,7 +186,7 @@ jobs:
         mkdir build-x86_64 && cd build-x86_64
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86_64" \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: package
       run: |
@@ -202,28 +202,28 @@ jobs:
         mkdir build-armeabi-v7a && cd build-armeabi-v7a
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: test-arm64-v8a
       run: |
         cd test
         mkdir build-arm64-v8a && cd build-arm64-v8a
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="arm64-v8a" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: test-x86
       run: |
         cd test
         mkdir build-x86 && cd build-x86
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: test-x86_64
       run: |
         cd test
         mkdir build-x86_64 && cd build-x86_64
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86_64" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: upload
       uses: actions/upload-artifact@v3
       with:
@@ -463,7 +463,7 @@ jobs:
         mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
             `cat ../options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: build-arm-linux-gnueabihf
       run: |
@@ -471,7 +471,7 @@ jobs:
         mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
             `cat ../options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: build-aarch64-linux-gnu
       run: |
@@ -479,7 +479,7 @@ jobs:
         mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
             `cat ../options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: package
       run: |
@@ -503,21 +503,21 @@ jobs:
         mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/arm-linux-gnueabi/${{ env.OPENCV_SUBDIR }} ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: test-arm-linux-gnueabihf
       run: |
         cd test
         mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/arm-linux-gnueabihf/${{ env.OPENCV_SUBDIR }} ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: test-aarch64-linux-gnu
       run: |
         cd test
         mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/aarch64-linux-gnu/${{ env.OPENCV_SUBDIR }} ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -729,14 +729,14 @@ jobs:
         cd ${{ env.SOURCE_DIR }}
         mkdir build-x86; cd build-x86
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
+        cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
     - name: build-x64
       run: |
         cd ${{ env.SOURCE_DIR }}
         mkdir build-x64; cd build-x64
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 2
+        cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
     - name: package
       run: |
@@ -751,13 +751,13 @@ jobs:
         cd test
         mkdir build-x86; cd build-x86
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x86" -DOpenCV_STATIC=ON ..
-        cmake --build . --config Release -j 2
+        cmake --build . --config Release -j 4
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . --config Release -j 2
+        cmake --build . --config Release -j 4
     - name: upload-zip
       uses: actions/upload-artifact@v3
       with:
@@ -790,7 +790,7 @@ jobs:
         cd ${{ env.SOURCE_DIR }}
         mkdir build && cd build
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} `cat ../options.txt` -DBUILD_opencv_world=OFF ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: package
       run: |
@@ -810,7 +810,7 @@ jobs:
         cd test
         mkdir build && cd build
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/${{ env.OPENCV_SUBDIR }} ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: upload
       uses: actions/upload-artifact@v3
       with:
@@ -855,7 +855,7 @@ jobs:
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
             -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: build-simd
       run: |
@@ -867,7 +867,7 @@ jobs:
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
             -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: build-threads
       run: |
@@ -880,7 +880,7 @@ jobs:
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
             -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: build-simd-threads
       run: |
@@ -892,7 +892,7 @@ jobs:
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
             -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: package
       run: |
@@ -918,7 +918,7 @@ jobs:
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
             -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/basic/${{ env.OPENCV_SUBDIR }} ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: test-simd
       run: |
         cd test
@@ -927,7 +927,7 @@ jobs:
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
             -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/simd/${{ env.OPENCV_SUBDIR }} ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: test-threads
       run: |
         cd test
@@ -936,7 +936,7 @@ jobs:
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
             -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/threads/${{ env.OPENCV_SUBDIR }} ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: test-simd-threads
       run: |
         cd test
@@ -945,7 +945,7 @@ jobs:
             -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
             -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/simd-threads/${{ env.OPENCV_SUBDIR }} ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
     - name: upload
       uses: actions/upload-artifact@v3
       with:
@@ -1101,7 +1101,7 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON \
             -DWITH_OPENMP=OFF -DOPENCV_DISABLE_THREAD_SUPPORT=ON ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
 
     - name: build-enable-thread
@@ -1112,7 +1112,7 @@ jobs:
         ${{ matrix.setup-env-cmd }}
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
         cmake --build . --target install
 
     - name: package
@@ -1127,7 +1127,7 @@ jobs:
         mkdir build && cd build
         ${{ matrix.setup-env-cmd }}
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/lib/cmake/opencv4 ..
-        cmake --build . -j 2
+        cmake --build . -j $(nproc)
 
     - name: upload-zip
       uses: actions/upload-artifact@v3
