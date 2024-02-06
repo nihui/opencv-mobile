@@ -46,6 +46,9 @@ jobs:
         rm modules/core/include/opencv2/core/opengl_*
         rm modules/core/include/opencv2/core/wimage.hpp
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-gpu.patch
+        rm -rf modules/dynamicuda
+        rm -rf modules/gpu
+        rm -rf modules/ocl
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-highgui-include.patch
