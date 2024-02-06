@@ -235,8 +235,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [4.9.0]
-        # opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
@@ -331,920 +330,920 @@ jobs:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
 
-  # ios:
-  #   needs: [setup]
-  #   runs-on: macos-12
-  #   strategy:
-  #     matrix:
-  #       opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
-  #       bitcode: [OFF, ON]
-  #   env:
-  #     COMMON_CMAKE_OPTIONS: |
-  #       -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
-  #       -DPLATFORM=OS \
-  #       -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET \
-  #       -DENABLE_BITCODE=${{ matrix.bitcode }} \
-  #       -DENABLE_ARC=$ENABLE_ARC \
-  #       -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
-  #       -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
-  #       -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-  #       -DCMAKE_INSTALL_PREFIX=install \
-  #       -DCMAKE_BUILD_TYPE=Release \
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - uses: actions/download-artifact@v4
-  #     with:
-  #       name: opencv-mobile-${{ matrix.opencv-version }}-source
-  #   - name: setup-opencv-source
-  #     if: matrix.bitcode == 'OFF'
-  #     run: |
-  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios" >> $GITHUB_ENV
-  #   - name: setup-opencv-source
-  #     if: matrix.bitcode == 'ON'
-  #     run: |
-  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-bitcode" >> $GITHUB_ENV
-  #   - name: workaround-opencv2-list
-  #     if: matrix.opencv-version == '2.4.13.7'
-  #     run: |
-  #       # workaround ar @list issue on macos
-  #       sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' ${{ env.SOURCE_DIR }}/modules/world/CMakeLists.txt
-  #   - name: build-armv7
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-armv7 && cd build-armv7
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="armv7" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-  #       # workaround ar @list issue on macos
-  #       cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
-  #       cmake --build . --target install
-  #   - name: build-arm64
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-arm64 && cd build-arm64
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-  #       # workaround ar @list issue on macos
-  #       cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
-  #       cmake --build . --target install
-  #   - name: build-arm64e
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-arm64e && cd build-arm64e
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64e" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-  #       # workaround ar @list issue on macos
-  #       cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       rm -rf opencv2.framework
-  #       mkdir -p opencv2.framework/Versions/A/Headers
-  #       mkdir -p opencv2.framework/Versions/A/Resources
-  #       ln -s A opencv2.framework/Versions/Current
-  #       ln -s Versions/Current/Headers opencv2.framework/Headers
-  #       ln -s Versions/Current/Resources opencv2.framework/Resources
-  #       ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-  #       lipo -create \
-  #           ${{ env.SOURCE_DIR }}/build-armv7/install/lib/libopencv_world.a \
-  #           ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
-  #           ${{ env.SOURCE_DIR }}/build-arm64e/install/lib/libopencv_world.a \
-  #           -o opencv2.framework/Versions/A/opencv2
-  #       cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
-  #       cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
-  #       cp ${{ env.SOURCE_DIR }}/Info.plist opencv2.framework/Versions/A/Resources/
-  #       rm -f ${{ env.PACKAGE_NAME }}.zip
-  #       zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.framework
-  #   - name: test
-  #     run: |
-  #       cd test
-  #       mkdir build && cd build
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="armv7;arm64;arm64e" \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-  #       cmake --build . -j 3
-  #   - name: upload-zip
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: ${{ env.PACKAGE_NAME }}
-  #       path: ${{ env.PACKAGE_NAME }}.zip
-  #
-  # ios-simulator:
-  #   needs: [setup]
-  #   runs-on: macos-12
-  #   strategy:
-  #     matrix:
-  #       opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
-  #       bitcode: [OFF, ON]
-  #   env:
-  #     COMMON_CMAKE_OPTIONS: |
-  #       -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
-  #       -DPLATFORM=SIMULATOR \
-  #       -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET \
-  #       -DENABLE_BITCODE=${{ matrix.bitcode }} \
-  #       -DENABLE_ARC=$ENABLE_ARC \
-  #       -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
-  #       -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
-  #       -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-  #       -DCMAKE_INSTALL_PREFIX=install \
-  #       -DCMAKE_BUILD_TYPE=Release \
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - uses: actions/download-artifact@v4
-  #     with:
-  #       name: opencv-mobile-${{ matrix.opencv-version }}-source
-  #   - name: setup-opencv-source
-  #     if: matrix.bitcode == 'OFF'
-  #     run: |
-  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-simulator" >> $GITHUB_ENV
-  #   - name: setup-opencv-source
-  #     if: matrix.bitcode == 'ON'
-  #     run: |
-  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-simulator-bitcode" >> $GITHUB_ENV
-  #   - name: workaround-opencv2-list
-  #     if: matrix.opencv-version == '2.4.13.7'
-  #     run: |
-  #       # workaround ar @list issue on macos
-  #       sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' ${{ env.SOURCE_DIR }}/modules/world/CMakeLists.txt
-  #   - name: build-i386
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-i386 && cd build-i386
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="i386" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-  #       # workaround ar @list issue on macos
-  #       cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
-  #       cmake --build . --target install
-  #   - name: build-x86_64
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-x86_64 && cd build-x86_64
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-  #       # workaround ar @list issue on macos
-  #       cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
-  #       cmake --build . --target install
-  #   - name: build-arm64
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-arm64 && cd build-arm64
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-  #       # workaround ar @list issue on macos
-  #       cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       rm -rf opencv2.framework
-  #       mkdir -p opencv2.framework/Versions/A/Headers
-  #       mkdir -p opencv2.framework/Versions/A/Resources
-  #       ln -s A opencv2.framework/Versions/Current
-  #       ln -s Versions/Current/Headers opencv2.framework/Headers
-  #       ln -s Versions/Current/Resources opencv2.framework/Resources
-  #       ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-  #       lipo -create \
-  #           ${{ env.SOURCE_DIR }}/build-i386/install/lib/libopencv_world.a \
-  #           ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-  #           ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
-  #           -o opencv2.framework/Versions/A/opencv2
-  #       cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
-  #       cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
-  #       cp ${{ env.SOURCE_DIR }}/Info.plist opencv2.framework/Versions/A/Resources/
-  #       rm -f ${{ env.PACKAGE_NAME }}.zip
-  #       zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.framework
-  #   - name: test
-  #     run: |
-  #       cd test
-  #       mkdir build && cd build
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="i386;x86_64;arm64" \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-  #       cmake --build . -j 3
-  #   - name: upload-zip
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: ${{ env.PACKAGE_NAME }}
-  #       path: ${{ env.PACKAGE_NAME }}.zip
-  #
-  # armlinux:
-  #   needs: [setup]
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
-  #   env:
-  #     COMMON_CMAKE_OPTIONS: |
-  #       -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
-  #       -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-  #       -DCMAKE_INSTALL_PREFIX=install \
-  #       -DCMAKE_BUILD_TYPE=Release \
-  #   steps:
-  #   - name: arm-gnu-toolchain
-  #     run: |
-  #       sudo apt-get update
-  #       sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
-  #
-  #   - uses: actions/checkout@v4
-  #   - uses: actions/download-artifact@v4
-  #     with:
-  #       name: opencv-mobile-${{ matrix.opencv-version }}-source
-  #   - name: setup-opencv-source
-  #     run: |
-  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-armlinux" >> $GITHUB_ENV
-  #   - name: build-arm-linux-gnueabi
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
-  #           `cat ../options.txt` -DBUILD_opencv_world=OFF ..
-  #       cmake --build . -j $(nproc)
-  #       cmake --build . --target install
-  #   - name: build-arm-linux-gnueabihf
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
-  #           `cat ../options.txt` -DBUILD_opencv_world=OFF ..
-  #       cmake --build . -j $(nproc)
-  #       cmake --build . --target install
-  #   - name: build-aarch64-linux-gnu
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
-  #           `cat ../options.txt` -DBUILD_opencv_world=OFF ..
-  #       cmake --build . -j $(nproc)
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       mkdir ${{ env.PACKAGE_NAME }}
-  #       mkdir ${{ env.PACKAGE_NAME }}/arm-linux-gnueabi
-  #       mkdir ${{ env.PACKAGE_NAME }}/arm-linux-gnueabihf
-  #       mkdir ${{ env.PACKAGE_NAME }}/aarch64-linux-gnu
-  #       cp -rf ${{ env.SOURCE_DIR }}/build-arm-linux-gnueabi/install/* ${{ env.PACKAGE_NAME }}/arm-linux-gnueabi/
-  #       cp -rf ${{ env.SOURCE_DIR }}/build-arm-linux-gnueabihf/install/* ${{ env.PACKAGE_NAME }}/arm-linux-gnueabihf/
-  #       cp -rf ${{ env.SOURCE_DIR }}/build-aarch64-linux-gnu/install/* ${{ env.PACKAGE_NAME }}/aarch64-linux-gnu/
-  #       zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
-  #   - name: set-opencv-dir
-  #     if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
-  #     run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
-  #   - name: set-opencv-dir
-  #     if: matrix.opencv-version == '4.9.0'
-  #     run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
-  #   - name: test-arm-linux-gnueabi
-  #     run: |
-  #       cd test
-  #       mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/arm-linux-gnueabi/${{ env.OPENCV_SUBDIR }} ..
-  #       cmake --build . -j $(nproc)
-  #   - name: test-arm-linux-gnueabihf
-  #     run: |
-  #       cd test
-  #       mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/arm-linux-gnueabihf/${{ env.OPENCV_SUBDIR }} ..
-  #       cmake --build . -j $(nproc)
-  #   - name: test-aarch64-linux-gnu
-  #     run: |
-  #       cd test
-  #       mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/aarch64-linux-gnu/${{ env.OPENCV_SUBDIR }} ..
-  #       cmake --build . -j $(nproc)
-  #   - name: upload-zip
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: ${{ env.PACKAGE_NAME }}
-  #       path: ${{ env.PACKAGE_NAME }}.zip
-  #
-  # macos:
-  #   needs: [setup]
-  #   runs-on: macos-12
-  #   strategy:
-  #     matrix:
-  #       opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
-  #   env:
-  #     COMMON_CMAKE_OPTIONS: |
-  #       -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
-  #       -DDEPLOYMENT_TARGET=$MAC_DEPLOYMENT_TARGET \
-  #       -DENABLE_BITCODE=OFF \
-  #       -DENABLE_ARC=$ENABLE_ARC \
-  #       -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
-  #       -DCMAKE_INSTALL_PREFIX=install \
-  #       -DCMAKE_BUILD_TYPE=Release \
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - uses: actions/download-artifact@v4
-  #     with:
-  #       name: opencv-mobile-${{ matrix.opencv-version }}-source
-  #   - name: setup-opencv-source
-  #     run: |
-  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-macos" >> $GITHUB_ENV
-  #   - name: workaround-opencv2-list
-  #     if: matrix.opencv-version == '2.4.13.7'
-  #     run: |
-  #       # workaround ar @list issue on macos
-  #       sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' ${{ env.SOURCE_DIR }}/modules/world/CMakeLists.txt
-  #   - name: build-x86_64
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-x86_64 && cd build-x86_64
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DPLATFORM=MAC -DARCHS="x86_64" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=ON ..
-  #       # workaround ar @list issue on macos
-  #       cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
-  #       cmake --build . --target install
-  #   - name: build-arm64
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-arm64 && cd build-arm64
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DPLATFORM=MAC_ARM64 -DARCHS="arm64" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=ON ..
-  #       # workaround ar @list issue on macos
-  #       cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       rm -rf opencv2.framework
-  #       mkdir -p opencv2.framework/Versions/A/Headers
-  #       mkdir -p opencv2.framework/Versions/A/Resources
-  #       ln -s A opencv2.framework/Versions/Current
-  #       ln -s Versions/Current/Headers opencv2.framework/Headers
-  #       ln -s Versions/Current/Resources opencv2.framework/Resources
-  #       ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-  #       lipo -create \
-  #           ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-  #           ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
-  #           -o opencv2.framework/Versions/A/opencv2
-  #       cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
-  #       cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
-  #       cp ${{ env.SOURCE_DIR }}/Info.plist opencv2.framework/Versions/A/Resources/
-  #       rm -f ${{ env.PACKAGE_NAME }}.zip
-  #       zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.framework
-  #   - name: test-x86_64
-  #     run: |
-  #       cd test
-  #       mkdir build-x86_64 && cd build-x86_64
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DPLATFORM=MAC -DARCHS="x86_64" \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-  #       cmake --build . -j 3
-  #   - name: test-arm64
-  #     run: |
-  #       cd test
-  #       mkdir build-arm64 && cd build-arm64
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DPLATFORM=MAC_ARM64 -DARCHS="arm64" \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-  #       cmake --build . -j 3
-  #   - name: upload-zip
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: ${{ env.PACKAGE_NAME }}
-  #       path: ${{ env.PACKAGE_NAME }}.zip
-  #
-  # mac-catalyst:
-  #   needs: [setup]
-  #   runs-on: macos-12
-  #   strategy:
-  #     matrix:
-  #       opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
-  #       bitcode: [OFF, ON]
-  #   env:
-  #     COMMON_CMAKE_OPTIONS: |
-  #       -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
-  #       -DPLATFORM=MAC_CATALYST \
-  #       -DDEPLOYMENT_TARGET=$MAC_CATALYST_DEPLOYMENT_TARGET \
-  #       -DENABLE_BITCODE=${{ matrix.bitcode }} \
-  #       -DENABLE_ARC=$ENABLE_ARC \
-  #       -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
-  #       -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
-  #       -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-  #       -DCMAKE_INSTALL_PREFIX=install \
-  #       -DCMAKE_BUILD_TYPE=Release \
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - uses: actions/download-artifact@v4
-  #     with:
-  #       name: opencv-mobile-${{ matrix.opencv-version }}-source
-  #   - name: setup-opencv-source
-  #     if: matrix.bitcode == 'OFF'
-  #     run: |
-  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-mac-catalyst" >> $GITHUB_ENV
-  #   - name: setup-opencv-source
-  #     if: matrix.bitcode == 'ON'
-  #     run: |
-  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-mac-catalyst-bitcode" >> $GITHUB_ENV
-  #   - name: workaround-opencv2-list
-  #     if: matrix.opencv-version == '2.4.13.7'
-  #     run: |
-  #       # workaround ar @list issue on macos
-  #       sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' ${{ env.SOURCE_DIR }}/modules/world/CMakeLists.txt
-  #   - name: build-x86_64
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-x86_64 && cd build-x86_64
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=ON ..
-  #       # workaround ar @list issue on macos
-  #       cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
-  #       cmake --build . --target install
-  #   - name: build-arm64
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-arm64 && cd build-arm64
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=ON ..
-  #       # workaround ar @list issue on macos
-  #       cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       rm -rf opencv2.framework
-  #       mkdir -p opencv2.framework/Versions/A/Headers
-  #       mkdir -p opencv2.framework/Versions/A/Resources
-  #       ln -s A opencv2.framework/Versions/Current
-  #       ln -s Versions/Current/Headers opencv2.framework/Headers
-  #       ln -s Versions/Current/Resources opencv2.framework/Resources
-  #       ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-  #       lipo -create \
-  #           ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-  #           ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
-  #           -o opencv2.framework/Versions/A/opencv2
-  #       cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
-  #       cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
-  #       cp ${{ env.SOURCE_DIR }}/Info.plist opencv2.framework/Versions/A/Resources/
-  #       rm -f ${{ env.PACKAGE_NAME }}.zip
-  #       zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.framework
-  #   - name: test
-  #     run: |
-  #       cd test
-  #       mkdir build && cd build
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-  #       cmake --build . -j 3
-  #   - name: upload-zip
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: ${{ env.PACKAGE_NAME }}
-  #       path: ${{ env.PACKAGE_NAME }}.zip
-  #
-  # windows:
-  #   needs: [setup]
-  #   strategy:
-  #     matrix:
-  #       opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
-  #       os-compiler:
-  #         - { msvc-version: vs2015, windows-version: 2019, toolset-version: v140 }
-  #         - { msvc-version: vs2017, windows-version: 2019, toolset-version: v141 }
-  #         - { msvc-version: vs2019, windows-version: 2019, toolset-version: v142 }
-  #         - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143 }
-  #   runs-on: windows-${{ matrix.os-compiler.windows-version }}
-  #   env:
-  #     UseMultiToolTask: true
-  #     COMMON_CMAKE_OPTIONS: -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_INSTALL_PREFIX=install
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - uses: actions/download-artifact@v4
-  #     with:
-  #       name: opencv-mobile-${{ matrix.opencv-version }}-source
-  #   - name: setup-opencv-source
-  #     run: |
-  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $env:GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-windows-${{ matrix.os-compiler.msvc-version }}" >> $env:GITHUB_ENV
-  #   - name: build-x86
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-x86; cd build-x86
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
-  #       cmake --build . --config Release -j 4
-  #       cmake --build . --config Release --target install
-  #   - name: build-x64
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-x64; cd build-x64
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
-  #       cmake --build . --config Release -j 4
-  #       cmake --build . --config Release --target install
-  #   - name: package
-  #     run: |
-  #       mkdir ${{ env.PACKAGE_NAME }}
-  #       mkdir ${{ env.PACKAGE_NAME }}/x86
-  #       mkdir ${{ env.PACKAGE_NAME }}/x64
-  #       Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x86\install\*" -Destination "${{ env.PACKAGE_NAME }}\x86"
-  #       Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x64\install\*" -Destination "${{ env.PACKAGE_NAME }}\x64"
-  #       7z a -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
-  #   - name: test-x86
-  #     run: |
-  #       cd test
-  #       mkdir build-x86; cd build-x86
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x86" -DOpenCV_STATIC=ON ..
-  #       cmake --build . --config Release -j 4
-  #   - name: test-x64
-  #     run: |
-  #       cd test
-  #       mkdir build-x64; cd build-x64
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x64" -DOpenCV_STATIC=ON ..
-  #       cmake --build . --config Release -j 4
-  #   - name: upload-zip
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: ${{ env.PACKAGE_NAME }}
-  #       path: ${{ env.PACKAGE_NAME }}.zip
-  #
-  # ubuntu:
-  #   needs: [setup]
-  #   strategy:
-  #     matrix:
-  #       opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
-  #       os-ubuntu:
-  #         - { ubuntu-id: 2004, ubuntu-version: 20.04 }
-  #         - { ubuntu-id: 2204, ubuntu-version: 22.04 }
-  #   runs-on: ubuntu-${{ matrix.os-ubuntu.ubuntu-version }}
-  #   env:
-  #     COMMON_CMAKE_OPTIONS: -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - uses: actions/download-artifact@v4
-  #     with:
-  #       name: opencv-mobile-${{ matrix.opencv-version }}-source
-  #   - name: setup-opencv-source
-  #     run: |
-  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ubuntu-${{ matrix.os-ubuntu.ubuntu-id }}" >> $GITHUB_ENV
-  #   - name: build
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build && cd build
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} `cat ../options.txt` -DBUILD_opencv_world=OFF ..
-  #       cmake --build . -j $(nproc)
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       rm -rf ${{ env.PACKAGE_NAME }}
-  #       mkdir -p ${{ env.PACKAGE_NAME }}
-  #       cp -rf ${{ env.SOURCE_DIR }}/build/install/* ${{ env.PACKAGE_NAME }}/
-  #       rm -f ${{ env.PACKAGE_NAME }}.zip
-  #       zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
-  #   - name: set-opencv-dir
-  #     if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
-  #     run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
-  #   - name: set-opencv-dir
-  #     if: matrix.opencv-version == '4.9.0'
-  #     run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
-  #   - name: test
-  #     run: |
-  #       cd test
-  #       mkdir build && cd build
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/${{ env.OPENCV_SUBDIR }} ..
-  #       cmake --build . -j $(nproc)
-  #   - name: upload
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: ${{ env.PACKAGE_NAME }}
-  #       path: ${{ env.PACKAGE_NAME }}.zip
-  #
-  # webassembly:
-  #   needs: [setup]
-  #   runs-on: ubuntu-20.04
-  #   strategy:
-  #     matrix:
-  #       opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
-  #   env:
-  #     COMMON_CMAKE_OPTIONS: |
-  #       -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
-  #       -DCMAKE_INSTALL_PREFIX=install \
-  #       -DCMAKE_BUILD_TYPE=Release \
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - name: emsdk
-  #     run: |
-  #       git clone https://github.com/emscripten-core/emsdk.git
-  #       cd emsdk
-  #       ./emsdk install $EMSCRIPTEN_VERSION
-  #       ./emsdk activate $EMSCRIPTEN_VERSION
-  #   - uses: actions/download-artifact@v4
-  #     with:
-  #       name: opencv-mobile-${{ matrix.opencv-version }}-source
-  #   - name: setup-opencv-source
-  #     run: |
-  #       unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
-  #       echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-webassembly" >> $GITHUB_ENV
-  #   - name: build
-  #     run: |
-  #       source emsdk/emsdk_env.sh
-  #       cd ${{ env.SOURCE_DIR }}
-  #       patch -p1 -i ../patches/opencv-${{ matrix.opencv-version }}-unsafe-xadd.patch
-  #       mkdir build && cd build
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-  #           -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-  #       cmake --build . -j $(nproc)
-  #       cmake --build . --target install
-  #   - name: build-simd
-  #     run: |
-  #       source emsdk/emsdk_env.sh
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-simd && cd build-simd
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-  #           -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-  #       cmake --build . -j $(nproc)
-  #       cmake --build . --target install
-  #   - name: build-threads
-  #     run: |
-  #       source emsdk/emsdk_env.sh
-  #       cd ${{ env.SOURCE_DIR }}
-  #       patch -p1 -R -i ../patches/opencv-${{ matrix.opencv-version }}-unsafe-xadd.patch
-  #       mkdir build-threads && cd build-threads
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-  #           -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-  #       cmake --build . -j $(nproc)
-  #       cmake --build . --target install
-  #   - name: build-simd-threads
-  #     run: |
-  #       source emsdk/emsdk_env.sh
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build-simd-threads && cd build-simd-threads
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-  #           -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-  #           -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-  #           `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-  #       cmake --build . -j $(nproc)
-  #       cmake --build . --target install
-  #   - name: package
-  #     run: |
-  #       rm -rf ${{ env.PACKAGE_NAME }}
-  #       mkdir -p ${{ env.PACKAGE_NAME }}
-  #       cp -rf ${{ env.SOURCE_DIR }}/build/install ${{ env.PACKAGE_NAME }}/basic
-  #       cp -rf ${{ env.SOURCE_DIR }}/build-simd/install ${{ env.PACKAGE_NAME }}/simd
-  #       cp -rf ${{ env.SOURCE_DIR }}/build-threads/install ${{ env.PACKAGE_NAME }}/threads
-  #       cp -rf ${{ env.SOURCE_DIR }}/build-simd-threads/install ${{ env.PACKAGE_NAME }}/simd-threads
-  #       rm -f ${{ env.PACKAGE_NAME }}.zip
-  #       zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
-  #   - name: set-opencv-dir
-  #     if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
-  #     run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
-  #   - name: set-opencv-dir
-  #     if: matrix.opencv-version == '4.9.0'
-  #     run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
-  #   - name: test
-  #     run: |
-  #       cd test
-  #       mkdir build && cd build
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-  #           -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/basic/${{ env.OPENCV_SUBDIR }} ..
-  #       cmake --build . -j $(nproc)
-  #   - name: test-simd
-  #     run: |
-  #       cd test
-  #       mkdir build-simd && cd build-simd
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-  #           -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/simd/${{ env.OPENCV_SUBDIR }} ..
-  #       cmake --build . -j $(nproc)
-  #   - name: test-threads
-  #     run: |
-  #       cd test
-  #       mkdir build-threads && cd build-threads
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-  #           -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/threads/${{ env.OPENCV_SUBDIR }} ..
-  #       cmake --build . -j $(nproc)
-  #   - name: test-simd-threads
-  #     run: |
-  #       cd test
-  #       mkdir build-simd-threads && cd build-simd-threads
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-  #           -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-  #           -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-  #           -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/simd-threads/${{ env.OPENCV_SUBDIR }} ..
-  #       cmake --build . -j $(nproc)
-  #   - name: upload
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: ${{ env.PACKAGE_NAME }}
-  #       path: ${{ env.PACKAGE_NAME }}.zip
-  #
-  # apple:
-  #   needs: [macos, ios, ios-simulator, mac-catalyst]
-  #   runs-on: macos-12
-  #   strategy:
-  #     matrix:
-  #       opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
-  #       bitcode: [OFF, ON]
-  #   steps:
-  #   - run: sudo xcode-select --switch /Applications/Xcode_13.4.1.app
-  #   - uses: actions/checkout@v4
-  #   - name: setup-opencv-package
-  #     if: matrix.bitcode == 'OFF'
-  #     run: |
-  #       echo "MACOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-macos" >> $GITHUB_ENV
-  #       echo "IOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios" >> $GITHUB_ENV
-  #       echo "IOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-simulator" >> $GITHUB_ENV
-  #       echo "MAC_CATALYST_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-mac-catalyst" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-apple" >> $GITHUB_ENV
-  #   - name: setup-opencv-package
-  #     if: matrix.bitcode == 'ON'
-  #     run: |
-  #       echo "MACOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-macos" >> $GITHUB_ENV
-  #       echo "IOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-bitcode" >> $GITHUB_ENV
-  #       echo "IOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-simulator-bitcode" >> $GITHUB_ENV
-  #       echo "MAC_CATALYST_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-mac-catalyst-bitcode" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-apple-bitcode" >> $GITHUB_ENV
-  #   - name: download-macos-package
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: ${{ env.MACOS_PACKAGE_NAME }}
-  #   - name: download-ios-package
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: ${{ env.IOS_PACKAGE_NAME }}
-  #   - name: download-ios-simulator-package
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
-  #   - name: download-mac-catalyst-package
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: ${{ env.MAC_CATALYST_PACKAGE_NAME }}
-  #   - name: create-xcframwork
-  #     run: |
-  #       mkdir -p ${{ env.MACOS_PACKAGE_NAME }}
-  #       mkdir -p ${{ env.IOS_PACKAGE_NAME }}
-  #       mkdir -p ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
-  #       mkdir -p ${{ env.MAC_CATALYST_PACKAGE_NAME }}
-  #       unzip -q ${{ env.MACOS_PACKAGE_NAME }}.zip -d ${{ env.MACOS_PACKAGE_NAME }}
-  #       unzip -q ${{ env.IOS_PACKAGE_NAME }}.zip -d ${{ env.IOS_PACKAGE_NAME }}
-  #       unzip -q ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}.zip -d ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
-  #       unzip -q ${{ env.MAC_CATALYST_PACKAGE_NAME }}.zip -d ${{ env.MAC_CATALYST_PACKAGE_NAME }}
-  #       xcodebuild -create-xcframework \
-  #           -framework ${{ env.MACOS_PACKAGE_NAME }}/opencv2.framework \
-  #           -framework ${{ env.IOS_PACKAGE_NAME }}/opencv2.framework \
-  #           -framework ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}/opencv2.framework \
-  #           -framework ${{ env.MAC_CATALYST_PACKAGE_NAME }}/opencv2.framework \
-  #           -output opencv2.xcframework
-  #       rm -f ${{ env.PACKAGE_NAME }}.zip
-  #       zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.xcframework
-  #   - name: upload-zip
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: ${{ env.PACKAGE_NAME }}
-  #       path: ${{ env.PACKAGE_NAME }}.zip
-  #
-  # devboard:
-  #   needs: [setup]
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       include:
-  #         - name: milkv-duo
-  #           single-core: true
-  #           cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
-  #           setup-toolchain-cmd: |
-  #             wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
-  #             tar -xf host-tools.tar.gz
-  #           setup-env-cmd: |
-  #             export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
-  #
-  #         - name: licheerv-nano
-  #           single-core: true
-  #           cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
-  #           setup-toolchain-cmd: |
-  #             wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
-  #             tar -xf host-tools.tar.gz
-  #           setup-env-cmd: |
-  #             export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
-  #
-  #         - name: luckfox-pico
-  #           single-core: true
-  #           cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
-  #           setup-toolchain-cmd: |
-  #             git clone --depth 1 https://github.com/LuckfoxTECH/luckfox-pico.git luckfox-pico
-  #           setup-env-cmd: |
-  #             export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
-  #
-  #         - name: yuzuki-lizard
-  #           single-core: true
-  #           cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
-  #           setup-toolchain-cmd: |
-  #             wget -q https://github.com/YuzukiHD/Yuzukilizard/releases/download/Toolchains/toolchain-sunxi-musl-gcc-830.tar.gz
-  #             tar -xf toolchain-sunxi-musl-gcc-830.tar.gz
-  #           setup-env-cmd: |
-  #             export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-  #             export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-  #
-  #         - name: tinyvision
-  #           single-core: true
-  #           cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
-  #           setup-toolchain-cmd: |
-  #             wget -q https://github.com/YuzukiHD/Yuzukilizard/releases/download/Toolchains/toolchain-sunxi-musl-gcc-830.tar.gz
-  #             tar -xf toolchain-sunxi-musl-gcc-830.tar.gz
-  #           setup-env-cmd: |
-  #             export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-  #             export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-  #
-  #         - name: purple-pi
-  #           single-core: false
-  #           cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake
-  #           setup-toolchain-cmd: |
-  #             git clone --depth 1 https://github.com/industio/PurPle-Pi-R1.git
-  #             cd PurPle-Pi-R1/toolchain
-  #             sh install_toolchain.sh
-  #           setup-env-cmd: |
-  #             export PATH=$PATH:$GITHUB_WORKSPACE/PurPle-Pi-R1/toolchain/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin
-  #
-  #   env:
-  #     COMMON_CMAKE_OPTIONS: |
-  #       -DCMAKE_TOOLCHAIN_FILE=../../toolchains/${{ matrix.cmake-toolchain }} \
-  #       -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
-  #       -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
-  #       -DCMAKE_INSTALL_PREFIX=install \
-  #       -DCMAKE_BUILD_TYPE=Release \
-  #
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - uses: actions/download-artifact@v4
-  #     with:
-  #       name: opencv-mobile-4.9.0-source
-  #   - name: setup-opencv-source
-  #     run: |
-  #       unzip -q opencv-mobile-4.9.0.zip
-  #       echo "SOURCE_DIR=opencv-mobile-4.9.0" >> $GITHUB_ENV
-  #       echo "PACKAGE_NAME=opencv-mobile-4.9.0-${{ matrix.name }}" >> $GITHUB_ENV
-  #   - name: setup-toolchain
-  #     run: ${{ matrix.setup-toolchain-cmd }}
-  #
-  #   - name: build-disable-thread
-  #     if: ${{ matrix.single-core }}
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       patch -p1 -i ../patches/opencv-4.9.0-no-atomic.patch
-  #       mkdir build && cd build
-  #       ${{ matrix.setup-env-cmd }}
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-  #           `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON \
-  #           -DWITH_OPENMP=OFF -DOPENCV_DISABLE_THREAD_SUPPORT=ON ..
-  #       cmake --build . -j $(nproc)
-  #       cmake --build . --target install
-  #
-  #   - name: build-enable-thread
-  #     if: ${{ ! matrix.single-core }}
-  #     run: |
-  #       cd ${{ env.SOURCE_DIR }}
-  #       mkdir build && cd build
-  #       ${{ matrix.setup-env-cmd }}
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-  #           `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-  #       cmake --build . -j $(nproc)
-  #       cmake --build . --target install
-  #
-  #   - name: package
-  #     run: |
-  #       mkdir ${{ env.PACKAGE_NAME }}
-  #       cp -rf ${{ env.SOURCE_DIR }}/build/install/* ${{ env.PACKAGE_NAME }}/
-  #       zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
-  #
-  #   - name: test
-  #     run: |
-  #       cd test
-  #       mkdir build && cd build
-  #       ${{ matrix.setup-env-cmd }}
-  #       cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/lib/cmake/opencv4 ..
-  #       cmake --build . -j $(nproc)
-  #
-  #   - name: upload-zip
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: ${{ env.PACKAGE_NAME }}
-  #       path: ${{ env.PACKAGE_NAME }}.zip
+  ios:
+    needs: [setup]
+    runs-on: macos-12
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        bitcode: [OFF, ON]
+    env:
+      COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
+        -DPLATFORM=OS \
+        -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET \
+        -DENABLE_BITCODE=${{ matrix.bitcode }} \
+        -DENABLE_ARC=$ENABLE_ARC \
+        -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+        -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_BUILD_TYPE=Release \
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
+    - name: setup-opencv-source
+      if: matrix.bitcode == 'OFF'
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios" >> $GITHUB_ENV
+    - name: setup-opencv-source
+      if: matrix.bitcode == 'ON'
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-bitcode" >> $GITHUB_ENV
+    - name: workaround-opencv2-list
+      if: matrix.opencv-version == '2.4.13.7'
+      run: |
+        # workaround ar @list issue on macos
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' ${{ env.SOURCE_DIR }}/modules/world/CMakeLists.txt
+    - name: build-armv7
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-armv7 && cd build-armv7
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="armv7" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
+        cmake --build . --target install
+    - name: build-arm64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm64 && cd build-arm64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
+        cmake --build . --target install
+    - name: build-arm64e
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm64e && cd build-arm64e
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64e" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create \
+            ${{ env.SOURCE_DIR }}/build-armv7/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64e/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
+        cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
+        cp ${{ env.SOURCE_DIR }}/Info.plist opencv2.framework/Versions/A/Resources/
+        rm -f ${{ env.PACKAGE_NAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.framework
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="armv7;arm64;arm64e" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+        cmake --build . -j 3
+    - name: upload-zip
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
+
+  ios-simulator:
+    needs: [setup]
+    runs-on: macos-12
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        bitcode: [OFF, ON]
+    env:
+      COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
+        -DPLATFORM=SIMULATOR \
+        -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET \
+        -DENABLE_BITCODE=${{ matrix.bitcode }} \
+        -DENABLE_ARC=$ENABLE_ARC \
+        -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+        -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_BUILD_TYPE=Release \
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
+    - name: setup-opencv-source
+      if: matrix.bitcode == 'OFF'
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-simulator" >> $GITHUB_ENV
+    - name: setup-opencv-source
+      if: matrix.bitcode == 'ON'
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-simulator-bitcode" >> $GITHUB_ENV
+    - name: workaround-opencv2-list
+      if: matrix.opencv-version == '2.4.13.7'
+      run: |
+        # workaround ar @list issue on macos
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' ${{ env.SOURCE_DIR }}/modules/world/CMakeLists.txt
+    - name: build-i386
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-i386 && cd build-i386
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="i386" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
+        cmake --build . --target install
+    - name: build-x86_64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
+        cmake --build . --target install
+    - name: build-arm64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm64 && cd build-arm64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create \
+            ${{ env.SOURCE_DIR }}/build-i386/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
+        cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
+        cp ${{ env.SOURCE_DIR }}/Info.plist opencv2.framework/Versions/A/Resources/
+        rm -f ${{ env.PACKAGE_NAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.framework
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="i386;x86_64;arm64" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+        cmake --build . -j 3
+    - name: upload-zip
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
+
+  armlinux:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+    env:
+      COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_BUILD_TYPE=Release \
+    steps:
+    - name: arm-gnu-toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
+
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
+    - name: setup-opencv-source
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-armlinux" >> $GITHUB_ENV
+    - name: build-arm-linux-gnueabi
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: build-arm-linux-gnueabihf
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: build-aarch64-linux-gnu
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGE_NAME }}
+        mkdir ${{ env.PACKAGE_NAME }}/arm-linux-gnueabi
+        mkdir ${{ env.PACKAGE_NAME }}/arm-linux-gnueabihf
+        mkdir ${{ env.PACKAGE_NAME }}/aarch64-linux-gnu
+        cp -rf ${{ env.SOURCE_DIR }}/build-arm-linux-gnueabi/install/* ${{ env.PACKAGE_NAME }}/arm-linux-gnueabi/
+        cp -rf ${{ env.SOURCE_DIR }}/build-arm-linux-gnueabihf/install/* ${{ env.PACKAGE_NAME }}/arm-linux-gnueabihf/
+        cp -rf ${{ env.SOURCE_DIR }}/build-aarch64-linux-gnu/install/* ${{ env.PACKAGE_NAME }}/aarch64-linux-gnu/
+        zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
+    - name: set-opencv-dir
+      if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
+      run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
+    - name: set-opencv-dir
+      if: matrix.opencv-version == '4.9.0'
+      run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
+    - name: test-arm-linux-gnueabi
+      run: |
+        cd test
+        mkdir build-arm-linux-gnueabi && cd build-arm-linux-gnueabi
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabi.toolchain.cmake \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/arm-linux-gnueabi/${{ env.OPENCV_SUBDIR }} ..
+        cmake --build . -j $(nproc)
+    - name: test-arm-linux-gnueabihf
+      run: |
+        cd test
+        mkdir build-arm-linux-gnueabihf && cd build-arm-linux-gnueabihf
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-linux-gnueabihf.toolchain.cmake \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/arm-linux-gnueabihf/${{ env.OPENCV_SUBDIR }} ..
+        cmake --build . -j $(nproc)
+    - name: test-aarch64-linux-gnu
+      run: |
+        cd test
+        mkdir build-aarch64-linux-gnu && cd build-aarch64-linux-gnu
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DCMAKE_TOOLCHAIN_FILE=../../toolchains/aarch64-linux-gnu.toolchain.cmake \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/aarch64-linux-gnu/${{ env.OPENCV_SUBDIR }} ..
+        cmake --build . -j $(nproc)
+    - name: upload-zip
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
+
+  macos:
+    needs: [setup]
+    runs-on: macos-12
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+    env:
+      COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
+        -DDEPLOYMENT_TARGET=$MAC_DEPLOYMENT_TARGET \
+        -DENABLE_BITCODE=OFF \
+        -DENABLE_ARC=$ENABLE_ARC \
+        -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_BUILD_TYPE=Release \
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
+    - name: setup-opencv-source
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-macos" >> $GITHUB_ENV
+    - name: workaround-opencv2-list
+      if: matrix.opencv-version == '2.4.13.7'
+      run: |
+        # workaround ar @list issue on macos
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' ${{ env.SOURCE_DIR }}/modules/world/CMakeLists.txt
+    - name: build-x86_64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DPLATFORM=MAC -DARCHS="x86_64" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON ..
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
+        cmake --build . --target install
+    - name: build-arm64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm64 && cd build-arm64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DPLATFORM=MAC_ARM64 -DARCHS="arm64" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON ..
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create \
+            ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
+        cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
+        cp ${{ env.SOURCE_DIR }}/Info.plist opencv2.framework/Versions/A/Resources/
+        rm -f ${{ env.PACKAGE_NAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.framework
+    - name: test-x86_64
+      run: |
+        cd test
+        mkdir build-x86_64 && cd build-x86_64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DPLATFORM=MAC -DARCHS="x86_64" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+        cmake --build . -j 3
+    - name: test-arm64
+      run: |
+        cd test
+        mkdir build-arm64 && cd build-arm64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DPLATFORM=MAC_ARM64 -DARCHS="arm64" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+        cmake --build . -j 3
+    - name: upload-zip
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
+
+  mac-catalyst:
+    needs: [setup]
+    runs-on: macos-12
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        bitcode: [OFF, ON]
+    env:
+      COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
+        -DPLATFORM=MAC_CATALYST \
+        -DDEPLOYMENT_TARGET=$MAC_CATALYST_DEPLOYMENT_TARGET \
+        -DENABLE_BITCODE=${{ matrix.bitcode }} \
+        -DENABLE_ARC=$ENABLE_ARC \
+        -DENABLE_VISIBILITY=$ENABLE_VISIBILITY \
+        -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_BUILD_TYPE=Release \
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
+    - name: setup-opencv-source
+      if: matrix.bitcode == 'OFF'
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-mac-catalyst" >> $GITHUB_ENV
+    - name: setup-opencv-source
+      if: matrix.bitcode == 'ON'
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-mac-catalyst-bitcode" >> $GITHUB_ENV
+    - name: workaround-opencv2-list
+      if: matrix.opencv-version == '2.4.13.7'
+      run: |
+        # workaround ar @list issue on macos
+        sed -i -e 's!\\"${objpath4}\\"!${objpath4}!g' ${{ env.SOURCE_DIR }}/modules/world/CMakeLists.txt
+    - name: build-x86_64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON ..
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
+        cmake --build . --target install
+    - name: build-arm64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm64 && cd build-arm64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64" \
+            `cat ../options.txt` -DBUILD_opencv_world=ON ..
+        # workaround ar @list issue on macos
+        cmake --build . -j 3 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf opencv2.framework
+        mkdir -p opencv2.framework/Versions/A/Headers
+        mkdir -p opencv2.framework/Versions/A/Resources
+        ln -s A opencv2.framework/Versions/Current
+        ln -s Versions/Current/Headers opencv2.framework/Headers
+        ln -s Versions/Current/Resources opencv2.framework/Resources
+        ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        lipo -create \
+            ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            -o opencv2.framework/Versions/A/opencv2
+        cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
+        cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
+        cp ${{ env.SOURCE_DIR }}/Info.plist opencv2.framework/Versions/A/Resources/
+        rm -f ${{ env.PACKAGE_NAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.framework
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+        cmake --build . -j 3
+    - name: upload-zip
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
+
+  windows:
+    needs: [setup]
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        os-compiler:
+          - { msvc-version: vs2015, windows-version: 2019, toolset-version: v140 }
+          - { msvc-version: vs2017, windows-version: 2019, toolset-version: v141 }
+          - { msvc-version: vs2019, windows-version: 2019, toolset-version: v142 }
+          - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143 }
+    runs-on: windows-${{ matrix.os-compiler.windows-version }}
+    env:
+      UseMultiToolTask: true
+      COMMON_CMAKE_OPTIONS: -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_INSTALL_PREFIX=install
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
+    - name: setup-opencv-source
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $env:GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-windows-${{ matrix.os-compiler.msvc-version }}" >> $env:GITHUB_ENV
+    - name: build-x86
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-x86; cd build-x86
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake --build . --config Release -j 4
+        cmake --build . --config Release --target install
+    - name: build-x64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-x64; cd build-x64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake --build . --config Release -j 4
+        cmake --build . --config Release --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGE_NAME }}
+        mkdir ${{ env.PACKAGE_NAME }}/x86
+        mkdir ${{ env.PACKAGE_NAME }}/x64
+        Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x86\install\*" -Destination "${{ env.PACKAGE_NAME }}\x86"
+        Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x64\install\*" -Destination "${{ env.PACKAGE_NAME }}\x64"
+        7z a -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
+    - name: test-x86
+      run: |
+        cd test
+        mkdir build-x86; cd build-x86
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x86" -DOpenCV_STATIC=ON ..
+        cmake --build . --config Release -j 4
+    - name: test-x64
+      run: |
+        cd test
+        mkdir build-x64; cd build-x64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x64" -DOpenCV_STATIC=ON ..
+        cmake --build . --config Release -j 4
+    - name: upload-zip
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
+
+  ubuntu:
+    needs: [setup]
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        os-ubuntu:
+          - { ubuntu-id: 2004, ubuntu-version: 20.04 }
+          - { ubuntu-id: 2204, ubuntu-version: 22.04 }
+    runs-on: ubuntu-${{ matrix.os-ubuntu.ubuntu-version }}
+    env:
+      COMMON_CMAKE_OPTIONS: -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
+    - name: setup-opencv-source
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ubuntu-${{ matrix.os-ubuntu.ubuntu-id }}" >> $GITHUB_ENV
+    - name: build
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build && cd build
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} `cat ../options.txt` -DBUILD_opencv_world=OFF ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf ${{ env.PACKAGE_NAME }}
+        mkdir -p ${{ env.PACKAGE_NAME }}
+        cp -rf ${{ env.SOURCE_DIR }}/build/install/* ${{ env.PACKAGE_NAME }}/
+        rm -f ${{ env.PACKAGE_NAME }}.zip
+        zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
+    - name: set-opencv-dir
+      if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
+      run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
+    - name: set-opencv-dir
+      if: matrix.opencv-version == '4.9.0'
+      run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/${{ env.OPENCV_SUBDIR }} ..
+        cmake --build . -j $(nproc)
+    - name: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
+
+  webassembly:
+    needs: [setup]
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+    env:
+      COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_BUILD_TYPE=Release \
+    steps:
+    - uses: actions/checkout@v4
+    - name: emsdk
+      run: |
+        git clone https://github.com/emscripten-core/emsdk.git
+        cd emsdk
+        ./emsdk install $EMSCRIPTEN_VERSION
+        ./emsdk activate $EMSCRIPTEN_VERSION
+    - uses: actions/download-artifact@v4
+      with:
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
+    - name: setup-opencv-source
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-webassembly" >> $GITHUB_ENV
+    - name: build
+      run: |
+        source emsdk/emsdk_env.sh
+        cd ${{ env.SOURCE_DIR }}
+        patch -p1 -i ../patches/opencv-${{ matrix.opencv-version }}-unsafe-xadd.patch
+        mkdir build && cd build
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: build-simd
+      run: |
+        source emsdk/emsdk_env.sh
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-simd && cd build-simd
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: build-threads
+      run: |
+        source emsdk/emsdk_env.sh
+        cd ${{ env.SOURCE_DIR }}
+        patch -p1 -R -i ../patches/opencv-${{ matrix.opencv-version }}-unsafe-xadd.patch
+        mkdir build-threads && cd build-threads
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: build-simd-threads
+      run: |
+        source emsdk/emsdk_env.sh
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-simd-threads && cd build-simd-threads
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: package
+      run: |
+        rm -rf ${{ env.PACKAGE_NAME }}
+        mkdir -p ${{ env.PACKAGE_NAME }}
+        cp -rf ${{ env.SOURCE_DIR }}/build/install ${{ env.PACKAGE_NAME }}/basic
+        cp -rf ${{ env.SOURCE_DIR }}/build-simd/install ${{ env.PACKAGE_NAME }}/simd
+        cp -rf ${{ env.SOURCE_DIR }}/build-threads/install ${{ env.PACKAGE_NAME }}/threads
+        cp -rf ${{ env.SOURCE_DIR }}/build-simd-threads/install ${{ env.PACKAGE_NAME }}/simd-threads
+        rm -f ${{ env.PACKAGE_NAME }}.zip
+        zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
+    - name: set-opencv-dir
+      if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
+      run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
+    - name: set-opencv-dir
+      if: matrix.opencv-version == '4.9.0'
+      run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/basic/${{ env.OPENCV_SUBDIR }} ..
+        cmake --build . -j $(nproc)
+    - name: test-simd
+      run: |
+        cd test
+        mkdir build-simd && cd build-simd
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/simd/${{ env.OPENCV_SUBDIR }} ..
+        cmake --build . -j $(nproc)
+    - name: test-threads
+      run: |
+        cd test
+        mkdir build-threads && cd build-threads
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/threads/${{ env.OPENCV_SUBDIR }} ..
+        cmake --build . -j $(nproc)
+    - name: test-simd-threads
+      run: |
+        cd test
+        mkdir build-simd-threads && cd build-simd-threads
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/simd-threads/${{ env.OPENCV_SUBDIR }} ..
+        cmake --build . -j $(nproc)
+    - name: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
+
+  apple:
+    needs: [macos, ios, ios-simulator, mac-catalyst]
+    runs-on: macos-12
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.9.0]
+        bitcode: [OFF, ON]
+    steps:
+    - run: sudo xcode-select --switch /Applications/Xcode_13.4.1.app
+    - uses: actions/checkout@v4
+    - name: setup-opencv-package
+      if: matrix.bitcode == 'OFF'
+      run: |
+        echo "MACOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-macos" >> $GITHUB_ENV
+        echo "IOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios" >> $GITHUB_ENV
+        echo "IOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-simulator" >> $GITHUB_ENV
+        echo "MAC_CATALYST_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-mac-catalyst" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-apple" >> $GITHUB_ENV
+    - name: setup-opencv-package
+      if: matrix.bitcode == 'ON'
+      run: |
+        echo "MACOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-macos" >> $GITHUB_ENV
+        echo "IOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-bitcode" >> $GITHUB_ENV
+        echo "IOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-simulator-bitcode" >> $GITHUB_ENV
+        echo "MAC_CATALYST_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-mac-catalyst-bitcode" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-apple-bitcode" >> $GITHUB_ENV
+    - name: download-macos-package
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ env.MACOS_PACKAGE_NAME }}
+    - name: download-ios-package
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ env.IOS_PACKAGE_NAME }}
+    - name: download-ios-simulator-package
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
+    - name: download-mac-catalyst-package
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ env.MAC_CATALYST_PACKAGE_NAME }}
+    - name: create-xcframwork
+      run: |
+        mkdir -p ${{ env.MACOS_PACKAGE_NAME }}
+        mkdir -p ${{ env.IOS_PACKAGE_NAME }}
+        mkdir -p ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
+        mkdir -p ${{ env.MAC_CATALYST_PACKAGE_NAME }}
+        unzip -q ${{ env.MACOS_PACKAGE_NAME }}.zip -d ${{ env.MACOS_PACKAGE_NAME }}
+        unzip -q ${{ env.IOS_PACKAGE_NAME }}.zip -d ${{ env.IOS_PACKAGE_NAME }}
+        unzip -q ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}.zip -d ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
+        unzip -q ${{ env.MAC_CATALYST_PACKAGE_NAME }}.zip -d ${{ env.MAC_CATALYST_PACKAGE_NAME }}
+        xcodebuild -create-xcframework \
+            -framework ${{ env.MACOS_PACKAGE_NAME }}/opencv2.framework \
+            -framework ${{ env.IOS_PACKAGE_NAME }}/opencv2.framework \
+            -framework ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}/opencv2.framework \
+            -framework ${{ env.MAC_CATALYST_PACKAGE_NAME }}/opencv2.framework \
+            -output opencv2.xcframework
+        rm -f ${{ env.PACKAGE_NAME }}.zip
+        zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.xcframework
+    - name: upload-zip
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
+
+  devboard:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: milkv-duo
+            single-core: true
+            cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
+            setup-toolchain-cmd: |
+              wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
+              tar -xf host-tools.tar.gz
+            setup-env-cmd: |
+              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
+
+          - name: licheerv-nano
+            single-core: true
+            cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
+            setup-toolchain-cmd: |
+              wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
+              tar -xf host-tools.tar.gz
+            setup-env-cmd: |
+              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
+
+          - name: luckfox-pico
+            single-core: true
+            cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
+            setup-toolchain-cmd: |
+              git clone --depth 1 https://github.com/LuckfoxTECH/luckfox-pico.git luckfox-pico
+            setup-env-cmd: |
+              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
+
+          - name: yuzuki-lizard
+            single-core: true
+            cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
+            setup-toolchain-cmd: |
+              wget -q https://github.com/YuzukiHD/Yuzukilizard/releases/download/Toolchains/toolchain-sunxi-musl-gcc-830.tar.gz
+              tar -xf toolchain-sunxi-musl-gcc-830.tar.gz
+            setup-env-cmd: |
+              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+              export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+
+          - name: tinyvision
+            single-core: true
+            cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
+            setup-toolchain-cmd: |
+              wget -q https://github.com/YuzukiHD/Yuzukilizard/releases/download/Toolchains/toolchain-sunxi-musl-gcc-830.tar.gz
+              tar -xf toolchain-sunxi-musl-gcc-830.tar.gz
+            setup-env-cmd: |
+              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+              export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+
+          - name: purple-pi
+            single-core: false
+            cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake
+            setup-toolchain-cmd: |
+              git clone --depth 1 https://github.com/industio/PurPle-Pi-R1.git
+              cd PurPle-Pi-R1/toolchain
+              sh install_toolchain.sh
+            setup-env-cmd: |
+              export PATH=$PATH:$GITHUB_WORKSPACE/PurPle-Pi-R1/toolchain/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin
+
+    env:
+      COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_TOOLCHAIN_FILE=../../toolchains/${{ matrix.cmake-toolchain }} \
+        -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_BUILD_TYPE=Release \
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: opencv-mobile-4.9.0-source
+    - name: setup-opencv-source
+      run: |
+        unzip -q opencv-mobile-4.9.0.zip
+        echo "SOURCE_DIR=opencv-mobile-4.9.0" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-4.9.0-${{ matrix.name }}" >> $GITHUB_ENV
+    - name: setup-toolchain
+      run: ${{ matrix.setup-toolchain-cmd }}
+
+    - name: build-disable-thread
+      if: ${{ matrix.single-core }}
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        patch -p1 -i ../patches/opencv-4.9.0-no-atomic.patch
+        mkdir build && cd build
+        ${{ matrix.setup-env-cmd }}
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON \
+            -DWITH_OPENMP=OFF -DOPENCV_DISABLE_THREAD_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+
+    - name: build-enable-thread
+      if: ${{ ! matrix.single-core }}
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build && cd build
+        ${{ matrix.setup-env-cmd }}
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGE_NAME }}
+        cp -rf ${{ env.SOURCE_DIR }}/build/install/* ${{ env.PACKAGE_NAME }}/
+        zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
+
+    - name: test
+      run: |
+        cd test
+        mkdir build && cd build
+        ${{ matrix.setup-env-cmd }}
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/lib/cmake/opencv4 ..
+        cmake --build . -j $(nproc)
+
+    - name: upload-zip
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
 
   # release:
   #   permissions:
