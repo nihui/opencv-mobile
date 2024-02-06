@@ -29,31 +29,6 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/include/opencv2/core/bindings_utils.h
      return p.getArrayResult();
  }
  
-diff -Nuarp opencv-4.9.0.orig/modules/core/include/opencv2/core/ocl.hpp opencv-4.9.0/modules/core/include/opencv2/core/ocl.hpp
---- opencv-4.9.0.orig/modules/core/include/opencv2/core/ocl.hpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/include/opencv2/core/ocl.hpp	2024-01-17 19:24:44.466218337 +0800
-@@ -302,21 +302,6 @@ public:
- 
-     void release();
- 
--    class CV_EXPORTS UserContext {
--    public:
--        virtual ~UserContext();
--    };
--    template <typename T>
--    inline void setUserContext(const std::shared_ptr<T>& userContext) {
--        setUserContext(typeid(T), userContext);
--    }
--    template <typename T>
--    inline std::shared_ptr<T> getUserContext() {
--        return std::dynamic_pointer_cast<T>(getUserContext(typeid(T)));
--    }
--    void setUserContext(std::type_index typeId, const std::shared_ptr<UserContext>& userContext);
--    std::shared_ptr<UserContext> getUserContext(std::type_index typeId);
--
-     struct Impl;
-     inline Impl* getImpl() const { return (Impl*)p; }
-     inline bool empty() const { return !p; }
 diff -Nuarp opencv-4.9.0.orig/modules/core/src/async.cpp opencv-4.9.0/modules/core/src/async.cpp
 --- opencv-4.9.0.orig/modules/core/src/async.cpp	2023-12-28 00:46:55.000000000 +0800
 +++ opencv-4.9.0/modules/core/src/async.cpp	2024-01-17 19:24:44.467218337 +0800
@@ -312,21 +287,6 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/matrix.cpp opencv-4.9.0/modules/c
  
      updateContinuityFlag();
  
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/ocl_disabled.impl.hpp opencv-4.9.0/modules/core/src/ocl_disabled.impl.hpp
---- opencv-4.9.0.orig/modules/core/src/ocl_disabled.impl.hpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/ocl_disabled.impl.hpp	2024-01-17 19:24:44.468218337 +0800
-@@ -177,11 +177,6 @@ void* Context::getOpenCLContextProperty(
- bool Context::useSVM() const { return false; }
- void Context::setUseSVM(bool enabled) { }
- 
--Context::UserContext::~UserContext() { }
--
--void Context::setUserContext(std::type_index /*typeId*/, const std::shared_ptr<Context::UserContext>& /*userContext*/) { OCL_NOT_AVAILABLE(); }
--std::shared_ptr<Context::UserContext> Context::getUserContext(std::type_index /*typeId*/) { OCL_NOT_AVAILABLE(); }
--
- /* static */ Context Context::fromHandle(void* context) { OCL_NOT_AVAILABLE(); }
- /* static */ Context Context::fromDevice(const ocl::Device& device) { OCL_NOT_AVAILABLE(); }
- /* static */ Context Context::create(const std::string& configuration) { OCL_NOT_AVAILABLE(); }
 diff -Nuarp opencv-4.9.0.orig/modules/core/src/parallel/parallel.cpp opencv-4.9.0/modules/core/src/parallel/parallel.cpp
 --- opencv-4.9.0.orig/modules/core/src/parallel/parallel.cpp	2023-12-28 00:46:55.000000000 +0800
 +++ opencv-4.9.0/modules/core/src/parallel/parallel.cpp	2024-01-17 19:24:44.468218337 +0800
