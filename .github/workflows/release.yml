@@ -37,9 +37,9 @@ jobs:
         rm opencv-${{ env.opencv-version }}.zip
         cd opencv-${{ env.opencv-version }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-        rm modules/core/gl_*
-        rm modules/core/gpumat.cpp
-        rm modules/core/opengl_*
+        rm modules/core/src/gl_*
+        rm modules/core/src/gpumat.cpp
+        rm modules/core/src/opengl_*
         rm modules/core/include/opencv2/core/cuda_*
         rm modules/core/include/opencv2/core/devmem2d.hpp
         rm modules/core/include/opencv2/core/gpumat.hpp
