@@ -1,0 +1,828 @@
+diff -Nuarp opencv-3.4.20.orig/.cache/.gitignore opencv-3.4.20/.cache/.gitignore
+--- opencv-3.4.20.orig/.cache/.gitignore	1970-01-01 08:00:00.000000000 +0800
++++ opencv-3.4.20/.cache/.gitignore	2024-02-06 15:27:27.692115816 +0800
+@@ -0,0 +1 @@
++*
+diff -Nuarp opencv-3.4.20.orig/modules/core/include/opencv2/core/base.hpp opencv-3.4.20/modules/core/include/opencv2/core/base.hpp
+--- opencv-3.4.20.orig/modules/core/include/opencv2/core/base.hpp	2024-02-06 15:44:02.865037477 +0800
++++ opencv-3.4.20/modules/core/include/opencv2/core/base.hpp	2024-02-06 15:33:15.563088432 +0800
+@@ -646,26 +646,6 @@ template<typename _Tp> class MatConstIte
+ template<typename _Tp> class SparseMatIterator_;
+ template<typename _Tp> class SparseMatConstIterator_;
+ 
+-namespace ogl
+-{
+-    class CV_EXPORTS Buffer;
+-    class CV_EXPORTS Texture2D;
+-    class CV_EXPORTS Arrays;
+-}
+-
+-namespace cuda
+-{
+-    class CV_EXPORTS GpuMat;
+-    class CV_EXPORTS HostMem;
+-    class CV_EXPORTS Stream;
+-    class CV_EXPORTS Event;
+-}
+-
+-namespace cudev
+-{
+-    template <typename _Tp> class GpuMat_;
+-}
+-
+ namespace ipp
+ {
+ #if OPENCV_ABI_COMPATIBILITY > 300
+diff -Nuarp opencv-3.4.20.orig/modules/core/include/opencv2/core/cvdef.h opencv-3.4.20/modules/core/include/opencv2/core/cvdef.h
+--- opencv-3.4.20.orig/modules/core/include/opencv2/core/cvdef.h	2024-02-06 15:44:02.856037478 +0800
++++ opencv-3.4.20/modules/core/include/opencv2/core/cvdef.h	2024-02-06 15:31:09.229098376 +0800
+@@ -883,4 +883,9 @@ protected:
+ #include "opencv2/core/fast_math.hpp" // define cvRound(double)
+ #endif
+ 
++#define CV_OCL_RUN_(condition, func, ...)
++#define CV_OCL_RUN(condition, func) CV_OCL_RUN_(condition, func)
++
++#define CV_OVX_RUN(condition, func, ...)
++
+ #endif // OPENCV_CORE_CVDEF_H
+diff -Nuarp opencv-3.4.20.orig/modules/core/include/opencv2/core/mat.hpp opencv-3.4.20/modules/core/include/opencv2/core/mat.hpp
+--- opencv-3.4.20.orig/modules/core/include/opencv2/core/mat.hpp	2024-02-06 15:44:02.808037481 +0800
++++ opencv-3.4.20/modules/core/include/opencv2/core/mat.hpp	2024-02-06 15:35:17.825078807 +0800
+@@ -173,13 +173,9 @@ public:
+ #if OPENCV_ABI_COMPATIBILITY < 500
+         EXPR              = 6 << KIND_SHIFT,  //!< removed: https://github.com/opencv/opencv/pull/17046
+ #endif
+-        OPENGL_BUFFER     = 7 << KIND_SHIFT,
+-        CUDA_HOST_MEM     = 8 << KIND_SHIFT,
+-        CUDA_GPU_MAT      = 9 << KIND_SHIFT,
+         UMAT              =10 << KIND_SHIFT,
+         STD_VECTOR_UMAT   =11 << KIND_SHIFT,
+         STD_BOOL_VECTOR   =12 << KIND_SHIFT,
+-        STD_VECTOR_CUDA_GPU_MAT = 13 << KIND_SHIFT,
+ #if OPENCV_ABI_COMPATIBILITY < 500
+         STD_ARRAY         =14 << KIND_SHIFT,  //!< removed: https://github.com/opencv/opencv/issues/18897
+ #endif
+@@ -200,11 +196,6 @@ public:
+     template<typename _Tp> _InputArray(const _Tp* vec, int n);
+     template<typename _Tp, int m, int n> _InputArray(const Matx<_Tp, m, n>& matx);
+     _InputArray(const double& val);
+-    _InputArray(const cuda::GpuMat& d_mat);
+-    _InputArray(const std::vector<cuda::GpuMat>& d_mat_array);
+-    _InputArray(const ogl::Buffer& buf);
+-    _InputArray(const cuda::HostMem& cuda_mem);
+-    template<typename _Tp> _InputArray(const cudev::GpuMat_<_Tp>& m);
+     _InputArray(const UMat& um);
+     _InputArray(const std::vector<UMat>& umv);
+ 
+@@ -223,9 +214,6 @@ public:
+     UMat getUMat(int idx=-1) const;
+     void getMatVector(std::vector<Mat>& mv) const;
+     void getUMatVector(std::vector<UMat>& umv) const;
+-    void getGpuMatVector(std::vector<cuda::GpuMat>& gpumv) const;
+-    cuda::GpuMat getGpuMat() const;
+-    ogl::Buffer getOGlBuffer() const;
+ 
+     int getFlags() const;
+     void* getObj() const;
+@@ -255,8 +243,6 @@ public:
+     bool isUMatVector() const;
+     bool isMatx() const;
+     bool isVector() const;
+-    bool isGpuMat() const;
+-    bool isGpuMatVector() const;
+     ~_InputArray();
+ 
+ protected:
+@@ -315,11 +301,6 @@ public:
+     _OutputArray(int _flags, void* _obj);
+     _OutputArray(Mat& m);
+     _OutputArray(std::vector<Mat>& vec);
+-    _OutputArray(cuda::GpuMat& d_mat);
+-    _OutputArray(std::vector<cuda::GpuMat>& d_mat);
+-    _OutputArray(ogl::Buffer& buf);
+-    _OutputArray(cuda::HostMem& cuda_mem);
+-    template<typename _Tp> _OutputArray(cudev::GpuMat_<_Tp>& m);
+     template<typename _Tp> _OutputArray(std::vector<_Tp>& vec);
+     _OutputArray(std::vector<bool>& vec);
+     template<typename _Tp> _OutputArray(std::vector<std::vector<_Tp> >& vec);
+@@ -333,11 +314,6 @@ public:
+ 
+     _OutputArray(const Mat& m);
+     _OutputArray(const std::vector<Mat>& vec);
+-    _OutputArray(const cuda::GpuMat& d_mat);
+-    _OutputArray(const std::vector<cuda::GpuMat>& d_mat);
+-    _OutputArray(const ogl::Buffer& buf);
+-    _OutputArray(const cuda::HostMem& cuda_mem);
+-    template<typename _Tp> _OutputArray(const cudev::GpuMat_<_Tp>& m);
+     template<typename _Tp> _OutputArray(const std::vector<_Tp>& vec);
+     template<typename _Tp> _OutputArray(const std::vector<std::vector<_Tp> >& vec);
+     template<typename _Tp> _OutputArray(const std::vector<Mat_<_Tp> >& vec);
+@@ -364,10 +340,6 @@ public:
+     bool needed() const;
+     Mat& getMatRef(int i=-1) const;
+     UMat& getUMatRef(int i=-1) const;
+-    cuda::GpuMat& getGpuMatRef() const;
+-    std::vector<cuda::GpuMat>& getGpuMatVecRef() const;
+-    ogl::Buffer& getOGlBufferRef() const;
+-    cuda::HostMem& getHostMemRef() const;
+     void create(Size sz, int type, int i=-1, bool allowTransposed=false, int fixedDepthMask=0) const;
+     void create(int rows, int cols, int type, int i=-1, bool allowTransposed=false, int fixedDepthMask=0) const;
+     void create(int dims, const int* size, int type, int i=-1, bool allowTransposed=false, int fixedDepthMask=0) const;
+@@ -394,10 +366,6 @@ public:
+     _InputOutputArray(int _flags, void* _obj);
+     _InputOutputArray(Mat& m);
+     _InputOutputArray(std::vector<Mat>& vec);
+-    _InputOutputArray(cuda::GpuMat& d_mat);
+-    _InputOutputArray(ogl::Buffer& buf);
+-    _InputOutputArray(cuda::HostMem& cuda_mem);
+-    template<typename _Tp> _InputOutputArray(cudev::GpuMat_<_Tp>& m);
+     template<typename _Tp> _InputOutputArray(std::vector<_Tp>& vec);
+     _InputOutputArray(std::vector<bool>& vec);
+     template<typename _Tp> _InputOutputArray(std::vector<std::vector<_Tp> >& vec);
+@@ -410,11 +378,6 @@ public:
+ 
+     _InputOutputArray(const Mat& m);
+     _InputOutputArray(const std::vector<Mat>& vec);
+-    _InputOutputArray(const cuda::GpuMat& d_mat);
+-    _InputOutputArray(const std::vector<cuda::GpuMat>& d_mat);
+-    _InputOutputArray(const ogl::Buffer& buf);
+-    _InputOutputArray(const cuda::HostMem& cuda_mem);
+-    template<typename _Tp> _InputOutputArray(const cudev::GpuMat_<_Tp>& m);
+     template<typename _Tp> _InputOutputArray(const std::vector<_Tp>& vec);
+     template<typename _Tp> _InputOutputArray(const std::vector<std::vector<_Tp> >& vec);
+     template<typename _Tp> _InputOutputArray(const std::vector<Mat_<_Tp> >& vec);
+@@ -1072,9 +1035,6 @@ public:
+     */
+     template<typename _Tp> explicit Mat(const MatCommaInitializer_<_Tp>& commaInitializer);
+ 
+-    //! download data from GpuMat
+-    explicit Mat(const cuda::GpuMat& m);
+-
+     //! destructor - calls release()
+     ~Mat();
+ 
+diff -Nuarp opencv-3.4.20.orig/modules/core/include/opencv2/core/mat.inl.hpp opencv-3.4.20/modules/core/include/opencv2/core/mat.inl.hpp
+--- opencv-3.4.20.orig/modules/core/include/opencv2/core/mat.inl.hpp	2024-02-06 15:44:02.859037477 +0800
++++ opencv-3.4.20/modules/core/include/opencv2/core/mat.inl.hpp	2024-02-06 15:33:50.095085713 +0800
+@@ -150,18 +150,6 @@ _InputArray::_InputArray(const Mat_<_Tp>
+ inline _InputArray::_InputArray(const double& val)
+ { init(FIXED_TYPE + FIXED_SIZE + MATX + CV_64F + ACCESS_READ, &val, Size(1,1)); }
+ 
+-inline _InputArray::_InputArray(const cuda::GpuMat& d_mat)
+-{ init(CUDA_GPU_MAT + ACCESS_READ, &d_mat); }
+-
+-inline _InputArray::_InputArray(const std::vector<cuda::GpuMat>& d_mat)
+-{	init(STD_VECTOR_CUDA_GPU_MAT + ACCESS_READ, &d_mat);}
+-
+-inline _InputArray::_InputArray(const ogl::Buffer& buf)
+-{ init(OPENGL_BUFFER + ACCESS_READ, &buf); }
+-
+-inline _InputArray::_InputArray(const cuda::HostMem& cuda_mem)
+-{ init(CUDA_HOST_MEM + ACCESS_READ, &cuda_mem); }
+-
+ template<typename _Tp> inline
+ _InputArray _InputArray::rawIn(const std::vector<_Tp>& vec)
+ {
+@@ -200,8 +188,6 @@ inline bool _InputArray::isMatx() const
+ inline bool _InputArray::isVector() const { return kind() == _InputArray::STD_VECTOR ||
+                                                    kind() == _InputArray::STD_BOOL_VECTOR ||
+                                                    (kind() == _InputArray::MATX && (sz.width <= 1 || sz.height <= 1)); }
+-inline bool _InputArray::isGpuMat() const { return kind() == _InputArray::CUDA_GPU_MAT; }
+-inline bool _InputArray::isGpuMatVector() const { return kind() == _InputArray::STD_VECTOR_CUDA_GPU_MAT; }
+ 
+ ////////////////////////////////////////////////////////////////////////////////////////
+ 
+@@ -288,18 +274,6 @@ template<typename _Tp> inline
+ _OutputArray::_OutputArray(const _Tp* vec, int n)
+ { init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_WRITE, vec, Size(n, 1)); }
+ 
+-inline _OutputArray::_OutputArray(cuda::GpuMat& d_mat)
+-{ init(CUDA_GPU_MAT + ACCESS_WRITE, &d_mat); }
+-
+-inline _OutputArray::_OutputArray(std::vector<cuda::GpuMat>& d_mat)
+-{	init(STD_VECTOR_CUDA_GPU_MAT + ACCESS_WRITE, &d_mat);}
+-
+-inline _OutputArray::_OutputArray(ogl::Buffer& buf)
+-{ init(OPENGL_BUFFER + ACCESS_WRITE, &buf); }
+-
+-inline _OutputArray::_OutputArray(cuda::HostMem& cuda_mem)
+-{ init(CUDA_HOST_MEM + ACCESS_WRITE, &cuda_mem); }
+-
+ inline _OutputArray::_OutputArray(const Mat& m)
+ { init(FIXED_TYPE + FIXED_SIZE + MAT + ACCESS_WRITE, &m); }
+ 
+@@ -312,16 +286,6 @@ inline _OutputArray::_OutputArray(const
+ inline _OutputArray::_OutputArray(const std::vector<UMat>& vec)
+ { init(FIXED_SIZE + STD_VECTOR_UMAT + ACCESS_WRITE, &vec); }
+ 
+-inline _OutputArray::_OutputArray(const cuda::GpuMat& d_mat)
+-{ init(FIXED_TYPE + FIXED_SIZE + CUDA_GPU_MAT + ACCESS_WRITE, &d_mat); }
+-
+-
+-inline _OutputArray::_OutputArray(const ogl::Buffer& buf)
+-{ init(FIXED_TYPE + FIXED_SIZE + OPENGL_BUFFER + ACCESS_WRITE, &buf); }
+-
+-inline _OutputArray::_OutputArray(const cuda::HostMem& cuda_mem)
+-{ init(FIXED_TYPE + FIXED_SIZE + CUDA_HOST_MEM + ACCESS_WRITE, &cuda_mem); }
+-
+ template<typename _Tp> inline
+ _OutputArray _OutputArray::rawOut(std::vector<_Tp>& vec)
+ {
+@@ -423,15 +387,6 @@ template<typename _Tp> inline
+ _InputOutputArray::_InputOutputArray(const _Tp* vec, int n)
+ { init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_RW, vec, Size(n, 1)); }
+ 
+-inline _InputOutputArray::_InputOutputArray(cuda::GpuMat& d_mat)
+-{ init(CUDA_GPU_MAT + ACCESS_RW, &d_mat); }
+-
+-inline _InputOutputArray::_InputOutputArray(ogl::Buffer& buf)
+-{ init(OPENGL_BUFFER + ACCESS_RW, &buf); }
+-
+-inline _InputOutputArray::_InputOutputArray(cuda::HostMem& cuda_mem)
+-{ init(CUDA_HOST_MEM + ACCESS_RW, &cuda_mem); }
+-
+ inline _InputOutputArray::_InputOutputArray(const Mat& m)
+ { init(FIXED_TYPE + FIXED_SIZE + MAT + ACCESS_RW, &m); }
+ 
+@@ -444,21 +399,6 @@ inline _InputOutputArray::_InputOutputAr
+ inline _InputOutputArray::_InputOutputArray(const std::vector<UMat>& vec)
+ { init(FIXED_SIZE + STD_VECTOR_UMAT + ACCESS_RW, &vec); }
+ 
+-inline _InputOutputArray::_InputOutputArray(const cuda::GpuMat& d_mat)
+-{ init(FIXED_TYPE + FIXED_SIZE + CUDA_GPU_MAT + ACCESS_RW, &d_mat); }
+-
+-inline _InputOutputArray::_InputOutputArray(const std::vector<cuda::GpuMat>& d_mat)
+-{ init(FIXED_TYPE + FIXED_SIZE + STD_VECTOR_CUDA_GPU_MAT + ACCESS_RW, &d_mat);}
+-
+-template<> inline _InputOutputArray::_InputOutputArray(std::vector<cuda::GpuMat>& d_mat)
+-{ init(FIXED_TYPE + FIXED_SIZE + STD_VECTOR_CUDA_GPU_MAT + ACCESS_RW, &d_mat);}
+-
+-inline _InputOutputArray::_InputOutputArray(const ogl::Buffer& buf)
+-{ init(FIXED_TYPE + FIXED_SIZE + OPENGL_BUFFER + ACCESS_RW, &buf); }
+-
+-inline _InputOutputArray::_InputOutputArray(const cuda::HostMem& cuda_mem)
+-{ init(FIXED_TYPE + FIXED_SIZE + CUDA_HOST_MEM + ACCESS_RW, &cuda_mem); }
+-
+ template<typename _Tp> inline
+ _InputOutputArray _InputOutputArray::rawInOut(std::vector<_Tp>& vec)
+ {
+diff -Nuarp opencv-3.4.20.orig/modules/core/src/dxt.cpp opencv-3.4.20/modules/core/src/dxt.cpp
+--- opencv-3.4.20.orig/modules/core/src/dxt.cpp	2024-02-06 15:44:02.785037483 +0800
++++ opencv-3.4.20/modules/core/src/dxt.cpp	2024-02-06 15:32:00.364094351 +0800
+@@ -40,8 +40,6 @@
+ //M*/
+ 
+ #include "precomp.hpp"
+-#include "opencv2/core/opencl/runtime/opencl_clamdfft.hpp"
+-#include "opencv2/core/opencl/runtime/opencl_core.hpp"
+ #include <map>
+ 
+ namespace cv
+diff -Nuarp opencv-3.4.20.orig/modules/core/src/matmul.dispatch.cpp opencv-3.4.20/modules/core/src/matmul.dispatch.cpp
+--- opencv-3.4.20.orig/modules/core/src/matmul.dispatch.cpp	2024-02-06 15:44:02.765037485 +0800
++++ opencv-3.4.20/modules/core/src/matmul.dispatch.cpp	2024-02-06 15:32:18.956092888 +0800
+@@ -44,10 +44,6 @@
+ #include "precomp.hpp"
+ #include <opencv2/core/utils/logger.hpp>
+ 
+-#include "opencv2/core/opencl/runtime/opencl_clamdblas.hpp"
+-#include "opencv2/core/opencl/runtime/opencl_core.hpp"
+-#include "intel_gpu_gemm.inl.hpp"
+-
+ #include "matmul.simd.hpp"
+ #include "matmul.simd_declarations.hpp" // defines CV_CPU_DISPATCH_MODES_ALL=AVX2,...,BASELINE based on CMakeLists.txt content
+ 
+diff -Nuarp opencv-3.4.20.orig/modules/core/src/matrix_wrap.cpp opencv-3.4.20/modules/core/src/matrix_wrap.cpp
+--- opencv-3.4.20.orig/modules/core/src/matrix_wrap.cpp	2024-02-06 15:44:02.744037486 +0800
++++ opencv-3.4.20/modules/core/src/matrix_wrap.cpp	2024-02-06 15:38:15.492064822 +0800
+@@ -99,27 +99,6 @@ Mat _InputArray::getMat_(int i) const
+         return v[i].getMat(accessFlags);
+     }
+ 
+-    if( k == OPENGL_BUFFER )
+-    {
+-        CV_Assert( i < 0 );
+-        CV_Error(cv::Error::StsNotImplemented, "You should explicitly call mapHost/unmapHost methods for ogl::Buffer object");
+-    }
+-
+-    if( k == CUDA_GPU_MAT )
+-    {
+-        CV_Assert( i < 0 );
+-        CV_Error(cv::Error::StsNotImplemented, "You should explicitly call download method for cuda::GpuMat object");
+-    }
+-
+-    if( k == CUDA_HOST_MEM )
+-    {
+-        CV_Assert( i < 0 );
+-
+-        const cuda::HostMem* cuda_mem = (const cuda::HostMem*)obj;
+-
+-        return cuda_mem->createMatHeader();
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -314,59 +293,6 @@ void _InputArray::getUMatVector(std::vec
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+-cuda::GpuMat _InputArray::getGpuMat() const
+-{
+-#ifdef HAVE_CUDA
+-    int k = kind();
+-
+-    if (k == CUDA_GPU_MAT)
+-    {
+-        const cuda::GpuMat* d_mat = (const cuda::GpuMat*)obj;
+-        return *d_mat;
+-    }
+-
+-    if (k == CUDA_HOST_MEM)
+-    {
+-        const cuda::HostMem* cuda_mem = (const cuda::HostMem*)obj;
+-        return cuda_mem->createGpuMatHeader();
+-    }
+-
+-    if (k == OPENGL_BUFFER)
+-    {
+-        CV_Error(cv::Error::StsNotImplemented, "You should explicitly call mapDevice/unmapDevice methods for ogl::Buffer object");
+-    }
+-
+-    if (k == NONE)
+-        return cuda::GpuMat();
+-
+-    CV_Error(cv::Error::StsNotImplemented, "getGpuMat is available only for cuda::GpuMat and cuda::HostMem");
+-#else
+-    CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-}
+-void _InputArray::getGpuMatVector(std::vector<cuda::GpuMat>& gpumv) const
+-{
+-#ifdef HAVE_CUDA
+-    int k = kind();
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-        gpumv = *(std::vector<cuda::GpuMat>*)obj;
+-    }
+-#else
+-    CV_UNUSED(gpumv);
+-    CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-}
+-ogl::Buffer _InputArray::getOGlBuffer() const
+-{
+-    int k = kind();
+-
+-    CV_Assert(k == OPENGL_BUFFER);
+-
+-    const ogl::Buffer* gl_buf = (const ogl::Buffer*)obj;
+-    return *gl_buf;
+-}
+-
+ int _InputArray::kind() const
+ {
+     int k = flags & KIND_MASK;
+@@ -464,19 +390,6 @@ Size _InputArray::size(int i) const
+         return vv[i].size();
+     }
+ 
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-#ifdef HAVE_CUDA
+-        const std::vector<cuda::GpuMat>& vv = *(const std::vector<cuda::GpuMat>*)obj;
+-        if (i < 0)
+-            return vv.empty() ? Size() : Size((int)vv.size(), 1);
+-        CV_Assert(i < (int)vv.size());
+-        return vv[i].size();
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-
+     if( k == STD_VECTOR_UMAT )
+     {
+         const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
+@@ -487,27 +400,6 @@ Size _InputArray::size(int i) const
+         return vv[i].size();
+     }
+ 
+-    if( k == OPENGL_BUFFER )
+-    {
+-        CV_Assert( i < 0 );
+-        const ogl::Buffer* buf = (const ogl::Buffer*)obj;
+-        return buf->size();
+-    }
+-
+-    if( k == CUDA_GPU_MAT )
+-    {
+-        CV_Assert( i < 0 );
+-        const cuda::GpuMat* d_mat = (const cuda::GpuMat*)obj;
+-        return d_mat->size();
+-    }
+-
+-    if( k == CUDA_HOST_MEM )
+-    {
+-        CV_Assert( i < 0 );
+-        const cuda::HostMem* cuda_mem = (const cuda::HostMem*)obj;
+-        return cuda_mem->size();
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -684,24 +576,6 @@ int _InputArray::dims(int i) const
+         return vv[i].dims;
+     }
+ 
+-    if( k == OPENGL_BUFFER )
+-    {
+-        CV_Assert( i < 0 );
+-        return 2;
+-    }
+-
+-    if( k == CUDA_GPU_MAT )
+-    {
+-        CV_Assert( i < 0 );
+-        return 2;
+-    }
+-
+-    if( k == CUDA_HOST_MEM )
+-    {
+-        CV_Assert( i < 0 );
+-        return 2;
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -806,31 +680,6 @@ int _InputArray::type(int i) const
+         return vv[i >= 0 ? i : 0].type();
+     }
+ 
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-#ifdef HAVE_CUDA
+-        const std::vector<cuda::GpuMat>& vv = *(const std::vector<cuda::GpuMat>*)obj;
+-        if (vv.empty())
+-        {
+-            CV_Assert((flags & FIXED_TYPE) != 0);
+-            return CV_MAT_TYPE(flags);
+-        }
+-        CV_Assert(i < (int)vv.size());
+-        return vv[i >= 0 ? i : 0].type();
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-
+-    if( k == OPENGL_BUFFER )
+-        return ((const ogl::Buffer*)obj)->type();
+-
+-    if( k == CUDA_GPU_MAT )
+-        return ((const cuda::GpuMat*)obj)->type();
+-
+-    if( k == CUDA_HOST_MEM )
+-        return ((const cuda::HostMem*)obj)->type();
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -895,21 +744,6 @@ bool _InputArray::empty() const
+         return vv.empty();
+     }
+ 
+-    if( k == OPENGL_BUFFER )
+-        return ((const ogl::Buffer*)obj)->empty();
+-
+-    if( k == CUDA_GPU_MAT )
+-        return ((const cuda::GpuMat*)obj)->empty();
+-
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-        const std::vector<cuda::GpuMat>& vv = *(const std::vector<cuda::GpuMat>*)obj;
+-        return vv.empty();
+-    }
+-
+-    if( k == CUDA_HOST_MEM )
+-        return ((const cuda::HostMem*)obj)->empty();
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -948,9 +782,6 @@ bool _InputArray::isContinuous(int i) co
+         return vv[i].isContinuous();
+     }
+ 
+-    if( k == CUDA_GPU_MAT )
+-      return i < 0 ? ((const cuda::GpuMat*)obj)->isContinuous() : true;
+-
+     CV_Error(CV_StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -1035,20 +866,6 @@ size_t _InputArray::offset(int i) const
+         return vv[i].offset;
+     }
+ 
+-    if( k == CUDA_GPU_MAT )
+-    {
+-        CV_Assert( i < 0 );
+-        const cuda::GpuMat * const m = ((const cuda::GpuMat*)obj);
+-        return (size_t)(m->data - m->datastart);
+-    }
+-
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-        const std::vector<cuda::GpuMat>& vv = *(const std::vector<cuda::GpuMat>*)obj;
+-        CV_Assert(i >= 0 && (size_t)i < vv.size());
+-        return (size_t)(vv[i].data - vv[i].datastart);
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "");
+ }
+ 
+@@ -1093,18 +910,6 @@ size_t _InputArray::step(int i) const
+         return vv[i].step;
+     }
+ 
+-    if( k == CUDA_GPU_MAT )
+-    {
+-        CV_Assert( i < 0 );
+-        return ((const cuda::GpuMat*)obj)->step;
+-    }
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-        const std::vector<cuda::GpuMat>& vv = *(const std::vector<cuda::GpuMat>*)obj;
+-        CV_Assert(i >= 0 && (size_t)i < vv.size());
+-        return vv[i].step;
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "");
+ }
+ 
+@@ -1121,10 +926,6 @@ void _InputArray::copyTo(const _OutputAr
+     }
+     else if( k == UMAT )
+         ((UMat*)obj)->copyTo(arr);
+-#ifdef HAVE_CUDA
+-    else if (k == CUDA_GPU_MAT)
+-        ((cuda::GpuMat*)obj)->copyTo(arr);
+-#endif
+     else
+         CV_Error(Error::StsNotImplemented, "");
+ }
+@@ -1142,10 +943,6 @@ void _InputArray::copyTo(const _OutputAr
+     }
+     else if( k == UMAT )
+         ((UMat*)obj)->copyTo(arr, mask);
+-#ifdef HAVE_CUDA
+-    else if (k == CUDA_GPU_MAT)
+-        ((cuda::GpuMat*)obj)->copyTo(arr, mask);
+-#endif
+     else
+         CV_Error(Error::StsNotImplemented, "");
+ }
+@@ -1177,39 +974,6 @@ void _OutputArray::create(Size _sz, int
+         ((UMat*)obj)->create(_sz, mtype);
+         return;
+     }
+-    if( k == CUDA_GPU_MAT && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((cuda::GpuMat*)obj)->size() == _sz);
+-        CV_Assert(!fixedType() || ((cuda::GpuMat*)obj)->type() == mtype);
+-#ifdef HAVE_CUDA
+-        ((cuda::GpuMat*)obj)->create(_sz, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-    if( k == OPENGL_BUFFER && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((ogl::Buffer*)obj)->size() == _sz);
+-        CV_Assert(!fixedType() || ((ogl::Buffer*)obj)->type() == mtype);
+-#ifdef HAVE_OPENGL
+-        ((ogl::Buffer*)obj)->create(_sz, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "OpenGL support is not enabled in this OpenCV build (missing HAVE_OPENGL)");
+-#endif
+-    }
+-    if( k == CUDA_HOST_MEM && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((cuda::HostMem*)obj)->size() == _sz);
+-        CV_Assert(!fixedType() || ((cuda::HostMem*)obj)->type() == mtype);
+-#ifdef HAVE_CUDA
+-        ((cuda::HostMem*)obj)->create(_sz, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+     int sizes[] = {_sz.height, _sz.width};
+     create(2, sizes, mtype, i, allowTransposed, fixedDepthMask);
+ }
+@@ -1231,39 +995,6 @@ void _OutputArray::create(int _rows, int
+         ((UMat*)obj)->create(_rows, _cols, mtype);
+         return;
+     }
+-    if( k == CUDA_GPU_MAT && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((cuda::GpuMat*)obj)->size() == Size(_cols, _rows));
+-        CV_Assert(!fixedType() || ((cuda::GpuMat*)obj)->type() == mtype);
+-#ifdef HAVE_CUDA
+-        ((cuda::GpuMat*)obj)->create(_rows, _cols, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-    if( k == OPENGL_BUFFER && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((ogl::Buffer*)obj)->size() == Size(_cols, _rows));
+-        CV_Assert(!fixedType() || ((ogl::Buffer*)obj)->type() == mtype);
+-#ifdef HAVE_OPENGL
+-        ((ogl::Buffer*)obj)->create(_rows, _cols, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "OpenGL support is not enabled in this OpenCV build (missing HAVE_OPENGL)");
+-#endif
+-    }
+-    if( k == CUDA_HOST_MEM && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((cuda::HostMem*)obj)->size() == Size(_cols, _rows));
+-        CV_Assert(!fixedType() || ((cuda::HostMem*)obj)->type() == mtype);
+-#ifdef HAVE_CUDA
+-        ((cuda::HostMem*)obj)->create(_rows, _cols, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+     int sizes[] = {_rows, _cols};
+     create(2, sizes, mtype, i, allowTransposed, fixedDepthMask);
+ }
+@@ -1683,36 +1414,6 @@ void _OutputArray::release() const
+         return;
+     }
+ 
+-    if( k == CUDA_GPU_MAT )
+-    {
+-#ifdef HAVE_CUDA
+-        ((cuda::GpuMat*)obj)->release();
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-
+-    if( k == CUDA_HOST_MEM )
+-    {
+-#ifdef HAVE_CUDA
+-        ((cuda::HostMem*)obj)->release();
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-
+-    if( k == OPENGL_BUFFER )
+-    {
+-#ifdef HAVE_OPENGL
+-        ((ogl::Buffer*)obj)->release();
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "OpenGL support is not enabled in this OpenCV build (missing HAVE_OPENGL)");
+-#endif
+-    }
+-
+     if( k == NONE )
+         return;
+ 
+@@ -1739,15 +1440,6 @@ void _OutputArray::release() const
+         ((std::vector<UMat>*)obj)->clear();
+         return;
+     }
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-#ifdef HAVE_CUDA
+-        ((std::vector<cuda::GpuMat>*)obj)->clear();
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -1812,33 +1504,6 @@ UMat& _OutputArray::getUMatRef(int i) co
+     }
+ }
+ 
+-cuda::GpuMat& _OutputArray::getGpuMatRef() const
+-{
+-    int k = kind();
+-    CV_Assert( k == CUDA_GPU_MAT );
+-    return *(cuda::GpuMat*)obj;
+-}
+-std::vector<cuda::GpuMat>& _OutputArray::getGpuMatVecRef() const
+-{
+-    int k = kind();
+-    CV_Assert(k == STD_VECTOR_CUDA_GPU_MAT);
+-    return *(std::vector<cuda::GpuMat>*)obj;
+-}
+-
+-ogl::Buffer& _OutputArray::getOGlBufferRef() const
+-{
+-    int k = kind();
+-    CV_Assert( k == OPENGL_BUFFER );
+-    return *(ogl::Buffer*)obj;
+-}
+-
+-cuda::HostMem& _OutputArray::getHostMemRef() const
+-{
+-    int k = kind();
+-    CV_Assert( k == CUDA_HOST_MEM );
+-    return *(cuda::HostMem*)obj;
+-}
+-
+ void _OutputArray::setTo(const _InputArray& arr, const _InputArray & mask) const
+ {
+     int k = kind();
+@@ -1852,16 +1517,6 @@ void _OutputArray::setTo(const _InputArr
+     }
+     else if( k == UMAT )
+         ((UMat*)obj)->setTo(arr, mask);
+-    else if( k == CUDA_GPU_MAT )
+-    {
+-#ifdef HAVE_CUDA
+-        Mat value = arr.getMat();
+-        CV_Assert( checkScalar(value, type(), arr.kind(), _InputArray::CUDA_GPU_MAT) );
+-        ((cuda::GpuMat*)obj)->setTo(Scalar(Vec<double, 4>(value.ptr<double>())), mask);
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+     else
+         CV_Error(Error::StsNotImplemented, "");
+ }
+diff -Nuarp opencv-3.4.20.orig/modules/core/src/precomp.hpp opencv-3.4.20/modules/core/src/precomp.hpp
+--- opencv-3.4.20.orig/modules/core/src/precomp.hpp	2024-02-06 15:44:02.776037484 +0800
++++ opencv-3.4.20/modules/core/src/precomp.hpp	2024-02-06 15:30:26.361101751 +0800
+@@ -320,9 +320,6 @@ struct ImplCollector
+ struct CoreTLSData
+ {
+     CoreTLSData() :
+-//#ifdef HAVE_OPENCL
+-        device(0), useOpenCL(-1),
+-//#endif
+         useIPP(-1),
+         useIPP_NE(-1)
+ #ifdef HAVE_TEGRA_OPTIMIZATION
+@@ -334,11 +331,6 @@ struct CoreTLSData
+     {}
+ 
+     RNG rng;
+-//#ifdef HAVE_OPENCL
+-    int device; // device index of an array of devices in a context, see also Device::getDefault
+-    ocl::Queue oclQueue; // the queue used for running a kernel, see also getQueue, Kernel::run
+-    int useOpenCL; // 1 - use, 0 - do not use, -1 - auto/not initialized
+-//#endif
+     int useIPP;    // 1 - use, 0 - do not use, -1 - auto/not initialized
+     int useIPP_NE; // 1 - use, 0 - do not use, -1 - auto/not initialized
+ #ifdef HAVE_TEGRA_OPTIMIZATION
+diff -Nuarp opencv-3.4.20.orig/modules/features2d/src/kaze/AKAZEFeatures.cpp opencv-3.4.20/modules/features2d/src/kaze/AKAZEFeatures.cpp
+--- opencv-3.4.20.orig/modules/features2d/src/kaze/AKAZEFeatures.cpp	2024-02-06 15:44:01.719037567 +0800
++++ opencv-3.4.20/modules/features2d/src/kaze/AKAZEFeatures.cpp	2024-02-06 15:41:13.792050786 +0800
+@@ -519,15 +519,7 @@ convertScalePyramid(const std::vector<Ev
+  */
+ void AKAZEFeatures::Create_Nonlinear_Scale_Space(InputArray image)
+ {
+-  if (ocl::isOpenCLActivated() && image.isUMat()) {
+-    // will run OCL version of scale space pyramid
+-    UMatPyramid uPyr;
+-    // init UMat pyramid with sizes
+-    convertScalePyramid(evolution_, uPyr);
+-    create_nonlinear_scale_space(image, options_, tsteps_, uPyr);
+-    // download pyramid from GPU
+-    convertScalePyramid(uPyr, evolution_);
+-  } else {
++  {
+     // CPU version
+     create_nonlinear_scale_space(image, options_, tsteps_, evolution_);
+   }
+diff -Nuarp opencv-3.4.20.orig/modules/imgproc/src/smooth.dispatch.cpp opencv-3.4.20/modules/imgproc/src/smooth.dispatch.cpp
+--- opencv-3.4.20.orig/modules/imgproc/src/smooth.dispatch.cpp	2024-02-06 15:44:01.891037554 +0800
++++ opencv-3.4.20/modules/imgproc/src/smooth.dispatch.cpp	2024-02-06 15:39:12.070060368 +0800
+@@ -636,9 +636,7 @@ void GaussianBlur(InputArray _src, Outpu
+     if (sigma2 <= 0)
+         sigma2 = sigma1;
+ 
+-    bool useOpenCL = ocl::isOpenCLActivated() && _dst.isUMat() && _src.dims() <= 2 &&
+-               _src.rows() >= ksize.height && _src.cols() >= ksize.width &&
+-               ksize.width > 1 && ksize.height > 1;
++    bool useOpenCL = false;
+     CV_UNUSED(useOpenCL);
+ 
+     int sdepth = CV_MAT_DEPTH(type), cn = CV_MAT_CN(type);
