@@ -91,6 +91,7 @@ jobs:
         rm modules/core/src/ocl*
         rm modules/core/src/opengl.cpp
         rm modules/core/src/ovx.cpp
+        rm modules/core/src/umatrix*
         rm modules/core/src/va_intel.cpp
 
         rm modules/core/include/opencv2/core/cuda*.hpp
