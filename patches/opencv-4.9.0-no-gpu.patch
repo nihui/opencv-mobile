@@ -1,0 +1,2844 @@
+diff -Nuarp opencv-4.9.0.orig/modules/core/include/opencv2/core/base.hpp opencv-4.9.0/modules/core/include/opencv2/core/base.hpp
+--- opencv-4.9.0.orig/modules/core/include/opencv2/core/base.hpp	2024-02-07 14:07:17.015693213 +0800
++++ opencv-4.9.0/modules/core/include/opencv2/core/base.hpp	2024-02-07 14:30:23.155584098 +0800
+@@ -590,8 +590,6 @@ class CV_EXPORTS RNG;
+ class CV_EXPORTS Mat;
+ class CV_EXPORTS MatExpr;
+ 
+-class CV_EXPORTS UMat;
+-
+ class CV_EXPORTS SparseMat;
+ typedef Mat MatND;
+ 
+@@ -606,26 +604,6 @@ template<typename _Tp> class MatConstIte
+ template<typename _Tp> class SparseMatIterator_;
+ template<typename _Tp> class SparseMatConstIterator_;
+ 
+-namespace ogl
+-{
+-    class CV_EXPORTS Buffer;
+-    class CV_EXPORTS Texture2D;
+-    class CV_EXPORTS Arrays;
+-}
+-
+-namespace cuda
+-{
+-    class CV_EXPORTS GpuMat;
+-    class CV_EXPORTS HostMem;
+-    class CV_EXPORTS Stream;
+-    class CV_EXPORTS Event;
+-}
+-
+-namespace cudev
+-{
+-    template <typename _Tp> class GpuMat_;
+-}
+-
+ namespace ipp
+ {
+ CV_EXPORTS   unsigned long long getIppFeatures();
+diff -Nuarp opencv-4.9.0.orig/modules/core/include/opencv2/core/cvdef.h opencv-4.9.0/modules/core/include/opencv2/core/cvdef.h
+--- opencv-4.9.0.orig/modules/core/include/opencv2/core/cvdef.h	2024-02-07 14:07:17.002693214 +0800
++++ opencv-4.9.0/modules/core/include/opencv2/core/cvdef.h	2024-02-07 14:07:45.750690951 +0800
+@@ -977,4 +977,9 @@ protected:
+ #include "opencv2/core/fast_math.hpp" // define cvRound(double)
+ #endif
+ 
++#define CV_OCL_RUN_(condition, func, ...)
++#define CV_OCL_RUN(condition, func) CV_OCL_RUN_(condition, func)
++
++#define CV_OVX_RUN(condition, func, ...)
++
+ #endif // OPENCV_CORE_CVDEF_H
+diff -Nuarp opencv-4.9.0.orig/modules/core/include/opencv2/core/cvstd.inl.hpp opencv-4.9.0/modules/core/include/opencv2/core/cvstd.inl.hpp
+--- opencv-4.9.0.orig/modules/core/include/opencv2/core/cvstd.inl.hpp	2024-02-07 14:07:16.933693219 +0800
++++ opencv-4.9.0/modules/core/include/opencv2/core/cvstd.inl.hpp	2024-02-07 14:30:40.652582720 +0800
+@@ -89,12 +89,6 @@ std::ostream& operator << (std::ostream&
+     return out << Formatter::get()->format(mtx);
+ }
+ 
+-static inline
+-std::ostream& operator << (std::ostream& out, const UMat& m)
+-{
+-    return out << m.getMat(ACCESS_READ);
+-}
+-
+ template<typename _Tp> static inline
+ std::ostream& operator << (std::ostream& out, const Complex<_Tp>& c)
+ {
+diff -Nuarp opencv-4.9.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-4.9.0/modules/core/include/opencv2/core/mat.hpp
+--- opencv-4.9.0.orig/modules/core/include/opencv2/core/mat.hpp	2024-02-07 14:07:16.937693219 +0800
++++ opencv-4.9.0/modules/core/include/opencv2/core/mat.hpp	2024-02-07 14:32:37.824573497 +0800
+@@ -173,13 +173,7 @@ public:
+ #if OPENCV_ABI_COMPATIBILITY < 500
+         EXPR              = 6 << KIND_SHIFT,  //!< removed: https://github.com/opencv/opencv/pull/17046
+ #endif
+-        OPENGL_BUFFER     = 7 << KIND_SHIFT,
+-        CUDA_HOST_MEM     = 8 << KIND_SHIFT,
+-        CUDA_GPU_MAT      = 9 << KIND_SHIFT,
+-        UMAT              =10 << KIND_SHIFT,
+-        STD_VECTOR_UMAT   =11 << KIND_SHIFT,
+         STD_BOOL_VECTOR   =12 << KIND_SHIFT,
+-        STD_VECTOR_CUDA_GPU_MAT = 13 << KIND_SHIFT,
+ #if OPENCV_ABI_COMPATIBILITY < 500
+         STD_ARRAY         =14 << KIND_SHIFT,  //!< removed: https://github.com/opencv/opencv/issues/18897
+ #endif
+@@ -200,13 +194,6 @@ public:
+     template<typename _Tp> _InputArray(const _Tp* vec, int n);
+     template<typename _Tp, int m, int n> _InputArray(const Matx<_Tp, m, n>& matx);
+     _InputArray(const double& val);
+-    _InputArray(const cuda::GpuMat& d_mat);
+-    _InputArray(const std::vector<cuda::GpuMat>& d_mat_array);
+-    _InputArray(const ogl::Buffer& buf);
+-    _InputArray(const cuda::HostMem& cuda_mem);
+-    template<typename _Tp> _InputArray(const cudev::GpuMat_<_Tp>& m);
+-    _InputArray(const UMat& um);
+-    _InputArray(const std::vector<UMat>& umv);
+ 
+     template<typename _Tp, std::size_t _Nm> _InputArray(const std::array<_Tp, _Nm>& arr);
+     template<std::size_t _Nm> _InputArray(const std::array<Mat, _Nm>& arr);
+@@ -216,12 +203,7 @@ public:
+ 
+     Mat getMat(int idx=-1) const;
+     Mat getMat_(int idx=-1) const;
+-    UMat getUMat(int idx=-1) const;
+     void getMatVector(std::vector<Mat>& mv) const;
+-    void getUMatVector(std::vector<UMat>& umv) const;
+-    void getGpuMatVector(std::vector<cuda::GpuMat>& gpumv) const;
+-    cuda::GpuMat getGpuMat() const;
+-    ogl::Buffer getOGlBuffer() const;
+ 
+     int getFlags() const;
+     void* getObj() const;
+@@ -246,13 +228,9 @@ public:
+     size_t offset(int i=-1) const;
+     size_t step(int i=-1) const;
+     bool isMat() const;
+-    bool isUMat() const;
+     bool isMatVector() const;
+-    bool isUMatVector() const;
+     bool isMatx() const;
+     bool isVector() const;
+-    bool isGpuMat() const;
+-    bool isGpuMatVector() const;
+     ~_InputArray();
+ 
+ protected:
+@@ -314,11 +292,6 @@ public:
+     _OutputArray(int _flags, void* _obj);
+     _OutputArray(Mat& m);
+     _OutputArray(std::vector<Mat>& vec);
+-    _OutputArray(cuda::GpuMat& d_mat);
+-    _OutputArray(std::vector<cuda::GpuMat>& d_mat);
+-    _OutputArray(ogl::Buffer& buf);
+-    _OutputArray(cuda::HostMem& cuda_mem);
+-    template<typename _Tp> _OutputArray(cudev::GpuMat_<_Tp>& m);
+     template<typename _Tp> _OutputArray(std::vector<_Tp>& vec);
+     _OutputArray(std::vector<bool>& vec) = delete;  // not supported
+     template<typename _Tp> _OutputArray(std::vector<std::vector<_Tp> >& vec);
+@@ -327,24 +300,15 @@ public:
+     template<typename _Tp> _OutputArray(Mat_<_Tp>& m);
+     template<typename _Tp> _OutputArray(_Tp* vec, int n);
+     template<typename _Tp, int m, int n> _OutputArray(Matx<_Tp, m, n>& matx);
+-    _OutputArray(UMat& m);
+-    _OutputArray(std::vector<UMat>& vec);
+ 
+     _OutputArray(const Mat& m);
+     _OutputArray(const std::vector<Mat>& vec);
+-    _OutputArray(const cuda::GpuMat& d_mat);
+-    _OutputArray(const std::vector<cuda::GpuMat>& d_mat);
+-    _OutputArray(const ogl::Buffer& buf);
+-    _OutputArray(const cuda::HostMem& cuda_mem);
+-    template<typename _Tp> _OutputArray(const cudev::GpuMat_<_Tp>& m);
+     template<typename _Tp> _OutputArray(const std::vector<_Tp>& vec);
+     template<typename _Tp> _OutputArray(const std::vector<std::vector<_Tp> >& vec);
+     template<typename _Tp> _OutputArray(const std::vector<Mat_<_Tp> >& vec);
+     template<typename _Tp> _OutputArray(const Mat_<_Tp>& m);
+     template<typename _Tp> _OutputArray(const _Tp* vec, int n);
+     template<typename _Tp, int m, int n> _OutputArray(const Matx<_Tp, m, n>& matx);
+-    _OutputArray(const UMat& m);
+-    _OutputArray(const std::vector<UMat>& vec);
+ 
+     template<typename _Tp, std::size_t _Nm> _OutputArray(std::array<_Tp, _Nm>& arr);
+     template<typename _Tp, std::size_t _Nm> _OutputArray(const std::array<_Tp, _Nm>& arr);
+@@ -358,11 +322,6 @@ public:
+     bool fixedType() const;
+     bool needed() const;
+     Mat& getMatRef(int i=-1) const;
+-    UMat& getUMatRef(int i=-1) const;
+-    cuda::GpuMat& getGpuMatRef() const;
+-    std::vector<cuda::GpuMat>& getGpuMatVecRef() const;
+-    ogl::Buffer& getOGlBufferRef() const;
+-    cuda::HostMem& getHostMemRef() const;
+     void create(Size sz, int type, int i=-1, bool allowTransposed=false, _OutputArray::DepthMask fixedDepthMask=static_cast<_OutputArray::DepthMask>(0)) const;
+     void create(int rows, int cols, int type, int i=-1, bool allowTransposed=false, _OutputArray::DepthMask fixedDepthMask=static_cast<_OutputArray::DepthMask>(0)) const;
+     void create(int dims, const int* size, int type, int i=-1, bool allowTransposed=false, _OutputArray::DepthMask fixedDepthMask=static_cast<_OutputArray::DepthMask>(0)) const;
+@@ -371,13 +330,10 @@ public:
+     void clear() const;
+     void setTo(const _InputArray& value, const _InputArray & mask = _InputArray()) const;
+ 
+-    void assign(const UMat& u) const;
+     void assign(const Mat& m) const;
+ 
+-    void assign(const std::vector<UMat>& v) const;
+     void assign(const std::vector<Mat>& v) const;
+ 
+-    void move(UMat& u) const;
+     void move(Mat& m) const;
+ };
+ 
+@@ -389,10 +345,6 @@ public:
+     _InputOutputArray(int _flags, void* _obj);
+     _InputOutputArray(Mat& m);
+     _InputOutputArray(std::vector<Mat>& vec);
+-    _InputOutputArray(cuda::GpuMat& d_mat);
+-    _InputOutputArray(ogl::Buffer& buf);
+-    _InputOutputArray(cuda::HostMem& cuda_mem);
+-    template<typename _Tp> _InputOutputArray(cudev::GpuMat_<_Tp>& m);
+     template<typename _Tp> _InputOutputArray(std::vector<_Tp>& vec);
+     _InputOutputArray(std::vector<bool>& vec) = delete;  // not supported
+     template<typename _Tp> _InputOutputArray(std::vector<std::vector<_Tp> >& vec);
+@@ -400,24 +352,15 @@ public:
+     template<typename _Tp> _InputOutputArray(Mat_<_Tp>& m);
+     template<typename _Tp> _InputOutputArray(_Tp* vec, int n);
+     template<typename _Tp, int m, int n> _InputOutputArray(Matx<_Tp, m, n>& matx);
+-    _InputOutputArray(UMat& m);
+-    _InputOutputArray(std::vector<UMat>& vec);
+ 
+     _InputOutputArray(const Mat& m);
+     _InputOutputArray(const std::vector<Mat>& vec);
+-    _InputOutputArray(const cuda::GpuMat& d_mat);
+-    _InputOutputArray(const std::vector<cuda::GpuMat>& d_mat);
+-    _InputOutputArray(const ogl::Buffer& buf);
+-    _InputOutputArray(const cuda::HostMem& cuda_mem);
+-    template<typename _Tp> _InputOutputArray(const cudev::GpuMat_<_Tp>& m);
+     template<typename _Tp> _InputOutputArray(const std::vector<_Tp>& vec);
+     template<typename _Tp> _InputOutputArray(const std::vector<std::vector<_Tp> >& vec);
+     template<typename _Tp> _InputOutputArray(const std::vector<Mat_<_Tp> >& vec);
+     template<typename _Tp> _InputOutputArray(const Mat_<_Tp>& m);
+     template<typename _Tp> _InputOutputArray(const _Tp* vec, int n);
+     template<typename _Tp, int m, int n> _InputOutputArray(const Matx<_Tp, m, n>& matx);
+-    _InputOutputArray(const UMat& m);
+-    _InputOutputArray(const std::vector<UMat>& vec);
+ 
+     template<typename _Tp, std::size_t _Nm> _InputOutputArray(std::array<_Tp, _Nm>& arr);
+     template<typename _Tp, std::size_t _Nm> _InputOutputArray(const std::array<_Tp, _Nm>& arr);
+@@ -1056,9 +999,6 @@ public:
+     */
+     template<typename _Tp> explicit Mat(const MatCommaInitializer_<_Tp>& commaInitializer);
+ 
+-    //! download data from GpuMat
+-    explicit Mat(const cuda::GpuMat& m);
+-
+     //! destructor - calls release()
+     ~Mat();
+ 
+@@ -1081,9 +1021,6 @@ public:
+     */
+     Mat& operator = (const MatExpr& expr);
+ 
+-    //! retrieve UMat from Mat
+-    UMat getUMat(AccessFlag accessFlags, UMatUsageFlags usageFlags = USAGE_DEFAULT) const;
+-
+     /** @brief Creates a matrix header for the specified matrix row.
+ 
+     The method makes a new header for the specified matrix row and returns it. This is an O(1)
+@@ -2427,227 +2364,6 @@ typedef Mat_<Vec2d> Mat2d;
+ typedef Mat_<Vec3d> Mat3d;
+ typedef Mat_<Vec4d> Mat4d;
+ 
+-/** @todo document */
+-class CV_EXPORTS UMat
+-{
+-public:
+-    //! default constructor
+-    UMat(UMatUsageFlags usageFlags = USAGE_DEFAULT) CV_NOEXCEPT;
+-    //! constructs 2D matrix of the specified size and type
+-    // (_type is CV_8UC1, CV_64FC3, CV_32SC(12) etc.)
+-    UMat(int rows, int cols, int type, UMatUsageFlags usageFlags = USAGE_DEFAULT);
+-    UMat(Size size, int type, UMatUsageFlags usageFlags = USAGE_DEFAULT);
+-    //! constructs 2D matrix and fills it with the specified value _s.
+-    UMat(int rows, int cols, int type, const Scalar& s, UMatUsageFlags usageFlags = USAGE_DEFAULT);
+-    UMat(Size size, int type, const Scalar& s, UMatUsageFlags usageFlags = USAGE_DEFAULT);
+-
+-    //! constructs n-dimensional matrix
+-    UMat(int ndims, const int* sizes, int type, UMatUsageFlags usageFlags = USAGE_DEFAULT);
+-    UMat(int ndims, const int* sizes, int type, const Scalar& s, UMatUsageFlags usageFlags = USAGE_DEFAULT);
+-
+-    //! copy constructor
+-    UMat(const UMat& m);
+-
+-    //! creates a matrix header for a part of the bigger matrix
+-    UMat(const UMat& m, const Range& rowRange, const Range& colRange=Range::all());
+-    UMat(const UMat& m, const Rect& roi);
+-    UMat(const UMat& m, const Range* ranges);
+-    UMat(const UMat& m, const std::vector<Range>& ranges);
+-
+-    // FIXIT copyData=false is not implemented, drop this in favor of cv::Mat (OpenCV 5.0)
+-    //! builds matrix from std::vector with or without copying the data
+-    template<typename _Tp> explicit UMat(const std::vector<_Tp>& vec, bool copyData=false);
+-
+-    //! destructor - calls release()
+-    ~UMat();
+-    //! assignment operators
+-    UMat& operator = (const UMat& m);
+-
+-    Mat getMat(AccessFlag flags) const;
+-
+-    //! returns a new matrix header for the specified row
+-    UMat row(int y) const;
+-    //! returns a new matrix header for the specified column
+-    UMat col(int x) const;
+-    //! ... for the specified row span
+-    UMat rowRange(int startrow, int endrow) const;
+-    UMat rowRange(const Range& r) const;
+-    //! ... for the specified column span
+-    UMat colRange(int startcol, int endcol) const;
+-    UMat colRange(const Range& r) const;
+-    //! ... for the specified diagonal
+-    //! (d=0 - the main diagonal,
+-    //!  >0 - a diagonal from the upper half,
+-    //!  <0 - a diagonal from the lower half)
+-    UMat diag(int d=0) const;
+-    //! constructs a square diagonal matrix which main diagonal is vector "d"
+-    CV_NODISCARD_STD static UMat diag(const UMat& d, UMatUsageFlags usageFlags /*= USAGE_DEFAULT*/);
+-    CV_NODISCARD_STD static UMat diag(const UMat& d) { return diag(d, USAGE_DEFAULT); }  // OpenCV 5.0: remove abi compatibility overload
+-
+-    //! returns deep copy of the matrix, i.e. the data is copied
+-    CV_NODISCARD_STD UMat clone() const;
+-    //! copies the matrix content to "m".
+-    // It calls m.create(this->size(), this->type()).
+-    void copyTo( OutputArray m ) const;
+-    //! copies those matrix elements to "m" that are marked with non-zero mask elements.
+-    void copyTo( OutputArray m, InputArray mask ) const;
+-    //! converts matrix to another datatype with optional scaling. See cvConvertScale.
+-    void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
+-
+-    void assignTo( UMat& m, int type=-1 ) const;
+-
+-    //! sets every matrix element to s
+-    UMat& operator = (const Scalar& s);
+-    //! sets some of the matrix elements to s, according to the mask
+-    UMat& setTo(InputArray value, InputArray mask=noArray());
+-    //! creates alternative matrix header for the same data, with different
+-    // number of channels and/or different number of rows. see cvReshape.
+-    UMat reshape(int cn, int rows=0) const;
+-    UMat reshape(int cn, int newndims, const int* newsz) const;
+-
+-    //! matrix transposition by means of matrix expressions
+-    UMat t() const;
+-    //! matrix inversion by means of matrix expressions
+-    UMat inv(int method=DECOMP_LU) const;
+-    //! per-element matrix multiplication by means of matrix expressions
+-    UMat mul(InputArray m, double scale=1) const;
+-
+-    //! computes dot-product
+-    double dot(InputArray m) const;
+-
+-    //! Matlab-style matrix initialization
+-    CV_NODISCARD_STD static UMat zeros(int rows, int cols, int type, UMatUsageFlags usageFlags /*= USAGE_DEFAULT*/);
+-    CV_NODISCARD_STD static UMat zeros(Size size, int type, UMatUsageFlags usageFlags /*= USAGE_DEFAULT*/);
+-    CV_NODISCARD_STD static UMat zeros(int ndims, const int* sz, int type, UMatUsageFlags usageFlags /*= USAGE_DEFAULT*/);
+-    CV_NODISCARD_STD static UMat zeros(int rows, int cols, int type) { return zeros(rows, cols, type, USAGE_DEFAULT); }  // OpenCV 5.0: remove abi compatibility overload
+-    CV_NODISCARD_STD static UMat zeros(Size size, int type) { return zeros(size, type, USAGE_DEFAULT); }  // OpenCV 5.0: remove abi compatibility overload
+-    CV_NODISCARD_STD static UMat zeros(int ndims, const int* sz, int type) { return zeros(ndims, sz, type, USAGE_DEFAULT); }  // OpenCV 5.0: remove abi compatibility overload
+-    CV_NODISCARD_STD static UMat ones(int rows, int cols, int type, UMatUsageFlags usageFlags /*= USAGE_DEFAULT*/);
+-    CV_NODISCARD_STD static UMat ones(Size size, int type, UMatUsageFlags usageFlags /*= USAGE_DEFAULT*/);
+-    CV_NODISCARD_STD static UMat ones(int ndims, const int* sz, int type, UMatUsageFlags usageFlags /*= USAGE_DEFAULT*/);
+-    CV_NODISCARD_STD static UMat ones(int rows, int cols, int type) { return ones(rows, cols, type, USAGE_DEFAULT); }  // OpenCV 5.0: remove abi compatibility overload
+-    CV_NODISCARD_STD static UMat ones(Size size, int type) { return ones(size, type, USAGE_DEFAULT); }  // OpenCV 5.0: remove abi compatibility overload
+-    CV_NODISCARD_STD static UMat ones(int ndims, const int* sz, int type) { return ones(ndims, sz, type, USAGE_DEFAULT); }  // OpenCV 5.0: remove abi compatibility overload
+-    CV_NODISCARD_STD static UMat eye(int rows, int cols, int type, UMatUsageFlags usageFlags /*= USAGE_DEFAULT*/);
+-    CV_NODISCARD_STD static UMat eye(Size size, int type, UMatUsageFlags usageFlags /*= USAGE_DEFAULT*/);
+-    CV_NODISCARD_STD static UMat eye(int rows, int cols, int type) { return eye(rows, cols, type, USAGE_DEFAULT); }  // OpenCV 5.0: remove abi compatibility overload
+-    CV_NODISCARD_STD static UMat eye(Size size, int type) { return eye(size, type, USAGE_DEFAULT); }  // OpenCV 5.0: remove abi compatibility overload
+-
+-    //! allocates new matrix data unless the matrix already has specified size and type.
+-    // previous data is unreferenced if needed.
+-    void create(int rows, int cols, int type, UMatUsageFlags usageFlags = USAGE_DEFAULT);
+-    void create(Size size, int type, UMatUsageFlags usageFlags = USAGE_DEFAULT);
+-    void create(int ndims, const int* sizes, int type, UMatUsageFlags usageFlags = USAGE_DEFAULT);
+-    void create(const std::vector<int>& sizes, int type, UMatUsageFlags usageFlags = USAGE_DEFAULT);
+-
+-    //! increases the reference counter; use with care to avoid memleaks
+-    void addref();
+-    //! decreases reference counter;
+-    // deallocates the data when reference counter reaches 0.
+-    void release();
+-
+-    //! deallocates the matrix data
+-    void deallocate();
+-    //! internal use function; properly re-allocates _size, _step arrays
+-    void copySize(const UMat& m);
+-
+-    //! locates matrix header within a parent matrix. See below
+-    void locateROI( Size& wholeSize, Point& ofs ) const;
+-    //! moves/resizes the current matrix ROI inside the parent matrix.
+-    UMat& adjustROI( int dtop, int dbottom, int dleft, int dright );
+-    //! extracts a rectangular sub-matrix
+-    // (this is a generalized form of row, rowRange etc.)
+-    UMat operator()( Range rowRange, Range colRange ) const;
+-    UMat operator()( const Rect& roi ) const;
+-    UMat operator()( const Range* ranges ) const;
+-    UMat operator()(const std::vector<Range>& ranges) const;
+-
+-    //! returns true iff the matrix data is continuous
+-    // (i.e. when there are no gaps between successive rows).
+-    // similar to CV_IS_MAT_CONT(cvmat->type)
+-    bool isContinuous() const;
+-
+-    //! returns true if the matrix is a submatrix of another matrix
+-    bool isSubmatrix() const;
+-
+-    //! returns element size in bytes,
+-    // similar to CV_ELEM_SIZE(cvmat->type)
+-    size_t elemSize() const;
+-    //! returns the size of element channel in bytes.
+-    size_t elemSize1() const;
+-    //! returns element type, similar to CV_MAT_TYPE(cvmat->type)
+-    int type() const;
+-    //! returns element type, similar to CV_MAT_DEPTH(cvmat->type)
+-    int depth() const;
+-    //! returns element type, similar to CV_MAT_CN(cvmat->type)
+-    int channels() const;
+-    //! returns step/elemSize1()
+-    size_t step1(int i=0) const;
+-    //! returns true if matrix data is NULL
+-    bool empty() const;
+-    //! returns the total number of matrix elements
+-    size_t total() const;
+-
+-    //! returns N if the matrix is 1-channel (N x ptdim) or ptdim-channel (1 x N) or (N x 1); negative number otherwise
+-    int checkVector(int elemChannels, int depth=-1, bool requireContinuous=true) const;
+-
+-    UMat(UMat&& m);
+-    UMat& operator = (UMat&& m);
+-
+-    /*! Returns the OpenCL buffer handle on which UMat operates on.
+-        The UMat instance should be kept alive during the use of the handle to prevent the buffer to be
+-        returned to the OpenCV buffer pool.
+-     */
+-    void* handle(AccessFlag accessFlags) const;
+-    void ndoffset(size_t* ofs) const;
+-
+-    enum { MAGIC_VAL  = 0x42FF0000, AUTO_STEP = 0, CONTINUOUS_FLAG = CV_MAT_CONT_FLAG, SUBMATRIX_FLAG = CV_SUBMAT_FLAG };
+-    enum { MAGIC_MASK = 0xFFFF0000, TYPE_MASK = 0x00000FFF, DEPTH_MASK = 7 };
+-
+-    /*! includes several bit-fields:
+-         - the magic signature
+-         - continuity flag
+-         - depth
+-         - number of channels
+-     */
+-    int flags;
+-
+-    //! the matrix dimensionality, >= 2
+-    int dims;
+-
+-    //! number of rows in the matrix; -1 when the matrix has more than 2 dimensions
+-    int rows;
+-
+-    //! number of columns in the matrix; -1 when the matrix has more than 2 dimensions
+-    int cols;
+-
+-    //! custom allocator
+-    MatAllocator* allocator;
+-
+-    //! usage flags for allocator; recommend do not set directly, instead set during construct/create/getUMat
+-    UMatUsageFlags usageFlags;
+-
+-    //! and the standard allocator
+-    static MatAllocator* getStdAllocator();
+-
+-    //! internal use method: updates the continuity flag
+-    void updateContinuityFlag();
+-
+-    //! black-box container of UMat data
+-    UMatData* u;
+-
+-    //! offset of the submatrix (or 0)
+-    size_t offset;
+-
+-    //! dimensional size of the matrix; accessible in various formats
+-    MatSize size;
+-
+-    //! number of bytes each matrix element/row/plane/dimension occupies
+-    MatStep step;
+-
+-protected:
+-};
+-
+ 
+ /////////////////////////// multi-dimensional sparse matrix //////////////////////////
+ 
+diff -Nuarp opencv-4.9.0.orig/modules/core/include/opencv2/core/mat.inl.hpp opencv-4.9.0/modules/core/include/opencv2/core/mat.inl.hpp
+--- opencv-4.9.0.orig/modules/core/include/opencv2/core/mat.inl.hpp	2024-02-07 14:07:17.010693213 +0800
++++ opencv-4.9.0/modules/core/include/opencv2/core/mat.inl.hpp	2024-02-07 14:31:17.891579789 +0800
+@@ -102,8 +102,6 @@ inline _InputArray::_InputArray() { init
+ inline _InputArray::_InputArray(int _flags, void* _obj) { init(_flags, _obj); }
+ inline _InputArray::_InputArray(const Mat& m) { init(MAT+ACCESS_READ, &m); }
+ inline _InputArray::_InputArray(const std::vector<Mat>& vec) { init(STD_VECTOR_MAT+ACCESS_READ, &vec); }
+-inline _InputArray::_InputArray(const UMat& m) { init(UMAT+ACCESS_READ, &m); }
+-inline _InputArray::_InputArray(const std::vector<UMat>& vec) { init(STD_VECTOR_UMAT+ACCESS_READ, &vec); }
+ 
+ template<typename _Tp> inline
+ _InputArray::_InputArray(const std::vector<_Tp>& vec)
+@@ -144,18 +142,6 @@ _InputArray::_InputArray(const Mat_<_Tp>
+ inline _InputArray::_InputArray(const double& val)
+ { init(FIXED_TYPE + FIXED_SIZE + MATX + CV_64F + ACCESS_READ, &val, Size(1,1)); }
+ 
+-inline _InputArray::_InputArray(const cuda::GpuMat& d_mat)
+-{ init(CUDA_GPU_MAT + ACCESS_READ, &d_mat); }
+-
+-inline _InputArray::_InputArray(const std::vector<cuda::GpuMat>& d_mat)
+-{	init(STD_VECTOR_CUDA_GPU_MAT + ACCESS_READ, &d_mat);}
+-
+-inline _InputArray::_InputArray(const ogl::Buffer& buf)
+-{ init(OPENGL_BUFFER + ACCESS_READ, &buf); }
+-
+-inline _InputArray::_InputArray(const cuda::HostMem& cuda_mem)
+-{ init(CUDA_HOST_MEM + ACCESS_READ, &cuda_mem); }
+-
+ template<typename _Tp> inline
+ _InputArray _InputArray::rawIn(const std::vector<_Tp>& vec)
+ {
+@@ -185,15 +171,11 @@ inline Mat _InputArray::getMat(int i) co
+ }
+ 
+ inline bool _InputArray::isMat() const { return kind() == _InputArray::MAT; }
+-inline bool _InputArray::isUMat() const  { return kind() == _InputArray::UMAT; }
+ inline bool _InputArray::isMatVector() const { return kind() == _InputArray::STD_VECTOR_MAT; }
+-inline bool _InputArray::isUMatVector() const  { return kind() == _InputArray::STD_VECTOR_UMAT; }
+ inline bool _InputArray::isMatx() const { return kind() == _InputArray::MATX; }
+ inline bool _InputArray::isVector() const { return kind() == _InputArray::STD_VECTOR ||
+                                                    kind() == _InputArray::STD_BOOL_VECTOR ||
+                                                    (kind() == _InputArray::MATX && (sz.width <= 1 || sz.height <= 1)); }
+-inline bool _InputArray::isGpuMat() const { return kind() == _InputArray::CUDA_GPU_MAT; }
+-inline bool _InputArray::isGpuMatVector() const { return kind() == _InputArray::STD_VECTOR_CUDA_GPU_MAT; }
+ 
+ ////////////////////////////////////////////////////////////////////////////////////////
+ 
+@@ -201,8 +183,6 @@ inline _OutputArray::_OutputArray() { in
+ inline _OutputArray::_OutputArray(int _flags, void* _obj) { init(_flags + ACCESS_WRITE, _obj); }
+ inline _OutputArray::_OutputArray(Mat& m) { init(MAT+ACCESS_WRITE, &m); }
+ inline _OutputArray::_OutputArray(std::vector<Mat>& vec) { init(STD_VECTOR_MAT + ACCESS_WRITE, &vec); }
+-inline _OutputArray::_OutputArray(UMat& m) { init(UMAT + ACCESS_WRITE, &m); }
+-inline _OutputArray::_OutputArray(std::vector<UMat>& vec) { init(STD_VECTOR_UMAT + ACCESS_WRITE, &vec); }
+ 
+ template<typename _Tp> inline
+ _OutputArray::_OutputArray(std::vector<_Tp>& vec)
+@@ -268,40 +248,12 @@ template<typename _Tp> inline
+ _OutputArray::_OutputArray(const _Tp* vec, int n)
+ { init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_WRITE, vec, Size(n, 1)); }
+ 
+-inline _OutputArray::_OutputArray(cuda::GpuMat& d_mat)
+-{ init(CUDA_GPU_MAT + ACCESS_WRITE, &d_mat); }
+-
+-inline _OutputArray::_OutputArray(std::vector<cuda::GpuMat>& d_mat)
+-{	init(STD_VECTOR_CUDA_GPU_MAT + ACCESS_WRITE, &d_mat);}
+-
+-inline _OutputArray::_OutputArray(ogl::Buffer& buf)
+-{ init(OPENGL_BUFFER + ACCESS_WRITE, &buf); }
+-
+-inline _OutputArray::_OutputArray(cuda::HostMem& cuda_mem)
+-{ init(CUDA_HOST_MEM + ACCESS_WRITE, &cuda_mem); }
+-
+ inline _OutputArray::_OutputArray(const Mat& m)
+ { init(FIXED_TYPE + FIXED_SIZE + MAT + ACCESS_WRITE, &m); }
+ 
+ inline _OutputArray::_OutputArray(const std::vector<Mat>& vec)
+ { init(FIXED_SIZE + STD_VECTOR_MAT + ACCESS_WRITE, &vec); }
+ 
+-inline _OutputArray::_OutputArray(const UMat& m)
+-{ init(FIXED_TYPE + FIXED_SIZE + UMAT + ACCESS_WRITE, &m); }
+-
+-inline _OutputArray::_OutputArray(const std::vector<UMat>& vec)
+-{ init(FIXED_SIZE + STD_VECTOR_UMAT + ACCESS_WRITE, &vec); }
+-
+-inline _OutputArray::_OutputArray(const cuda::GpuMat& d_mat)
+-{ init(FIXED_TYPE + FIXED_SIZE + CUDA_GPU_MAT + ACCESS_WRITE, &d_mat); }
+-
+-
+-inline _OutputArray::_OutputArray(const ogl::Buffer& buf)
+-{ init(FIXED_TYPE + FIXED_SIZE + OPENGL_BUFFER + ACCESS_WRITE, &buf); }
+-
+-inline _OutputArray::_OutputArray(const cuda::HostMem& cuda_mem)
+-{ init(FIXED_TYPE + FIXED_SIZE + CUDA_HOST_MEM + ACCESS_WRITE, &cuda_mem); }
+-
+ template<typename _Tp> inline
+ _OutputArray _OutputArray::rawOut(std::vector<_Tp>& vec)
+ {
+@@ -327,8 +279,6 @@ inline _InputOutputArray::_InputOutputAr
+ inline _InputOutputArray::_InputOutputArray(int _flags, void* _obj) { init(_flags+ACCESS_RW, _obj); }
+ inline _InputOutputArray::_InputOutputArray(Mat& m) { init(MAT+ACCESS_RW, &m); }
+ inline _InputOutputArray::_InputOutputArray(std::vector<Mat>& vec) { init(STD_VECTOR_MAT+ACCESS_RW, &vec); }
+-inline _InputOutputArray::_InputOutputArray(UMat& m) { init(UMAT+ACCESS_RW, &m); }
+-inline _InputOutputArray::_InputOutputArray(std::vector<UMat>& vec) { init(STD_VECTOR_UMAT+ACCESS_RW, &vec); }
+ 
+ template<typename _Tp> inline
+ _InputOutputArray::_InputOutputArray(std::vector<_Tp>& vec)
+@@ -394,42 +344,12 @@ template<typename _Tp> inline
+ _InputOutputArray::_InputOutputArray(const _Tp* vec, int n)
+ { init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_RW, vec, Size(n, 1)); }
+ 
+-inline _InputOutputArray::_InputOutputArray(cuda::GpuMat& d_mat)
+-{ init(CUDA_GPU_MAT + ACCESS_RW, &d_mat); }
+-
+-inline _InputOutputArray::_InputOutputArray(ogl::Buffer& buf)
+-{ init(OPENGL_BUFFER + ACCESS_RW, &buf); }
+-
+-inline _InputOutputArray::_InputOutputArray(cuda::HostMem& cuda_mem)
+-{ init(CUDA_HOST_MEM + ACCESS_RW, &cuda_mem); }
+-
+ inline _InputOutputArray::_InputOutputArray(const Mat& m)
+ { init(FIXED_TYPE + FIXED_SIZE + MAT + ACCESS_RW, &m); }
+ 
+ inline _InputOutputArray::_InputOutputArray(const std::vector<Mat>& vec)
+ { init(FIXED_SIZE + STD_VECTOR_MAT + ACCESS_RW, &vec); }
+ 
+-inline _InputOutputArray::_InputOutputArray(const UMat& m)
+-{ init(FIXED_TYPE + FIXED_SIZE + UMAT + ACCESS_RW, &m); }
+-
+-inline _InputOutputArray::_InputOutputArray(const std::vector<UMat>& vec)
+-{ init(FIXED_SIZE + STD_VECTOR_UMAT + ACCESS_RW, &vec); }
+-
+-inline _InputOutputArray::_InputOutputArray(const cuda::GpuMat& d_mat)
+-{ init(FIXED_TYPE + FIXED_SIZE + CUDA_GPU_MAT + ACCESS_RW, &d_mat); }
+-
+-inline _InputOutputArray::_InputOutputArray(const std::vector<cuda::GpuMat>& d_mat)
+-{ init(FIXED_TYPE + FIXED_SIZE + STD_VECTOR_CUDA_GPU_MAT + ACCESS_RW, &d_mat);}
+-
+-template<> inline _InputOutputArray::_InputOutputArray(std::vector<cuda::GpuMat>& d_mat)
+-{ init(FIXED_TYPE + FIXED_SIZE + STD_VECTOR_CUDA_GPU_MAT + ACCESS_RW, &d_mat);}
+-
+-inline _InputOutputArray::_InputOutputArray(const ogl::Buffer& buf)
+-{ init(FIXED_TYPE + FIXED_SIZE + OPENGL_BUFFER + ACCESS_RW, &buf); }
+-
+-inline _InputOutputArray::_InputOutputArray(const cuda::HostMem& cuda_mem)
+-{ init(FIXED_TYPE + FIXED_SIZE + CUDA_HOST_MEM + ACCESS_RW, &cuda_mem); }
+-
+ template<typename _Tp> inline
+ _InputOutputArray _InputOutputArray::rawInOut(std::vector<_Tp>& vec)
+ {
+@@ -3246,132 +3166,6 @@ const Mat_<_Tp>& operator /= (const Mat_
+ 
+ //////////////////////////////// UMat ////////////////////////////////
+ 
+-template<typename _Tp> inline
+-UMat::UMat(const std::vector<_Tp>& vec, bool copyData)
+-: flags(MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows((int)vec.size()),
+-cols(1), allocator(0), usageFlags(USAGE_DEFAULT), u(0), offset(0), size(&rows)
+-{
+-    if(vec.empty())
+-        return;
+-    if( !copyData )
+-    {
+-        // !!!TODO!!!
+-        CV_Error(Error::StsNotImplemented, "");
+-    }
+-    else
+-        Mat((int)vec.size(), 1, traits::Type<_Tp>::value, (uchar*)&vec[0]).copyTo(*this);
+-}
+-
+-inline
+-UMat UMat::row(int y) const
+-{
+-    return UMat(*this, Range(y, y + 1), Range::all());
+-}
+-
+-inline
+-UMat UMat::col(int x) const
+-{
+-    return UMat(*this, Range::all(), Range(x, x + 1));
+-}
+-
+-inline
+-UMat UMat::rowRange(int startrow, int endrow) const
+-{
+-    return UMat(*this, Range(startrow, endrow), Range::all());
+-}
+-
+-inline
+-UMat UMat::rowRange(const Range& r) const
+-{
+-    return UMat(*this, r, Range::all());
+-}
+-
+-inline
+-UMat UMat::colRange(int startcol, int endcol) const
+-{
+-    return UMat(*this, Range::all(), Range(startcol, endcol));
+-}
+-
+-inline
+-UMat UMat::colRange(const Range& r) const
+-{
+-    return UMat(*this, Range::all(), r);
+-}
+-
+-inline
+-UMat UMat::operator()( Range _rowRange, Range _colRange ) const
+-{
+-    return UMat(*this, _rowRange, _colRange);
+-}
+-
+-inline
+-UMat UMat::operator()( const Rect& roi ) const
+-{
+-    return UMat(*this, roi);
+-}
+-
+-inline
+-UMat UMat::operator()(const Range* ranges) const
+-{
+-    return UMat(*this, ranges);
+-}
+-
+-inline
+-UMat UMat::operator()(const std::vector<Range>& ranges) const
+-{
+-    return UMat(*this, ranges);
+-}
+-
+-inline
+-bool UMat::isContinuous() const
+-{
+-    return (flags & CONTINUOUS_FLAG) != 0;
+-}
+-
+-inline
+-bool UMat::isSubmatrix() const
+-{
+-    return (flags & SUBMATRIX_FLAG) != 0;
+-}
+-
+-inline
+-size_t UMat::elemSize() const
+-{
+-    size_t res = dims > 0 ? step.p[dims - 1] : 0;
+-    CV_DbgAssert(res != 0);
+-    return res;
+-}
+-
+-inline
+-size_t UMat::elemSize1() const
+-{
+-    return CV_ELEM_SIZE1(flags);
+-}
+-
+-inline
+-int UMat::type() const
+-{
+-    return CV_MAT_TYPE(flags);
+-}
+-
+-inline
+-int UMat::depth() const
+-{
+-    return CV_MAT_DEPTH(flags);
+-}
+-
+-inline
+-int UMat::channels() const
+-{
+-    return CV_MAT_CN(flags);
+-}
+-
+-inline
+-size_t UMat::step1(int i) const
+-{
+-    return step.p[i] / elemSize1();
+-}
+-
+ 
+ inline bool UMatData::hostCopyObsolete() const { return (flags & HOST_COPY_OBSOLETE) != 0; }
+ inline bool UMatData::deviceCopyObsolete() const { return (flags & DEVICE_COPY_OBSOLETE) != 0; }
+diff -Nuarp opencv-4.9.0.orig/modules/core/include/opencv2/core/operations.hpp opencv-4.9.0/modules/core/include/opencv2/core/operations.hpp
+--- opencv-4.9.0.orig/modules/core/include/opencv2/core/operations.hpp	2024-02-07 14:07:16.949693218 +0800
++++ opencv-4.9.0/modules/core/include/opencv2/core/operations.hpp	2024-02-07 14:30:34.802583181 +0800
+@@ -450,12 +450,6 @@ int print(const Mat& mtx, FILE* stream =
+     return print(Formatter::get()->format(mtx), stream);
+ }
+ 
+-static inline
+-int print(const UMat& mtx, FILE* stream = stdout)
+-{
+-    return print(Formatter::get()->format(mtx.getMat(ACCESS_READ)), stream);
+-}
+-
+ template<typename _Tp> static inline
+ int print(const std::vector<Point_<_Tp> >& vec, FILE* stream = stdout)
+ {
+diff -Nuarp opencv-4.9.0.orig/modules/core/include/opencv2/core.hpp opencv-4.9.0/modules/core/include/opencv2/core.hpp
+--- opencv-4.9.0.orig/modules/core/include/opencv2/core.hpp	2024-02-07 14:07:17.016693213 +0800
++++ opencv-4.9.0/modules/core/include/opencv2/core.hpp	2024-02-07 14:31:37.166578271 +0800
+@@ -239,8 +239,6 @@ enum ReduceTypes { REDUCE_SUM = 0, //!<
+ /** @brief Swaps two matrices
+ */
+ CV_EXPORTS void swap(Mat& a, Mat& b);
+-/** @overload */
+-CV_EXPORTS void swap( UMat& a, UMat& b );
+ 
+ //! @} core
+ 
+@@ -1511,10 +1509,6 @@ CV_EXPORTS_W void min(InputArray src1, I
+ needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
+ */
+ CV_EXPORTS void min(const Mat& src1, const Mat& src2, Mat& dst);
+-/** @overload
+-needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
+-*/
+-CV_EXPORTS void min(const UMat& src1, const UMat& src2, UMat& dst);
+ 
+ /** @brief Calculates per-element maximum of two arrays or an array and a scalar.
+ 
+@@ -1532,10 +1526,6 @@ CV_EXPORTS_W void max(InputArray src1, I
+ needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
+ */
+ CV_EXPORTS void max(const Mat& src1, const Mat& src2, Mat& dst);
+-/** @overload
+-needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
+-*/
+-CV_EXPORTS void max(const UMat& src1, const UMat& src2, UMat& dst);
+ 
+ /** @brief Calculates a square root of array elements.
+ 
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/arithm.cpp opencv-4.9.0/modules/core/src/arithm.cpp
+--- opencv-4.9.0.orig/modules/core/src/arithm.cpp	2024-02-07 14:07:16.859693225 +0800
++++ opencv-4.9.0/modules/core/src/arithm.cpp	2024-02-07 14:39:04.615543049 +0800
+@@ -418,22 +418,6 @@ void cv::min(const Mat& src1, const Mat&
+     binary_op(src1, src2, _dst, noArray(), getMinTab(), false, OCL_OP_MIN );
+ }
+ 
+-void cv::max(const UMat& src1, const UMat& src2, UMat& dst)
+-{
+-    CV_INSTRUMENT_REGION();
+-
+-    OutputArray _dst(dst);
+-    binary_op(src1, src2, _dst, noArray(), getMaxTab(), false, OCL_OP_MAX );
+-}
+-
+-void cv::min(const UMat& src1, const UMat& src2, UMat& dst)
+-{
+-    CV_INSTRUMENT_REGION();
+-
+-    OutputArray _dst(dst);
+-    binary_op(src1, src2, _dst, noArray(), getMinTab(), false, OCL_OP_MIN );
+-}
+-
+ 
+ /****************************************************************************************\
+ *                                      add/subtract                                      *
+@@ -1007,13 +991,6 @@ void divide(double scale, InputArray src
+     arithm_op(src2, src2, dst, noArray(), dtype, getRecipTab(), true, &scale, OCL_OP_RECIP_SCALE);
+ }
+ 
+-UMat UMat::mul(InputArray m, double scale) const
+-{
+-    UMat dst;
+-    multiply(*this, m, dst, scale);
+-    return dst;
+-}
+-
+ /****************************************************************************************\
+ *                                      addWeighted                                       *
+ \****************************************************************************************/
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/async.cpp opencv-4.9.0/modules/core/src/async.cpp
+--- opencv-4.9.0.orig/modules/core/src/async.cpp	2024-02-07 14:07:16.875693224 +0800
++++ opencv-4.9.0/modules/core/src/async.cpp	2024-02-07 14:38:51.053544116 +0800
+@@ -47,7 +47,6 @@ struct AsyncArray::Impl
+     mutable bool has_result; // Mat, UMat or exception
+ 
+     mutable cv::Ptr<Mat> result_mat;
+-    mutable cv::Ptr<UMat> result_umat;
+ 
+ 
+     bool has_exception;
+@@ -102,13 +101,6 @@ struct AsyncArray::Impl
+                 result_is_fetched = true;
+                 return true;
+             }
+-            if (!result_umat.empty())
+-            {
+-                dst.move(*result_umat.get());
+-                result_umat.release();
+-                result_is_fetched = true;
+-                return true;
+-            }
+ #if CV__EXCEPTION_PTR
+             if (has_exception && exception)
+             {
+@@ -181,13 +173,6 @@ struct AsyncArray::Impl
+         cv::AutoLock lock(mtx);
+ #endif
+         CV_Assert(!has_result);
+-        int k = value.kind();
+-        if (k == _InputArray::UMAT)
+-        {
+-            result_umat = makePtr<UMat>();
+-            value.copyTo(*result_umat.get());
+-        }
+-        else
+         {
+             result_mat = makePtr<Mat>();
+             value.copyTo(*result_mat.get());
+@@ -257,7 +242,6 @@ struct AsyncArray::Impl
+     mutable bool has_result; // Mat, UMat or exception
+ 
+     mutable cv::Ptr<Mat> result_mat;
+-    mutable cv::Ptr<UMat> result_umat;
+ 
+ 
+     bool has_exception;
+@@ -303,13 +287,6 @@ struct AsyncArray::Impl
+             result_is_fetched = true;
+             return true;
+         }
+-        if (!result_umat.empty())
+-        {
+-            dst.move(*result_umat.get());
+-            result_umat.release();
+-            result_is_fetched = true;
+-            return true;
+-        }
+ #if CV__EXCEPTION_PTR
+         if (has_exception && exception)
+         {
+@@ -360,13 +337,6 @@ struct AsyncArray::Impl
+         if (future_is_returned && refcount_future == 0)
+             CV_Error(Error::StsError, "Associated AsyncArray has been destroyed");
+         CV_Assert(!has_result);
+-        int k = value.kind();
+-        if (k == _InputArray::UMAT)
+-        {
+-            result_umat = makePtr<UMat>();
+-            value.copyTo(*result_umat.get());
+-        }
+-        else
+         {
+             result_mat = makePtr<Mat>();
+             value.copyTo(*result_mat.get());
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/channels.cpp opencv-4.9.0/modules/core/src/channels.cpp
+--- opencv-4.9.0.orig/modules/core/src/channels.cpp	2024-02-07 14:07:16.905693221 +0800
++++ opencv-4.9.0/modules/core/src/channels.cpp	2024-02-07 14:34:12.787566021 +0800
+@@ -281,12 +281,10 @@ void cv::mixChannels(InputArrayOfArrays
+ 
+     bool src_is_mat = src.kind() != _InputArray::STD_VECTOR_MAT &&
+             src.kind() != _InputArray::STD_ARRAY_MAT &&
+-            src.kind() != _InputArray::STD_VECTOR_VECTOR &&
+-            src.kind() != _InputArray::STD_VECTOR_UMAT;
++            src.kind() != _InputArray::STD_VECTOR_VECTOR;
+     bool dst_is_mat = dst.kind() != _InputArray::STD_VECTOR_MAT &&
+             dst.kind() != _InputArray::STD_ARRAY_MAT &&
+-            dst.kind() != _InputArray::STD_VECTOR_VECTOR &&
+-            dst.kind() != _InputArray::STD_VECTOR_UMAT;
++            dst.kind() != _InputArray::STD_VECTOR_VECTOR;
+     int i;
+     int nsrc = src_is_mat ? 1 : (int)src.total();
+     int ndst = dst_is_mat ? 1 : (int)dst.total();
+@@ -314,12 +312,10 @@ void cv::mixChannels(InputArrayOfArrays
+ 
+     bool src_is_mat = src.kind() != _InputArray::STD_VECTOR_MAT &&
+             src.kind() != _InputArray::STD_ARRAY_MAT &&
+-            src.kind() != _InputArray::STD_VECTOR_VECTOR &&
+-            src.kind() != _InputArray::STD_VECTOR_UMAT;
++            src.kind() != _InputArray::STD_VECTOR_VECTOR;
+     bool dst_is_mat = dst.kind() != _InputArray::STD_VECTOR_MAT &&
+             dst.kind() != _InputArray::STD_ARRAY_MAT &&
+-            dst.kind() != _InputArray::STD_VECTOR_VECTOR &&
+-            dst.kind() != _InputArray::STD_VECTOR_UMAT;
++            dst.kind() != _InputArray::STD_VECTOR_VECTOR;
+     int i;
+     int nsrc = src_is_mat ? 1 : (int)src.total();
+     int ndst = dst_is_mat ? 1 : (int)dst.total();
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/copy.cpp opencv-4.9.0/modules/core/src/copy.cpp
+--- opencv-4.9.0.orig/modules/core/src/copy.cpp	2024-02-07 14:07:16.898693222 +0800
++++ opencv-4.9.0/modules/core/src/copy.cpp	2024-02-07 14:33:48.119567963 +0800
+@@ -327,22 +327,6 @@ void Mat::copyTo( OutputArray _dst ) con
+         return;
+     }
+ 
+-    if( _dst.isUMat() )
+-    {
+-        _dst.create( dims, size.p, type() );
+-        UMat dst = _dst.getUMat();
+-        CV_Assert(dst.u != NULL);
+-        size_t i, sz[CV_MAX_DIM] = {0}, dstofs[CV_MAX_DIM], esz = elemSize();
+-        CV_Assert(dims > 0 && dims < CV_MAX_DIM);
+-        for( i = 0; i < (size_t)dims; i++ )
+-            sz[i] = size.p[i];
+-        sz[dims-1] *= esz;
+-        dst.ndoffset(dstofs);
+-        dstofs[dims-1] *= esz;
+-        dst.u->currAllocator->upload(dst.u, data, dims, sz, dstofs, dst.step.p, step.p);
+-        return;
+-    }
+-
+     if( dims <= 2 )
+     {
+         _dst.create( rows, cols, type() );
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/dxt.cpp opencv-4.9.0/modules/core/src/dxt.cpp
+--- opencv-4.9.0.orig/modules/core/src/dxt.cpp	2024-02-07 14:07:16.912693221 +0800
++++ opencv-4.9.0/modules/core/src/dxt.cpp	2024-02-07 14:07:45.658690958 +0800
+@@ -40,8 +40,6 @@
+ //M*/
+ 
+ #include "precomp.hpp"
+-#include "opencv2/core/opencl/runtime/opencl_clfft.hpp"
+-#include "opencv2/core/opencl/runtime/opencl_core.hpp"
+ #include <map>
+ 
+ namespace cv
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/lapack.cpp opencv-4.9.0/modules/core/src/lapack.cpp
+--- opencv-4.9.0.orig/modules/core/src/lapack.cpp	2024-02-07 14:07:16.884693223 +0800
++++ opencv-4.9.0/modules/core/src/lapack.cpp	2024-02-07 14:38:01.969547980 +0800
+@@ -1017,13 +1017,6 @@ double invert( InputArray _src, OutputAr
+     return result;
+ }
+ 
+-UMat UMat::inv(int method) const
+-{
+-    UMat m;
+-    invert(*this, m, method);
+-    return m;
+-}
+-
+ 
+ /****************************************************************************************\
+ *                              Solving a linear system                                   *
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/matmul.dispatch.cpp opencv-4.9.0/modules/core/src/matmul.dispatch.cpp
+--- opencv-4.9.0.orig/modules/core/src/matmul.dispatch.cpp	2024-02-07 14:07:16.887693223 +0800
++++ opencv-4.9.0/modules/core/src/matmul.dispatch.cpp	2024-02-07 14:39:40.435540229 +0800
+@@ -44,10 +44,6 @@
+ #include "precomp.hpp"
+ #include <opencv2/core/utils/logger.hpp>
+ 
+-#include "opencv2/core/opencl/runtime/opencl_clblas.hpp"
+-#include "opencv2/core/opencl/runtime/opencl_core.hpp"
+-#include "intel_gpu_gemm.inl.hpp"
+-
+ #include "matmul.simd.hpp"
+ #include "matmul.simd_declarations.hpp" // defines CV_CPU_DISPATCH_MODES_ALL=AVX2,...,BASELINE based on CMakeLists.txt content
+ 
+@@ -1072,20 +1068,6 @@ static bool ocl_dot( InputArray _src1, I
+ 
+ #endif
+ 
+-double UMat::dot(InputArray m) const
+-{
+-    CV_INSTRUMENT_REGION();
+-
+-    CV_Assert(m.sameSize(*this) && m.type() == type());
+-
+-#ifdef HAVE_OPENCL
+-    double r = 0;
+-    CV_OCL_RUN_(dims <= 2, ocl_dot(*this, m, r), r)
+-#endif
+-
+-    return getMat(ACCESS_READ).dot(m);
+-}
+-
+ }  // namespace cv::
+ 
+ 
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/matrix_operations.cpp opencv-4.9.0/modules/core/src/matrix_operations.cpp
+--- opencv-4.9.0.orig/modules/core/src/matrix_operations.cpp	2024-02-07 14:07:16.856693225 +0800
++++ opencv-4.9.0/modules/core/src/matrix_operations.cpp	2024-02-07 14:38:12.138547180 +0800
+@@ -226,22 +226,6 @@ void cv::setIdentity( InputOutputArray _
+ }
+ 
+ 
+-namespace cv {
+-
+-UMat UMat::eye(int rows, int cols, int type, UMatUsageFlags usageFlags)
+-{
+-    return UMat::eye(Size(cols, rows), type, usageFlags);
+-}
+-
+-UMat UMat::eye(Size size, int type, UMatUsageFlags usageFlags)
+-{
+-    UMat m(size, type, usageFlags);
+-    setIdentity(m);
+-    return m;
+-}
+-
+-}  // namespace
+-
+ //////////////////////////////////////////// trace ///////////////////////////////////////////
+ 
+ cv::Scalar cv::trace( InputArray _m )
+@@ -781,11 +765,6 @@ void cv::reduce(InputArray _src, OutputA
+     CV_OCL_RUN(_dst.isUMat(),
+                ocl_reduce(_src, _dst, dim, op, op0, stype, dtype))
+ 
+-    // Fake reference to source. Resolves issue 8693 in case of src == dst.
+-    UMat srcUMat;
+-    if (_src.isUMat())
+-        srcUMat = _src.getUMat();
+-
+     Mat src = _src.getMat();
+     _dst.create(dim == 0 ? 1 : src.rows, dim == 0 ? src.cols : 1, dtype);
+     Mat dst = _dst.getMat(), temp = dst;
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/matrix_transform.cpp opencv-4.9.0/modules/core/src/matrix_transform.cpp
+--- opencv-4.9.0.orig/modules/core/src/matrix_transform.cpp	2024-02-07 14:07:16.924693220 +0800
++++ opencv-4.9.0/modules/core/src/matrix_transform.cpp	2024-02-07 14:39:25.764541384 +0800
+@@ -1103,12 +1103,6 @@ void rotate(InputArray _src, OutputArray
+     CV_Assert(_src.dims() <= 2);
+     int angle;
+ 
+-    if (_dst.isUMat())
+-    {
+-        rotateImpl(_src, _dst, rotateMode);
+-        return;
+-    }
+-
+     Mat src = _src.getMat();
+     int type = src.type();
+     if( src.empty() )
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/matrix_wrap.cpp opencv-4.9.0/modules/core/src/matrix_wrap.cpp
+--- opencv-4.9.0.orig/modules/core/src/matrix_wrap.cpp	2024-02-07 14:07:16.861693225 +0800
++++ opencv-4.9.0/modules/core/src/matrix_wrap.cpp	2024-02-07 14:37:23.612551000 +0800
+@@ -24,14 +24,6 @@ Mat _InputArray::getMat_(int i) const
+         return m->row(i);
+     }
+ 
+-    if( k == UMAT )
+-    {
+-        const UMat* m = (const UMat*)obj;
+-        if( i < 0 )
+-            return m->getMat(accessFlags);
+-        return m->getMat(accessFlags).row(i);
+-    }
+-
+     if (k == MATX)
+     {
+         CV_Assert( i < 0 );
+@@ -91,70 +83,9 @@ Mat _InputArray::getMat_(int i) const
+         return v[i];
+     }
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& v = *(const std::vector<UMat>*)obj;
+-        CV_Assert( 0 <= i && i < (int)v.size() );
+-
+-        return v[i].getMat(accessFlags);
+-    }
+-
+-    if( k == OPENGL_BUFFER )
+-    {
+-        CV_Assert( i < 0 );
+-        CV_Error(cv::Error::StsNotImplemented, "You should explicitly call mapHost/unmapHost methods for ogl::Buffer object");
+-    }
+-
+-    if( k == CUDA_GPU_MAT )
+-    {
+-        CV_Assert( i < 0 );
+-        CV_Error(cv::Error::StsNotImplemented, "You should explicitly call download method for cuda::GpuMat object");
+-    }
+-
+-    if( k == CUDA_HOST_MEM )
+-    {
+-        CV_Assert( i < 0 );
+-
+-        const cuda::HostMem* cuda_mem = (const cuda::HostMem*)obj;
+-
+-        return cuda_mem->createMatHeader();
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+-UMat _InputArray::getUMat(int i) const
+-{
+-    _InputArray::KindFlag k = kind();
+-    AccessFlag accessFlags = flags & ACCESS_MASK;
+-
+-    if( k == UMAT )
+-    {
+-        const UMat* m = (const UMat*)obj;
+-        if( i < 0 )
+-            return *m;
+-        return m->row(i);
+-    }
+-
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& v = *(const std::vector<UMat>*)obj;
+-        CV_Assert( 0 <= i && i < (int)v.size() );
+-
+-        return v[i];
+-    }
+-
+-    if( k == MAT )
+-    {
+-        const Mat* m = (const Mat*)obj;
+-        if( i < 0 )
+-            return m->getUMat(accessFlags);
+-        return m->row(i).getUMat(accessFlags);
+-    }
+-
+-    return getMat(i).getUMat(accessFlags);
+-}
+-
+ void _InputArray::getMatVector(std::vector<Mat>& mv) const
+ {
+     _InputArray::KindFlag k = kind();
+@@ -238,135 +169,9 @@ void _InputArray::getMatVector(std::vect
+         return;
+     }
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& v = *(const std::vector<UMat>*)obj;
+-        size_t n = v.size();
+-        mv.resize(n);
+-
+-        for( size_t i = 0; i < n; i++ )
+-            mv[i] = v[i].getMat(accessFlags);
+-        return;
+-    }
+-
+-    CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+-}
+-
+-void _InputArray::getUMatVector(std::vector<UMat>& umv) const
+-{
+-    _InputArray::KindFlag k = kind();
+-    AccessFlag accessFlags = flags & ACCESS_MASK;
+-
+-    if( k == NONE )
+-    {
+-        umv.clear();
+-        return;
+-    }
+-
+-    if( k == STD_VECTOR_MAT )
+-    {
+-        const std::vector<Mat>& v = *(const std::vector<Mat>*)obj;
+-        size_t n = v.size();
+-        umv.resize(n);
+-
+-        for( size_t i = 0; i < n; i++ )
+-            umv[i] = v[i].getUMat(accessFlags);
+-        return;
+-    }
+-
+-    if( k == STD_ARRAY_MAT )
+-    {
+-        const Mat* v = (const Mat*)obj;
+-        size_t n = sz.height;
+-        umv.resize(n);
+-
+-        for( size_t i = 0; i < n; i++ )
+-            umv[i] = v[i].getUMat(accessFlags);
+-        return;
+-    }
+-
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& v = *(const std::vector<UMat>*)obj;
+-        size_t n = v.size();
+-        umv.resize(n);
+-
+-        for( size_t i = 0; i < n; i++ )
+-            umv[i] = v[i];
+-        return;
+-    }
+-
+-    if( k == UMAT )
+-    {
+-        UMat& v = *(UMat*)obj;
+-        umv.resize(1);
+-        umv[0] = v;
+-        return;
+-    }
+-    if( k == MAT )
+-    {
+-        Mat& v = *(Mat*)obj;
+-        umv.resize(1);
+-        umv[0] = v.getUMat(accessFlags);
+-        return;
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+-cuda::GpuMat _InputArray::getGpuMat() const
+-{
+-#ifdef HAVE_CUDA
+-    _InputArray::KindFlag k = kind();
+-
+-    if (k == CUDA_GPU_MAT)
+-    {
+-        const cuda::GpuMat* d_mat = (const cuda::GpuMat*)obj;
+-        return *d_mat;
+-    }
+-
+-    if (k == CUDA_HOST_MEM)
+-    {
+-        const cuda::HostMem* cuda_mem = (const cuda::HostMem*)obj;
+-        return cuda_mem->createGpuMatHeader();
+-    }
+-
+-    if (k == OPENGL_BUFFER)
+-    {
+-        CV_Error(cv::Error::StsNotImplemented, "You should explicitly call mapDevice/unmapDevice methods for ogl::Buffer object");
+-    }
+-
+-    if (k == NONE)
+-        return cuda::GpuMat();
+-
+-    CV_Error(cv::Error::StsNotImplemented, "getGpuMat is available only for cuda::GpuMat and cuda::HostMem");
+-#else
+-    CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-}
+-void _InputArray::getGpuMatVector(std::vector<cuda::GpuMat>& gpumv) const
+-{
+-#ifdef HAVE_CUDA
+-    _InputArray::KindFlag k = kind();
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-        gpumv = *(std::vector<cuda::GpuMat>*)obj;
+-    }
+-#else
+-    CV_UNUSED(gpumv);
+-    CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-}
+-ogl::Buffer _InputArray::getOGlBuffer() const
+-{
+-    _InputArray::KindFlag k = kind();
+-
+-    CV_Assert(k == OPENGL_BUFFER);
+-
+-    const ogl::Buffer* gl_buf = (const ogl::Buffer*)obj;
+-    return *gl_buf;
+-}
+-
+ _InputArray::KindFlag _InputArray::kind() const
+ {
+     KindFlag k = flags & KIND_MASK;
+@@ -397,12 +202,6 @@ Size _InputArray::size(int i) const
+         return ((const Mat*)obj)->size();
+     }
+ 
+-    if( k == UMAT )
+-    {
+-        CV_Assert( i < 0 );
+-        return ((const UMat*)obj)->size();
+-    }
+-
+     if (k == MATX)
+     {
+         CV_Assert( i < 0 );
+@@ -460,50 +259,6 @@ Size _InputArray::size(int i) const
+         return vv[i].size();
+     }
+ 
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-#ifdef HAVE_CUDA
+-        const std::vector<cuda::GpuMat>& vv = *(const std::vector<cuda::GpuMat>*)obj;
+-        if (i < 0)
+-            return vv.empty() ? Size() : Size((int)vv.size(), 1);
+-        CV_Assert(i < (int)vv.size());
+-        return vv[i].size();
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
+-        if( i < 0 )
+-            return vv.empty() ? Size() : Size((int)vv.size(), 1);
+-        CV_Assert( i < (int)vv.size() );
+-
+-        return vv[i].size();
+-    }
+-
+-    if( k == OPENGL_BUFFER )
+-    {
+-        CV_Assert( i < 0 );
+-        const ogl::Buffer* buf = (const ogl::Buffer*)obj;
+-        return buf->size();
+-    }
+-
+-    if( k == CUDA_GPU_MAT )
+-    {
+-        CV_Assert( i < 0 );
+-        const cuda::GpuMat* d_mat = (const cuda::GpuMat*)obj;
+-        return d_mat->size();
+-    }
+-
+-    if( k == CUDA_HOST_MEM )
+-    {
+-        CV_Assert( i < 0 );
+-        const cuda::HostMem* cuda_mem = (const cuda::HostMem*)obj;
+-        return cuda_mem->size();
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -523,15 +278,6 @@ int _InputArray::sizend(int* arrsz, int
+             for(j = 0; j < d; j++)
+                 arrsz[j] = m.size.p[j];
+     }
+-    else if( k == UMAT )
+-    {
+-        CV_Assert( i < 0 );
+-        const UMat& m = *(const UMat*)obj;
+-        d = m.dims;
+-        if(arrsz)
+-            for(j = 0; j < d; j++)
+-                arrsz[j] = m.size.p[j];
+-    }
+     else if( k == STD_VECTOR_MAT && i >= 0 )
+     {
+         const std::vector<Mat>& vv = *(const std::vector<Mat>*)obj;
+@@ -552,16 +298,6 @@ int _InputArray::sizend(int* arrsz, int
+             for(j = 0; j < d; j++)
+                 arrsz[j] = m.size.p[j];
+     }
+-    else if( k == STD_VECTOR_UMAT && i >= 0 )
+-    {
+-        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
+-        CV_Assert( i < (int)vv.size() );
+-        const UMat& m = vv[i];
+-        d = m.dims;
+-        if(arrsz)
+-            for(j = 0; j < d; j++)
+-                arrsz[j] = m.size.p[j];
+-    }
+     else
+     {
+         CV_CheckLE(dims(i), 2, "Not supported");
+@@ -587,19 +323,6 @@ bool _InputArray::sameSize(const _InputA
+         const Mat* m = ((const Mat*)obj);
+         if( k2 == MAT )
+             return m->size == ((const Mat*)arr.obj)->size;
+-        if( k2 == UMAT )
+-            return m->size == ((const UMat*)arr.obj)->size;
+-        if( m->dims > 2 )
+-            return false;
+-        sz1 = m->size();
+-    }
+-    else if( k1 == UMAT )
+-    {
+-        const UMat* m = ((const UMat*)obj);
+-        if( k2 == MAT )
+-            return m->size == ((const Mat*)arr.obj)->size;
+-        if( k2 == UMAT )
+-            return m->size == ((const UMat*)arr.obj)->size;
+         if( m->dims > 2 )
+             return false;
+         sz1 = m->size();
+@@ -621,12 +344,6 @@ int _InputArray::dims(int i) const
+         return ((const Mat*)obj)->dims;
+     }
+ 
+-    if( k == UMAT )
+-    {
+-        CV_Assert( i < 0 );
+-        return ((const UMat*)obj)->dims;
+-    }
+-
+     if (k == MATX)
+     {
+         CV_Assert( i < 0 );
+@@ -671,34 +388,6 @@ int _InputArray::dims(int i) const
+         return vv[i].dims;
+     }
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
+-        if( i < 0 )
+-            return 1;
+-        CV_Assert( i < (int)vv.size() );
+-
+-        return vv[i].dims;
+-    }
+-
+-    if( k == OPENGL_BUFFER )
+-    {
+-        CV_Assert( i < 0 );
+-        return 2;
+-    }
+-
+-    if( k == CUDA_GPU_MAT )
+-    {
+-        CV_Assert( i < 0 );
+-        return 2;
+-    }
+-
+-    if( k == CUDA_HOST_MEM )
+-    {
+-        CV_Assert( i < 0 );
+-        return 2;
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -712,12 +401,6 @@ size_t _InputArray::total(int i) const
+         return ((const Mat*)obj)->total();
+     }
+ 
+-    if( k == UMAT )
+-    {
+-        CV_Assert( i < 0 );
+-        return ((const UMat*)obj)->total();
+-    }
+-
+     if( k == STD_VECTOR_MAT )
+     {
+         const std::vector<Mat>& vv = *(const std::vector<Mat>*)obj;
+@@ -738,16 +421,6 @@ size_t _InputArray::total(int i) const
+         return vv[i].total();
+     }
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
+-        if( i < 0 )
+-            return vv.size();
+-
+-        CV_Assert( i < (int)vv.size() );
+-        return vv[i].total();
+-    }
+-
+     return size(i).area();
+ }
+ 
+@@ -758,27 +431,12 @@ int _InputArray::type(int i) const
+     if( k == MAT )
+         return ((const Mat*)obj)->type();
+ 
+-    if( k == UMAT )
+-        return ((const UMat*)obj)->type();
+-
+     if( k == MATX || k == STD_VECTOR || k == STD_VECTOR_VECTOR || k == STD_BOOL_VECTOR )
+         return CV_MAT_TYPE(flags);
+ 
+     if( k == NONE )
+         return -1;
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
+-        if( vv.empty() )
+-        {
+-            CV_Assert((flags & FIXED_TYPE) != 0);
+-            return CV_MAT_TYPE(flags);
+-        }
+-        CV_Assert( i < (int)vv.size() );
+-        return vv[i >= 0 ? i : 0].type();
+-    }
+-
+     if( k == STD_VECTOR_MAT )
+     {
+         const std::vector<Mat>& vv = *(const std::vector<Mat>*)obj;
+@@ -803,31 +461,6 @@ int _InputArray::type(int i) const
+         return vv[i >= 0 ? i : 0].type();
+     }
+ 
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-#ifdef HAVE_CUDA
+-        const std::vector<cuda::GpuMat>& vv = *(const std::vector<cuda::GpuMat>*)obj;
+-        if (vv.empty())
+-        {
+-            CV_Assert((flags & FIXED_TYPE) != 0);
+-            return CV_MAT_TYPE(flags);
+-        }
+-        CV_Assert(i < (int)vv.size());
+-        return vv[i >= 0 ? i : 0].type();
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-
+-    if( k == OPENGL_BUFFER )
+-        return ((const ogl::Buffer*)obj)->type();
+-
+-    if( k == CUDA_GPU_MAT )
+-        return ((const cuda::GpuMat*)obj)->type();
+-
+-    if( k == CUDA_HOST_MEM )
+-        return ((const cuda::HostMem*)obj)->type();
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -848,9 +481,6 @@ bool _InputArray::empty() const
+     if( k == MAT )
+         return ((const Mat*)obj)->empty();
+ 
+-    if( k == UMAT )
+-        return ((const UMat*)obj)->empty();
+-
+     if (k == MATX)
+         return false;
+ 
+@@ -886,27 +516,6 @@ bool _InputArray::empty() const
+         return sz.height == 0;
+     }
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
+-        return vv.empty();
+-    }
+-
+-    if( k == OPENGL_BUFFER )
+-        return ((const ogl::Buffer*)obj)->empty();
+-
+-    if( k == CUDA_GPU_MAT )
+-        return ((const cuda::GpuMat*)obj)->empty();
+-
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-        const std::vector<cuda::GpuMat>& vv = *(const std::vector<cuda::GpuMat>*)obj;
+-        return vv.empty();
+-    }
+-
+-    if( k == CUDA_HOST_MEM )
+-        return ((const cuda::HostMem*)obj)->empty();
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -917,9 +526,6 @@ bool _InputArray::isContinuous(int i) co
+     if( k == MAT )
+         return i < 0 ? ((const Mat*)obj)->isContinuous() : true;
+ 
+-    if( k == UMAT )
+-        return i < 0 ? ((const UMat*)obj)->isContinuous() : true;
+-
+     if( k == MATX || k == STD_VECTOR ||
+         k == NONE || k == STD_VECTOR_VECTOR || k == STD_BOOL_VECTOR )
+         return true;
+@@ -938,16 +544,6 @@ bool _InputArray::isContinuous(int i) co
+         return vv[i].isContinuous();
+     }
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
+-        CV_Assert(i >= 0 && (size_t)i < vv.size());
+-        return vv[i].isContinuous();
+-    }
+-
+-    if( k == CUDA_GPU_MAT )
+-      return i < 0 ? ((const cuda::GpuMat*)obj)->isContinuous() : true;
+-
+     CV_Error(CV_StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -958,9 +554,6 @@ bool _InputArray::isSubmatrix(int i) con
+     if( k == MAT )
+         return i < 0 ? ((const Mat*)obj)->isSubmatrix() : false;
+ 
+-    if( k == UMAT )
+-        return i < 0 ? ((const UMat*)obj)->isSubmatrix() : false;
+-
+     if( k == MATX || k == STD_VECTOR ||
+         k == NONE || k == STD_VECTOR_VECTOR || k == STD_BOOL_VECTOR )
+         return false;
+@@ -979,13 +572,6 @@ bool _InputArray::isSubmatrix(int i) con
+         return vv[i].isSubmatrix();
+     }
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
+-        CV_Assert(i >= 0 && (size_t)i < vv.size());
+-        return vv[i].isSubmatrix();
+-    }
+-
+     CV_Error(CV_StsNotImplemented, "");
+ }
+ 
+@@ -1000,12 +586,6 @@ size_t _InputArray::offset(int i) const
+         return (size_t)(m->ptr() - m->datastart);
+     }
+ 
+-    if( k == UMAT )
+-    {
+-        CV_Assert( i < 0 );
+-        return ((const UMat*)obj)->offset;
+-    }
+-
+     if( k == MATX || k == STD_VECTOR ||
+         k == NONE || k == STD_VECTOR_VECTOR || k == STD_BOOL_VECTOR )
+         return 0;
+@@ -1025,27 +605,6 @@ size_t _InputArray::offset(int i) const
+         return (size_t)(vv[i].ptr() - vv[i].datastart);
+     }
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
+-        CV_Assert(i >= 0 && (size_t)i < vv.size());
+-        return vv[i].offset;
+-    }
+-
+-    if( k == CUDA_GPU_MAT )
+-    {
+-        CV_Assert( i < 0 );
+-        const cuda::GpuMat * const m = ((const cuda::GpuMat*)obj);
+-        return (size_t)(m->data - m->datastart);
+-    }
+-
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-        const std::vector<cuda::GpuMat>& vv = *(const std::vector<cuda::GpuMat>*)obj;
+-        CV_Assert(i >= 0 && (size_t)i < vv.size());
+-        return (size_t)(vv[i].data - vv[i].datastart);
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "");
+ }
+ 
+@@ -1059,12 +618,6 @@ size_t _InputArray::step(int i) const
+         return ((const Mat*)obj)->step;
+     }
+ 
+-    if( k == UMAT )
+-    {
+-        CV_Assert( i < 0 );
+-        return ((const UMat*)obj)->step;
+-    }
+-
+     if( k == MATX || k == STD_VECTOR ||
+         k == NONE || k == STD_VECTOR_VECTOR || k == STD_BOOL_VECTOR )
+         return 0;
+@@ -1083,25 +636,6 @@ size_t _InputArray::step(int i) const
+         return vv[i].step;
+     }
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
+-        CV_Assert(i >= 0 && (size_t)i < vv.size());
+-        return vv[i].step;
+-    }
+-
+-    if( k == CUDA_GPU_MAT )
+-    {
+-        CV_Assert( i < 0 );
+-        return ((const cuda::GpuMat*)obj)->step;
+-    }
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-        const std::vector<cuda::GpuMat>& vv = *(const std::vector<cuda::GpuMat>*)obj;
+-        CV_Assert(i >= 0 && (size_t)i < vv.size());
+-        return vv[i].step;
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "");
+ }
+ 
+@@ -1116,12 +650,6 @@ void _InputArray::copyTo(const _OutputAr
+         Mat m = getMat();
+         m.copyTo(arr);
+     }
+-    else if( k == UMAT )
+-        ((UMat*)obj)->copyTo(arr);
+-#ifdef HAVE_CUDA
+-    else if (k == CUDA_GPU_MAT)
+-        ((cuda::GpuMat*)obj)->copyTo(arr);
+-#endif
+     else
+         CV_Error(Error::StsNotImplemented, "");
+ }
+@@ -1137,12 +665,6 @@ void _InputArray::copyTo(const _OutputAr
+         Mat m = getMat();
+         m.copyTo(arr, mask);
+     }
+-    else if( k == UMAT )
+-        ((UMat*)obj)->copyTo(arr, mask);
+-#ifdef HAVE_CUDA
+-    else if (k == CUDA_GPU_MAT)
+-        ((cuda::GpuMat*)obj)->copyTo(arr, mask);
+-#endif
+     else
+         CV_Error(Error::StsNotImplemented, "");
+ }
+@@ -1167,46 +689,6 @@ void _OutputArray::create(Size _sz, int
+         ((Mat*)obj)->create(_sz, mtype);
+         return;
+     }
+-    if( k == UMAT && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((UMat*)obj)->size.operator()() == _sz);
+-        CV_Assert(!fixedType() || ((UMat*)obj)->type() == mtype);
+-        ((UMat*)obj)->create(_sz, mtype);
+-        return;
+-    }
+-    if( k == CUDA_GPU_MAT && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((cuda::GpuMat*)obj)->size() == _sz);
+-        CV_Assert(!fixedType() || ((cuda::GpuMat*)obj)->type() == mtype);
+-#ifdef HAVE_CUDA
+-        ((cuda::GpuMat*)obj)->create(_sz, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-    if( k == OPENGL_BUFFER && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((ogl::Buffer*)obj)->size() == _sz);
+-        CV_Assert(!fixedType() || ((ogl::Buffer*)obj)->type() == mtype);
+-#ifdef HAVE_OPENGL
+-        ((ogl::Buffer*)obj)->create(_sz, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "OpenGL support is not enabled in this OpenCV build (missing HAVE_OPENGL)");
+-#endif
+-    }
+-    if( k == CUDA_HOST_MEM && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((cuda::HostMem*)obj)->size() == _sz);
+-        CV_Assert(!fixedType() || ((cuda::HostMem*)obj)->type() == mtype);
+-#ifdef HAVE_CUDA
+-        ((cuda::HostMem*)obj)->create(_sz, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+     int sizes[] = {_sz.height, _sz.width};
+     create(2, sizes, mtype, i, allowTransposed, fixedDepthMask);
+ }
+@@ -1221,46 +703,6 @@ void _OutputArray::create(int _rows, int
+         ((Mat*)obj)->create(_rows, _cols, mtype);
+         return;
+     }
+-    if( k == UMAT && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((UMat*)obj)->size.operator()() == Size(_cols, _rows));
+-        CV_Assert(!fixedType() || ((UMat*)obj)->type() == mtype);
+-        ((UMat*)obj)->create(_rows, _cols, mtype);
+-        return;
+-    }
+-    if( k == CUDA_GPU_MAT && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((cuda::GpuMat*)obj)->size() == Size(_cols, _rows));
+-        CV_Assert(!fixedType() || ((cuda::GpuMat*)obj)->type() == mtype);
+-#ifdef HAVE_CUDA
+-        ((cuda::GpuMat*)obj)->create(_rows, _cols, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-    if( k == OPENGL_BUFFER && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((ogl::Buffer*)obj)->size() == Size(_cols, _rows));
+-        CV_Assert(!fixedType() || ((ogl::Buffer*)obj)->type() == mtype);
+-#ifdef HAVE_OPENGL
+-        ((ogl::Buffer*)obj)->create(_rows, _cols, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "OpenGL support is not enabled in this OpenCV build (missing HAVE_OPENGL)");
+-#endif
+-    }
+-    if( k == CUDA_HOST_MEM && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((cuda::HostMem*)obj)->size() == Size(_cols, _rows));
+-        CV_Assert(!fixedType() || ((cuda::HostMem*)obj)->type() == mtype);
+-#ifdef HAVE_CUDA
+-        ((cuda::HostMem*)obj)->create(_rows, _cols, mtype);
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+     int sizes[] = {_rows, _cols};
+     create(2, sizes, mtype, i, allowTransposed, fixedDepthMask);
+ }
+@@ -1309,36 +751,6 @@ void _OutputArray::create(int d, const i
+         return;
+     }
+ 
+-    if( k == UMAT )
+-    {
+-        CV_Assert( i < 0 );
+-        UMat& m = *(UMat*)obj;
+-        CV_Assert(!(m.empty() && fixedType() && fixedSize()) && "Can't reallocate empty UMat with locked layout (probably due to misused 'const' modifier)");
+-        if (allowTransposed && !m.empty() &&
+-            d == 2 && m.dims == 2 &&
+-            m.type() == mtype && m.rows == sizes[1] && m.cols == sizes[0] &&
+-            m.isContinuous())
+-        {
+-            return;
+-        }
+-
+-        if(fixedType())
+-        {
+-            if(CV_MAT_CN(mtype) == m.channels() && ((1 << CV_MAT_TYPE(flags)) & fixedDepthMask) != 0 )
+-                mtype = m.type();
+-            else
+-                CV_CheckTypeEQ(m.type(), CV_MAT_TYPE(mtype), "Can't reallocate UMat with locked type (probably due to misused 'const' modifier)");
+-        }
+-        if(fixedSize())
+-        {
+-            CV_CheckEQ(m.dims, d, "Can't reallocate UMat with locked size (probably due to misused 'const' modifier)");
+-            for(int j = 0; j < d; ++j)
+-                CV_CheckEQ(m.size[j], sizes[j], "Can't reallocate UMat with locked size (probably due to misused 'const' modifier)");
+-        }
+-        m.create(d, sizes, mtype);
+-        return;
+-    }
+-
+     if( k == MATX )
+     {
+         CV_Assert( i < 0 );
+@@ -1594,65 +1006,6 @@ void _OutputArray::create(int d, const i
+         return;
+     }
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        std::vector<UMat>& v = *(std::vector<UMat>*)obj;
+-
+-        if( i < 0 )
+-        {
+-            CV_Assert( d == 2 && (sizes[0] == 1 || sizes[1] == 1 || sizes[0]*sizes[1] == 0) );
+-            size_t len = sizes[0]*sizes[1] > 0 ? sizes[0] + sizes[1] - 1 : 0, len0 = v.size();
+-
+-            CV_Assert(!fixedSize() || len == len0);
+-            v.resize(len);
+-            if( fixedType() )
+-            {
+-                int _type = CV_MAT_TYPE(flags);
+-                for( size_t j = len0; j < len; j++ )
+-                {
+-                    if( v[j].type() == _type )
+-                        continue;
+-                    CV_Assert( v[j].empty() );
+-                    v[j].flags = (v[j].flags & ~CV_MAT_TYPE_MASK) | _type;
+-                }
+-            }
+-            return;
+-        }
+-
+-        CV_Assert( i < (int)v.size() );
+-        UMat& m = v[i];
+-
+-        if( allowTransposed )
+-        {
+-            if( !m.isContinuous() )
+-            {
+-                CV_Assert(!fixedType() && !fixedSize());
+-                m.release();
+-            }
+-
+-            if( d == 2 && m.dims == 2 && m.u &&
+-                m.type() == mtype && m.rows == sizes[1] && m.cols == sizes[0] )
+-                return;
+-        }
+-
+-        if(fixedType())
+-        {
+-            if(CV_MAT_CN(mtype) == m.channels() && ((1 << CV_MAT_TYPE(flags)) & fixedDepthMask) != 0 )
+-                mtype = m.type();
+-            else
+-                CV_Assert(CV_MAT_TYPE(mtype) == m.type());
+-        }
+-        if(fixedSize())
+-        {
+-            CV_Assert(m.dims == d);
+-            for(int j = 0; j < d; ++j)
+-                CV_Assert(m.size[j] == sizes[j]);
+-        }
+-
+-        m.create(d, sizes, mtype);
+-        return;
+-    }
+-
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -1674,42 +1027,6 @@ void _OutputArray::release() const
+         return;
+     }
+ 
+-    if( k == UMAT )
+-    {
+-        ((UMat*)obj)->release();
+-        return;
+-    }
+-
+-    if( k == CUDA_GPU_MAT )
+-    {
+-#ifdef HAVE_CUDA
+-        ((cuda::GpuMat*)obj)->release();
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-
+-    if( k == CUDA_HOST_MEM )
+-    {
+-#ifdef HAVE_CUDA
+-        ((cuda::HostMem*)obj)->release();
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+-
+-    if( k == OPENGL_BUFFER )
+-    {
+-#ifdef HAVE_OPENGL
+-        ((ogl::Buffer*)obj)->release();
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "OpenGL support is not enabled in this OpenCV build (missing HAVE_OPENGL)");
+-#endif
+-    }
+-
+     if( k == NONE )
+         return;
+ 
+@@ -1731,20 +1048,6 @@ void _OutputArray::release() const
+         return;
+     }
+ 
+-    if( k == STD_VECTOR_UMAT )
+-    {
+-        ((std::vector<UMat>*)obj)->clear();
+-        return;
+-    }
+-    if (k == STD_VECTOR_CUDA_GPU_MAT)
+-    {
+-#ifdef HAVE_CUDA
+-        ((std::vector<cuda::GpuMat>*)obj)->clear();
+-        return;
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
+@@ -1792,50 +1095,6 @@ Mat& _OutputArray::getMatRef(int i) cons
+     }
+ }
+ 
+-UMat& _OutputArray::getUMatRef(int i) const
+-{
+-    _InputArray::KindFlag k = kind();
+-    if( i < 0 )
+-    {
+-        CV_Assert( k == UMAT );
+-        return *(UMat*)obj;
+-    }
+-    else
+-    {
+-        CV_Assert( k == STD_VECTOR_UMAT );
+-        std::vector<UMat>& v = *(std::vector<UMat>*)obj;
+-        CV_Assert( i < (int)v.size() );
+-        return v[i];
+-    }
+-}
+-
+-cuda::GpuMat& _OutputArray::getGpuMatRef() const
+-{
+-    _InputArray::KindFlag k = kind();
+-    CV_Assert( k == CUDA_GPU_MAT );
+-    return *(cuda::GpuMat*)obj;
+-}
+-std::vector<cuda::GpuMat>& _OutputArray::getGpuMatVecRef() const
+-{
+-    _InputArray::KindFlag k = kind();
+-    CV_Assert(k == STD_VECTOR_CUDA_GPU_MAT);
+-    return *(std::vector<cuda::GpuMat>*)obj;
+-}
+-
+-ogl::Buffer& _OutputArray::getOGlBufferRef() const
+-{
+-    _InputArray::KindFlag k = kind();
+-    CV_Assert( k == OPENGL_BUFFER );
+-    return *(ogl::Buffer*)obj;
+-}
+-
+-cuda::HostMem& _OutputArray::getHostMemRef() const
+-{
+-    _InputArray::KindFlag k = kind();
+-    CV_Assert( k == CUDA_HOST_MEM );
+-    return *(cuda::HostMem*)obj;
+-}
+-
+ void _OutputArray::setTo(const _InputArray& arr, const _InputArray & mask) const
+ {
+     _InputArray::KindFlag k = kind();
+@@ -1847,53 +1106,15 @@ void _OutputArray::setTo(const _InputArr
+         Mat m = getMat();
+         m.setTo(arr, mask);
+     }
+-    else if( k == UMAT )
+-        ((UMat*)obj)->setTo(arr, mask);
+-    else if( k == CUDA_GPU_MAT )
+-    {
+-#ifdef HAVE_CUDA
+-        Mat value = arr.getMat();
+-        CV_Assert( checkScalar(value, type(), arr.kind(), _InputArray::CUDA_GPU_MAT) );
+-        ((cuda::GpuMat*)obj)->setTo(Scalar(Vec<double, 4>(value.ptr<double>())), mask);
+-#else
+-        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
+-#endif
+-    }
+     else
+         CV_Error(Error::StsNotImplemented, "");
+ }
+ 
+ 
+-void _OutputArray::assign(const UMat& u) const
+-{
+-    _InputArray::KindFlag k = kind();
+-    if (k == UMAT)
+-    {
+-        *(UMat*)obj = u;
+-    }
+-    else if (k == MAT)
+-    {
+-        u.copyTo(*(Mat*)obj); // TODO check u.getMat()
+-    }
+-    else if (k == MATX)
+-    {
+-        u.copyTo(getMat()); // TODO check u.getMat()
+-    }
+-    else
+-    {
+-        CV_Error(Error::StsNotImplemented, "");
+-    }
+-}
+-
+-
+ void _OutputArray::assign(const Mat& m) const
+ {
+     _InputArray::KindFlag k = kind();
+-    if (k == UMAT)
+-    {
+-        m.copyTo(*(UMat*)obj); // TODO check m.getUMat()
+-    }
+-    else if (k == MAT)
++    if (k == MAT)
+     {
+         *(Mat*)obj = m;
+     }
+@@ -1908,41 +1129,6 @@ void _OutputArray::assign(const Mat& m)
+ }
+ 
+ 
+-void _OutputArray::move(UMat& u) const
+-{
+-    if (fixedSize())
+-    {
+-        // TODO Performance warning
+-        assign(u);
+-        return;
+-    }
+-    int k = kind();
+-    if (k == UMAT)
+-    {
+-#ifdef CV_CXX11
+-        *(UMat*)obj = std::move(u);
+-#else
+-        *(UMat*)obj = u;
+-        u.release();
+-#endif
+-    }
+-    else if (k == MAT)
+-    {
+-        u.copyTo(*(Mat*)obj); // TODO check u.getMat()
+-        u.release();
+-    }
+-    else if (k == MATX)
+-    {
+-        u.copyTo(getMat()); // TODO check u.getMat()
+-        u.release();
+-    }
+-    else
+-    {
+-        CV_Error(Error::StsNotImplemented, "");
+-    }
+-}
+-
+-
+ void _OutputArray::move(Mat& m) const
+ {
+     if (fixedSize())
+@@ -1952,12 +1138,7 @@ void _OutputArray::move(Mat& m) const
+         return;
+     }
+     int k = kind();
+-    if (k == UMAT)
+-    {
+-        m.copyTo(*(UMat*)obj); // TODO check m.getUMat()
+-        m.release();
+-    }
+-    else if (k == MAT)
++    if (k == MAT)
+     {
+ #ifdef CV_CXX11
+         *(Mat*)obj = std::move(m);
+@@ -1978,62 +1159,10 @@ void _OutputArray::move(Mat& m) const
+ }
+ 
+ 
+-void _OutputArray::assign(const std::vector<UMat>& v) const
+-{
+-    _InputArray::KindFlag k = kind();
+-    if (k == STD_VECTOR_UMAT)
+-    {
+-        std::vector<UMat>& this_v = *(std::vector<UMat>*)obj;
+-        CV_Assert(this_v.size() == v.size());
+-
+-        for (size_t i = 0; i < v.size(); i++)
+-        {
+-            const UMat& m = v[i];
+-            UMat& this_m = this_v[i];
+-            if (this_m.u != NULL && this_m.u == m.u)
+-                continue; // same object (see dnn::Layer::forward_fallback)
+-            m.copyTo(this_m);
+-        }
+-    }
+-    else if (k == STD_VECTOR_MAT)
+-    {
+-        std::vector<Mat>& this_v = *(std::vector<Mat>*)obj;
+-        CV_Assert(this_v.size() == v.size());
+-
+-        for (size_t i = 0; i < v.size(); i++)
+-        {
+-            const UMat& m = v[i];
+-            Mat& this_m = this_v[i];
+-            if (this_m.u != NULL && this_m.u == m.u)
+-                continue; // same object (see dnn::Layer::forward_fallback)
+-            m.copyTo(this_m);
+-        }
+-    }
+-    else
+-    {
+-        CV_Error(Error::StsNotImplemented, "");
+-    }
+-}
+-
+-
+ void _OutputArray::assign(const std::vector<Mat>& v) const
+ {
+     _InputArray::KindFlag k = kind();
+-    if (k == STD_VECTOR_UMAT)
+-    {
+-        std::vector<UMat>& this_v = *(std::vector<UMat>*)obj;
+-        CV_Assert(this_v.size() == v.size());
+-
+-        for (size_t i = 0; i < v.size(); i++)
+-        {
+-            const Mat& m = v[i];
+-            UMat& this_m = this_v[i];
+-            if (this_m.u != NULL && this_m.u == m.u)
+-                continue; // same object (see dnn::Layer::forward_fallback)
+-            m.copyTo(this_m);
+-        }
+-    }
+-    else if (k == STD_VECTOR_MAT)
++    if (k == STD_VECTOR_MAT)
+     {
+         std::vector<Mat>& this_v = *(std::vector<Mat>*)obj;
+         CV_Assert(this_v.size() == v.size());
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/precomp.hpp opencv-4.9.0/modules/core/src/precomp.hpp
+--- opencv-4.9.0.orig/modules/core/src/precomp.hpp	2024-02-07 14:07:16.903693221 +0800
++++ opencv-4.9.0/modules/core/src/precomp.hpp	2024-02-07 14:07:45.649690959 +0800
+@@ -343,9 +343,6 @@ struct ImplCollector
+ struct CoreTLSData
+ {
+     CoreTLSData() :
+-//#ifdef HAVE_OPENCL
+-        oclExecutionContextInitialized(false), useOpenCL(-1),
+-//#endif
+         useIPP(-1),
+         useIPP_NE(-1)
+ #ifdef HAVE_OPENVX
+@@ -354,11 +351,6 @@ struct CoreTLSData
+     {}
+ 
+     RNG rng;
+-//#ifdef HAVE_OPENCL
+-    ocl::OpenCLExecutionContext oclExecutionContext;
+-    bool oclExecutionContextInitialized;
+-    int useOpenCL; // 1 - use, 0 - do not use, -1 - auto/not initialized
+-//#endif
+     int useIPP;    // 1 - use, 0 - do not use, -1 - auto/not initialized
+     int useIPP_NE; // 1 - use, 0 - do not use, -1 - auto/not initialized
+ #ifdef HAVE_OPENVX
+diff -Nuarp opencv-4.9.0.orig/modules/core/src/umatrix.cpp opencv-4.9.0/modules/core/src/umatrix.cpp
+--- opencv-4.9.0.orig/modules/core/src/umatrix.cpp	2024-02-07 14:55:35.428465053 +0800
++++ opencv-4.9.0/modules/core/src/umatrix.cpp	2024-02-07 15:10:18.018395577 +0800
+@@ -40,7 +40,6 @@
+ //M*/
+ 
+ #include "precomp.hpp"
+-#include "umatrix.hpp"
+ 
+ #include <opencv2/core/utils/tls.hpp>
+ 
+@@ -48,13 +47,6 @@
+ 
+ namespace cv {
+ 
+-// forward decls, implementation is below in this file
+-void setSize(UMat& m, int _dims, const int* _sz, const size_t* _steps,
+-             bool autoSteps = false);
+-
+-void updateContinuityFlag(UMat& m);
+-void finalizeHdr(UMat& m);
+-
+ UMatData::UMatData(const MatAllocator* allocator)
+ {
+     prevAllocator = currAllocator = allocator;
+@@ -126,6 +118,7 @@ UMatData::~UMatData()
+     }
+ }
+ 
++#if 0
+ #ifndef OPENCV_DISABLE_THREAD_SUPPORT
+ 
+ // it should be a prime number for the best hash function
+@@ -1398,6 +1391,7 @@ UMat UMat::ones(int ndims, const int* sz
+ {
+     return UMat(ndims, sz, type, Scalar(1), usageFlags);
+ }
++#endif
+ 
+ }
+ 
+diff -Nuarp opencv-4.9.0.orig/modules/features2d/include/opencv2/features2d.hpp opencv-4.9.0/modules/features2d/include/opencv2/features2d.hpp
+--- opencv-4.9.0.orig/modules/features2d/include/opencv2/features2d.hpp	2024-02-07 14:07:14.997693371 +0800
++++ opencv-4.9.0/modules/features2d/include/opencv2/features2d.hpp	2024-02-07 14:43:09.494523772 +0800
+@@ -1245,7 +1245,6 @@ protected:
+ 
+     //! Collection of descriptors from train images.
+     std::vector<Mat> trainDescCollection;
+-    std::vector<UMat> utrainDescCollection;
+ };
+ 
+ /** @brief Brute-force descriptor matcher.
+diff -Nuarp opencv-4.9.0.orig/modules/features2d/src/agast.cpp opencv-4.9.0/modules/features2d/src/agast.cpp
+--- opencv-4.9.0.orig/modules/features2d/src/agast.cpp	2024-02-07 14:07:14.983693373 +0800
++++ opencv-4.9.0/modules/features2d/src/agast.cpp	2024-02-07 14:50:36.324488598 +0800
+@@ -7980,11 +7980,10 @@ public:
+         }
+ 
+         Mat mask = _mask.getMat(), grayImage;
+-        UMat ugrayImage;
+         _InputArray gray = _image;
+         if( _image.type() != CV_8U )
+         {
+-            _OutputArray ogray = _image.isUMat() ? _OutputArray(ugrayImage) : _OutputArray(grayImage);
++            _OutputArray ogray = _OutputArray(grayImage);
+             cvtColor( _image, ogray, COLOR_BGR2GRAY );
+             gray = ogray;
+         }
+diff -Nuarp opencv-4.9.0.orig/modules/features2d/src/fast.cpp opencv-4.9.0/modules/features2d/src/fast.cpp
+--- opencv-4.9.0.orig/modules/features2d/src/fast.cpp	2024-02-07 14:07:14.981693373 +0800
++++ opencv-4.9.0/modules/features2d/src/fast.cpp	2024-02-07 14:51:13.202485696 +0800
+@@ -569,11 +569,10 @@ public:
+         }
+ 
+         Mat mask = _mask.getMat(), grayImage;
+-        UMat ugrayImage;
+         _InputArray gray = _image;
+         if( _image.type() != CV_8U )
+         {
+-            _OutputArray ogray = _image.isUMat() ? _OutputArray(ugrayImage) : _OutputArray(grayImage);
++            _OutputArray ogray = _OutputArray(grayImage);
+             cvtColor( _image, ogray, COLOR_BGR2GRAY );
+             gray = ogray;
+         }
+diff -Nuarp opencv-4.9.0.orig/modules/features2d/src/feature2d.cpp opencv-4.9.0/modules/features2d/src/feature2d.cpp
+--- opencv-4.9.0.orig/modules/features2d/src/feature2d.cpp	2024-02-07 14:07:14.984693373 +0800
++++ opencv-4.9.0/modules/features2d/src/feature2d.cpp	2024-02-07 14:49:08.381495521 +0800
+@@ -93,16 +93,6 @@ void Feature2D::detect( InputArrayOfArra
+            detect(images.getMat(i), keypoints[i], masks.empty() ? noArray() : masks.getMat(i));
+        }
+     }
+-    else
+-    {
+-        // assume UMats
+-        for (int i = 0; i < nimages; i++)
+-        {
+-            detect(images.getUMat(i), keypoints[i], masks.empty() ? noArray() : masks.getUMat(i));
+-        }
+-    }
+-
+-
+ }
+ 
+ /*
+@@ -147,15 +137,6 @@ void Feature2D::compute( InputArrayOfArr
+             compute(images.getMat(i), keypoints[i], vec[i]);
+         }
+     }
+-    else if (descriptors.isUMatVector())
+-    {
+-        vector<UMat>& vec = *(vector<UMat>*)descriptors.getObj();
+-        vec.resize(nimages);
+-        for (int i = 0; i < nimages; i++)
+-        {
+-            compute(images.getUMat(i), keypoints[i], vec[i]);
+-        }
+-    }
+     else
+     {
+         CV_Error(Error::StsBadArg, "descriptors must be vector<Mat> or vector<UMat>");
+diff -Nuarp opencv-4.9.0.orig/modules/features2d/src/gftt.cpp opencv-4.9.0/modules/features2d/src/gftt.cpp
+--- opencv-4.9.0.orig/modules/features2d/src/gftt.cpp	2024-02-07 14:07:14.954693375 +0800
++++ opencv-4.9.0/modules/features2d/src/gftt.cpp	2024-02-07 14:49:46.727492503 +0800
+@@ -122,18 +122,6 @@ public:
+         std::vector<Point2f> corners;
+         std::vector<float> cornersQuality;
+ 
+-        if (_image.isUMat())
+-        {
+-            UMat ugrayImage;
+-            if( _image.type() != CV_8U )
+-                cvtColor( _image, ugrayImage, COLOR_BGR2GRAY );
+-            else
+-                ugrayImage = _image.getUMat();
+-
+-            goodFeaturesToTrack( ugrayImage, corners, nfeatures, qualityLevel, minDistance, _mask,
+-                                 cornersQuality, blockSize, gradSize, useHarrisDetector, k );
+-        }
+-        else
+         {
+             Mat image = _image.getMat(), grayImage = image;
+             if( image.type() != CV_8U )
+diff -Nuarp opencv-4.9.0.orig/modules/features2d/src/kaze/AKAZEFeatures.cpp opencv-4.9.0/modules/features2d/src/kaze/AKAZEFeatures.cpp
+--- opencv-4.9.0.orig/modules/features2d/src/kaze/AKAZEFeatures.cpp	2024-02-07 14:07:14.968693374 +0800
++++ opencv-4.9.0/modules/features2d/src/kaze/AKAZEFeatures.cpp	2024-02-07 14:52:48.414478201 +0800
+@@ -519,15 +519,7 @@ convertScalePyramid(const std::vector<Ev
+  */
+ void AKAZEFeatures::Create_Nonlinear_Scale_Space(InputArray image)
+ {
+-  if (ocl::isOpenCLActivated() && image.isUMat()) {
+-    // will run OCL version of scale space pyramid
+-    UMatPyramid uPyr;
+-    // init UMat pyramid with sizes
+-    convertScalePyramid(evolution_, uPyr);
+-    create_nonlinear_scale_space(image, options_, tsteps_, uPyr);
+-    // download pyramid from GPU
+-    convertScalePyramid(uPyr, evolution_);
+-  } else {
++  {
+     // CPU version
+     create_nonlinear_scale_space(image, options_, tsteps_, evolution_);
+   }
+@@ -641,19 +633,6 @@ private:
+ 
+ /**
+  * @brief This method computes the feature detector response for the nonlinear scale space
+- * @details OCL version
+- * @note We use the Hessian determinant as the feature detector response
+- */
+-static inline void
+-Compute_Determinant_Hessian_Response(UMatPyramid &evolution) {
+-  CV_INSTRUMENT_REGION();
+-
+-  DeterminantHessianResponse<UMat> body (evolution);
+-  body(Range(0, (int)evolution.size()));
+-}
+-
+-/**
+- * @brief This method computes the feature detector response for the nonlinear scale space
+  * @details CPU version
+  * @note We use the Hessian determinant as the feature detector response
+  */
+diff -Nuarp opencv-4.9.0.orig/modules/features2d/src/kaze/AKAZEFeatures.h opencv-4.9.0/modules/features2d/src/kaze/AKAZEFeatures.h
+--- opencv-4.9.0.orig/modules/features2d/src/kaze/AKAZEFeatures.h	2024-02-07 14:07:14.961693374 +0800
++++ opencv-4.9.0/modules/features2d/src/kaze/AKAZEFeatures.h	2024-02-07 14:49:30.506493780 +0800
+@@ -64,9 +64,7 @@ struct Evolution
+ };
+ 
+ typedef Evolution<Mat> MEvolution;
+-typedef Evolution<UMat> UEvolution;
+ typedef std::vector<MEvolution> Pyramid;
+-typedef std::vector<UEvolution> UMatPyramid;
+ 
+ /* ************************************************************************* */
+ // AKAZE Class Declaration
+diff -Nuarp opencv-4.9.0.orig/modules/features2d/src/matchers.cpp opencv-4.9.0/modules/features2d/src/matchers.cpp
+--- opencv-4.9.0.orig/modules/features2d/src/matchers.cpp	2024-02-07 14:07:14.975693373 +0800
++++ opencv-4.9.0/modules/features2d/src/matchers.cpp	2024-02-07 14:50:08.944490754 +0800
+@@ -528,18 +528,7 @@ DescriptorMatcher::~DescriptorMatcher()
+ 
+ void DescriptorMatcher::add( InputArrayOfArrays _descriptors )
+ {
+-    if( _descriptors.isUMatVector() )
+-    {
+-        std::vector<UMat> descriptors;
+-        _descriptors.getUMatVector( descriptors );
+-        utrainDescCollection.insert( utrainDescCollection.end(), descriptors.begin(), descriptors.end() );
+-    }
+-    else if( _descriptors.isUMat() )
+-    {
+-        std::vector<UMat> descriptors = std::vector<UMat>(1, _descriptors.getUMat());
+-        utrainDescCollection.insert( utrainDescCollection.end(), descriptors.begin(), descriptors.end() );
+-    }
+-    else if( _descriptors.isMatVector() )
++    if( _descriptors.isMatVector() )
+     {
+         std::vector<Mat> descriptors;
+         _descriptors.getMatVector(descriptors);
+@@ -552,7 +541,7 @@ void DescriptorMatcher::add( InputArrayO
+     }
+     else
+     {
+-        CV_Assert( _descriptors.isUMat() || _descriptors.isUMatVector() || _descriptors.isMat() || _descriptors.isMatVector() );
++        CV_Assert( _descriptors.isMat() || _descriptors.isMatVector() );
+     }
+ }
+ 
+@@ -563,13 +552,12 @@ const std::vector<Mat>& DescriptorMatche
+ 
+ void DescriptorMatcher::clear()
+ {
+-    utrainDescCollection.clear();
+     trainDescCollection.clear();
+ }
+ 
+ bool DescriptorMatcher::empty() const
+ {
+-    return trainDescCollection.empty() && utrainDescCollection.empty();
++    return trainDescCollection.empty();
+ }
+ 
+ void DescriptorMatcher::train()
+@@ -624,17 +612,16 @@ void DescriptorMatcher::checkMasks( Inpu
+     if( isMaskSupported() && !masks.empty() )
+     {
+         // Check masks
+-        const size_t imageCount = std::max(trainDescCollection.size(), utrainDescCollection.size() );
++        const size_t imageCount = trainDescCollection.size();
+         CV_Assert( masks.size() == imageCount );
+         for( size_t i = 0; i < imageCount; i++ )
+         {
+             if (masks[i].empty())
+                 continue;
+             const bool hasTrainDesc = !trainDescCollection.empty() && !trainDescCollection[i].empty();
+-            const bool hasUTrainDesc = !utrainDescCollection.empty() && !utrainDescCollection[i].empty();
+-            if (hasTrainDesc || hasUTrainDesc)
++            if (hasTrainDesc)
+             {
+-                const int rows = hasTrainDesc ? trainDescCollection[i].rows : utrainDescCollection[i].rows;
++                const int rows = trainDescCollection[i].rows;
+                 CV_Assert(masks[i].type() == CV_8UC1
+                     && masks[i].rows == queryDescriptorsCount
+                     && masks[i].cols == rows);
+@@ -756,13 +743,13 @@ static bool ocl_knnMatch(InputArray quer
+ void BFMatcher::knnMatchImpl( InputArray _queryDescriptors, std::vector<std::vector<DMatch> >& matches, int knn,
+                              InputArrayOfArrays _masks, bool compactResult )
+ {
+-    int trainDescType = trainDescCollection.empty() ? utrainDescCollection[0].type() : trainDescCollection[0].type();
++    int trainDescType = trainDescCollection[0].type();
+     CV_Assert( _queryDescriptors.type() == trainDescType );
+ 
+     const int IMGIDX_SHIFT = 18;
+     const int IMGIDX_ONE = (1 << IMGIDX_SHIFT);
+ 
+-    if( _queryDescriptors.empty() || (trainDescCollection.empty() && utrainDescCollection.empty()))
++    if( _queryDescriptors.empty() || (trainDescCollection.empty()))
+     {
+         matches.clear();
+         return;
+@@ -771,17 +758,6 @@ void BFMatcher::knnMatchImpl( InputArray
+     std::vector<Mat> masks;
+     _masks.getMatVector(masks);
+ 
+-    if(!trainDescCollection.empty() && !utrainDescCollection.empty())
+-    {
+-        for(int i = 0; i < (int)utrainDescCollection.size(); i++)
+-        {
+-            Mat tempMat;
+-            utrainDescCollection[i].copyTo(tempMat);
+-            trainDescCollection.push_back(tempMat);
+-        }
+-        utrainDescCollection.clear();
+-    }
+-
+ #ifdef HAVE_OPENCL
+     int trainDescVectorSize = trainDescCollection.empty() ? (int)utrainDescCollection.size() : (int)trainDescCollection.size();
+     Size trainDescSize = trainDescCollection.empty() ? utrainDescCollection[0].size() : trainDescCollection[0].size();
+@@ -833,16 +809,6 @@ void BFMatcher::knnMatchImpl( InputArray
+ #endif
+ 
+     Mat queryDescriptors = _queryDescriptors.getMat();
+-    if(trainDescCollection.empty() && !utrainDescCollection.empty())
+-    {
+-        for(int i = 0; i < (int)utrainDescCollection.size(); i++)
+-        {
+-            Mat tempMat;
+-            utrainDescCollection[i].copyTo(tempMat);
+-            trainDescCollection.push_back(tempMat);
+-        }
+-        utrainDescCollection.clear();
+-    }
+ 
+     matches.reserve(queryDescriptors.rows);
+ 
+@@ -907,10 +873,10 @@ static bool ocl_radiusMatch(InputArray q
+ void BFMatcher::radiusMatchImpl( InputArray _queryDescriptors, std::vector<std::vector<DMatch> >& matches,
+                                 float maxDistance, InputArrayOfArrays _masks, bool compactResult )
+ {
+-    int trainDescType = trainDescCollection.empty() ? utrainDescCollection[0].type() : trainDescCollection[0].type();
++    int trainDescType = trainDescCollection[0].type();
+     CV_Assert( _queryDescriptors.type() == trainDescType );
+ 
+-    if( _queryDescriptors.empty() || (trainDescCollection.empty() && utrainDescCollection.empty()))
++    if( _queryDescriptors.empty() || (trainDescCollection.empty()))
+     {
+         matches.clear();
+         return;
+@@ -919,17 +885,6 @@ void BFMatcher::radiusMatchImpl( InputAr
+     std::vector<Mat> masks;
+     _masks.getMatVector(masks);
+ 
+-    if(!trainDescCollection.empty() && !utrainDescCollection.empty())
+-    {
+-        for(int i = 0; i < (int)utrainDescCollection.size(); i++)
+-        {
+-            Mat tempMat;
+-            utrainDescCollection[i].copyTo(tempMat);
+-            trainDescCollection.push_back(tempMat);
+-        }
+-        utrainDescCollection.clear();
+-    }
+-
+ #ifdef HAVE_OPENCL
+     int trainDescVectorSize = trainDescCollection.empty() ? (int)utrainDescCollection.size() : (int)trainDescCollection.size();
+     Size trainDescSize = trainDescCollection.empty() ? utrainDescCollection[0].size() : trainDescCollection[0].size();
+@@ -959,16 +914,6 @@ void BFMatcher::radiusMatchImpl( InputAr
+ #endif
+ 
+     Mat queryDescriptors = _queryDescriptors.getMat();
+-    if(trainDescCollection.empty() && !utrainDescCollection.empty())
+-    {
+-        for(int i = 0; i < (int)utrainDescCollection.size(); i++)
+-        {
+-            Mat tempMat;
+-            utrainDescCollection[i].copyTo(tempMat);
+-            trainDescCollection.push_back(tempMat);
+-        }
+-        utrainDescCollection.clear();
+-    }
+ 
+     matches.resize(queryDescriptors.rows);
+     Mat dist, distf;
+@@ -1162,13 +1107,6 @@ void FlannBasedMatcher::train()
+ 
+     if( !flannIndex || mergedDescriptors.size() < addedDescCount )
+     {
+-        // FIXIT: Workaround for 'utrainDescCollection' issue (PR #2142)
+-        if (!utrainDescCollection.empty())
+-        {
+-            CV_Assert(trainDescCollection.size() == 0);
+-            for (size_t i = 0; i < utrainDescCollection.size(); ++i)
+-                trainDescCollection.push_back(utrainDescCollection[i].getMat(ACCESS_READ));
+-        }
+         mergedDescriptors.set( trainDescCollection );
+         flannIndex = makePtr<flann::Index>( mergedDescriptors.getDescriptors(), *indexParams );
+     }
+diff -Nuarp opencv-4.9.0.orig/modules/features2d/src/orb.cpp opencv-4.9.0/modules/features2d/src/orb.cpp
+--- opencv-4.9.0.orig/modules/features2d/src/orb.cpp	2024-02-07 14:07:14.976693373 +0800
++++ opencv-4.9.0/modules/features2d/src/orb.cpp	2024-02-07 14:52:25.936479970 +0800
+@@ -823,10 +823,8 @@ static void uploadORBKeypoints(const std
+  * @param keypoints the resulting keypoints, clustered per level
+  */
+ static void computeKeyPoints(const Mat& imagePyramid,
+-                             const UMat& uimagePyramid,
+                              const Mat& maskPyramid,
+                              const std::vector<Rect>& layerInfo,
+-                             const UMat& ulayerInfo,
+                              const std::vector<float>& layerScale,
+                              std::vector<KeyPoint>& allKeypoints,
+                              int nfeatures, double scaleFactor,
+@@ -834,7 +832,7 @@ static void computeKeyPoints(const Mat&
+                              bool useOCL, int fastThreshold  )
+ {
+ #ifndef HAVE_OPENCL
+-    CV_UNUSED(uimagePyramid);CV_UNUSED(ulayerInfo);CV_UNUSED(useOCL);
++    CV_UNUSED(useOCL);
+ #endif
+ 
+     int i, nkeypoints, level, nlevels = (int)layerInfo.size();
+@@ -918,7 +916,6 @@ static void computeKeyPoints(const Mat&
+         return;
+     }
+     Mat responses;
+-    UMat ukeypoints, uresponses(1, nkeypoints, CV_32F);
+ 
+     // Select best features using the Harris cornerness (better scoring than FAST)
+     if( scoreType == ORB_Impl::HARRIS_SCORE )
+@@ -1069,7 +1066,6 @@ void ORB_Impl::detectAndCompute( InputAr
+     std::vector<int> layerOfs(nLevels);
+     std::vector<float> layerScale(nLevels);
+     Mat imagePyramid, maskPyramid;
+-    UMat uimagePyramid, ulayerInfo;
+ 
+     float level0_inv_scale = 1.0f / getScale(0, firstLevel, scaleFactor);
+     size_t level0_width = (size_t)cvRound(image.cols * level0_inv_scale);
+@@ -1153,17 +1149,11 @@ void ORB_Impl::detectAndCompute( InputAr
+         }
+     }
+ 
+-    if( useOCL )
+-        copyVectorToUMat(layerOfs, ulayerInfo);
+-
+     if( do_keypoints )
+     {
+-        if( useOCL )
+-            imagePyramid.copyTo(uimagePyramid);
+-
+         // Get keypoints, those will be far enough from the border that no check will be required for the descriptor
+-        computeKeyPoints(imagePyramid, uimagePyramid, maskPyramid,
+-                         layerInfo, ulayerInfo, layerScale, keypoints,
++        computeKeyPoints(imagePyramid, maskPyramid,
++                         layerInfo, layerScale, keypoints,
+                          nfeatures, scaleFactor, edgeThreshold, patchSize, scoreType, useOCL, fastThreshold);
+     }
+     else
+diff -Nuarp opencv-4.9.0.orig/modules/imgproc/src/contours.cpp opencv-4.9.0/modules/imgproc/src/contours.cpp
+--- opencv-4.9.0.orig/modules/imgproc/src/contours.cpp	2024-02-07 14:07:15.138693360 +0800
++++ opencv-4.9.0/modules/imgproc/src/contours.cpp	2024-02-07 14:40:21.656536984 +0800
+@@ -1819,8 +1819,7 @@ void cv::findContours( InputArray _image
+     CV_INSTRUMENT_REGION();
+ 
+     // Sanity check: output must be of type vector<vector<Point>>
+-    CV_Assert((_contours.kind() == _InputArray::STD_VECTOR_VECTOR || _contours.kind() == _InputArray::STD_VECTOR_MAT ||
+-                _contours.kind() == _InputArray::STD_VECTOR_UMAT));
++    CV_Assert((_contours.kind() == _InputArray::STD_VECTOR_VECTOR || _contours.kind() == _InputArray::STD_VECTOR_MAT));
+ 
+     CV_Assert(_contours.empty() || (_contours.channels() == 2 && _contours.depth() == CV_32S));
+ 
+diff -Nuarp opencv-4.9.0.orig/modules/imgproc/src/hough.cpp opencv-4.9.0/modules/imgproc/src/hough.cpp
+--- opencv-4.9.0.orig/modules/imgproc/src/hough.cpp	2024-02-07 14:07:15.158693359 +0800
++++ opencv-4.9.0/modules/imgproc/src/hough.cpp	2024-02-07 14:40:41.613535413 +0800
+@@ -2265,7 +2265,7 @@ static void HoughCircles( InputArray _im
+         CV_CheckType(type, type == CV_32FC3 || type == CV_32FC4, "Wrong type of output circles");
+     }
+ 
+-    CV_Assert(!_image.empty() && _image.type() == CV_8UC1 && (_image.isMat() || _image.isUMat()));
++    CV_Assert(!_image.empty() && _image.type() == CV_8UC1 && (_image.isMat()));
+ 
+     if( dp <= 0 || minDist <= 0 || param1 <= 0)
+         CV_Error( Error::StsOutOfRange, "dp, min_dist and canny_threshold must be all positive numbers" );
+diff -Nuarp opencv-4.9.0.orig/modules/imgproc/src/pyramids.cpp opencv-4.9.0/modules/imgproc/src/pyramids.cpp
+--- opencv-4.9.0.orig/modules/imgproc/src/pyramids.cpp	2024-02-07 14:07:15.134693361 +0800
++++ opencv-4.9.0/modules/imgproc/src/pyramids.cpp	2024-02-07 14:41:05.964533496 +0800
+@@ -1676,16 +1676,6 @@ void cv::buildPyramid( InputArray _src,
+ 
+     CV_Assert(borderType != BORDER_CONSTANT);
+ 
+-    if (_src.dims() <= 2 && _dst.isUMatVector())
+-    {
+-        UMat src = _src.getUMat();
+-        _dst.create( maxlevel + 1, 1, 0 );
+-        _dst.getUMatRef(0) = src;
+-        for( int i = 1; i <= maxlevel; i++ )
+-            pyrDown( _dst.getUMatRef(i-1), _dst.getUMatRef(i), Size(), borderType );
+-        return;
+-    }
+-
+     Mat src = _src.getMat();
+     _dst.create( maxlevel + 1, 1, 0 );
+     _dst.getMatRef(0) = src;
+diff -Nuarp opencv-4.9.0.orig/modules/imgproc/src/resize.cpp opencv-4.9.0/modules/imgproc/src/resize.cpp
+--- opencv-4.9.0.orig/modules/imgproc/src/resize.cpp	2024-02-07 14:07:15.086693364 +0800
++++ opencv-4.9.0/modules/imgproc/src/resize.cpp	2024-02-07 14:41:24.278532055 +0800
+@@ -4168,11 +4168,6 @@ void cv::resize( InputArray _src, Output
+     CV_OCL_RUN(_src.dims() <= 2 && _dst.isUMat() && _src.cols() > 10 && _src.rows() > 10,
+                ocl_resize(_src, _dst, dsize, inv_scale_x, inv_scale_y, interpolation))
+ 
+-    // Fake reference to source. Resolves issue 13577 in case of src == dst.
+-    UMat srcUMat;
+-    if (_src.isUMat())
+-        srcUMat = _src.getUMat();
+-
+     Mat src = _src.getMat();
+     _dst.create(dsize, src.type());
+     Mat dst = _dst.getMat();
+diff -Nuarp opencv-4.9.0.orig/modules/imgproc/src/smooth.dispatch.cpp opencv-4.9.0/modules/imgproc/src/smooth.dispatch.cpp
+--- opencv-4.9.0.orig/modules/imgproc/src/smooth.dispatch.cpp	2024-02-07 14:07:15.137693360 +0800
++++ opencv-4.9.0/modules/imgproc/src/smooth.dispatch.cpp	2024-02-07 14:07:43.885691097 +0800
+@@ -636,9 +636,7 @@ void GaussianBlur(InputArray _src, Outpu
+     if (sigma2 <= 0)
+         sigma2 = sigma1;
+ 
+-    bool useOpenCL = ocl::isOpenCLActivated() && _dst.isUMat() && _src.dims() <= 2 &&
+-               _src.rows() >= ksize.height && _src.cols() >= ksize.width &&
+-               ksize.width > 1 && ksize.height > 1;
++    bool useOpenCL = false;
+     CV_UNUSED(useOpenCL);
+ 
+     int sdepth = CV_MAT_DEPTH(type), cn = CV_MAT_CN(type);
+diff -Nuarp opencv-4.9.0.orig/modules/video/src/camshift.cpp opencv-4.9.0/modules/video/src/camshift.cpp
+--- opencv-4.9.0.orig/modules/video/src/camshift.cpp	2024-02-07 14:07:17.074693208 +0800
++++ opencv-4.9.0/modules/video/src/camshift.cpp	2024-02-07 14:47:20.010504052 +0800
+@@ -48,13 +48,8 @@ int cv::meanShift( InputArray _probImage
+     Size size;
+     int cn;
+     Mat mat;
+-    UMat umat;
+-    bool isUMat = _probImage.isUMat();
+ 
+-    if (isUMat)
+-        umat = _probImage.getUMat(), cn = umat.channels(), size = umat.size();
+-    else
+-        mat = _probImage.getMat(), cn = mat.channels(), size = mat.size();
++    mat = _probImage.getMat(), cn = mat.channels(), size = mat.size();
+ 
+     Rect cur_rect = window;
+ 
+@@ -80,7 +75,7 @@ int cv::meanShift( InputArray _probImage
+         cur_rect.width = std::max(cur_rect.width, 1);
+         cur_rect.height = std::max(cur_rect.height, 1);
+ 
+-        Moments m = isUMat ? moments(umat(cur_rect)) : moments(mat(cur_rect));
++        Moments m = moments(mat(cur_rect));
+ 
+         // Calculating center of mass
+         if( fabs(m.m00) < DBL_EPSILON )
+@@ -115,13 +110,8 @@ cv::RotatedRect cv::CamShift( InputArray
+     const int TOLERANCE = 10;
+     Size size;
+     Mat mat;
+-    UMat umat;
+-    bool isUMat = _probImage.isUMat();
+ 
+-    if (isUMat)
+-        umat = _probImage.getUMat(), size = umat.size();
+-    else
+-        mat = _probImage.getMat(), size = mat.size();
++    mat = _probImage.getMat(), size = mat.size();
+ 
+     meanShift( _probImage, window, criteria );
+ 
+@@ -142,7 +132,7 @@ cv::RotatedRect cv::CamShift( InputArray
+         window.height = size.height - window.y;
+ 
+     // Calculating moments in new center mass
+-    Moments m = isUMat ? moments(umat(window)) : moments(mat(window));
++    Moments m = moments(mat(window));
+ 
+     double m00 = m.m00, m10 = m.m10, m01 = m.m01;
+     double mu11 = m.mu11, mu20 = m.mu20, mu02 = m.mu02;

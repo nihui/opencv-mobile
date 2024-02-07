@@ -1,0 +1,433 @@
+diff -Nuarp opencv-2.4.13.7.orig/modules/core/include/opencv2/core/core.hpp opencv-2.4.13.7/modules/core/include/opencv2/core/core.hpp
+--- opencv-2.4.13.7.orig/modules/core/include/opencv2/core/core.hpp	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/modules/core/include/opencv2/core/core.hpp	2024-02-06 11:25:44.876257458 +0800
+@@ -87,23 +87,6 @@ class Mat;
+ class SparseMat;
+ typedef Mat MatND;
+ 
+-namespace ogl {
+-    class Buffer;
+-    class Texture2D;
+-    class Arrays;
+-}
+-
+-// < Deprecated
+-class GlBuffer;
+-class GlTexture;
+-class GlArrays;
+-class GlCamera;
+-// >
+-
+-namespace gpu {
+-    class GpuMat;
+-}
+-
+ class CV_EXPORTS MatExpr;
+ class CV_EXPORTS MatOp_Base;
+ class CV_EXPORTS MatArg;
+@@ -1350,11 +1333,7 @@ public:
+         STD_VECTOR        = 3 << KIND_SHIFT,
+         STD_VECTOR_VECTOR = 4 << KIND_SHIFT,
+         STD_VECTOR_MAT    = 5 << KIND_SHIFT,
+-        EXPR              = 6 << KIND_SHIFT,
+-        OPENGL_BUFFER     = 7 << KIND_SHIFT,
+-        OPENGL_TEXTURE    = 8 << KIND_SHIFT,
+-        GPU_MAT           = 9 << KIND_SHIFT,
+-        OCL_MAT           =10 << KIND_SHIFT
++        EXPR              = 6 << KIND_SHIFT
+     };
+     _InputArray();
+ 
+@@ -1369,23 +1348,9 @@ public:
+     template<typename _Tp, int m, int n> _InputArray(const Matx<_Tp, m, n>& matx);
+     _InputArray(const Scalar& s);
+     _InputArray(const double& val);
+-    // < Deprecated
+-    _InputArray(const GlBuffer& buf);
+-    _InputArray(const GlTexture& tex);
+-    // >
+-    _InputArray(const gpu::GpuMat& d_mat);
+-    _InputArray(const ogl::Buffer& buf);
+-    _InputArray(const ogl::Texture2D& tex);
+ 
+     virtual Mat getMat(int i=-1) const;
+     virtual void getMatVector(vector<Mat>& mv) const;
+-    // < Deprecated
+-    virtual GlBuffer getGlBuffer() const;
+-    virtual GlTexture getGlTexture() const;
+-    // >
+-    virtual gpu::GpuMat getGpuMat() const;
+-    /*virtual*/ ogl::Buffer getOGlBuffer() const;
+-    /*virtual*/ ogl::Texture2D getOGlTexture2D() const;
+ 
+     virtual int kind() const;
+     virtual Size size(int i=-1) const;
+@@ -1436,9 +1401,6 @@ public:
+     template<typename _Tp> _OutputArray(Mat_<_Tp>& m);
+     template<typename _Tp, int m, int n> _OutputArray(Matx<_Tp, m, n>& matx);
+     template<typename _Tp> _OutputArray(_Tp* vec, int n);
+-    _OutputArray(gpu::GpuMat& d_mat);
+-    _OutputArray(ogl::Buffer& buf);
+-    _OutputArray(ogl::Texture2D& tex);
+ 
+     _OutputArray(const Mat& m);
+     template<typename _Tp> _OutputArray(const vector<_Tp>& vec);
+@@ -1448,17 +1410,11 @@ public:
+     template<typename _Tp> _OutputArray(const Mat_<_Tp>& m);
+     template<typename _Tp, int m, int n> _OutputArray(const Matx<_Tp, m, n>& matx);
+     template<typename _Tp> _OutputArray(const _Tp* vec, int n);
+-    _OutputArray(const gpu::GpuMat& d_mat);
+-    _OutputArray(const ogl::Buffer& buf);
+-    _OutputArray(const ogl::Texture2D& tex);
+ 
+     virtual bool fixedSize() const;
+     virtual bool fixedType() const;
+     virtual bool needed() const;
+     virtual Mat& getMatRef(int i=-1) const;
+-    /*virtual*/ gpu::GpuMat& getGpuMatRef() const;
+-    /*virtual*/ ogl::Buffer& getOGlBufferRef() const;
+-    /*virtual*/ ogl::Texture2D& getOGlTexture2DRef() const;
+     virtual void create(Size sz, int type, int i=-1, bool allowTransposed=false, int fixedDepthMask=0) const;
+     virtual void create(int rows, int cols, int type, int i=-1, bool allowTransposed=false, int fixedDepthMask=0) const;
+     virtual void create(int dims, const int* size, int type, int i=-1, bool allowTransposed=false, int fixedDepthMask=0) const;
+@@ -1756,9 +1712,6 @@ public:
+     //! builds matrix from comma initializer
+     template<typename _Tp> explicit Mat(const MatCommaInitializer_<_Tp>& commaInitializer);
+ 
+-    //! download data from GpuMat
+-    explicit Mat(const gpu::GpuMat& m);
+-
+     //! destructor - calls release()
+     ~Mat();
+     //! assignment operators
+diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/matrix.cpp opencv-2.4.13.7/modules/core/src/matrix.cpp
+--- opencv-2.4.13.7.orig/modules/core/src/matrix.cpp	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/modules/core/src/matrix.cpp	2024-02-06 11:26:22.102254528 +0800
+@@ -41,9 +41,6 @@
+ //M*/
+ 
+ #include "precomp.hpp"
+-#include "opencv2/core/gpumat.hpp"
+-#include "opencv2/core/opengl_interop.hpp"
+-#include "opencv2/core/opengl_interop_deprecated.hpp"
+ 
+ /****************************************************************************************\
+ *                           [scaled] Identity matrix initialization                      *
+@@ -936,13 +933,6 @@ _InputArray::_InputArray(const Mat& m) :
+ _InputArray::_InputArray(const vector<Mat>& vec) : flags(STD_VECTOR_MAT), obj((void*)&vec) {}
+ _InputArray::_InputArray(const double& val) : flags(FIXED_TYPE + FIXED_SIZE + MATX + CV_64F), obj((void*)&val), sz(Size(1,1)) {}
+ _InputArray::_InputArray(const MatExpr& expr) : flags(FIXED_TYPE + FIXED_SIZE + EXPR), obj((void*)&expr) {}
+-// < Deprecated
+-_InputArray::_InputArray(const GlBuffer&) : flags(0), obj(0) {}
+-_InputArray::_InputArray(const GlTexture&) : flags(0), obj(0) {}
+-// >
+-_InputArray::_InputArray(const gpu::GpuMat& d_mat) : flags(GPU_MAT), obj((void*)&d_mat) {}
+-_InputArray::_InputArray(const ogl::Buffer& buf) : flags(OPENGL_BUFFER), obj((void*)&buf) {}
+-_InputArray::_InputArray(const ogl::Texture2D& tex) : flags(OPENGL_TEXTURE), obj((void*)&tex) {}
+ 
+ Mat _InputArray::getMat(int i) const
+ {
+@@ -990,11 +980,6 @@ Mat _InputArray::getMat(int i) const
+         return !v.empty() ? Mat(size(i), t, (void*)&v[0]) : Mat();
+     }
+ 
+-    if( k == OCL_MAT )
+-    {
+-        CV_Error(CV_StsNotImplemented, "This method is not implemented for oclMat yet");
+-    }
+-
+     CV_Assert( k == STD_VECTOR_MAT );
+     //if( k == STD_VECTOR_MAT )
+     {
+@@ -1077,11 +1062,6 @@ void _InputArray::getMatVector(vector<Ma
+         return;
+     }
+ 
+-    if( k == OCL_MAT )
+-    {
+-        CV_Error(CV_StsNotImplemented, "This method is not implemented for oclMat yet");
+-    }
+-
+     CV_Assert( k == STD_VECTOR_MAT );
+     //if( k == STD_VECTOR_MAT )
+     {
+@@ -1092,48 +1072,6 @@ void _InputArray::getMatVector(vector<Ma
+     }
+ }
+ 
+-GlBuffer _InputArray::getGlBuffer() const
+-{
+-    CV_Error(CV_StsNotImplemented, "This function in deprecated, do not use it");
+-    return GlBuffer(GlBuffer::ARRAY_BUFFER);
+-}
+-
+-GlTexture _InputArray::getGlTexture() const
+-{
+-    CV_Error(CV_StsNotImplemented, "This function in deprecated, do not use it");
+-    return GlTexture();
+-}
+-
+-gpu::GpuMat _InputArray::getGpuMat() const
+-{
+-    int k = kind();
+-
+-    CV_Assert(k == GPU_MAT);
+-
+-    const gpu::GpuMat* d_mat = (const gpu::GpuMat*)obj;
+-    return *d_mat;
+-}
+-
+-ogl::Buffer _InputArray::getOGlBuffer() const
+-{
+-    int k = kind();
+-
+-    CV_Assert(k == OPENGL_BUFFER);
+-
+-    const ogl::Buffer* gl_buf = (const ogl::Buffer*)obj;
+-    return *gl_buf;
+-}
+-
+-ogl::Texture2D _InputArray::getOGlTexture2D() const
+-{
+-    int k = kind();
+-
+-    CV_Assert(k == OPENGL_TEXTURE);
+-
+-    const ogl::Texture2D* gl_tex = (const ogl::Texture2D*)obj;
+-    return *gl_tex;
+-}
+-
+ int _InputArray::kind() const
+ {
+     return flags & KIND_MASK;
+@@ -1185,7 +1123,8 @@ Size _InputArray::size(int i) const
+         return szb == szi ? Size((int)szb, 1) : Size((int)(szb/CV_ELEM_SIZE(flags)), 1);
+     }
+ 
+-    if( k == STD_VECTOR_MAT )
++    CV_Assert( k == STD_VECTOR_MAT );
++    // if( k == STD_VECTOR_MAT )
+     {
+         const vector<Mat>& vv = *(const vector<Mat>*)obj;
+         if( i < 0 )
+@@ -1194,33 +1133,6 @@ Size _InputArray::size(int i) const
+ 
+         return vv[i].size();
+     }
+-
+-    if( k == OPENGL_BUFFER )
+-    {
+-        CV_Assert( i < 0 );
+-        const ogl::Buffer* buf = (const ogl::Buffer*)obj;
+-        return buf->size();
+-    }
+-
+-    if( k == OPENGL_TEXTURE )
+-    {
+-        CV_Assert( i < 0 );
+-        const ogl::Texture2D* tex = (const ogl::Texture2D*)obj;
+-        return tex->size();
+-    }
+-
+-    if( k == OCL_MAT )
+-    {
+-        CV_Error(CV_StsNotImplemented, "This method is not implemented for oclMat yet");
+-    }
+-
+-    CV_Assert( k == GPU_MAT );
+-    //if( k == GPU_MAT )
+-    {
+-        CV_Assert( i < 0 );
+-        const gpu::GpuMat* d_mat = (const gpu::GpuMat*)obj;
+-        return d_mat->size();
+-    }
+ }
+ 
+ size_t _InputArray::total(int i) const
+@@ -1262,20 +1174,14 @@ int _InputArray::type(int i) const
+     if( k == NONE )
+         return -1;
+ 
+-    if( k == STD_VECTOR_MAT )
++    CV_Assert( k == STD_VECTOR_MAT );
++    // if( k == STD_VECTOR_MAT )
+     {
+         const vector<Mat>& vv = *(const vector<Mat>*)obj;
+         CV_Assert( i < (int)vv.size() );
+ 
+         return vv[i >= 0 ? i : 0].type();
+     }
+-
+-    if( k == OPENGL_BUFFER )
+-        return ((const ogl::Buffer*)obj)->type();
+-
+-    CV_Assert( k == GPU_MAT );
+-    //if( k == GPU_MAT )
+-        return ((const gpu::GpuMat*)obj)->type();
+ }
+ 
+ int _InputArray::depth(int i) const
+@@ -1316,26 +1222,12 @@ bool _InputArray::empty() const
+         return vv.empty();
+     }
+ 
+-    if( k == STD_VECTOR_MAT )
++    CV_Assert( k == STD_VECTOR_MAT );
++    // if( k == STD_VECTOR_MAT )
+     {
+         const vector<Mat>& vv = *(const vector<Mat>*)obj;
+         return vv.empty();
+     }
+-
+-    if( k == OPENGL_BUFFER )
+-        return ((const ogl::Buffer*)obj)->empty();
+-
+-    if( k == OPENGL_TEXTURE )
+-        return ((const ogl::Texture2D*)obj)->empty();
+-
+-    if( k == OCL_MAT )
+-    {
+-        CV_Error(CV_StsNotImplemented, "This method is not implemented for oclMat yet");
+-    }
+-
+-    CV_Assert( k == GPU_MAT );
+-    //if( k == GPU_MAT )
+-        return ((const gpu::GpuMat*)obj)->empty();
+ }
+ 
+ 
+@@ -1345,15 +1237,9 @@ _OutputArray::~_OutputArray() {}
+ #endif
+ _OutputArray::_OutputArray(Mat& m) : _InputArray(m) {}
+ _OutputArray::_OutputArray(vector<Mat>& vec) : _InputArray(vec) {}
+-_OutputArray::_OutputArray(gpu::GpuMat& d_mat) : _InputArray(d_mat) {}
+-_OutputArray::_OutputArray(ogl::Buffer& buf) : _InputArray(buf) {}
+-_OutputArray::_OutputArray(ogl::Texture2D& tex) : _InputArray(tex) {}
+ 
+ _OutputArray::_OutputArray(const Mat& m) : _InputArray(m) {flags |= FIXED_SIZE|FIXED_TYPE;}
+ _OutputArray::_OutputArray(const vector<Mat>& vec) : _InputArray(vec) {flags |= FIXED_SIZE;}
+-_OutputArray::_OutputArray(const gpu::GpuMat& d_mat) : _InputArray(d_mat) {flags |= FIXED_SIZE|FIXED_TYPE;}
+-_OutputArray::_OutputArray(const ogl::Buffer& buf) : _InputArray(buf) {flags |= FIXED_SIZE|FIXED_TYPE;}
+-_OutputArray::_OutputArray(const ogl::Texture2D& tex) : _InputArray(tex) {flags |= FIXED_SIZE|FIXED_TYPE;}
+ 
+ 
+ bool _OutputArray::fixedSize() const
+@@ -1376,20 +1262,6 @@ void _OutputArray::create(Size _sz, int
+         ((Mat*)obj)->create(_sz, mtype);
+         return;
+     }
+-    if( k == GPU_MAT && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((gpu::GpuMat*)obj)->size() == _sz);
+-        CV_Assert(!fixedType() || ((gpu::GpuMat*)obj)->type() == mtype);
+-        ((gpu::GpuMat*)obj)->create(_sz, mtype);
+-        return;
+-    }
+-    if( k == OPENGL_BUFFER && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((ogl::Buffer*)obj)->size() == _sz);
+-        CV_Assert(!fixedType() || ((ogl::Buffer*)obj)->type() == mtype);
+-        ((ogl::Buffer*)obj)->create(_sz, mtype);
+-        return;
+-    }
+     int sizes[] = {_sz.height, _sz.width};
+     create(2, sizes, mtype, i, allowTransposed, fixedDepthMask);
+ }
+@@ -1404,20 +1276,6 @@ void _OutputArray::create(int rows, int
+         ((Mat*)obj)->create(rows, cols, mtype);
+         return;
+     }
+-    if( k == GPU_MAT && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((gpu::GpuMat*)obj)->size() == Size(cols, rows));
+-        CV_Assert(!fixedType() || ((gpu::GpuMat*)obj)->type() == mtype);
+-        ((gpu::GpuMat*)obj)->create(rows, cols, mtype);
+-        return;
+-    }
+-    if( k == OPENGL_BUFFER && i < 0 && !allowTransposed && fixedDepthMask == 0 )
+-    {
+-        CV_Assert(!fixedSize() || ((ogl::Buffer*)obj)->size() == Size(cols, rows));
+-        CV_Assert(!fixedType() || ((ogl::Buffer*)obj)->type() == mtype);
+-        ((ogl::Buffer*)obj)->create(rows, cols, mtype);
+-        return;
+-    }
+     int sizes[] = {rows, cols};
+     create(2, sizes, mtype, i, allowTransposed, fixedDepthMask);
+ }
+@@ -1553,11 +1411,6 @@ void _OutputArray::create(int dims, cons
+         return;
+     }
+ 
+-    if( k == OCL_MAT )
+-    {
+-        CV_Error(CV_StsNotImplemented, "This method is not implemented for oclMat yet");
+-    }
+-
+     if( k == NONE )
+     {
+         CV_Error(CV_StsNullPtr, "create() called for the missing output array" );
+@@ -1636,24 +1489,6 @@ void _OutputArray::release() const
+         return;
+     }
+ 
+-    if( k == GPU_MAT )
+-    {
+-        ((gpu::GpuMat*)obj)->release();
+-        return;
+-    }
+-
+-    if( k == OPENGL_BUFFER )
+-    {
+-        ((ogl::Buffer*)obj)->release();
+-        return;
+-    }
+-
+-    if( k == OPENGL_TEXTURE )
+-    {
+-        ((ogl::Texture2D*)obj)->release();
+-        return;
+-    }
+-
+     if( k == NONE )
+         return;
+ 
+@@ -1669,11 +1504,6 @@ void _OutputArray::release() const
+         return;
+     }
+ 
+-    if( k == OCL_MAT )
+-    {
+-        CV_Error(CV_StsNotImplemented, "This method is not implemented for oclMat yet");
+-    }
+-
+     CV_Assert( k == STD_VECTOR_MAT );
+     //if( k == STD_VECTOR_MAT )
+     {
+@@ -1717,27 +1547,6 @@ Mat& _OutputArray::getMatRef(int i) cons
+     }
+ }
+ 
+-gpu::GpuMat& _OutputArray::getGpuMatRef() const
+-{
+-    int k = kind();
+-    CV_Assert( k == GPU_MAT );
+-    return *(gpu::GpuMat*)obj;
+-}
+-
+-ogl::Buffer& _OutputArray::getOGlBufferRef() const
+-{
+-    int k = kind();
+-    CV_Assert( k == OPENGL_BUFFER );
+-    return *(ogl::Buffer*)obj;
+-}
+-
+-ogl::Texture2D& _OutputArray::getOGlTexture2DRef() const
+-{
+-    int k = kind();
+-    CV_Assert( k == OPENGL_TEXTURE );
+-    return *(ogl::Texture2D*)obj;
+-}
+-
+ static _OutputArray _none;
+ OutputArray noArray() { return _none; }
+ 

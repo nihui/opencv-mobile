@@ -1,9 +1,9 @@
 name: release
-# on: [push, pull_request]
-on:
-  push:
-    tags:
-      - '*'
+on: pull_request
+# on:
+#   push:
+#     tags:
+#       - '*'
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_13.4.1.app/Contents/Developer
@@ -37,6 +37,22 @@ jobs:
         rm opencv-${{ env.opencv-version }}.zip
         cd opencv-${{ env.opencv-version }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+
+        rm modules/core/src/gl_*
+        rm modules/core/src/gpumat.cpp
+        rm modules/core/src/opengl_*
+        rm modules/core/include/opencv2/core/cuda_*
+        rm modules/core/include/opencv2/core/devmem2d.hpp
+        rm modules/core/include/opencv2/core/gpumat.hpp
+        rm modules/core/include/opencv2/core/opengl_*
+        rm modules/core/include/opencv2/core/wimage.hpp
+
+        rm -rf modules/dynamicuda
+        rm -rf modules/gpu
+        rm -rf modules/ocl
+
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-gpu.patch
+
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-highgui-include.patch
@@ -67,6 +83,51 @@ jobs:
         rm opencv-${{ env.opencv-version }}.zip
         cd opencv-${{ env.opencv-version }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+
+        rm modules/core/src/cuda_*
+        rm modules/core/src/direct*
+        rm modules/core/src/gl_*
+        rm modules/core/src/intel_gpu_*
+        rm modules/core/src/ocl*
+        rm modules/core/src/opengl.cpp
+        rm modules/core/src/ovx.cpp
+        rm modules/core/src/umatrix.hpp
+        rm modules/core/src/va_intel.cpp
+
+        rm modules/core/include/opencv2/core/cuda*.hpp
+        rm modules/core/include/opencv2/core/directx.hpp
+        rm modules/core/include/opencv2/core/ippasync.hpp
+        rm modules/core/include/opencv2/core/ocl*.hpp
+        rm modules/core/include/opencv2/core/opengl.hpp
+        rm modules/core/include/opencv2/core/ovx.hpp
+        rm modules/core/include/opencv2/core/private.cuda.hpp
+        rm modules/core/include/opencv2/core/va_intel.hpp
+        rm modules/core/include/opencv2/core/wimage.hpp
+        rm -rf modules/core/include/opencv2/core/cuda
+        rm -rf modules/core/include/opencv2/core/opencl
+        rm -rf modules/core/include/opencv2/core/openvx
+
+        rm modules/photo/src/denoising.cuda.cpp
+        rm modules/photo/include/opencv2/photo/cuda.hpp
+
+        rm -rf modules/cuda*
+        rm -rf modules/cudev
+
+        find modules -type d | xargs -i rm -rf {}/src/cuda
+        find modules -type d | xargs -i rm -rf {}/src/opencl
+        find modules -type d | xargs -i rm -rf {}/perf/cuda
+        find modules -type d | xargs -i rm -rf {}/perf/opencl
+        find modules -type f | xargs -i sed -i '/opencl_kernels/d' {}
+        find modules -type f | xargs -i sed -i '/cuda.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/opengl.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ocl_defs.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ocl.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ovx_defs.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ovx.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/va_intel.hpp/d' {}
+
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-gpu.patch
+
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
@@ -96,6 +157,47 @@ jobs:
         cd opencv-${{ env.opencv-version }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
+
+        rm modules/core/src/cuda_*
+        rm modules/core/src/direct*
+        rm modules/core/src/gl_*
+        rm modules/core/src/intel_gpu_*
+        rm modules/core/src/ocl*
+        rm modules/core/src/opengl.cpp
+        rm modules/core/src/ovx.cpp
+        rm modules/core/src/umatrix.hpp
+        rm modules/core/src/va_intel.cpp
+        rm modules/core/src/va_wrapper.impl.hpp
+
+        rm modules/core/include/opencv2/core/cuda*.hpp
+        rm modules/core/include/opencv2/core/directx.hpp
+        rm modules/core/include/opencv2/core/ocl*.hpp
+        rm modules/core/include/opencv2/core/opengl.hpp
+        rm modules/core/include/opencv2/core/ovx.hpp
+        rm modules/core/include/opencv2/core/private.cuda.hpp
+        rm modules/core/include/opencv2/core/va_*.hpp
+        rm -rf modules/core/include/opencv2/core/cuda
+        rm -rf modules/core/include/opencv2/core/opencl
+        rm -rf modules/core/include/opencv2/core/openvx
+
+        rm modules/photo/src/denoising.cuda.cpp
+        rm modules/photo/include/opencv2/photo/cuda.hpp
+
+        find modules -type d | xargs -i rm -rf {}/src/cuda
+        find modules -type d | xargs -i rm -rf {}/src/opencl
+        find modules -type d | xargs -i rm -rf {}/perf/cuda
+        find modules -type d | xargs -i rm -rf {}/perf/opencl
+        find modules -type f | xargs -i sed -i '/opencl_kernels/d' {}
+        find modules -type f | xargs -i sed -i '/cuda.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/opengl.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ocl_defs.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ocl.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ovx_defs.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ovx.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/va_intel.hpp/d' {}
+
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-gpu.patch
+
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
@@ -1145,21 +1247,21 @@ jobs:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
 
-  release:
-    permissions:
-      contents: write  # for softprops/action-gh-release to create a release
-    needs: [setup, android, ios, ios-simulator, armlinux, macos, mac-catalyst, windows, ubuntu, webassembly, apple, devboard]
-    runs-on: ubuntu-latest
-    steps:
-    - name: download
-      uses: actions/download-artifact@v4
-      with:
-        path: artifacts
-
-    - name: create-release
-      uses: softprops/action-gh-release@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag_name: ${{ needs.setup.outputs.VERSION }}
-        name: Release ${{ needs.setup.outputs.VERSION }}
-        files: artifacts/*/*.zip
+  # release:
+  #   permissions:
+  #     contents: write  # for softprops/action-gh-release to create a release
+  #   needs: [setup, android, ios, ios-simulator, armlinux, macos, mac-catalyst, windows, ubuntu, webassembly, apple, devboard]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: download
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       path: artifacts
+  #
+  #   - name: create-release
+  #     uses: softprops/action-gh-release@v1
+  #     with:
+  #       token: ${{ secrets.GITHUB_TOKEN }}
+  #       tag_name: ${{ needs.setup.outputs.VERSION }}
+  #       name: Release ${{ needs.setup.outputs.VERSION }}
+  #       files: artifacts/*/*.zip
