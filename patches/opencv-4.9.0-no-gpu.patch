@@ -2284,7 +2284,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/precomp.hpp opencv-4.9.0/modules/
  #ifdef HAVE_OPENVX
 diff -Nuarp opencv-4.9.0.orig/modules/core/src/umatrix.cpp opencv-4.9.0/modules/core/src/umatrix.cpp
 --- opencv-4.9.0.orig/modules/core/src/umatrix.cpp	2024-02-07 14:55:35.428465053 +0800
-+++ opencv-4.9.0/modules/core/src/umatrix.cpp	2024-02-07 15:05:20.091419030 +0800
++++ opencv-4.9.0/modules/core/src/umatrix.cpp	2024-02-07 15:10:18.018395577 +0800
 @@ -40,7 +40,6 @@
  //M*/
  
@@ -2307,14 +2307,14 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/umatrix.cpp opencv-4.9.0/modules/
  UMatData::UMatData(const MatAllocator* allocator)
  {
      prevAllocator = currAllocator = allocator;
-@@ -256,6 +248,7 @@ UMatDataAutoLock::~UMatDataAutoLock()
- 
- #endif  // OPENCV_DISABLE_THREAD_SUPPORT
+@@ -126,6 +118,7 @@ UMatData::~UMatData()
+     }
+ }
  
 +#if 0
- //////////////////////////////// UMat ////////////////////////////////
+ #ifndef OPENCV_DISABLE_THREAD_SUPPORT
  
- UMat::UMat(UMatUsageFlags _usageFlags) CV_NOEXCEPT
+ // it should be a prime number for the best hash function
 @@ -1398,6 +1391,7 @@ UMat UMat::ones(int ndims, const int* sz
  {
      return UMat(ndims, sz, type, Scalar(1), usageFlags);
