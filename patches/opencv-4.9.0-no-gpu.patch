@@ -2284,8 +2284,16 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/precomp.hpp opencv-4.9.0/modules/
  #ifdef HAVE_OPENVX
 diff -Nuarp opencv-4.9.0.orig/modules/core/src/umatrix.cpp opencv-4.9.0/modules/core/src/umatrix.cpp
 --- opencv-4.9.0.orig/modules/core/src/umatrix.cpp	2024-02-07 14:55:35.428465053 +0800
-+++ opencv-4.9.0/modules/core/src/umatrix.cpp	2024-02-07 14:57:26.957456274 +0800
-@@ -48,13 +48,6 @@
++++ opencv-4.9.0/modules/core/src/umatrix.cpp	2024-02-07 15:05:20.091419030 +0800
+@@ -40,7 +40,6 @@
+ //M*/
+ 
+ #include "precomp.hpp"
+-#include "umatrix.hpp"
+ 
+ #include <opencv2/core/utils/tls.hpp>
+ 
+@@ -48,13 +47,6 @@
  
  namespace cv {
  
@@ -2299,7 +2307,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/umatrix.cpp opencv-4.9.0/modules/
  UMatData::UMatData(const MatAllocator* allocator)
  {
      prevAllocator = currAllocator = allocator;
-@@ -256,6 +249,7 @@ UMatDataAutoLock::~UMatDataAutoLock()
+@@ -256,6 +248,7 @@ UMatDataAutoLock::~UMatDataAutoLock()
  
  #endif  // OPENCV_DISABLE_THREAD_SUPPORT
  
@@ -2307,7 +2315,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/umatrix.cpp opencv-4.9.0/modules/
  //////////////////////////////// UMat ////////////////////////////////
  
  UMat::UMat(UMatUsageFlags _usageFlags) CV_NOEXCEPT
-@@ -1398,6 +1392,7 @@ UMat UMat::ones(int ndims, const int* sz
+@@ -1398,6 +1391,7 @@ UMat UMat::ones(int ndims, const int* sz
  {
      return UMat(ndims, sz, type, Scalar(1), usageFlags);
  }
