@@ -2276,6 +2276,47 @@ diff -Nuarp opencv-3.4.20.orig/modules/core/src/precomp.hpp opencv-3.4.20/module
      int useIPP;    // 1 - use, 0 - do not use, -1 - auto/not initialized
      int useIPP_NE; // 1 - use, 0 - do not use, -1 - auto/not initialized
  #ifdef HAVE_TEGRA_OPTIMIZATION
+diff -Nuarp opencv-3.4.20.orig/modules/core/src/umatrix.cpp opencv-3.4.20/modules/core/src/umatrix.cpp
+--- opencv-3.4.20.orig/modules/core/src/umatrix.cpp	2024-02-07 13:12:34.215951630 +0800
++++ opencv-3.4.20/modules/core/src/umatrix.cpp	2024-02-07 13:13:56.376945163 +0800
+@@ -40,7 +40,6 @@
+ //M*/
+ 
+ #include "precomp.hpp"
+-#include "umatrix.hpp"
+ 
+ #include <opencv2/core/utils/tls.hpp>
+ 
+@@ -48,13 +47,6 @@
+ 
+ namespace cv {
+ 
+-// forward decls, implementation is below in this file
+-void setSize(UMat& m, int _dims, const int* _sz, const size_t* _steps,
+-             bool autoSteps = false);
+-
+-void updateContinuityFlag(UMat& m);
+-void finalizeHdr(UMat& m);
+-
+ // it should be a prime number for the best hash function
+ enum { UMAT_NLOCKS = 31 };
+ static Mutex umatLocks[UMAT_NLOCKS];
+@@ -151,6 +143,7 @@ void UMatData::unlock()
+ }
+ 
+ 
++#if 0
+ // Do not allow several lock() calls with different UMatData objects.
+ struct UMatDataAutoLocker
+ {
+@@ -1304,6 +1297,7 @@ UMat UMat::ones(int ndims, const int* sz
+ {
+     return UMat(ndims, sz, type, Scalar(1));
+ }
++#endif
+ 
+ }
+ 
 diff -Nuarp opencv-3.4.20.orig/modules/features2d/include/opencv2/features2d.hpp opencv-3.4.20/modules/features2d/include/opencv2/features2d.hpp
 --- opencv-3.4.20.orig/modules/features2d/include/opencv2/features2d.hpp	2024-02-07 11:32:04.980426244 +0800
 +++ opencv-3.4.20/modules/features2d/include/opencv2/features2d.hpp	2024-02-07 11:20:05.634482870 +0800
