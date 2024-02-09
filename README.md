@@ -331,7 +331,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
     <br /><b>tinyvision</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
-  &#10060; HW JPG decoder (WIP)<br />
+  &#9989; HW JPG decoder<br />
   &#10060; HW JPG encoder (WIP)<br />
   &#9989; MIPI CSI camera<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-tinyvision.zip">
