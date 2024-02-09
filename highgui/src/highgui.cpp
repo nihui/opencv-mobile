@@ -40,6 +40,7 @@
 #include "stb_image_write.h"
 
 #if defined __linux__
+#include "jpeg_decoder_aw.h"
 #include "jpeg_decoder_cvi.h"
 #include "jpeg_encoder_rk_mpp.h"
 #endif
@@ -154,6 +155,36 @@ Mat imread(const String& filename, int flags)
     if (buf_size > 4 && buf_data[0] == 0xFF && buf_data[1] == 0xD8)
     {
         // jpg magic
+        if (jpeg_decoder_aw::supported(buf_data, buf_size))
+        {
+            int w = 0;
+            int h = 0;
+            int c = desired_channels;
+
+            jpeg_decoder_aw d;
+            int ret = d.init(buf_data, buf_size, &w, &h, &c);
+            if (ret == 0 && (c == 1 || c == 3))
+            {
+                Mat img;
+                if (c == 1)
+                {
+                    img.create(h, w, CV_8UC1);
+                }
+                else // if (c == 3)
+                {
+                    img.create(h, w, CV_8UC3);
+                }
+
+                ret = d.decode(buf_data, buf_size, img.data);
+                if (ret == 0)
+                {
+                    d.deinit();
+                    return img;
+                }
+            }
+
+            // fallback to stbi_load_from_memory
+        }
         if (jpeg_decoder_cvi::supported(buf_data, buf_size))
         {
             int w = 0;
@@ -410,6 +441,36 @@ Mat imdecode(InputArray _buf, int flags)
     if (buf_size > 4 && buf_data[0] == 0xFF && buf_data[1] == 0xD8)
     {
         // jpg magic
+        if (jpeg_decoder_aw::supported(buf_data, buf_size))
+        {
+            int w = 0;
+            int h = 0;
+            int c = desired_channels;
+
+            jpeg_decoder_aw d;
+            int ret = d.init(buf_data, buf_size, &w, &h, &c);
+            if (ret == 0 && (c == 1 || c == 3))
+            {
+                Mat img;
+                if (c == 1)
+                {
+                    img.create(h, w, CV_8UC1);
+                }
+                else // if (c == 3)
+                {
+                    img.create(h, w, CV_8UC3);
+                }
+
+                ret = d.decode(buf_data, buf_size, img.data);
+                if (ret == 0)
+                {
+                    d.deinit();
+                    return img;
+                }
+            }
+
+            // fallback to stbi_load_from_memory
+        }
         if (jpeg_decoder_cvi::supported(buf_data, buf_size))
         {
             int w = 0;
