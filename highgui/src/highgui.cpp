@@ -42,6 +42,7 @@
 #if defined __linux__
 #include "jpeg_decoder_aw.h"
 #include "jpeg_decoder_cvi.h"
+#include "jpeg_encoder_aw.h"
 #include "jpeg_encoder_rk_mpp.h"
 #endif
 
@@ -320,6 +321,38 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
 #if defined __linux__
     if (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG")
     {
+        if (jpeg_encoder_aw::supported(img.cols, img.rows, c))
+        {
+            // anything to bgr
+            if (!img.isContinuous())
+            {
+                img = img.clone();
+            }
+
+            int quality = 95;
+            for (size_t i = 0; i < params.size(); i += 2)
+            {
+                if (params[i] == IMWRITE_JPEG_QUALITY)
+                {
+                    quality = params[i + 1];
+                    break;
+                }
+            }
+
+            jpeg_encoder_aw e;
+            int ret = e.init(img.cols, img.rows, c, quality);
+            if (ret == 0)
+            {
+                ret = e.encode(img.data, filename.c_str());
+                if (ret == 0)
+                {
+                    e.deinit();
+                    return true;
+                }
+            }
+
+            // fallback to stb_image_write
+        }
         if (jpeg_encoder_rk_mpp::supported(img.cols, img.rows, c))
         {
             // anything to bgr
@@ -604,6 +637,38 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
 #if defined __linux__
     if (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG")
     {
+        if (jpeg_encoder_aw::supported(img.cols, img.rows, c))
+        {
+            // anything to bgr
+            if (!img.isContinuous())
+            {
+                img = img.clone();
+            }
+
+            int quality = 95;
+            for (size_t i = 0; i < params.size(); i += 2)
+            {
+                if (params[i] == IMWRITE_JPEG_QUALITY)
+                {
+                    quality = params[i + 1];
+                    break;
+                }
+            }
+
+            jpeg_encoder_aw e;
+            int ret = e.init(img.cols, img.rows, c, quality);
+            if (ret == 0)
+            {
+                ret = e.encode(img.data, buf);
+                if (ret == 0)
+                {
+                    e.deinit();
+                    return true;
+                }
+            }
+
+            // fallback to stb_image_write
+        }
         if (jpeg_encoder_rk_mpp::supported(img.cols, img.rows, c))
         {
             // anything to bgr
