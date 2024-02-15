@@ -37,7 +37,8 @@
 #include "kanna_rotate.h"
 
 // 0 = unknown
-// 1 = tinyvision
+// 1 = t113-i
+// 2 = tinyvision
 static int get_device_model()
 {
     static int device_model = -1;
@@ -54,10 +55,15 @@ static int get_device_model()
         fgets(buf, 1024, fp);
         fclose(fp);
 
+        if (strncmp(buf, "sun8iw20", 8) == 0)
+        {
+            // t113-i
+            device_model = 1;
+        }
         if (strncmp(buf, "sun8iw21", 8) == 0)
         {
             // tinyvision
-            device_model = 1;
+            device_model = 2;
         }
     }
 
@@ -69,6 +75,11 @@ static bool is_device_whitelisted()
     const int device_model = get_device_model();
 
     if (device_model == 1)
+    {
+        // t113-i
+        return true;
+    }
+    if (device_model == 2)
     {
         // tinyvision
         return true;
@@ -793,7 +804,7 @@ jpeg_decoder_aw_impl::jpeg_decoder_aw_impl()
     components = 0;
     sampling_factor = -1;
     progressive = 0;
-    orientation = -1;
+    orientation = 0;
 }
 
 jpeg_decoder_aw_impl::~jpeg_decoder_aw_impl()
@@ -901,7 +912,6 @@ int jpeg_decoder_aw_impl::init(const unsigned char* jpgdata, int jpgsize, int* _
                 orientation = 1;
         }
     }
-    // orientation = 7;
 
     if (corrupted)
         return -1;
@@ -1002,8 +1012,6 @@ int jpeg_decoder_aw_impl::decode(const unsigned char* jpgdata, int jpgsize, unsi
         vconfig.nDisplayHoldingFrameBufferNum = 1;
         vconfig.nRotateHoldingFrameBufferNum = 0;
         vconfig.nDecodeSmoothFrameBufferNum = 1;
-        vconfig.nSupportMaxWidth = src_width;
-        vconfig.nSupportMaxHeight = src_height;
 
         int ret = InitializeVideoDecoder(vdec, &videoInfo, &vconfig);
         if (ret != 0)
@@ -1044,17 +1052,11 @@ int jpeg_decoder_aw_impl::decode(const unsigned char* jpgdata, int jpgsize, unsi
 
     {
         VideoStreamDataInfo dataInfo;
+        memset(&dataInfo, 0, sizeof(dataInfo));
         dataInfo.pData = pBuf;
         dataInfo.nLength = jpgsize;
-        dataInfo.nPts = 0;
-        dataInfo.nPcr = 0;
         dataInfo.bIsFirstPart = 1;
         dataInfo.bIsLastPart = 1;
-        dataInfo.nID = 0;
-        dataInfo.nStreamIndex = 0;
-        dataInfo.bValid = 0;
-        dataInfo.bVideoInfoFlag = 0;
-        dataInfo.pVideoInfo = 0;
 
         int ret = SubmitVideoStreamData(vdec, &dataInfo, 0);
         if (ret != 0)
@@ -1161,7 +1163,7 @@ int jpeg_decoder_aw_impl::deinit()
     components = 0;
     sampling_factor = -1;
     progressive = 0;
-    orientation = -1;
+    orientation = 0;
 
     return 0;
 }

@@ -500,23 +500,23 @@ static int unload_vencoder_library()
     dlclose(libvencoder);
     libvencoder = 0;
 
-    VideoEncCreate               = 0;
-    VideoEncDestroy              = 0;
-    VideoEncInit                 = 0;
-    VideoEncUnInit               = 0;
-    AllocInputBuffer             = 0;
-    GetOneAllocInputBuffer       = 0;
-    FlushCacheAllocInputBuffer   = 0;
-    ReturnOneAllocInputBuffer    = 0;
-    ReleaseAllocInputBuffer      = 0;
-    AddOneInputBuffer            = 0;
-    VideoEncodeOneFrame          = 0;
-    AlreadyUsedInputBuffer       = 0;
-    ValidBitstreamFrameNum       = 0;
-    GetOneBitstreamFrame         = 0;
-    FreeOneBitStreamFrame        = 0;
-    VideoEncGetParameter         = 0;
-    VideoEncSetParameter         = 0;
+    VideoEncCreate = 0;
+    VideoEncDestroy = 0;
+    VideoEncInit = 0;
+    VideoEncUnInit = 0;
+    AllocInputBuffer = 0;
+    GetOneAllocInputBuffer = 0;
+    FlushCacheAllocInputBuffer = 0;
+    ReturnOneAllocInputBuffer = 0;
+    ReleaseAllocInputBuffer = 0;
+    AddOneInputBuffer = 0;
+    VideoEncodeOneFrame = 0;
+    AlreadyUsedInputBuffer = 0;
+    ValidBitstreamFrameNum = 0;
+    GetOneBitstreamFrame = 0;
+    FreeOneBitStreamFrame = 0;
+    VideoEncGetParameter = 0;
+    VideoEncSetParameter = 0;
 
     return 0;
 }
