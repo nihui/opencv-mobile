@@ -95,10 +95,31 @@ typedef void (*PFN_AddVDPluginSingle)(const char* lib);
 
 }
 
+static void* libcdc_base = 0;
 static void* libvideoengine = 0;
 
 static PFN_AddVDPlugin AddVDPlugin = 0;
 static PFN_AddVDPluginSingle AddVDPluginSingle = 0;
+
+static int unload_videoengine_library()
+{
+    if (libcdc_base)
+    {
+        dlclose(libcdc_base);
+        libcdc_base = 0;
+    }
+
+    if (libvideoengine)
+    {
+        dlclose(libvideoengine);
+        libvideoengine = 0;
+    }
+
+    AddVDPlugin = 0;
+    AddVDPluginSingle = 0;
+
+    return 0;
+}
 
 static int load_videoengine_library()
 {
@@ -113,6 +134,16 @@ static int load_videoengine_library()
         return -1;
     }
 
+    libcdc_base = dlopen("libcdc_base.so", RTLD_GLOBAL | RTLD_LAZY);
+    if (!libcdc_base)
+    {
+        libcdc_base = dlopen("/usr/lib/libcdc_base.so", RTLD_GLOBAL | RTLD_LAZY);
+    }
+    if (!libcdc_base)
+    {
+        goto OUT;
+    }
+
     libvideoengine = dlopen("libvideoengine.so", RTLD_LOCAL | RTLD_NOW);
     if (!libvideoengine)
     {
@@ -120,27 +151,18 @@ static int load_videoengine_library()
     }
     if (!libvideoengine)
     {
-        return -1;
+        goto OUT;
     }
 
     AddVDPlugin = (PFN_AddVDPlugin)dlsym(libvideoengine, "AddVDPlugin");
     AddVDPluginSingle = (PFN_AddVDPluginSingle)dlsym(libvideoengine, "AddVDPluginSingle");
 
     return 0;
-}
 
-static int unload_videoengine_library()
-{
-    if (!libvideoengine)
-        return 0;
+OUT:
+    unload_videoengine_library();
 
-    dlclose(libvideoengine);
-    libvideoengine = 0;
-
-    AddVDPlugin = 0;
-    AddVDPluginSingle = 0;
-
-    return 0;
+    return -1;
 }
 
 class videoengine_library_loader
@@ -373,6 +395,70 @@ typedef struct VCONFIG
     eCommonConfigFlag  commonConfigFlag;
     int               bATMFlag;
 }VConfig;
+
+typedef enum eVeLbcMode
+{
+    LBC_MODE_DISABLE  = 0,
+    LBC_MODE_1_5X     = 1,
+    LBC_MODE_2_0X     = 2,
+    LBC_MODE_2_5X     = 3,
+    LBC_MODE_NO_LOSSY = 4,
+}eVeLbcMode;
+
+typedef struct VCONFIG_v85x
+{
+    int bScaleDownEn;
+    int bRotationEn;
+    int bSecOutputEn;
+    int nHorizonScaleDownRatio;
+    int nVerticalScaleDownRatio;
+    int nSecHorizonScaleDownRatio;
+    int nSecVerticalScaleDownRatio;
+    int nRotateDegree;
+    int bThumbnailMode;
+    int eOutputPixelFormat;
+    int eSecOutputPixelFormat;
+    int bNoBFrames;
+    int bDisable3D;
+    int bSupportMaf;    //not use
+    int bDispErrorFrame;
+    int nVbvBufferSize;
+    int nFrameBufferNum;
+    int bSecureosEn;
+    int  bGpuBufValid;
+    int  nAlignStride;
+    int  bIsSoftDecoderFlag;
+    int  bVirMallocSbm;
+    int  bSupportPallocBufBeforeDecode;
+    //only used for xuqi, set this flag to 1 meaning palloc the fbm buffer before
+    // decode the sequence, to short the first frame decoing time
+    int nDeInterlaceHoldingFrameBufferNum;
+    int nDisplayHoldingFrameBufferNum;
+    int nRotateHoldingFrameBufferNum;
+    int nDecodeSmoothFrameBufferNum;
+    int bIsTvStream;
+    eVeLbcMode nLbcLossyComMod;//1:1.5x; 2:2x; 3:2.5x;
+
+    struct ScMemOpsS *memops;
+    eControlAfbcMode  eCtlAfbcMode;
+    eControlIptvMode  eCtlIptvMode;
+
+    VeOpsS*           veOpsS;
+    void*             pVeOpsSelf;
+    int               bConvertVp910bitTo8bit;
+    unsigned int      nVeFreq;
+
+    int               bCalledByOmxFlag;
+
+    int               bSetProcInfoEnable; //* for check the decoder info by cat devices-note
+    int               nSetProcInfoFreq;
+    int               nChannelNum;
+    int               nSupportMaxWidth;  //the max width of mjpeg continue decode
+    int               nSupportMaxHeight; //the max height of mjpeg continue decode
+
+    unsigned int bIsLossy; //lossy compression or not
+    unsigned int bRcEn;    //compact storage or not
+}VConfig_v85x;
 
 typedef struct VIDEOSTREAMDATAINFO
 {
@@ -1013,7 +1099,19 @@ int jpeg_decoder_aw_impl::decode(const unsigned char* jpgdata, int jpgsize, unsi
         vconfig.nRotateHoldingFrameBufferNum = 0;
         vconfig.nDecodeSmoothFrameBufferNum = 1;
 
-        int ret = InitializeVideoDecoder(vdec, &videoInfo, &vconfig);
+        VConfig_v85x vconfig_v85x;
+        memset(&vconfig_v85x, 0, sizeof(vconfig_v85x));
+        vconfig_v85x.eOutputPixelFormat = PIXEL_FORMAT_NV21;
+        vconfig_v85x.eSecOutputPixelFormat = PIXEL_FORMAT_NV21;
+        vconfig_v85x.bSupportPallocBufBeforeDecode = 1;
+        vconfig_v85x.nDeInterlaceHoldingFrameBufferNum = 1;
+        vconfig_v85x.nDisplayHoldingFrameBufferNum = 1;
+        vconfig_v85x.nRotateHoldingFrameBufferNum = 0;
+        vconfig_v85x.nDecodeSmoothFrameBufferNum = 1;
+
+        VConfig* p_vconfig = get_device_model() == 2 ? (VConfig*)&vconfig_v85x : &vconfig;
+
+        int ret = InitializeVideoDecoder(vdec, &videoInfo, p_vconfig);
         if (ret != 0)
         {
             fprintf(stderr, "InitializeVideoDecoder failed %d\n", ret);
