@@ -87,6 +87,9 @@ static bool is_device_whitelisted()
     return false;
 }
 
+
+
+
 extern "C" {
 
 typedef enum VENC_CODEC_TYPE {
@@ -315,6 +318,15 @@ typedef enum VENC_INDEXTYPE {
 struct ScMemOpsS;
 struct VeOpsS;
 
+typedef enum eVeLbcMode
+{
+    LBC_MODE_DISABLE  = 0,
+    LBC_MODE_1_5X     = 1,
+    LBC_MODE_2_0X     = 2,
+    LBC_MODE_2_5X     = 3,
+    LBC_MODE_NO_LOSSY = 4,
+}eVeLbcMode;
+
 typedef struct VencBaseConfig {
     unsigned char       bEncH264Nalu;
     unsigned int        nInputWidth;
@@ -335,6 +347,38 @@ typedef struct VencBaseConfig {
     unsigned char     bIsVbvNoCache;
     //* end
 } VencBaseConfig;
+
+typedef struct VencBaseConfig_v85x {
+    unsigned char       bEncH264Nalu;
+    unsigned int        nInputWidth;
+    unsigned int        nInputHeight;
+    unsigned int        nDstWidth;
+    unsigned int        nDstHeight;
+    unsigned int        nStride;
+    VENC_PIXEL_FMT      eInputFormat;
+    struct ScMemOpsS *memops;
+    VeOpsS*           veOpsS;
+    void*             pVeOpsSelf;
+
+    unsigned char     bOnlyWbFlag;
+
+    //* for v5v200 and newer ic
+    unsigned char     bLbcLossyComEnFlag1_5x;
+    unsigned char     bLbcLossyComEnFlag2x;
+    unsigned char     bLbcLossyComEnFlag2_5x;
+    unsigned char     bIsVbvNoCache;
+	//* end
+
+    unsigned int      bOnlineMode;    //* 1: online mode,    0: offline mode;
+    unsigned int      bOnlineChannel; //* 1: online channel, 0: offline channel;
+    unsigned int      nOnlineShareBufNum; //* share buffer num
+
+	//*for debug
+    unsigned int extend_flag;  //* flag&0x1: printf reg before interrupt
+                               //* flag&0x2: printf reg after  interrupt
+    eVeLbcMode   rec_lbc_mode; //*0: disable, 1:1.5x , 2: 2.0x, 3: 2.5x, 4: no_lossy
+	//*for debug(end)
+} VencBaseConfig_v85x;
 
 typedef struct VencAllocateBufferParam {
     unsigned int   nBufferNum;
@@ -384,6 +428,30 @@ typedef struct VencInputBuffer {
     int             envLV;
 } VencInputBuffer;
 
+typedef struct VencInputBuffer_v85x {
+    unsigned long  nID;
+    long long         nPts;
+    unsigned int   nFlag;
+    unsigned char* pAddrPhyY;
+    unsigned char* pAddrPhyC;
+    unsigned char* pAddrVirY;
+    unsigned char* pAddrVirC;
+    int            bEnableCorp;
+    VencRect       sCropInfo;
+
+    int            ispPicVar;
+    int            ispPicVarChroma;     //chroma  filter  coef[0-63],  from isp
+    int			   bUseInputBufferRoi;
+    VencROIConfig  roi_param[8];
+    int            bAllocMemSelf;
+    int            nShareBufFd;
+    unsigned char  bUseCsiColorFormat;
+    VENC_PIXEL_FMT eCsiColorFormat;
+
+    int             envLV;
+    int             bNeedFlushCache;
+}VencInputBuffer_v85x;
+
 typedef struct FrameInfo {
     int             CurrQp;
     int             avQp;
@@ -426,6 +494,59 @@ typedef int (*PFN_FreeOneBitStreamFrame)(VideoEncoder* pEncoder, VencOutputBuffe
 typedef int (*PFN_VideoEncGetParameter)(VideoEncoder* pEncoder, VENC_INDEXTYPE indexType, void* paramData);
 typedef int (*PFN_VideoEncSetParameter)(VideoEncoder* pEncoder, VENC_INDEXTYPE indexType, void* paramData);
 
+// v85x
+typedef VideoEncoder* (*PFN_VencCreate)(VENC_CODEC_TYPE eCodecType);
+typedef void (*PFN_VencDestroy)(VideoEncoder* pEncoder);
+typedef int (*PFN_VencInit)(VideoEncoder* pEncoder, VencBaseConfig_v85x* pConfig);
+typedef int (*PFN_VencStart)(VideoEncoder* pEncoder);
+typedef int (*PFN_VencPause)(VideoEncoder* pEncoder);
+typedef int (*PFN_VencReset)(VideoEncoder* pEncoder);
+typedef int (*PFN_VencAllocateInputBuf)(VideoEncoder* pEncoder, VencAllocateBufferParam *pBufferParam, VencInputBuffer_v85x* dst_inputBuf);
+typedef int (*PFN_VencGetValidInputBufNum)(VideoEncoder* pEncoder);
+typedef int (*PFN_VencQueueInputBuf)(VideoEncoder* pEncoder, VencInputBuffer_v85x* inputbuffer);
+typedef int (*PFN_VencGetValidOutputBufNum)(VideoEncoder* pEncoder);
+typedef int (*PFN_VencDequeueOutputBuf)(VideoEncoder* pEncoder, VencOutputBuffer* pBuffer);
+typedef int (*PFN_VencQueueOutputBuf)(VideoEncoder* pEncoder, VencOutputBuffer* pBuffer);
+typedef int (*PFN_VencGetParameter)(VideoEncoder* pEncoder, VENC_INDEXTYPE indexType, void* paramData);
+typedef int (*PFN_VencSetParameter)(VideoEncoder* pEncoder, VENC_INDEXTYPE indexType, void* paramData);
+
+typedef enum
+{
+    VencEvent_FrameFormatNotMatch  = 0,  // frame format is not match to initial setting.
+    VencEvent_UpdateMbModeInfo     = 1,
+    VencEvent_UpdateMbStatInfo     = 2,
+    VencEvent_UpdateSharpParam     = 3,
+    VencEvent_UpdateIspMotionParam = 4,
+    VencEvent_UpdateVeToIspParam   = 5,
+    VencEvent_Max = 0x7FFFFFFF
+} VencEventType;
+
+typedef struct
+{
+    int nResult;
+    VencInputBuffer *pInputBuffer;
+    //other informations about this frame encoding can be added below.
+
+} VencCbInputBufferDoneInfo;
+
+typedef struct
+{
+   int (*EventHandler)(
+        VideoEncoder* pEncoder,
+        void* pAppData,
+        VencEventType eEvent,
+        unsigned int nData1,
+        unsigned int nData2,
+        void* pEventData);
+
+    int (*InputBufferDone)(
+        VideoEncoder* pEncoder,
+        void* pAppData,
+        VencCbInputBufferDoneInfo* pBufferDoneInfo);
+} VencCbType;
+
+typedef int (*PFN_VencSetCallbacks)(VideoEncoder* pEncoder, VencCbType* pCallbacks, void* pAppData);
+
 }
 
 static void* libvencoder = 0;
@@ -447,6 +568,23 @@ static PFN_GetOneBitstreamFrame GetOneBitstreamFrame = 0;
 static PFN_FreeOneBitStreamFrame FreeOneBitStreamFrame = 0;
 static PFN_VideoEncGetParameter VideoEncGetParameter = 0;
 static PFN_VideoEncSetParameter VideoEncSetParameter = 0;
+
+// v85x
+static PFN_VencCreate VencCreate = 0;
+static PFN_VencDestroy VencDestroy = 0;
+static PFN_VencInit VencInit = 0;
+static PFN_VencStart VencStart = 0;
+static PFN_VencPause VencPause = 0;
+static PFN_VencReset VencReset = 0;
+static PFN_VencAllocateInputBuf VencAllocateInputBuf = 0;
+static PFN_VencGetValidInputBufNum VencGetValidInputBufNum = 0;
+static PFN_VencQueueInputBuf VencQueueInputBuf = 0;
+static PFN_VencGetValidOutputBufNum VencGetValidOutputBufNum = 0;
+static PFN_VencDequeueOutputBuf VencDequeueOutputBuf = 0;
+static PFN_VencQueueOutputBuf VencQueueOutputBuf = 0;
+static PFN_VencGetParameter VencGetParameter = 0;
+static PFN_VencSetParameter VencSetParameter = 0;
+static PFN_VencSetCallbacks VencSetCallbacks = 0;
 
 static int load_vencoder_library()
 {
@@ -471,23 +609,44 @@ static int load_vencoder_library()
         return -1;
     }
 
-    VideoEncCreate = (PFN_VideoEncCreate)dlsym(libvencoder, "VideoEncCreate");
-    VideoEncDestroy = (PFN_VideoEncDestroy)dlsym(libvencoder, "VideoEncDestroy");
-    VideoEncInit = (PFN_VideoEncInit)dlsym(libvencoder, "VideoEncInit");
-    VideoEncUnInit = (PFN_VideoEncUnInit)dlsym(libvencoder, "VideoEncUnInit");
-    AllocInputBuffer = (PFN_AllocInputBuffer)dlsym(libvencoder, "AllocInputBuffer");
-    GetOneAllocInputBuffer = (PFN_GetOneAllocInputBuffer)dlsym(libvencoder, "GetOneAllocInputBuffer");
-    FlushCacheAllocInputBuffer = (PFN_FlushCacheAllocInputBuffer)dlsym(libvencoder, "FlushCacheAllocInputBuffer");
-    ReturnOneAllocInputBuffer = (PFN_ReturnOneAllocInputBuffer)dlsym(libvencoder, "ReturnOneAllocInputBuffer");
-    ReleaseAllocInputBuffer = (PFN_ReleaseAllocInputBuffer)dlsym(libvencoder, "ReleaseAllocInputBuffer");
-    AddOneInputBuffer = (PFN_AddOneInputBuffer)dlsym(libvencoder, "AddOneInputBuffer");
-    VideoEncodeOneFrame = (PFN_VideoEncodeOneFrame)dlsym(libvencoder, "VideoEncodeOneFrame");
-    AlreadyUsedInputBuffer = (PFN_AlreadyUsedInputBuffer)dlsym(libvencoder, "AlreadyUsedInputBuffer");
-    ValidBitstreamFrameNum = (PFN_ValidBitstreamFrameNum)dlsym(libvencoder, "ValidBitstreamFrameNum");
-    GetOneBitstreamFrame = (PFN_GetOneBitstreamFrame)dlsym(libvencoder, "GetOneBitstreamFrame");
-    FreeOneBitStreamFrame = (PFN_FreeOneBitStreamFrame)dlsym(libvencoder, "FreeOneBitStreamFrame");
-    VideoEncGetParameter = (PFN_VideoEncGetParameter)dlsym(libvencoder, "VideoEncGetParameter");
-    VideoEncSetParameter = (PFN_VideoEncSetParameter)dlsym(libvencoder, "VideoEncSetParameter");
+    if (get_device_model() == 2)
+    {
+        VencCreate = (PFN_VencCreate)dlsym(libvencoder, "VencCreate");
+        VencDestroy = (PFN_VencDestroy)dlsym(libvencoder, "VencDestroy");
+        VencInit = (PFN_VencInit)dlsym(libvencoder, "VencInit");
+        VencStart = (PFN_VencStart)dlsym(libvencoder, "VencStart");
+        VencPause = (PFN_VencPause)dlsym(libvencoder, "VencPause");
+        VencReset = (PFN_VencReset)dlsym(libvencoder, "VencReset");
+        VencAllocateInputBuf = (PFN_VencAllocateInputBuf)dlsym(libvencoder, "VencAllocateInputBuf");
+        VencGetValidInputBufNum = (PFN_VencGetValidInputBufNum)dlsym(libvencoder, "VencGetValidInputBufNum");
+        VencQueueInputBuf = (PFN_VencQueueInputBuf)dlsym(libvencoder, "VencQueueInputBuf");
+        VencGetValidOutputBufNum = (PFN_VencGetValidOutputBufNum)dlsym(libvencoder, "VencGetValidOutputBufNum");
+        VencDequeueOutputBuf = (PFN_VencDequeueOutputBuf)dlsym(libvencoder, "VencDequeueOutputBuf");
+        VencQueueOutputBuf = (PFN_VencQueueOutputBuf)dlsym(libvencoder, "VencQueueOutputBuf");
+        VencGetParameter = (PFN_VencGetParameter)dlsym(libvencoder, "VencGetParameter");
+        VencSetParameter = (PFN_VencSetParameter)dlsym(libvencoder, "VencSetParameter");
+        VencSetCallbacks = (PFN_VencSetCallbacks)dlsym(libvencoder, "VencSetCallbacks");
+    }
+    else
+    {
+        VideoEncCreate = (PFN_VideoEncCreate)dlsym(libvencoder, "VideoEncCreate");
+        VideoEncDestroy = (PFN_VideoEncDestroy)dlsym(libvencoder, "VideoEncDestroy");
+        VideoEncInit = (PFN_VideoEncInit)dlsym(libvencoder, "VideoEncInit");
+        VideoEncUnInit = (PFN_VideoEncUnInit)dlsym(libvencoder, "VideoEncUnInit");
+        AllocInputBuffer = (PFN_AllocInputBuffer)dlsym(libvencoder, "AllocInputBuffer");
+        GetOneAllocInputBuffer = (PFN_GetOneAllocInputBuffer)dlsym(libvencoder, "GetOneAllocInputBuffer");
+        FlushCacheAllocInputBuffer = (PFN_FlushCacheAllocInputBuffer)dlsym(libvencoder, "FlushCacheAllocInputBuffer");
+        ReturnOneAllocInputBuffer = (PFN_ReturnOneAllocInputBuffer)dlsym(libvencoder, "ReturnOneAllocInputBuffer");
+        ReleaseAllocInputBuffer = (PFN_ReleaseAllocInputBuffer)dlsym(libvencoder, "ReleaseAllocInputBuffer");
+        AddOneInputBuffer = (PFN_AddOneInputBuffer)dlsym(libvencoder, "AddOneInputBuffer");
+        VideoEncodeOneFrame = (PFN_VideoEncodeOneFrame)dlsym(libvencoder, "VideoEncodeOneFrame");
+        AlreadyUsedInputBuffer = (PFN_AlreadyUsedInputBuffer)dlsym(libvencoder, "AlreadyUsedInputBuffer");
+        ValidBitstreamFrameNum = (PFN_ValidBitstreamFrameNum)dlsym(libvencoder, "ValidBitstreamFrameNum");
+        GetOneBitstreamFrame = (PFN_GetOneBitstreamFrame)dlsym(libvencoder, "GetOneBitstreamFrame");
+        FreeOneBitStreamFrame = (PFN_FreeOneBitStreamFrame)dlsym(libvencoder, "FreeOneBitStreamFrame");
+        VideoEncGetParameter = (PFN_VideoEncGetParameter)dlsym(libvencoder, "VideoEncGetParameter");
+        VideoEncSetParameter = (PFN_VideoEncSetParameter)dlsym(libvencoder, "VideoEncSetParameter");
+    }
 
     return 0;
 }
@@ -517,6 +676,22 @@ static int unload_vencoder_library()
     FreeOneBitStreamFrame = 0;
     VideoEncGetParameter = 0;
     VideoEncSetParameter = 0;
+
+    VencCreate = 0;
+    VencDestroy = 0;
+    VencInit = 0;
+    VencStart = 0;
+    VencPause = 0;
+    VencReset = 0;
+    VencAllocateInputBuf = 0;
+    VencGetValidInputBufNum = 0;
+    VencQueueInputBuf = 0;
+    VencGetValidOutputBufNum = 0;
+    VencDequeueOutputBuf = 0;
+    VencQueueOutputBuf = 0;
+    VencGetParameter = 0;
+    VencSetParameter = 0;
+    VencSetCallbacks = 0;
 
     return 0;
 }
@@ -822,13 +997,17 @@ public:
 
     int deinit();
 
-protected:
+public:
     int inited;
     int width;
     int height;
     int ch;
 
     VideoEncoder* venc;
+
+    mutable VencInputBuffer input_buffer;
+    mutable VencInputBuffer_v85x input_buffer_v85x;
+    int b_input_buffer_got;
 };
 
 jpeg_encoder_aw_impl::jpeg_encoder_aw_impl()
@@ -839,11 +1018,29 @@ jpeg_encoder_aw_impl::jpeg_encoder_aw_impl()
     ch = 0;
 
     venc = 0;
+
+    b_input_buffer_got = 0;
 }
 
 jpeg_encoder_aw_impl::~jpeg_encoder_aw_impl()
 {
     deinit();
+}
+
+static int EventHandler(VideoEncoder* pEncoder, void* pAppData, VencEventType eEvent, unsigned int nData1, unsigned int nData2, void* pEventData)
+{
+    fprintf(stderr, "EventHandler event = %d\n", eEvent);
+    return 0;
+}
+
+static int InputBufferDone(VideoEncoder* pEncoder, void* pAppData, VencCbInputBufferDoneInfo* pBufferDoneInfo)
+{
+    fprintf(stderr, "InputBufferDone\n");
+    jpeg_encoder_aw_impl* pthis = (jpeg_encoder_aw_impl*)pAppData;
+
+    memcpy(&pthis->input_buffer_v85x, pBufferDoneInfo->pInputBuffer, sizeof(VencInputBuffer_v85x));
+
+    return 0;
 }
 
 int jpeg_encoder_aw_impl::init(int _width, int _height, int _ch, int quality)
@@ -875,61 +1072,169 @@ int jpeg_encoder_aw_impl::init(int _width, int _height, int _ch, int quality)
     const int aligned_width = (width + 15) / 16 * 16;
     const int aligned_height = (height + 15) / 16 * 16;
 
-    venc = VideoEncCreate(VENC_CODEC_JPEG);
-    if (!venc)
+    if (get_device_model() == 2)
     {
-        fprintf(stderr, "VideoEncCreate failed\n");
-        goto OUT;
-    }
-
-    {
-        int ret = VideoEncSetParameter(venc, VENC_IndexParamJpegQuality, (void*)&quality);
-        if (ret)
+        venc = VencCreate(VENC_CODEC_JPEG);
+        if (!venc)
         {
-            fprintf(stderr, "VideoEncSetParameter VENC_IndexParamJpegQuality failed %d\n", ret);
+            fprintf(stderr, "VencCreate failed\n");
             goto OUT;
         }
-    }
 
-    {
-        int enc_mode = 0;
-        int ret = VideoEncSetParameter(venc, VENC_IndexParamJpegEncMode, (void*)&enc_mode);
-        if (ret)
+        // {
+        //     int vbv_size = aligned_width * aligned_height * 3 / 2;
+        //     int ret = VencSetParameter(venc, VENC_IndexParamSetVbvSize, (void*)&vbv_size);
+        //     if (ret)
+        //     {
+        //         fprintf(stderr, "VencSetParameter VENC_IndexParamSetVbvSize failed %d\n", ret);
+        //         goto OUT;
+        //     }
+        // }
+
         {
-            fprintf(stderr, "VideoEncSetParameter VENC_IndexParamJpegEncMode failed %d\n", ret);
-            goto OUT;
+            int ret = VencSetParameter(venc, VENC_IndexParamJpegQuality, (void*)&quality);
+            if (ret)
+            {
+                fprintf(stderr, "VencSetParameter VENC_IndexParamJpegQuality failed %d\n", ret);
+                goto OUT;
+            }
+        }
+
+        {
+            int enc_mode = 0;
+            int ret = VencSetParameter(venc, VENC_IndexParamJpegEncMode, (void*)&enc_mode);
+            if (ret)
+            {
+                fprintf(stderr, "VencSetParameter VENC_IndexParamJpegEncMode failed %d\n", ret);
+                goto OUT;
+            }
+        }
+
+        {
+            VencBaseConfig_v85x config;
+            memset(&config, 0, sizeof(config));
+            config.nInputWidth = width;
+            config.nInputHeight = height;
+            config.nDstWidth = width;
+            config.nDstHeight = height;
+            config.nStride = aligned_width;
+            config.eInputFormat = VENC_PIXEL_YUV420SP;
+
+            int ret = VencInit(venc, &config);
+            if (ret)
+            {
+                fprintf(stderr, "VencInit failed %d\n", ret);
+                goto OUT;
+            }
+        }
+
+        {
+            VencAllocateBufferParam bufferParam;
+            bufferParam.nSizeY = aligned_width * aligned_height;
+            bufferParam.nSizeC = aligned_width * aligned_height / 2;
+            bufferParam.nBufferNum = 1;
+
+            int ret = VencAllocateInputBuf(venc, &bufferParam, &input_buffer_v85x);
+            if (ret)
+            {
+                fprintf(stderr, "VencAllocateInputBuf failed %d\n", ret);
+                goto OUT;
+            }
+
+            b_input_buffer_got = 1;
+        }
+
+        {
+            VencCbType vencCallBack;
+            vencCallBack.EventHandler = EventHandler;
+            vencCallBack.InputBufferDone = InputBufferDone;
+
+            int ret = VencSetCallbacks(venc, &vencCallBack, this);
+            if (ret)
+            {
+                fprintf(stderr, "VencSetCallbacks failed %d\n", ret);
+                goto OUT;
+            }
+        }
+
+        {
+            int ret = VencStart(venc);
+            if (ret)
+            {
+                fprintf(stderr, "VencStart failed %d\n", ret);
+                goto OUT;
+            }
         }
     }
-
+    else
     {
-        VencBaseConfig config;
-        memset(&config, 0, sizeof(config));
-        config.nInputWidth = width;
-        config.nInputHeight = height;
-        config.nDstWidth = width;
-        config.nDstHeight = height;
-        config.nStride = aligned_width;
-        config.eInputFormat = VENC_PIXEL_YUV420SP;
-
-        int ret = VideoEncInit(venc, &config);
-        if (ret)
+        venc = VideoEncCreate(VENC_CODEC_JPEG);
+        if (!venc)
         {
-            fprintf(stderr, "VideoEncInit failed %d\n", ret);
+            fprintf(stderr, "VideoEncCreate failed\n");
             goto OUT;
         }
-    }
 
-    {
-        VencAllocateBufferParam bufferParam;
-        bufferParam.nSizeY = aligned_width * aligned_height;
-        bufferParam.nSizeC = aligned_width * aligned_height / 2;
-        bufferParam.nBufferNum = 1;
-
-        int ret = AllocInputBuffer(venc, &bufferParam);
-        if (ret)
         {
-            fprintf(stderr, "AllocInputBuffer failed %d\n", ret);
-            goto OUT;
+            int ret = VideoEncSetParameter(venc, VENC_IndexParamJpegQuality, (void*)&quality);
+            if (ret)
+            {
+                fprintf(stderr, "VideoEncSetParameter VENC_IndexParamJpegQuality failed %d\n", ret);
+                goto OUT;
+            }
+        }
+
+        {
+            int enc_mode = 0;
+            int ret = VideoEncSetParameter(venc, VENC_IndexParamJpegEncMode, (void*)&enc_mode);
+            if (ret)
+            {
+                fprintf(stderr, "VideoEncSetParameter VENC_IndexParamJpegEncMode failed %d\n", ret);
+                goto OUT;
+            }
+        }
+
+        {
+            VencBaseConfig config;
+            memset(&config, 0, sizeof(config));
+            config.nInputWidth = width;
+            config.nInputHeight = height;
+            config.nDstWidth = width;
+            config.nDstHeight = height;
+            config.nStride = aligned_width;
+            config.eInputFormat = VENC_PIXEL_YUV420SP;
+
+            int ret = VideoEncInit(venc, &config);
+            if (ret)
+            {
+                fprintf(stderr, "VideoEncInit failed %d\n", ret);
+                goto OUT;
+            }
+        }
+
+        {
+            VencAllocateBufferParam bufferParam;
+            bufferParam.nSizeY = aligned_width * aligned_height;
+            bufferParam.nSizeC = aligned_width * aligned_height / 2;
+            bufferParam.nBufferNum = 1;
+
+            int ret = AllocInputBuffer(venc, &bufferParam);
+            if (ret)
+            {
+                fprintf(stderr, "AllocInputBuffer failed %d\n", ret);
+                goto OUT;
+            }
+        }
+
+        {
+            int ret = GetOneAllocInputBuffer(venc, &input_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "GetOneAllocInputBuffer failed %d\n", ret);
+                goto OUT;
+            }
+
+            b_input_buffer_got = 1;
         }
     }
 
@@ -955,104 +1260,114 @@ int jpeg_encoder_aw_impl::encode(const unsigned char* bgrdata, std::vector<unsig
 
     int ret_val = 0;
 
-    VencInputBuffer input_buffer;
     VencOutputBuffer output_buffer;
-    int b_input_buffer_got = 0;
     int b_output_buffer_got = 0;
 
     const int aligned_width = (width + 15) / 16 * 16;
 
+    if (get_device_model() == 2)
     {
-        memset(&input_buffer, 0, sizeof(input_buffer));
-        int ret = GetOneAllocInputBuffer(venc, &input_buffer);
-        if (ret)
+        if (ch == 1)
         {
-            fprintf(stderr, "GetOneAllocInputBuffer failed %d\n", ret);
-            goto OUT;
+            gray2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer_v85x.pAddrVirY, (unsigned char*)input_buffer_v85x.pAddrVirC, aligned_width);
+        }
+        if (ch == 3)
+        {
+            bgr2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer_v85x.pAddrVirY, (unsigned char*)input_buffer_v85x.pAddrVirC, aligned_width);
+        }
+        if (ch == 4)
+        {
+            bgra2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer_v85x.pAddrVirY, (unsigned char*)input_buffer_v85x.pAddrVirC, aligned_width);
         }
 
-        b_input_buffer_got = 1;
-    }
-
-    // fprintf(stderr, "nID = %d\n", input_buffer.nID);
-    // fprintf(stderr, "nPts = %lld\n", input_buffer.nPts);
-    // fprintf(stderr, "nFlag = %d\n", input_buffer.nFlag);
-    // fprintf(stderr, "nWidth = %d\n", input_buffer.nWidth);
-    // fprintf(stderr, "nHeight = %d\n", input_buffer.nHeight);
-    // fprintf(stderr, "nAlign = %d\n", input_buffer.nAlign);
-    // fprintf(stderr, "bEnableCorp = %d\n", input_buffer.bEnableCorp);
-    // fprintf(stderr, "ispPicVar = %d\n", input_buffer.ispPicVar);
-    // fprintf(stderr, "ispPicVarChroma = %d\n", input_buffer.ispPicVarChroma);
-    // fprintf(stderr, "bUseInputBufferRoi = %d\n", input_buffer.bUseInputBufferRoi);
-    // fprintf(stderr, "bAllocMemSelf = %d\n", input_buffer.bAllocMemSelf);
-    // fprintf(stderr, "nShareBufFd = %d\n", input_buffer.nShareBufFd);
-    // fprintf(stderr, "bUseCsiColorFormat = %d\n", input_buffer.bUseCsiColorFormat);
-    // fprintf(stderr, "eCsiColorFormat = %d\n", input_buffer.eCsiColorFormat);
-    // fprintf(stderr, "envLV = %d\n", input_buffer.envLV);
-
-    if (ch == 1)
-    {
-        gray2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
-    }
-    if (ch == 3)
-    {
-        bgr2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
-    }
-    if (ch == 4)
-    {
-        bgra2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
-    }
-
-    {
-        int ret = FlushCacheAllocInputBuffer(venc, &input_buffer);
-        if (ret)
         {
-            fprintf(stderr, "FlushCacheAllocInputBuffer failed %d\n", ret);
-            ret_val = -1;
-            goto OUT;
-        }
-    }
+            input_buffer_v85x.bNeedFlushCache = 1;
 
-    {
-        int ret = AddOneInputBuffer(venc, &input_buffer);
-        if (ret)
-        {
-            fprintf(stderr, "AddOneInputBuffer failed %d\n", ret);
-            ret_val = -1;
-            goto OUT;
-        }
-    }
-
-    {
-        int ret = VideoEncodeOneFrame(venc);
-        if (ret)
-        {
-            fprintf(stderr, "VideoEncodeOneFrame failed %d\n", ret);
-            ret_val = -1;
-            goto OUT;
-        }
-    }
-
-    {
-        int ret = AlreadyUsedInputBuffer(venc, &input_buffer);
-        if (ret)
-        {
-            fprintf(stderr, "AlreadyUsedInputBuffer failed %d\n", ret);
-            ret_val = -1;
-            goto OUT;
-        }
-    }
-
-    {
-        int ret = GetOneBitstreamFrame(venc, &output_buffer);
-        if (ret)
-        {
-            fprintf(stderr, "GetOneBitstreamFrame failed %d\n", ret);
-            ret_val = -1;
-            goto OUT;
+            int ret = VencQueueInputBuf(venc, &input_buffer_v85x);
+            if (ret)
+            {
+                fprintf(stderr, "VencQueueInputBuf failed %d\n", ret);
+                goto OUT;
+            }
         }
 
-        b_output_buffer_got = 1;
+        {
+            int ret = VencDequeueOutputBuf(venc, &output_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "VencDequeueOutputBuf failed %d\n", ret);
+                goto OUT;
+            }
+
+            b_output_buffer_got = 1;
+        }
+    }
+    else
+    {
+        if (ch == 1)
+        {
+            gray2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
+        }
+        if (ch == 3)
+        {
+            bgr2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
+        }
+        if (ch == 4)
+        {
+            bgra2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
+        }
+
+        {
+            int ret = FlushCacheAllocInputBuffer(venc, &input_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "FlushCacheAllocInputBuffer failed %d\n", ret);
+                ret_val = -1;
+                goto OUT;
+            }
+        }
+
+        {
+            int ret = AddOneInputBuffer(venc, &input_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "AddOneInputBuffer failed %d\n", ret);
+                ret_val = -1;
+                goto OUT;
+            }
+        }
+
+        {
+            int ret = VideoEncodeOneFrame(venc);
+            if (ret)
+            {
+                fprintf(stderr, "VideoEncodeOneFrame failed %d\n", ret);
+                ret_val = -1;
+                goto OUT;
+            }
+        }
+
+        {
+            int ret = AlreadyUsedInputBuffer(venc, &input_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "AlreadyUsedInputBuffer failed %d\n", ret);
+                ret_val = -1;
+                goto OUT;
+            }
+        }
+
+        {
+            int ret = GetOneBitstreamFrame(venc, &output_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "GetOneBitstreamFrame failed %d\n", ret);
+                ret_val = -1;
+                goto OUT;
+            }
+
+            b_output_buffer_got = 1;
+        }
     }
 
     outdata.resize(output_buffer.nSize0 + output_buffer.nSize1);
@@ -1065,21 +1380,23 @@ int jpeg_encoder_aw_impl::encode(const unsigned char* bgrdata, std::vector<unsig
 OUT:
     if (b_output_buffer_got)
     {
-        int ret = FreeOneBitStreamFrame(venc, &output_buffer);
-        if (ret)
+        if (get_device_model() == 2)
         {
-            fprintf(stderr, "FreeOneBitStreamFrame failed %d\n", ret);
-            ret_val = -1;
+            int ret = VencQueueOutputBuf(venc, &output_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "VencQueueOutputBuf failed %d\n", ret);
+                ret_val = -1;
+            }
         }
-    }
-
-    if (b_input_buffer_got)
-    {
-        int ret = ReturnOneAllocInputBuffer(venc, &input_buffer);
-        if (ret)
+        else
         {
-            fprintf(stderr, "ReturnOneAllocInputBuffer failed %d\n", ret);
-            ret_val = -1;
+            int ret = FreeOneBitStreamFrame(venc, &output_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "FreeOneBitStreamFrame failed %d\n", ret);
+                ret_val = -1;
+            }
         }
     }
 
@@ -1096,107 +1413,120 @@ int jpeg_encoder_aw_impl::encode(const unsigned char* bgrdata, const char* outfi
 
     int ret_val = 0;
 
-    VencInputBuffer input_buffer;
     VencOutputBuffer output_buffer;
-    int b_input_buffer_got = 0;
     int b_output_buffer_got = 0;
-
-    FILE* fp = 0;
 
     const int aligned_width = (width + 15) / 16 * 16;
 
+    FILE* fp = 0;
+
+    if (get_device_model() == 2)
     {
-        memset(&input_buffer, 0, sizeof(input_buffer));
-        int ret = GetOneAllocInputBuffer(venc, &input_buffer);
-        if (ret)
+    // fprintf(stderr, "a\n");
+        if (ch == 1)
         {
-            fprintf(stderr, "GetOneAllocInputBuffer failed %d\n", ret);
-            goto OUT;
+            gray2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer_v85x.pAddrVirY, (unsigned char*)input_buffer_v85x.pAddrVirC, aligned_width);
+        }
+        if (ch == 3)
+        {
+            bgr2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer_v85x.pAddrVirY, (unsigned char*)input_buffer_v85x.pAddrVirC, aligned_width);
+        }
+        if (ch == 4)
+        {
+            bgra2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer_v85x.pAddrVirY, (unsigned char*)input_buffer_v85x.pAddrVirC, aligned_width);
         }
 
-        b_input_buffer_got = 1;
-    }
-
-    // fprintf(stderr, "nID = %d\n", input_buffer.nID);
-    // fprintf(stderr, "nPts = %lld\n", input_buffer.nPts);
-    // fprintf(stderr, "nFlag = %d\n", input_buffer.nFlag);
-    // fprintf(stderr, "nWidth = %d\n", input_buffer.nWidth);
-    // fprintf(stderr, "nHeight = %d\n", input_buffer.nHeight);
-    // fprintf(stderr, "nAlign = %d\n", input_buffer.nAlign);
-    // fprintf(stderr, "bEnableCorp = %d\n", input_buffer.bEnableCorp);
-    // fprintf(stderr, "ispPicVar = %d\n", input_buffer.ispPicVar);
-    // fprintf(stderr, "ispPicVarChroma = %d\n", input_buffer.ispPicVarChroma);
-    // fprintf(stderr, "bUseInputBufferRoi = %d\n", input_buffer.bUseInputBufferRoi);
-    // fprintf(stderr, "bAllocMemSelf = %d\n", input_buffer.bAllocMemSelf);
-    // fprintf(stderr, "nShareBufFd = %d\n", input_buffer.nShareBufFd);
-    // fprintf(stderr, "bUseCsiColorFormat = %d\n", input_buffer.bUseCsiColorFormat);
-    // fprintf(stderr, "eCsiColorFormat = %d\n", input_buffer.eCsiColorFormat);
-    // fprintf(stderr, "envLV = %d\n", input_buffer.envLV);
-
-    if (ch == 1)
-    {
-        gray2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
-    }
-    if (ch == 3)
-    {
-        bgr2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
-    }
-    if (ch == 4)
-    {
-        bgra2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
-    }
-
-    {
-        int ret = FlushCacheAllocInputBuffer(venc, &input_buffer);
-        if (ret)
         {
-            fprintf(stderr, "FlushCacheAllocInputBuffer failed %d\n", ret);
-            ret_val = -1;
-            goto OUT;
+            input_buffer_v85x.bNeedFlushCache = 1;
+
+            int ret = VencQueueInputBuf(venc, &input_buffer_v85x);
+            if (ret)
+            {
+                fprintf(stderr, "VencQueueInputBuf failed %d\n", ret);
+                goto OUT;
+            }
+        }
+
+        {
+            int ret = VencDequeueOutputBuf(venc, &output_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "VencDequeueOutputBuf failed %d\n", ret);
+                goto OUT;
+            }
+
+            b_output_buffer_got = 1;
+        }
+    }
+    else
+    {
+        if (ch == 1)
+        {
+            gray2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
+        }
+        if (ch == 3)
+        {
+            bgr2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
+        }
+        if (ch == 4)
+        {
+            bgra2yuv420sp(bgrdata, width, height, (unsigned char*)input_buffer.pAddrVirY, (unsigned char*)input_buffer.pAddrVirC, aligned_width);
+        }
+
+        {
+            int ret = FlushCacheAllocInputBuffer(venc, &input_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "FlushCacheAllocInputBuffer failed %d\n", ret);
+                ret_val = -1;
+                goto OUT;
+            }
+        }
+
+        {
+            int ret = AddOneInputBuffer(venc, &input_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "AddOneInputBuffer failed %d\n", ret);
+                ret_val = -1;
+                goto OUT;
+            }
+        }
+
+        {
+            int ret = VideoEncodeOneFrame(venc);
+            if (ret)
+            {
+                fprintf(stderr, "VideoEncodeOneFrame failed %d\n", ret);
+                ret_val = -1;
+                goto OUT;
+            }
+        }
+
+        {
+            int ret = AlreadyUsedInputBuffer(venc, &input_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "AlreadyUsedInputBuffer failed %d\n", ret);
+                ret_val = -1;
+                goto OUT;
+            }
+        }
+
+        {
+            int ret = GetOneBitstreamFrame(venc, &output_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "GetOneBitstreamFrame failed %d\n", ret);
+                ret_val = -1;
+                goto OUT;
+            }
+
+            b_output_buffer_got = 1;
         }
     }
 
-    {
-        int ret = AddOneInputBuffer(venc, &input_buffer);
-        if (ret)
-        {
-            fprintf(stderr, "AddOneInputBuffer failed %d\n", ret);
-            ret_val = -1;
-            goto OUT;
-        }
-    }
-
-    {
-        int ret = VideoEncodeOneFrame(venc);
-        if (ret)
-        {
-            fprintf(stderr, "VideoEncodeOneFrame failed %d\n", ret);
-            ret_val = -1;
-            goto OUT;
-        }
-    }
-
-    {
-        int ret = AlreadyUsedInputBuffer(venc, &input_buffer);
-        if (ret)
-        {
-            fprintf(stderr, "AlreadyUsedInputBuffer failed %d\n", ret);
-            ret_val = -1;
-            goto OUT;
-        }
-    }
-
-    {
-        int ret = GetOneBitstreamFrame(venc, &output_buffer);
-        if (ret)
-        {
-            fprintf(stderr, "GetOneBitstreamFrame failed %d\n", ret);
-            ret_val = -1;
-            goto OUT;
-        }
-
-        b_output_buffer_got = 1;
-    }
+    fprintf(stderr, "encode 3\n");
 
     fp = fopen(outfilepath, "wb");
     if (!fp)
@@ -1215,21 +1545,23 @@ int jpeg_encoder_aw_impl::encode(const unsigned char* bgrdata, const char* outfi
 OUT:
     if (b_output_buffer_got)
     {
-        int ret = FreeOneBitStreamFrame(venc, &output_buffer);
-        if (ret)
+        if (get_device_model() == 2)
         {
-            fprintf(stderr, "FreeOneBitStreamFrame failed %d\n", ret);
-            ret_val = -1;
+            int ret = VencQueueOutputBuf(venc, &output_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "VencQueueOutputBuf failed %d\n", ret);
+                ret_val = -1;
+            }
         }
-    }
-
-    if (b_input_buffer_got)
-    {
-        int ret = ReturnOneAllocInputBuffer(venc, &input_buffer);
-        if (ret)
+        else
         {
-            fprintf(stderr, "ReturnOneAllocInputBuffer failed %d\n", ret);
-            ret_val = -1;
+            int ret = FreeOneBitStreamFrame(venc, &output_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "FreeOneBitStreamFrame failed %d\n", ret);
+                ret_val = -1;
+            }
         }
     }
 
@@ -1248,9 +1580,37 @@ int jpeg_encoder_aw_impl::deinit()
 
     int ret_val = 0;
 
+    if (b_input_buffer_got)
+    {
+        if (get_device_model() == 2)
+        {
+            // free input_buffer_v85x ?
+        }
+        else
+        {
+            int ret = ReturnOneAllocInputBuffer(venc, &input_buffer);
+            if (ret)
+            {
+                fprintf(stderr, "ReturnOneAllocInputBuffer failed %d\n", ret);
+                ret_val = -1;
+            }
+        }
+
+        b_input_buffer_got = 0;
+    }
+
     if (venc)
     {
-        VideoEncDestroy(venc);
+        if (get_device_model() == 2)
+        {
+            VencPause(venc);
+            VencDestroy(venc);
+        }
+        else
+        {
+            VideoEncDestroy(venc);
+        }
+
         venc = 0;
     }
 
