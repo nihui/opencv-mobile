@@ -1027,15 +1027,15 @@ jpeg_encoder_aw_impl::~jpeg_encoder_aw_impl()
     deinit();
 }
 
-static int EventHandler(VideoEncoder* pEncoder, void* pAppData, VencEventType eEvent, unsigned int nData1, unsigned int nData2, void* pEventData)
+static int EventHandler(VideoEncoder* /*pEncoder*/, void* /*pAppData*/, VencEventType /*eEvent*/, unsigned int /*nData1*/, unsigned int /*nData2*/, void* /*pEventData*/)
 {
-    fprintf(stderr, "EventHandler event = %d\n", eEvent);
+    // fprintf(stderr, "EventHandler event = %d\n", eEvent);
     return 0;
 }
 
-static int InputBufferDone(VideoEncoder* pEncoder, void* pAppData, VencCbInputBufferDoneInfo* pBufferDoneInfo)
+static int InputBufferDone(VideoEncoder* /*pEncoder*/, void* pAppData, VencCbInputBufferDoneInfo* pBufferDoneInfo)
 {
-    fprintf(stderr, "InputBufferDone\n");
+    // fprintf(stderr, "InputBufferDone\n");
     jpeg_encoder_aw_impl* pthis = (jpeg_encoder_aw_impl*)pAppData;
 
     memcpy(&pthis->input_buffer_v85x, pBufferDoneInfo->pInputBuffer, sizeof(VencInputBuffer_v85x));
@@ -1543,8 +1543,6 @@ int jpeg_encoder_aw_impl::encode(const unsigned char* bgrdata, const char* outfi
             b_output_buffer_got = 1;
         }
     }
-
-    fprintf(stderr, "encode 3\n");
 
     fp = fopen(outfilepath, "wb");
     if (!fp)
