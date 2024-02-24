@@ -40,7 +40,9 @@
 #include "stb_image_write.h"
 
 #if defined __linux__
+#include "jpeg_decoder_aw.h"
 #include "jpeg_decoder_cvi.h"
+#include "jpeg_encoder_aw.h"
 #include "jpeg_encoder_rk_mpp.h"
 #endif
 
@@ -154,6 +156,36 @@ Mat imread(const String& filename, int flags)
     if (buf_size > 4 && buf_data[0] == 0xFF && buf_data[1] == 0xD8)
     {
         // jpg magic
+        if (jpeg_decoder_aw::supported(buf_data, buf_size))
+        {
+            int w = 0;
+            int h = 0;
+            int c = desired_channels;
+
+            jpeg_decoder_aw d;
+            int ret = d.init(buf_data, buf_size, &w, &h, &c);
+            if (ret == 0 && (c == 1 || c == 3))
+            {
+                Mat img;
+                if (c == 1)
+                {
+                    img.create(h, w, CV_8UC1);
+                }
+                else // if (c == 3)
+                {
+                    img.create(h, w, CV_8UC3);
+                }
+
+                ret = d.decode(buf_data, buf_size, img.data);
+                if (ret == 0)
+                {
+                    d.deinit();
+                    return img;
+                }
+            }
+
+            // fallback to stbi_load_from_memory
+        }
         if (jpeg_decoder_cvi::supported(buf_data, buf_size))
         {
             int w = 0;
@@ -289,6 +321,38 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
 #if defined __linux__
     if (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG")
     {
+        if (jpeg_encoder_aw::supported(img.cols, img.rows, c))
+        {
+            // anything to bgr
+            if (!img.isContinuous())
+            {
+                img = img.clone();
+            }
+
+            int quality = 95;
+            for (size_t i = 0; i < params.size(); i += 2)
+            {
+                if (params[i] == IMWRITE_JPEG_QUALITY)
+                {
+                    quality = params[i + 1];
+                    break;
+                }
+            }
+
+            jpeg_encoder_aw e;
+            int ret = e.init(img.cols, img.rows, c, quality);
+            if (ret == 0)
+            {
+                ret = e.encode(img.data, filename.c_str());
+                if (ret == 0)
+                {
+                    e.deinit();
+                    return true;
+                }
+            }
+
+            // fallback to stb_image_write
+        }
         if (jpeg_encoder_rk_mpp::supported(img.cols, img.rows, c))
         {
             // anything to bgr
@@ -410,6 +474,36 @@ Mat imdecode(InputArray _buf, int flags)
     if (buf_size > 4 && buf_data[0] == 0xFF && buf_data[1] == 0xD8)
     {
         // jpg magic
+        if (jpeg_decoder_aw::supported(buf_data, buf_size))
+        {
+            int w = 0;
+            int h = 0;
+            int c = desired_channels;
+
+            jpeg_decoder_aw d;
+            int ret = d.init(buf_data, buf_size, &w, &h, &c);
+            if (ret == 0 && (c == 1 || c == 3))
+            {
+                Mat img;
+                if (c == 1)
+                {
+                    img.create(h, w, CV_8UC1);
+                }
+                else // if (c == 3)
+                {
+                    img.create(h, w, CV_8UC3);
+                }
+
+                ret = d.decode(buf_data, buf_size, img.data);
+                if (ret == 0)
+                {
+                    d.deinit();
+                    return img;
+                }
+            }
+
+            // fallback to stbi_load_from_memory
+        }
         if (jpeg_decoder_cvi::supported(buf_data, buf_size))
         {
             int w = 0;
@@ -543,6 +637,38 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
 #if defined __linux__
     if (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG")
     {
+        if (jpeg_encoder_aw::supported(img.cols, img.rows, c))
+        {
+            // anything to bgr
+            if (!img.isContinuous())
+            {
+                img = img.clone();
+            }
+
+            int quality = 95;
+            for (size_t i = 0; i < params.size(); i += 2)
+            {
+                if (params[i] == IMWRITE_JPEG_QUALITY)
+                {
+                    quality = params[i + 1];
+                    break;
+                }
+            }
+
+            jpeg_encoder_aw e;
+            int ret = e.init(img.cols, img.rows, c, quality);
+            if (ret == 0)
+            {
+                ret = e.encode(img.data, buf);
+                if (ret == 0)
+                {
+                    e.deinit();
+                    return true;
+                }
+            }
+
+            // fallback to stb_image_write
+        }
         if (jpeg_encoder_rk_mpp::supported(img.cols, img.rows, c))
         {
             // anything to bgr
