@@ -1456,8 +1456,16 @@ int jpeg_encoder_aw_impl::encode(const unsigned char* bgrdata, const char* outfi
             }
         }
 
+        while (1)
         {
             int ret = VencDequeueOutputBuf(venc, &output_buffer);
+            if (ret == 5)
+            {
+                // VENC_RESULT_BITSTREAM_IS_EMPTY
+                // wait encoder complete
+                usleep(10*1000);
+                continue;
+            }
             if (ret)
             {
                 fprintf(stderr, "VencDequeueOutputBuf failed %d\n", ret);
@@ -1465,6 +1473,7 @@ int jpeg_encoder_aw_impl::encode(const unsigned char* bgrdata, const char* outfi
             }
 
             b_output_buffer_got = 1;
+            break;
         }
     }
     else
