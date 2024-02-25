@@ -1291,14 +1291,16 @@ int jpeg_encoder_aw_impl::encode(const unsigned char* bgrdata, std::vector<unsig
             }
         }
 
+        int retry_count = 0;
         while (1)
         {
             int ret = VencDequeueOutputBuf(venc, &output_buffer);
-            if (ret == 5)
+            if (ret == 5 && retry_count < 20)
             {
                 // VENC_RESULT_BITSTREAM_IS_EMPTY
                 // wait encoder complete
                 usleep(10*1000);
+                retry_count++;
                 continue;
             }
             if (ret)
@@ -1456,14 +1458,16 @@ int jpeg_encoder_aw_impl::encode(const unsigned char* bgrdata, const char* outfi
             }
         }
 
+        int retry_count = 0;
         while (1)
         {
             int ret = VencDequeueOutputBuf(venc, &output_buffer);
-            if (ret == 5)
+            if (ret == 5 && retry_count < 20)
             {
                 // VENC_RESULT_BITSTREAM_IS_EMPTY
                 // wait encoder complete
                 usleep(10*1000);
+                retry_count++;
                 continue;
             }
             if (ret)
