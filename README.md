@@ -349,6 +349,25 @@ https://github.com/nihui/opencv-mobile/releases/latest
   </a>
 </td>
 </tr>
+<tr>
+<td>
+  <a href="https://www.myir.cn/shows/118/66.html">
+    <img alt="myir-t113i" src="https://srcc.myir.cn/images/20230918/c70910f0cb705987ced19d6888ef4288.jpg" width="auto" height="120">
+    <br /><b>myir-t113i</b>
+  </a>
+  <br />arm-linux-gnueabi<br />
+  &#9989; HW JPG decoder<br />
+  &#9989; HW JPG encoder<br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-myir-t113i.zip">
+    <img alt="opencv4-myir-t113i" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+
 </table>
 
 # Usage Android

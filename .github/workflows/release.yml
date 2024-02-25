@@ -1182,6 +1182,14 @@ jobs:
             setup-env-cmd: |
               export PATH=$PATH:$GITHUB_WORKSPACE/PurPle-Pi-R1/toolchain/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin
 
+          - name: myir-t113i
+            single-core: false
+            cmake-toolchain: arm-linux-gnueabi.toolchain.cmake
+            setup-toolchain-cmd: |
+              git clone --depth 1 https://github.com/MYIR-ALLWINNER/toolchain.git
+            setup-env-cmd: |
+              export PATH=$PATH:$GITHUB_WORKSPACE/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin
+
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/${{ matrix.cmake-toolchain }} \
