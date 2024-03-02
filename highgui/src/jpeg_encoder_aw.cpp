@@ -35,6 +35,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+namespace cv {
+
 // 0 = unknown
 // 1 = t113-i
 // 2 = tinyvision
@@ -1692,7 +1694,11 @@ int jpeg_encoder_aw::deinit()
     return d->deinit();
 }
 
+} // namespace cv
+
 #else // defined __linux__
+
+namespace cv {
 
 bool jpeg_encoder_aw::supported(int /*width*/, int /*height*/, int /*ch*/)
 {
@@ -1726,5 +1732,7 @@ int jpeg_encoder_aw::deinit()
 {
     return -1;
 }
+
+} // namespace cv
 
 #endif // defined __linux__

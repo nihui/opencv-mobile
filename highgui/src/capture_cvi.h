@@ -19,6 +19,8 @@
 
 #include <vector>
 
+namespace cv {
+
 class capture_cvi_impl;
 class capture_cvi
 {
@@ -45,5 +47,7 @@ public:
 private:
     capture_cvi_impl* const d;
 };
+
+} // namespace cv
 
 #endif // CAPTURE_CVI_H

@@ -35,6 +35,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+namespace cv {
+
 extern "C" {
 
 #define MPP_SUCCESS 0
@@ -1070,7 +1072,11 @@ int jpeg_encoder_rk_mpp::deinit()
     return d->deinit();
 }
 
+} // namespace cv
+
 #else // defined __linux__
+
+namespace cv {
 
 bool jpeg_encoder_rk_mpp::supported(int /*width*/, int /*height*/, int /*ch*/)
 {
@@ -1104,5 +1110,7 @@ int jpeg_encoder_rk_mpp::deinit()
 {
     return -1;
 }
+
+} // namespace cv
 
 #endif // defined __linux__

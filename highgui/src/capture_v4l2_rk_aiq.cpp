@@ -37,6 +37,7 @@
 #include <arm_neon.h>
 #endif // __ARM_NEON
 
+namespace cv {
 
 extern "C"
 {
@@ -1770,7 +1771,11 @@ int capture_v4l2_rk_aiq::close()
     return d->close();
 }
 
+} // namespace cv
+
 #else // defined __linux__
+
+namespace cv {
 
 bool capture_v4l2_rk_aiq::supported()
 {
@@ -1824,5 +1829,7 @@ int capture_v4l2_rk_aiq::close()
 {
     return -1;
 }
+
+} // namespace cv
 
 #endif // defined __linux__

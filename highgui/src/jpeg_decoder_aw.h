@@ -17,6 +17,8 @@
 #ifndef JPEG_DECODER_AW_H
 #define JPEG_DECODER_AW_H
 
+namespace cv {
+
 class jpeg_decoder_aw_impl;
 class jpeg_decoder_aw
 {
@@ -35,5 +37,7 @@ public:
 private:
     jpeg_decoder_aw_impl* const d;
 };
+
+} // namespace cv
 
 #endif // JPEG_DECODER_AW_H

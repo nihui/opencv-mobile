@@ -36,6 +36,8 @@
 #include "exif.hpp"
 #include "kanna_rotate.h"
 
+namespace cv {
+
 // 0 = unknown
 // 1 = t113-i
 // 2 = tinyvision
@@ -1308,7 +1310,11 @@ int jpeg_decoder_aw::deinit()
     return d->deinit();
 }
 
+} // namespace cv
+
 #else // defined __linux__
+
+namespace cv {
 
 bool jpeg_decoder_aw::supported(const unsigned char* /*jpgdata*/, int /*jpgsize*/)
 {
@@ -1337,5 +1343,7 @@ int jpeg_decoder_aw::deinit()
 {
     return -1;
 }
+
+} // namespace cv
 
 #endif // defined __linux__

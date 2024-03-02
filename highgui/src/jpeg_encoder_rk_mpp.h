@@ -19,6 +19,8 @@
 
 #include <vector>
 
+namespace cv {
+
 class jpeg_encoder_rk_mpp_impl;
 class jpeg_encoder_rk_mpp
 {
@@ -39,5 +41,7 @@ public:
 private:
     jpeg_encoder_rk_mpp_impl* const d;
 };
+
+} // namespace cv
 
 #endif // JPEG_ENCODER_RK_MPP_H
