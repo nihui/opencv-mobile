@@ -41,6 +41,7 @@ namespace cv {
 // 0 = unknown
 // 1 = t113-i
 // 2 = tinyvision
+// 3 = yuzuki-chameleon
 static int get_device_model()
 {
     static int device_model = -1;
@@ -67,6 +68,11 @@ static int get_device_model()
             // tinyvision
             device_model = 2;
         }
+        if (strncmp(buf, "sun50iw9", 8) == 0)
+        {
+            // yuzuki-chameleon
+            device_model = 3;
+        }
     }
 
     return device_model;
@@ -84,6 +90,11 @@ static bool is_device_whitelisted()
     if (device_model == 2)
     {
         // tinyvision
+        return true;
+    }
+    if (device_model == 3)
+    {
+        // yuzuki-chameleon
         return true;
     }
 
@@ -1111,7 +1122,7 @@ int jpeg_decoder_aw_impl::decode(const unsigned char* jpgdata, int jpgsize, unsi
         vconfig_v85x.nRotateHoldingFrameBufferNum = 0;
         vconfig_v85x.nDecodeSmoothFrameBufferNum = 1;
 
-        VConfig* p_vconfig = get_device_model() == 2 ? (VConfig*)&vconfig_v85x : &vconfig;
+        VConfig* p_vconfig = (get_device_model() == 2 || get_device_model() == 3) ? (VConfig*)&vconfig_v85x : &vconfig;
 
         int ret = InitializeVideoDecoder(vdec, &videoInfo, p_vconfig);
         if (ret != 0)
