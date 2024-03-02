@@ -39,6 +39,8 @@
 #include <pthread.h>
 #include <sys/prctl.h>
 
+namespace cv {
+
 // 0 = unknown
 // 1 = milkv-duo
 // 2 = milkv-duo256m
@@ -4247,7 +4249,11 @@ int capture_cvi::close()
 {
     return d->close();
 }
+
+} // namespace cv
 #else // defined __linux__
+namespace cv {
+
 bool capture_cvi::supported()
 {
     return false;
@@ -4300,4 +4306,6 @@ int capture_cvi::close()
 {
     return -1;
 }
+
+} // namespace cv
 #endif // defined __linux__

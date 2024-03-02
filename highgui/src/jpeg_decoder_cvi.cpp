@@ -37,6 +37,8 @@
 
 #include "exif.hpp"
 
+namespace cv {
+
 // 0 = unknown
 // 1 = milkv-duo
 // 2 = milkv-duo256m
@@ -2573,7 +2575,11 @@ int jpeg_decoder_cvi::deinit()
     return d->deinit();
 }
 
+} // namespace cv
+
 #else // defined __linux__
+
+namespace cv {
 
 bool jpeg_decoder_cvi::supported(const unsigned char* /*jpgdata*/, int /*jpgsize*/)
 {
@@ -2602,5 +2608,7 @@ int jpeg_decoder_cvi::deinit()
 {
     return -1;
 }
+
+} // namespace cv
 
 #endif // defined __linux__

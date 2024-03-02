@@ -19,6 +19,8 @@
 
 #include <vector>
 
+namespace cv {
+
 class capture_v4l2_aw_isp_impl;
 class capture_v4l2_aw_isp
 {
@@ -45,5 +47,7 @@ public:
 private:
     capture_v4l2_aw_isp_impl* const d;
 };
+
+} // namespace cv
 
 #endif // CAPTURE_V4L2_AW_ISP_H

@@ -19,6 +19,8 @@
 
 #include <vector>
 
+namespace cv {
+
 class capture_v4l2_rk_aiq_impl;
 class capture_v4l2_rk_aiq
 {
@@ -45,5 +47,7 @@ public:
 private:
     capture_v4l2_rk_aiq_impl* const d;
 };
+
+} // namespace cv
 
 #endif // CAPTURE_V4L2_RK_AIQ_H

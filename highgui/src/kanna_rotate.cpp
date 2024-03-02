@@ -23,6 +23,8 @@
 // but we shall ask the original art author for permission first ...
 // https://www.reddit.com/r/anime/comments/5uxjn4/i_recreated_the_kanna_ascii_art_from_kobayashisan/
 
+namespace cv {
+
 static void kanna_rotate_1_c1(const unsigned char* src, int srcw, int srch, int srcstride, unsigned char* dst, int w, int /*h*/, int stride)
 {
     const int srcwgap = srcstride - srcw;
@@ -6110,3 +6112,5 @@ void kanna_rotate_yuv420sp(const unsigned char* src, int srcw, int srch, unsigne
     unsigned char* dstUV = dst + w * h;
     kanna_rotate_c2(srcUV, srcw / 2, srch / 2, dstUV, w / 2, h / 2, type);
 }
+
+} // namespace cv

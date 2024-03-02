@@ -38,6 +38,8 @@
 #endif // __ARM_NEON
 
 
+namespace cv {
+
 // 0 = unknown
 // 1 = tinyvision
 static int get_device_model()
@@ -1635,7 +1637,11 @@ int capture_v4l2_aw_isp::close()
     return d->close();
 }
 
+} // namespace cv
+
 #else // defined __linux__
+
+namespace cv {
 
 bool capture_v4l2_aw_isp::supported()
 {
@@ -1689,5 +1695,7 @@ int capture_v4l2_aw_isp::close()
 {
     return -1;
 }
+
+} // namespace cv
 
 #endif // defined __linux__

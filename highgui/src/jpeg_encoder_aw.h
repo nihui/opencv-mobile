@@ -19,6 +19,8 @@
 
 #include <vector>
 
+namespace cv {
+
 class jpeg_encoder_aw_impl;
 class jpeg_encoder_aw
 {
@@ -39,5 +41,7 @@ public:
 private:
     jpeg_encoder_aw_impl* const d;
 };
+
+} // namespace cv
 
 #endif // JPEG_ENCODER_AW_H

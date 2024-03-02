@@ -17,6 +17,8 @@
 #ifndef JPEG_DECODER_CVI_H
 #define JPEG_DECODER_CVI_H
 
+namespace cv {
+
 class jpeg_decoder_cvi_impl;
 class jpeg_decoder_cvi
 {
@@ -35,5 +37,7 @@ public:
 private:
     jpeg_decoder_cvi_impl* const d;
 };
+
+} // namespace cv
 
 #endif // JPEG_DECODER_CVI_H
