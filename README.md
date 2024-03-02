@@ -375,8 +375,6 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </td>
 <td>
 </td>
-<td>
-</td>
 </tr>
 
 </table>
