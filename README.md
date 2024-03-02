@@ -344,6 +344,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
     <br /><b>yuzuki-chameleon</b>
   </a>
   <br />aarch64-openwrt-linux-gnu<br />
+  &#9989; HW JPG decoder<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-yuzuki-chameleon.zip">
     <img alt="opencv4-yuzuki-chameleon" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
   </a>
