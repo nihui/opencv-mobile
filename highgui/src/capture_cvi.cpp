@@ -45,6 +45,7 @@ namespace cv {
 // 1 = milkv-duo
 // 2 = milkv-duo256m
 // 3 = licheerv-nano
+// 4 = milkv-duos
 static int get_device_model()
 {
     static int device_model = -1;
@@ -61,12 +62,12 @@ static int get_device_model()
         fgets(buf, 1024, fp);
         fclose(fp);
 
-        if (strncmp(buf, "Cvitek. CV180X ASIC. C906.", 36) == 0)
+        if (strncmp(buf, "Cvitek. CV180X ASIC. C906.", 36) == 0 || strncmp(buf, "Milk-V Duo", 10) == 0)
         {
             // milkv duo
             device_model = 1;
         }
-        if (strncmp(buf, "Cvitek. CV181X ASIC. C906.", 36) == 0)
+        if (strncmp(buf, "Cvitek. CV181X ASIC. C906.", 36) == 0 || strncmp(buf, "Milk-V Duo256M", 14) == 0)
         {
             // milkv duo 256
             device_model = 2;
@@ -75,6 +76,11 @@ static int get_device_model()
         {
             // licheerv nano
             device_model = 3;
+        }
+        if (strncmp(buf, "Milk-V DuoS", 11) == 0)
+        {
+            // milkv duo s
+            device_model = 4;
         }
     }
 
@@ -98,6 +104,11 @@ static bool is_device_whitelisted()
     if (device_model == 3)
     {
         // licheerv nano
+        return true;
+    }
+    if (device_model == 4)
+    {
+        // milkv duo s
         return true;
     }
 
