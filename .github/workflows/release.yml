@@ -1176,11 +1176,11 @@ jobs:
             single-core: false
             cmake-toolchain: arm-openwrt-linux-gnueabi.toolchain.cmake
             setup-toolchain-cmd: |
-              wget -q https://github.com/YuzukiHD/sunxi-bsp-toolchains/releases/download/1.0.0/toolchain-sunxi-glibc-arm-gcc-830.tar.gz
-              tar -xf toolchain-sunxi-glibc-arm-gcc-830.tar.gz
+              wget -q https://github.com/YuzukiHD/YuzukiChameleon/releases/download/0.0.1/toolchain-sunxi-glibc-arm.tar.gz
+              tar -xf toolchain-sunxi-glibc-arm.tar.gz
             setup-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-glibc-gcc-830/toolchain
-              export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-glibc-gcc-830/toolchain
+              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain
+              export STAGING_DIR=$GITHUB_WORKSPACE/toolchain
 
           - name: purple-pi
             single-core: false
