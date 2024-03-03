@@ -40,6 +40,7 @@ namespace cv {
 // 0 = unknown
 // 1 = t113-i
 // 2 = tinyvision
+// 3 = yuzuki-chameleon
 static int get_device_model()
 {
     static int device_model = -1;
@@ -66,6 +67,11 @@ static int get_device_model()
             // tinyvision
             device_model = 2;
         }
+        if (strncmp(buf, "sun50iw9", 8) == 0)
+        {
+            // yuzuki-chameleon
+            device_model = 3;
+        }
     }
 
     return device_model;
@@ -83,6 +89,11 @@ static bool is_device_whitelisted()
     if (device_model == 2)
     {
         // tinyvision
+        return true;
+    }
+    if (device_model == 3)
+    {
+        // yuzuki-chameleon
         return true;
     }
 
