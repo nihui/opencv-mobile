@@ -37,6 +37,44 @@
 
 namespace cv {
 
+// 0 = unknown
+// 1 = luckfox-pico
+static int get_device_model()
+{
+    static int device_model = -1;
+
+    if (device_model >= 0)
+        return device_model;
+
+    device_model = 0;
+
+    FILE* fp = fopen("/proc/device-tree/model", "rb");
+    if (fp)
+    {
+        char buf[1024];
+        fgets(buf, 1024, fp);
+        fclose(fp);
+
+        if (strncmp(buf, "Luckfox Pico", 12) == 0)
+        {
+            // luckfox pico family and plus pro max mini variants
+            device_model = 1;
+        }
+    }
+
+    if (device_model > 0)
+    {
+        fprintf(stderr, "opencv-mobile HW JPG encoder with rk mpp\n");
+    }
+
+    return device_model;
+}
+
+static bool is_device_whitelisted()
+{
+    return get_device_model() > 0;
+}
+
 extern "C" {
 
 #define MPP_SUCCESS 0
@@ -197,26 +235,9 @@ static int load_rkmpp_library()
         return 0;
 
     // check device whitelist
-    bool whitelisted = false;
-    {
-        FILE* fp = fopen("/proc/device-tree/model", "rb");
-        if (!fp)
-            return -1;
-
-        char buf[1024];
-        fgets(buf, 1024, fp);
-        fclose(fp);
-
-        if (strncmp(buf, "Luckfox Pico", 12) == 0)
-        {
-            // luckfox pico family and plus pro max mini variants
-            whitelisted = true;
-        }
-    }
-
+    bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for jpeg encoder rkmpp\n");
         return -1;
     }
 

@@ -65,20 +65,17 @@ static int get_device_model()
         }
     }
 
+    if (device_model > 0)
+    {
+        fprintf(stderr, "opencv-mobile MIPI CSI camera with v4l2 awispapi\n");
+    }
+
     return device_model;
 }
 
 static bool is_device_whitelisted()
 {
-    const int device_model = get_device_model();
-
-    if (device_model == 1)
-    {
-        // tinyvision
-        return true;
-    }
-
-    return false;
+    return get_device_model() > 0;
 }
 
 extern "C" {
@@ -415,7 +412,6 @@ static int load_awispapi_library()
     bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for capture v4l2 awispapi\n");
         return -1;
     }
 

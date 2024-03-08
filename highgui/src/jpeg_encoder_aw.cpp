@@ -74,33 +74,18 @@ static int get_device_model()
         }
     }
 
+    if (device_model > 0)
+    {
+        fprintf(stderr, "opencv-mobile HW JPG encoder with aw cedarc\n");
+    }
+
     return device_model;
 }
 
 static bool is_device_whitelisted()
 {
-    const int device_model = get_device_model();
-
-    if (device_model == 1)
-    {
-        // t113-i
-        return true;
-    }
-    if (device_model == 2)
-    {
-        // tinyvision
-        return true;
-    }
-    if (device_model == 3)
-    {
-        // yuzuki-chameleon
-        return true;
-    }
-
-    return false;
+    return get_device_model() > 0;
 }
-
-
 
 
 extern "C" {
@@ -608,7 +593,6 @@ static int load_vencoder_library()
     bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for jpeg encoder aw cedarc\n");
         return -1;
     }
 

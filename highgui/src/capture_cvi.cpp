@@ -84,35 +84,17 @@ static int get_device_model()
         }
     }
 
+    if (device_model > 0)
+    {
+        fprintf(stderr, "opencv-mobile MIPI CSI camera with cvi\n");
+    }
+
     return device_model;
 }
 
 static bool is_device_whitelisted()
 {
-    const int device_model = get_device_model();
-
-    if (device_model == 1)
-    {
-        // milkv duo
-        return true;
-    }
-    if (device_model == 2)
-    {
-        // milkv duo 256
-        return true;
-    }
-    if (device_model == 3)
-    {
-        // licheerv nano
-        return true;
-    }
-    if (device_model == 4)
-    {
-        // milkv duo s
-        return true;
-    }
-
-    return false;
+    return get_device_model() > 0;
 }
 
 extern "C"
@@ -258,7 +240,6 @@ static int load_sys_library()
     bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for capture cvi\n");
         return -1;
     }
 
@@ -975,7 +956,6 @@ static int load_vpu_library()
     bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for capture cvi\n");
         return -1;
     }
 
@@ -1827,7 +1807,6 @@ static int load_sns_obj_library()
     bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for capture cvi\n");
         return -1;
     }
 
@@ -2199,7 +2178,6 @@ static int load_ae_library()
     bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for capture cvi\n");
         return -1;
     }
 
@@ -2266,7 +2244,6 @@ static int load_awb_library()
     bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for capture cvi\n");
         return -1;
     }
 
@@ -2346,7 +2323,6 @@ static int load_isp_library()
     bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for capture cvi\n");
         return -1;
     }
 
@@ -2454,7 +2430,6 @@ static int load_cvi_bin_library()
     bool whitelisted = is_device_whitelisted();
     if (!whitelisted)
     {
-        fprintf(stderr, "this device is not whitelisted for capture cvi\n");
         return -1;
     }
 
