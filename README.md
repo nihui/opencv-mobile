@@ -27,10 +27,10 @@
 
 |opencv 4.9.0 package size|The official opencv|opencv-mobile|
 |:-:|:-:|:-:|
-|source zip|93.0 MB|10.7 MB|
-|android|242 MB|18.1 MB|
-|ios|202 MB|10.0 MB|
-|ios+bitcode|missing :(|34.5 MB|
+|source zip|93.0 MB|9.91 MB|
+|android|242 MB|17.6 MB|
+|ios|202 MB|9.57 MB|
+|ios+bitcode|missing :(|33.7 MB|
 
 # Download
 
