@@ -118,7 +118,7 @@ jobs:
             cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake
             setup-toolchain-cmd: |
               sudo apt-get update
-              sudo apt-get install -y g++-arm-linux-gnueabihf
+              sudo apt-get install -y unzip zip patch cmake g++-arm-linux-gnueabihf
             setup-env-cmd: |
               echo "fine :)"
 
