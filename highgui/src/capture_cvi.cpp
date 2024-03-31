@@ -1856,9 +1856,9 @@ static int load_sns_obj_library()
         goto OUT;
     }
 
-    if (device_model == 1 || device_model == 2)
+    if (device_model == 1 || device_model == 2 || device_model == 4)
     {
-        // milkv duo or milkv duo 256
+        // milkv duo or milkv duo 256 or milkv duos
         libsns_obj = dlopen("libsns_gc2083.so", RTLD_LOCAL | RTLD_NOW);
         if (!libsns_obj)
         {
@@ -2556,6 +2556,21 @@ static const struct sns_ini_cfg* get_sns_ini_cfg()
 
         return &lpirvnano;
     }
+    if (device_model == 4)
+    {
+        // milkv duo s
+        static const struct sns_ini_cfg duos = {
+            3,  // bus_id
+            37, // sns_i2c_addr
+            0,  // mipi_dev
+            {2, 0, 1, -1, -1},  // lane_id
+            {0, 0, 0, 0, 0},    // pn_swap
+            false,  // mclk_en
+            0       // mclk
+        };
+
+        return &duos;
+    }
 
     return NULL;
 }
@@ -2574,9 +2589,9 @@ static const struct sensor_cfg* get_sensor_cfg()
 {
     const int device_model = get_device_model();
 
-    if (device_model == 1 || device_model == 2)
+    if (device_model == 1 || device_model == 2 || device_model == 4)
     {
-        // milkv duo or milkv duo 256
+        // milkv duo or milkv duo 256 or milkv duos
         // gc2083 info
         static const struct sensor_cfg gc2083 = {
             1920,   // cap_width
