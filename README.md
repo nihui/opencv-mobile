@@ -291,7 +291,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </td>
 <td>
   <a href="https://sipeed.com/licheerv-nano">
-    <img alt="licheerv-nano" src="https://sipeed.com/assets/nano2.8855215e.png" width="auto" height="120">
+    <img alt="licheerv-nano" src="https://cdn.sipeed.com/public/licheerv-nano.png" width="auto" height="120">
     <br /><b>licheerv-nano</b>
   </a>
   <br />riscv64-linux-musl<br />
