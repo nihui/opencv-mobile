@@ -24,6 +24,7 @@
 #include "capture_cvi.h"
 #include "capture_v4l2_aw_isp.h"
 #include "capture_v4l2_rk_aiq.h"
+#include "capture_v4l2.h"
 #endif
 
 namespace cv {
@@ -43,6 +44,7 @@ public:
     capture_v4l2_aw_isp cap_v4l2_aw_isp;
     capture_v4l2_rk_aiq cap_v4l2_rk_aiq;
     capture_cvi cap_cvi;
+    capture_v4l2 cap_v4l2;
 #endif
 };
 
@@ -135,6 +137,27 @@ bool VideoCapture::open(int index)
             }
         }
     }
+
+    if (capture_v4l2::supported())
+    {
+        int ret = d->cap_v4l2.open(d->width, d->height, d->fps);
+        if (ret == 0)
+        {
+            d->width = d->cap_v4l2.get_width();
+            d->height = d->cap_v4l2.get_height();
+            d->fps = d->cap_v4l2.get_fps();
+
+            ret = d->cap_v4l2.start_streaming();
+            if (ret == 0)
+            {
+                d->is_opened = true;
+            }
+            else
+            {
+                d->cap_v4l2.close();
+            }
+        }
+    }
 #endif
 
     return d->is_opened;
@@ -171,6 +194,13 @@ void VideoCapture::release()
 
         d->cap_cvi.close();
     }
+
+    if (capture_v4l2::supported())
+    {
+        d->cap_v4l2.stop_streaming();
+
+        d->cap_v4l2.close();
+    }
 #endif
 
     d->is_opened = false;
@@ -204,6 +234,13 @@ VideoCapture& VideoCapture::operator>>(Mat& image)
         image.create(d->height, d->width, CV_8UC3);
 
         d->cap_cvi.read_frame((unsigned char*)image.data);
+    }
+
+    if (capture_v4l2::supported())
+    {
+        image.create(d->height, d->width, CV_8UC3);
+
+        d->cap_v4l2.read_frame((unsigned char*)image.data);
     }
 #endif
 

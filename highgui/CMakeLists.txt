@@ -5,6 +5,7 @@ set(highgui_srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/capture_cvi.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/capture_v4l2_aw_isp.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/capture_v4l2_rk_aiq.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/capture_v4l2.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/exif.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/highgui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/jpeg_decoder_aw.cpp
