@@ -52,8 +52,8 @@
 #define STBI_ONLY_PNM
 #include "stb_image.h"
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#include "opencv2/core/private.hpp"
+#include "opencv2/imgproc.hpp"
 
 namespace cv {
 
