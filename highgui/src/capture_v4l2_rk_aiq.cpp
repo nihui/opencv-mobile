@@ -16,7 +16,6 @@
 
 #include "capture_v4l2_rk_aiq.h"
 
-#if defined __linux__
 #include <errno.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -1776,64 +1775,3 @@ int capture_v4l2_rk_aiq::close()
 }
 
 } // namespace cv
-
-#else // defined __linux__
-
-namespace cv {
-
-bool capture_v4l2_rk_aiq::supported()
-{
-    return false;
-}
-
-capture_v4l2_rk_aiq::capture_v4l2_rk_aiq() : d(0)
-{
-}
-
-capture_v4l2_rk_aiq::~capture_v4l2_rk_aiq()
-{
-}
-
-int capture_v4l2_rk_aiq::open(int width, int height, float fps)
-{
-    return -1;
-}
-
-int capture_v4l2_rk_aiq::get_width() const
-{
-    return -1;
-}
-
-int capture_v4l2_rk_aiq::get_height() const
-{
-    return -1;
-}
-
-float capture_v4l2_rk_aiq::get_fps() const
-{
-    return 0.f;
-}
-
-int capture_v4l2_rk_aiq::start_streaming()
-{
-    return -1;
-}
-
-int capture_v4l2_rk_aiq::read_frame(unsigned char* bgrdata)
-{
-    return -1;
-}
-
-int capture_v4l2_rk_aiq::stop_streaming()
-{
-    return -1;
-}
-
-int capture_v4l2_rk_aiq::close()
-{
-    return -1;
-}
-
-} // namespace cv
-
-#endif // defined __linux__
