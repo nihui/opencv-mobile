@@ -1705,7 +1705,7 @@ jobs:
         patch -p1 -i ../patches/opencv-4.9.0-no-atomic.patch
         mkdir build && cd build
         ${{ matrix.setup-env-cmd }}
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} ${{ env.cmake-options }} \
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} ${{ matrix.cmake-options }} \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON \
             -DWITH_OPENMP=OFF -DOPENCV_DISABLE_THREAD_SUPPORT=ON ..
         cmake --build . -j $(nproc)
@@ -1717,7 +1717,7 @@ jobs:
         cd ${{ env.SOURCE_DIR }}
         mkdir build && cd build
         ${{ matrix.setup-env-cmd }}
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} ${{ env.cmake-options }} \
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} ${{ matrix.cmake-options }} \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j $(nproc)
         cmake --build . --target install
