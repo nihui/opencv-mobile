@@ -41,10 +41,14 @@
 #define STB_IMAGE_WRITE_STATIC
 #include "stb_image_write.h"
 
-#if defined __linux__
-#include "jpeg_decoder_aw.h"
+#if CV_WITH_CVI
 #include "jpeg_decoder_cvi.h"
+#endif
+#if CV_WITH_AW
+#include "jpeg_decoder_aw.h"
 #include "jpeg_encoder_aw.h"
+#endif
+#if CV_WITH_RK
 #include "jpeg_encoder_rk_mpp.h"
 #endif
 
@@ -154,10 +158,10 @@ Mat imread(const String& filename, int flags)
     const unsigned char* buf_data = (const unsigned char*)filedata.data();
     size_t buf_size = filedata.size();
 
-#if defined __linux__
     if (buf_size > 4 && buf_data[0] == 0xFF && buf_data[1] == 0xD8)
     {
         // jpg magic
+#if CV_WITH_AW
         if (jpeg_decoder_aw::supported(buf_data, buf_size))
         {
             int w = 0;
@@ -188,6 +192,8 @@ Mat imread(const String& filename, int flags)
 
             // fallback to stbi_load_from_memory
         }
+#endif
+#if CV_WITH_CVI
         if (jpeg_decoder_cvi::supported(buf_data, buf_size))
         {
             int w = 0;
@@ -218,8 +224,8 @@ Mat imread(const String& filename, int flags)
 
             // fallback to stbi_load_from_memory
         }
-    }
 #endif
+    }
 
     int w;
     int h;
@@ -320,9 +326,9 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
         return false;
     }
 
-#if defined __linux__
     if (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG")
     {
+#if CV_WITH_AW
         if (jpeg_encoder_aw::supported(img.cols, img.rows, c))
         {
             // anything to bgr
@@ -355,6 +361,8 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
 
             // fallback to stb_image_write
         }
+#endif
+#if CV_WITH_RK
         if (jpeg_encoder_rk_mpp::supported(img.cols, img.rows, c))
         {
             // anything to bgr
@@ -387,8 +395,8 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
 
             // fallback to stb_image_write
         }
-    }
 #endif
+    }
 
     // bgr to rgb
     if (c == 3)
@@ -472,10 +480,10 @@ Mat imdecode(InputArray _buf, int flags)
     const unsigned char* buf_data = (const unsigned char*)buf.data;
     size_t buf_size = buf.cols * buf.rows * buf.elemSize();
 
-#if defined __linux__
     if (buf_size > 4 && buf_data[0] == 0xFF && buf_data[1] == 0xD8)
     {
         // jpg magic
+#if CV_WITH_AW
         if (jpeg_decoder_aw::supported(buf_data, buf_size))
         {
             int w = 0;
@@ -506,6 +514,8 @@ Mat imdecode(InputArray _buf, int flags)
 
             // fallback to stbi_load_from_memory
         }
+#endif
+#if CV_WITH_CVI
         if (jpeg_decoder_cvi::supported(buf_data, buf_size))
         {
             int w = 0;
@@ -536,8 +546,8 @@ Mat imdecode(InputArray _buf, int flags)
 
             // fallback to stbi_load_from_memory
         }
-    }
 #endif
+    }
 
     int w;
     int h;
@@ -636,9 +646,9 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
         return false;
     }
 
-#if defined __linux__
     if (ext == ".jpg" || ext == ".jpeg" || ext == ".JPG" || ext == ".JPEG")
     {
+#if CV_WITH_AW
         if (jpeg_encoder_aw::supported(img.cols, img.rows, c))
         {
             // anything to bgr
@@ -671,6 +681,8 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
 
             // fallback to stb_image_write
         }
+#endif
+#if CV_WITH_RK
         if (jpeg_encoder_rk_mpp::supported(img.cols, img.rows, c))
         {
             // anything to bgr
@@ -703,8 +715,8 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
 
             // fallback to stb_image_write
         }
-    }
 #endif
+    }
 
     // bgr to rgb
     if (c == 3)

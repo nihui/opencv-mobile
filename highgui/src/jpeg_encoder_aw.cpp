@@ -16,7 +16,6 @@
 
 #include "jpeg_encoder_aw.h"
 
-#if defined __linux__
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -1690,44 +1689,3 @@ int jpeg_encoder_aw::deinit()
 }
 
 } // namespace cv
-
-#else // defined __linux__
-
-namespace cv {
-
-bool jpeg_encoder_aw::supported(int /*width*/, int /*height*/, int /*ch*/)
-{
-    return false;
-}
-
-jpeg_encoder_aw::jpeg_encoder_aw() : d(0)
-{
-}
-
-jpeg_encoder_aw::~jpeg_encoder_aw()
-{
-}
-
-int jpeg_encoder_aw::init(int /*width*/, int /*height*/, int /*ch*/, int /*quality*/)
-{
-    return -1;
-}
-
-int jpeg_encoder_aw::encode(const unsigned char* /*bgrdata*/, std::vector<unsigned char>& /*outdata*/) const
-{
-    return -1;
-}
-
-int jpeg_encoder_aw::encode(const unsigned char* /*bgrdata*/, const char* /*outfilepath*/) const
-{
-    return -1;
-}
-
-int jpeg_encoder_aw::deinit()
-{
-    return -1;
-}
-
-} // namespace cv
-
-#endif // defined __linux__

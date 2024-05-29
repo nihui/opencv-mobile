@@ -1603,6 +1603,7 @@ jobs:
               tar -xf host-tools.tar.gz
             setup-env-cmd: |
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
+            cmake-options: -DWITH_CVI=ON
 
           - name: licheerv-nano
             single-core: true
@@ -1612,6 +1613,7 @@ jobs:
               tar -xf host-tools.tar.gz
             setup-env-cmd: |
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
+            cmake-options: -DWITH_CVI=ON
 
           - name: luckfox-pico
             single-core: true
@@ -1620,6 +1622,7 @@ jobs:
               git clone --depth 1 https://github.com/LuckfoxTECH/luckfox-pico.git luckfox-pico
             setup-env-cmd: |
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
+            cmake-options: -DWITH_RK=ON
 
           - name: yuzuki-lizard
             single-core: true
@@ -1630,6 +1633,7 @@ jobs:
             setup-env-cmd: |
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
               export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+            cmake-options: -DWITH_AW=ON
 
           - name: tinyvision
             single-core: true
@@ -1640,6 +1644,7 @@ jobs:
             setup-env-cmd: |
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
               export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+            cmake-options: -DWITH_AW=ON
 
           - name: yuzuki-chameleon
             single-core: false
@@ -1650,6 +1655,7 @@ jobs:
             setup-env-cmd: |
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain
               export STAGING_DIR=$GITHUB_WORKSPACE/toolchain
+            cmake-options: -DWITH_AW=ON
 
           - name: purple-pi
             single-core: false
@@ -1660,6 +1666,7 @@ jobs:
               sh install_toolchain.sh
             setup-env-cmd: |
               export PATH=$PATH:$GITHUB_WORKSPACE/PurPle-Pi-R1/toolchain/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin
+            cmake-options:
 
           - name: myir-t113i
             single-core: false
@@ -1668,6 +1675,7 @@ jobs:
               git clone --depth 1 https://github.com/MYIR-ALLWINNER/toolchain.git
             setup-env-cmd: |
               export PATH=$PATH:$GITHUB_WORKSPACE/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin
+            cmake-options: -DWITH_AW=ON
 
     env:
       COMMON_CMAKE_OPTIONS: |
@@ -1697,7 +1705,7 @@ jobs:
         patch -p1 -i ../patches/opencv-4.9.0-no-atomic.patch
         mkdir build && cd build
         ${{ matrix.setup-env-cmd }}
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} ${{ matrix.cmake-options }} \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON \
             -DWITH_OPENMP=OFF -DOPENCV_DISABLE_THREAD_SUPPORT=ON ..
         cmake --build . -j $(nproc)
@@ -1709,7 +1717,7 @@ jobs:
         cd ${{ env.SOURCE_DIR }}
         mkdir build && cd build
         ${{ matrix.setup-env-cmd }}
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} ${{ matrix.cmake-options }} \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j $(nproc)
         cmake --build . --target install

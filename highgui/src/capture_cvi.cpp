@@ -17,7 +17,6 @@
 
 #include "capture_cvi.h"
 
-#if defined __linux__
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -4252,61 +4251,3 @@ int capture_cvi::close()
 }
 
 } // namespace cv
-#else // defined __linux__
-namespace cv {
-
-bool capture_cvi::supported()
-{
-    return false;
-}
-
-capture_cvi::capture_cvi() : d(0)
-{
-}
-
-capture_cvi::~capture_cvi()
-{
-}
-
-int capture_cvi::open(int /*width*/, int /*height*/, float /*fps*/)
-{
-    return -1;
-}
-
-int capture_cvi::get_width() const
-{
-    return -1;
-}
-
-int capture_cvi::get_height() const
-{
-    return -1;
-}
-
-float capture_cvi::get_fps() const
-{
-    return 0.f;
-}
-
-int capture_cvi::start_streaming()
-{
-    return -1;
-}
-
-int capture_cvi::read_frame(unsigned char* /*bgrdata*/)
-{
-    return -1;
-}
-
-int capture_cvi::stop_streaming()
-{
-    return -1;
-}
-
-int capture_cvi::close()
-{
-    return -1;
-}
-
-} // namespace cv
-#endif // defined __linux__
