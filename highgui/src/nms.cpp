@@ -217,19 +217,16 @@ void softNMSBoxes(const std::vector<Rect>& bboxes,
 
             float overlap = rectOverlap(bboxes[bidx], bboxes[bidx_i]);
 
-            switch (method)
+            if (method == SoftNMSMethod::SOFTNMS_LINEAR)
             {
-                case SoftNMSMethod::SOFTNMS_LINEAR:
-                    if (overlap > nms_threshold)
-                    {
-                        bscore_i *= 1.f - overlap;
-                    }
-                    break;
-                case SoftNMSMethod::SOFTNMS_GAUSSIAN:
-                    bscore_i *= exp(-(overlap * overlap) / sigma);
-                    break;
-                default:
-                    CV_Error(CV_StsBadArg, "Not supported SoftNMS method");
+                if (overlap > nms_threshold)
+                {
+                    bscore_i *= 1.f - overlap;
+                }
+            }
+            else // if (method == SoftNMSMethod::SOFTNMS_GAUSSIAN)
+            {
+                bscore_i *= exp(-(overlap * overlap) / sigma);
             }
         }
         ++start;
