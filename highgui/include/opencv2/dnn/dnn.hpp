@@ -33,11 +33,6 @@ CV_EXPORTS void NMSBoxes(const std::vector<Rect>& bboxes, const std::vector<floa
                          CV_OUT std::vector<int>& indices,
                          const float eta = 1.f, const int top_k = 0);
 
-CV_EXPORTS_AS(NMSBoxesRotated) void NMSBoxes(const std::vector<RotatedRect>& bboxes, const std::vector<float>& scores,
-                                             const float score_threshold, const float nms_threshold,
-                                             CV_OUT std::vector<int>& indices,
-                                             const float eta = 1.f, const int top_k = 0);
-
 CV_EXPORTS void NMSBoxesBatched(const std::vector<Rect>& bboxes, const std::vector<float>& scores, const std::vector<int>& class_ids,
                                 const float score_threshold, const float nms_threshold,
                                 CV_OUT std::vector<int>& indices,

@@ -37,7 +37,6 @@ static inline bool SortScorePairDescend(const std::pair<float, int>& pair1, cons
 inline void GetMaxScoreIndex(const std::vector<float>& scores, const float threshold, const int top_k,
                       std::vector<std::pair<float, int> >& score_index_vec)
 {
-    CV_DbgAssert(score_index_vec.empty());
     // Generate index score pairs.
     for (size_t i = 0; i < scores.size(); ++i)
     {
@@ -75,8 +74,6 @@ inline void NMSFast_(const std::vector<BoxType>& bboxes,
       float (*computeOverlap)(const BoxType&, const BoxType&),
       int limit = std::numeric_limits<int>::max())
 {
-    CV_Assert(bboxes.size() == scores.size());
-
     // Get top_k scores (with corresponding indices).
     std::vector<std::pair<float, int> > score_index_vec;
     GetMaxScoreIndex(scores, score_threshold, top_k, score_index_vec);
@@ -84,59 +81,47 @@ inline void NMSFast_(const std::vector<BoxType>& bboxes,
     // Do nms.
     float adaptive_threshold = nms_threshold;
     indices.clear();
-    for (size_t i = 0; i < score_index_vec.size(); ++i) {
+    for (size_t i = 0; i < score_index_vec.size(); ++i)
+    {
         const int idx = score_index_vec[i].second;
         bool keep = true;
-        for (int k = 0; k < (int)indices.size() && keep; ++k) {
+        for (int k = 0; k < (int)indices.size() && keep; ++k)
+        {
             const int kept_idx = indices[k];
             float overlap = computeOverlap(bboxes[idx], bboxes[kept_idx]);
             keep = overlap <= adaptive_threshold;
         }
-        if (keep) {
+        if (keep)
+        {
             indices.push_back(idx);
             if ((int)indices.size() >= limit) {
                 break;
             }
         }
         if (keep && eta < 1 && adaptive_threshold > 0.5) {
-          adaptive_threshold *= eta;
+            adaptive_threshold *= eta;
         }
     }
 }
 
 static inline float rectOverlap(const Rect& a, const Rect& b)
 {
-    return 1.f - static_cast<float>(jaccardDistance(a, b));
+    int Aa = a.area();
+    int Ab = b.area();
+
+    if (Aa + Ab == 0)
+        return 0.f;
+
+    int intersect = (a & b).area();
+
+    return (float)intersect / (Aa + Ab - intersect);
 }
 
 void NMSBoxes(const std::vector<Rect>& bboxes, const std::vector<float>& scores,
                           const float score_threshold, const float nms_threshold,
                           std::vector<int>& indices, const float eta, const int top_k)
 {
-    CV_Assert_N(bboxes.size() == scores.size(), score_threshold >= 0, nms_threshold >= 0, eta > 0);
-
     NMSFast_(bboxes, scores, score_threshold, nms_threshold, eta, top_k, indices, rectOverlap);
-}
-
-static inline float rotatedRectIOU(const RotatedRect& a, const RotatedRect& b)
-{
-    std::vector<Point2f> inter;
-    int res = rotatedRectangleIntersection(a, b, inter);
-    if (inter.empty() || res == INTERSECT_NONE)
-        return 0.0f;
-    if (res == INTERSECT_FULL)
-        return 1.0f;
-    float interArea = contourArea(inter);
-    return interArea / (a.size.area() + b.size.area() - interArea);
-}
-
-void NMSBoxes(const std::vector<RotatedRect>& bboxes, const std::vector<float>& scores,
-              const float score_threshold, const float nms_threshold,
-              std::vector<int>& indices, const float eta, const int top_k)
-{
-    CV_Assert_N(bboxes.size() == scores.size(), score_threshold >= 0, nms_threshold >= 0, eta > 0);
-
-    NMSFast_(bboxes, scores, score_threshold, nms_threshold, eta, top_k, indices, rotatedRectIOU);
 }
 
 static inline void NMSBoxesBatchedImpl(const std::vector<Rect>& bboxes,
@@ -174,8 +159,6 @@ void NMSBoxesBatched(const std::vector<Rect>& bboxes,
                      const float score_threshold, const float nms_threshold,
                      std::vector<int>& indices, const float eta, const int top_k)
 {
-    CV_Assert_N(bboxes.size() == scores.size(), scores.size() == class_ids.size(), nms_threshold >= 0, eta > 0);
-
     NMSBoxesBatchedImpl(bboxes, scores, class_ids, score_threshold, nms_threshold, indices, eta, top_k);
 }
 
@@ -189,8 +172,6 @@ void softNMSBoxes(const std::vector<Rect>& bboxes,
                   const float sigma,
                   SoftNMSMethod method)
 {
-    CV_Assert_N(bboxes.size() == scores.size(), score_threshold >= 0, nms_threshold >= 0, sigma >= 0);
-
     indices.clear();
     updated_scores.clear();
 
