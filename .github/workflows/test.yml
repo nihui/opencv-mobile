@@ -145,6 +145,7 @@ jobs:
         rm -rf modules/js
         rm -rf modules/python
         rm -rf modules/ts
+        rm -rf modules/dnn
         sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
         cp ../opencv3_cmake_options.txt ./options.txt
         cd ..
@@ -214,6 +215,7 @@ jobs:
         rm -rf modules/js
         rm -rf modules/python
         rm -rf modules/ts
+        rm -rf modules/dnn
         sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
         cp ../opencv4_cmake_options.txt ./options.txt
         cd ..
