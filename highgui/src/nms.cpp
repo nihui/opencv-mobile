@@ -162,6 +162,11 @@ void NMSBoxesBatched(const std::vector<Rect>& bboxes,
     NMSBoxesBatchedImpl(bboxes, scores, class_ids, score_threshold, nms_threshold, indices, eta, top_k);
 }
 
+static inline bool score_cmp(const std::pair<float, size_t>& a, const std::pair<float, size_t>& b)
+{
+    return a.first == b.first ? a.second > b.second : a.first < b.first;
+}
+
 void softNMSBoxes(const std::vector<Rect>& bboxes,
                   const std::vector<float>& scores,
                   std::vector<float>& updated_scores,
@@ -181,11 +186,6 @@ void softNMSBoxes(const std::vector<Rect>& bboxes,
         score_index_vec[i].first = scores[i];
         score_index_vec[i].second = i;
     }
-
-    const auto score_cmp = [](const std::pair<float, size_t>& a, const std::pair<float, size_t>& b)
-    {
-        return a.first == b.first ? a.second > b.second : a.first < b.first;
-    };
 
     top_k = top_k == 0 ? scores.size() : std::min(top_k, scores.size());
     ptrdiff_t start = 0;
