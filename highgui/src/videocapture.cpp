@@ -20,9 +20,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#if defined __linux__
+#if CV_WITH_CVI
 #include "capture_cvi.h"
+#endif
+#if CV_WITH_AW
 #include "capture_v4l2_aw_isp.h"
+#endif
+#if CV_WITH_RK
 #include "capture_v4l2_rk_aiq.h"
 #include "capture_v4l2.h"
 #endif
@@ -40,9 +44,13 @@ public:
     int height;
     float fps;
 
-#if defined __linux__
+#if CV_WITH_AW
     capture_v4l2_aw_isp cap_v4l2_aw_isp;
+#endif
+#if CV_WITH_RK
     capture_v4l2_rk_aiq cap_v4l2_rk_aiq;
+#endif
+#if CV_WITH_CVI
     capture_cvi cap_cvi;
     capture_v4l2 cap_v4l2;
 #endif
@@ -74,7 +82,7 @@ bool VideoCapture::open(int index)
         release();
     }
 
-#if defined __linux__
+#if CV_WITH_AW
     if (capture_v4l2_aw_isp::supported())
     {
         int ret = d->cap_v4l2_aw_isp.open(d->width, d->height, d->fps);
@@ -95,7 +103,8 @@ bool VideoCapture::open(int index)
             }
         }
     }
-
+#endif
+#if CV_WITH_RK
     if (capture_v4l2_rk_aiq::supported())
     {
         int ret = d->cap_v4l2_rk_aiq.open(d->width, d->height, d->fps);
@@ -116,7 +125,8 @@ bool VideoCapture::open(int index)
             }
         }
     }
-
+#endif
+#if CV_WITH_CVI
     if (capture_cvi::supported())
     {
         int ret = d->cap_cvi.open(d->width, d->height, d->fps);
@@ -173,21 +183,23 @@ void VideoCapture::release()
     if (!d->is_opened)
         return;
 
-#if defined __linux__
+#if CV_WITH_AW
     if (capture_v4l2_aw_isp::supported())
     {
         d->cap_v4l2_aw_isp.stop_streaming();
 
         d->cap_v4l2_aw_isp.close();
     }
-
+#endif
+#if CV_WITH_RK
     if (capture_v4l2_rk_aiq::supported())
     {
         d->cap_v4l2_rk_aiq.stop_streaming();
 
         d->cap_v4l2_rk_aiq.close();
     }
-
+#endif
+#if CV_WITH_CVI
     if (capture_cvi::supported())
     {
         d->cap_cvi.stop_streaming();
@@ -214,21 +226,23 @@ VideoCapture& VideoCapture::operator>>(Mat& image)
     if (!d->is_opened)
         return *this;
 
-#if defined __linux__
+#if CV_WITH_AW
     if (capture_v4l2_aw_isp::supported())
     {
         image.create(d->height, d->width, CV_8UC3);
 
         d->cap_v4l2_aw_isp.read_frame((unsigned char*)image.data);
     }
-
+#endif
+#if CV_WITH_RK
     if (capture_v4l2_rk_aiq::supported())
     {
         image.create(d->height, d->width, CV_8UC3);
 
         d->cap_v4l2_rk_aiq.read_frame((unsigned char*)image.data);
     }
-
+#endif
+#if CV_WITH_CVI
     if (capture_cvi::supported())
     {
         image.create(d->height, d->width, CV_8UC3);

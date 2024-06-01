@@ -16,7 +16,6 @@
 
 #include "jpeg_decoder_cvi.h"
 
-#if defined __linux__
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -2566,39 +2565,3 @@ int jpeg_decoder_cvi::deinit()
 }
 
 } // namespace cv
-
-#else // defined __linux__
-
-namespace cv {
-
-bool jpeg_decoder_cvi::supported(const unsigned char* /*jpgdata*/, int /*jpgsize*/)
-{
-    return false;
-}
-
-jpeg_decoder_cvi::jpeg_decoder_cvi() : d(0)
-{
-}
-
-jpeg_decoder_cvi::~jpeg_decoder_cvi()
-{
-}
-
-int jpeg_decoder_cvi::init(const unsigned char* /*jpgdata*/, int /*jpgsize*/, int* /*width*/, int* /*height*/, int* /*ch*/)
-{
-    return -1;
-}
-
-int jpeg_decoder_cvi::decode(const unsigned char* /*jpgdata*/, int /*jpgsize*/, unsigned char* /*outbgr*/) const
-{
-    return -1;
-}
-
-int jpeg_decoder_cvi::deinit()
-{
-    return -1;
-}
-
-} // namespace cv
-
-#endif // defined __linux__

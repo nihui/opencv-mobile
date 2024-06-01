@@ -16,7 +16,6 @@
 
 #include "capture_v4l2_aw_isp.h"
 
-#if defined __linux__
 #include <errno.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -1634,64 +1633,3 @@ int capture_v4l2_aw_isp::close()
 }
 
 } // namespace cv
-
-#else // defined __linux__
-
-namespace cv {
-
-bool capture_v4l2_aw_isp::supported()
-{
-    return false;
-}
-
-capture_v4l2_aw_isp::capture_v4l2_aw_isp() : d(0)
-{
-}
-
-capture_v4l2_aw_isp::~capture_v4l2_aw_isp()
-{
-}
-
-int capture_v4l2_aw_isp::open(int width, int height, float fps)
-{
-    return -1;
-}
-
-int capture_v4l2_aw_isp::get_width() const
-{
-    return -1;
-}
-
-int capture_v4l2_aw_isp::get_height() const
-{
-    return -1;
-}
-
-float capture_v4l2_aw_isp::get_fps() const
-{
-    return 0.f;
-}
-
-int capture_v4l2_aw_isp::start_streaming()
-{
-    return -1;
-}
-
-int capture_v4l2_aw_isp::read_frame(unsigned char* bgrdata)
-{
-    return -1;
-}
-
-int capture_v4l2_aw_isp::stop_streaming()
-{
-    return -1;
-}
-
-int capture_v4l2_aw_isp::close()
-{
-    return -1;
-}
-
-} // namespace cv
-
-#endif // defined __linux__
