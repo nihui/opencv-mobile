@@ -16,7 +16,6 @@
 
 #include "capture_v4l2.h"
 
-#if defined __linux__
 #include <errno.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -959,64 +958,3 @@ int capture_v4l2::close()
 }
 
 } // namespace cv
-
-#else // defined __linux__
-
-namespace cv {
-
-bool capture_v4l2::supported()
-{
-    return false;
-}
-
-capture_v4l2::capture_v4l2() : d(0)
-{
-}
-
-capture_v4l2::~capture_v4l2()
-{
-}
-
-int capture_v4l2::open(int width, int height, float fps)
-{
-    return -1;
-}
-
-int capture_v4l2::get_width() const
-{
-    return -1;
-}
-
-int capture_v4l2::get_height() const
-{
-    return -1;
-}
-
-float capture_v4l2::get_fps() const
-{
-    return 0.f;
-}
-
-int capture_v4l2::start_streaming()
-{
-    return -1;
-}
-
-int capture_v4l2::read_frame(unsigned char* bgrdata)
-{
-    return -1;
-}
-
-int capture_v4l2::stop_streaming()
-{
-    return -1;
-}
-
-int capture_v4l2::close()
-{
-    return -1;
-}
-
-} // namespace cv
-
-#endif // defined __linux__
