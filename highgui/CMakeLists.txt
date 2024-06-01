@@ -10,6 +10,9 @@ set(highgui_srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/highgui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/kanna_rotate.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/videocapture.cpp
+
+    # dnn
+    ${CMAKE_CURRENT_LIST_DIR}/src/nms.cpp
     )
 
 if(WITH_CVI)
@@ -40,7 +43,9 @@ endif()
 file(GLOB highgui_ext_hdrs
      "${CMAKE_CURRENT_LIST_DIR}/include/opencv2/*.hpp"
      "${CMAKE_CURRENT_LIST_DIR}/include/opencv2/${name}/*.hpp"
-     "${CMAKE_CURRENT_LIST_DIR}/include/opencv2/${name}/*.h")
+     "${CMAKE_CURRENT_LIST_DIR}/include/opencv2/${name}/*.h"
+     "${CMAKE_CURRENT_LIST_DIR}/include/opencv2/dnn/*.hpp"
+     "${CMAKE_CURRENT_LIST_DIR}/include/opencv2/dnn/*.h")
 
 if(UNIX OR OPENCV_VERSION_MAJOR GREATER_EQUAL 3)
   #these variables are set by CHECK_MODULE macro
