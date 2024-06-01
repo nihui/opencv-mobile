@@ -29,6 +29,9 @@
 #if CV_WITH_RK
 #include "capture_v4l2_rk_aiq.h"
 #endif
+#if defined __linux__
+#include "capture_v4l2.h"
+#endif
 
 namespace cv {
 
@@ -51,6 +54,9 @@ public:
 #endif
 #if CV_WITH_CVI
     capture_cvi cap_cvi;
+#endif
+#if defined __linux__
+    capture_v4l2 cap_v4l2;
 #endif
 };
 
@@ -101,6 +107,7 @@ bool VideoCapture::open(int index)
             }
         }
     }
+    else
 #endif
 #if CV_WITH_RK
     if (capture_v4l2_rk_aiq::supported())
@@ -123,6 +130,7 @@ bool VideoCapture::open(int index)
             }
         }
     }
+    else
 #endif
 #if CV_WITH_CVI
     if (capture_cvi::supported())
@@ -145,7 +153,33 @@ bool VideoCapture::open(int index)
             }
         }
     }
+    else
 #endif
+#if defined __linux__
+    if (capture_v4l2::supported())
+    {
+        int ret = d->cap_v4l2.open(d->width, d->height, d->fps);
+        if (ret == 0)
+        {
+            d->width = d->cap_v4l2.get_width();
+            d->height = d->cap_v4l2.get_height();
+            d->fps = d->cap_v4l2.get_fps();
+
+            ret = d->cap_v4l2.start_streaming();
+            if (ret == 0)
+            {
+                d->is_opened = true;
+            }
+            else
+            {
+                d->cap_v4l2.close();
+            }
+        }
+    }
+    else
+#endif
+    {
+    }
 
     return d->is_opened;
 }
@@ -167,6 +201,7 @@ void VideoCapture::release()
 
         d->cap_v4l2_aw_isp.close();
     }
+    else
 #endif
 #if CV_WITH_RK
     if (capture_v4l2_rk_aiq::supported())
@@ -175,6 +210,7 @@ void VideoCapture::release()
 
         d->cap_v4l2_rk_aiq.close();
     }
+    else
 #endif
 #if CV_WITH_CVI
     if (capture_cvi::supported())
@@ -183,7 +219,19 @@ void VideoCapture::release()
 
         d->cap_cvi.close();
     }
+    else
 #endif
+#if defined __linux__
+    if (capture_v4l2::supported())
+    {
+        d->cap_v4l2.stop_streaming();
+
+        d->cap_v4l2.close();
+    }
+    else
+#endif
+    {
+    }
 
     d->is_opened = false;
     d->width = 640;
@@ -203,6 +251,7 @@ VideoCapture& VideoCapture::operator>>(Mat& image)
 
         d->cap_v4l2_aw_isp.read_frame((unsigned char*)image.data);
     }
+    else
 #endif
 #if CV_WITH_RK
     if (capture_v4l2_rk_aiq::supported())
@@ -211,6 +260,7 @@ VideoCapture& VideoCapture::operator>>(Mat& image)
 
         d->cap_v4l2_rk_aiq.read_frame((unsigned char*)image.data);
     }
+    else
 #endif
 #if CV_WITH_CVI
     if (capture_cvi::supported())
@@ -219,7 +269,19 @@ VideoCapture& VideoCapture::operator>>(Mat& image)
 
         d->cap_cvi.read_frame((unsigned char*)image.data);
     }
+    else
 #endif
+#if defined __linux__
+    if (capture_v4l2::supported())
+    {
+        image.create(d->height, d->width, CV_8UC3);
+
+        d->cap_v4l2.read_frame((unsigned char*)image.data);
+    }
+    else
+#endif
+    {
+    }
 
     return *this;
 }

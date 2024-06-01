@@ -15,6 +15,11 @@ set(highgui_srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/nms.cpp
     )
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  list(APPEND highgui_srcs
+    ${CMAKE_CURRENT_LIST_DIR}/src/capture_v4l2.cpp)
+endif()
+
 if(WITH_CVI)
   list(APPEND highgui_srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/capture_cvi.cpp
