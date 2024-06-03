@@ -277,8 +277,8 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </tr>
 </table>
 
-* Android package build with ndk r26b and android api 21
-* iOS / iOS-Simulator / MacOS / Mac-Catalyst package build with Xcode 13.4.1
+* Android package build with ndk r26c and android api 21
+* iOS / MacOS / Mac-Catalyst / watchOS / tvOS / visionOS package build with Xcode 15.2
 * ARM Linux package build with cross-compiler on Ubuntu-22.04
 * WebAssembly package build with Emscripten 3.1.28
 
