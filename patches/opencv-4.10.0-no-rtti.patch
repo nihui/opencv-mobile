@@ -1,6 +1,6 @@
-diff -Nuarp opencv-4.9.0.orig/modules/core/include/opencv2/core/bindings_utils.hpp opencv-4.9.0/modules/core/include/opencv2/core/bindings_utils.hpp
---- opencv-4.9.0.orig/modules/core/include/opencv2/core/bindings_utils.hpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/include/opencv2/core/bindings_utils.hpp	2024-01-17 19:24:44.466218337 +0800
+diff -Nuarp opencv-4.10.0.orig/modules/core/include/opencv2/core/bindings_utils.hpp opencv-4.10.0/modules/core/include/opencv2/core/bindings_utils.hpp
+--- opencv-4.10.0.orig/modules/core/include/opencv2/core/bindings_utils.hpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/include/opencv2/core/bindings_utils.hpp	2024-06-04 21:07:18.095333593 +0800
 @@ -202,12 +202,6 @@ void generateVectorOfMat(size_t len, int
  }
  
@@ -29,10 +29,10 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/include/opencv2/core/bindings_utils.h
      return p.getArrayResult();
  }
  
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/async.cpp opencv-4.9.0/modules/core/src/async.cpp
---- opencv-4.9.0.orig/modules/core/src/async.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/async.cpp	2024-01-17 19:24:44.467218337 +0800
-@@ -119,7 +119,6 @@ struct AsyncArray::Impl
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/async.cpp opencv-4.10.0/modules/core/src/async.cpp
+--- opencv-4.10.0.orig/modules/core/src/async.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/async.cpp	2024-06-04 21:07:18.096333587 +0800
+@@ -108,7 +108,6 @@ struct AsyncArray::Impl
              if (has_exception)
              {
                  result_is_fetched = true;
@@ -40,9 +40,9 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/async.cpp opencv-4.9.0/modules/co
              }
              CV_Error(Error::StsInternal, "AsyncArray: invalid state of 'has_result = true'");
          }
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/bindings_utils.cpp opencv-4.9.0/modules/core/src/bindings_utils.cpp
---- opencv-4.9.0.orig/modules/core/src/bindings_utils.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/bindings_utils.cpp	2024-01-17 19:24:44.467218337 +0800
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/bindings_utils.cpp opencv-4.10.0/modules/core/src/bindings_utils.cpp
+--- opencv-4.10.0.orig/modules/core/src/bindings_utils.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/bindings_utils.cpp	2024-06-04 21:07:18.096333587 +0800
 @@ -17,7 +17,7 @@ String dumpInputArray(InputArray argumen
          return "InputArray: noArray()";
      std::ostringstream ss;
@@ -123,9 +123,9 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/bindings_utils.cpp opencv-4.9.0/m
      return ss.str();
  }
  
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/command_line_parser.cpp opencv-4.9.0/modules/core/src/command_line_parser.cpp
---- opencv-4.9.0.orig/modules/core/src/command_line_parser.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/command_line_parser.cpp	2024-01-17 19:24:44.467218337 +0800
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/command_line_parser.cpp opencv-4.10.0/modules/core/src/command_line_parser.cpp
+--- opencv-4.10.0.orig/modules/core/src/command_line_parser.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/command_line_parser.cpp	2024-06-04 21:08:17.261040642 +0800
 @@ -119,7 +119,6 @@ static void from_str(const String& str,
  
  void CommandLineParser::getByName(const String& name, bool space_delete, Param type, void* dst) const
@@ -172,7 +172,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/command_line_parser.cpp opencv-4.
          {
              if (begin == true)
              {
--                throw cv::Exception(CV_StsParseError,
+-                throw cv::Exception(cv::Error::StsParseError,
 -                         String("error in split_range_string(")
 -                         + str
 -                         + String(", ")
@@ -190,7 +190,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/command_line_parser.cpp opencv-4.
          {
              if (begin == false)
              {
--                throw cv::Exception(CV_StsParseError,
+-                throw cv::Exception(cv::Error::StsParseError,
 -                         String("error in split_range_string(")
 -                         + str
 -                         + String(", ")
@@ -208,7 +208,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/command_line_parser.cpp opencv-4.
  
      if (begin == true)
      {
--        throw cv::Exception(CV_StsParseError,
+-        throw cv::Exception(cv::Error::StsParseError,
 -                 String("error in split_range_string(")
 -                 + str
 -                 + String(", ")
@@ -222,9 +222,9 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/command_line_parser.cpp opencv-4.
      }
  
      return vec;
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/glob.cpp opencv-4.9.0/modules/core/src/glob.cpp
---- opencv-4.9.0.orig/modules/core/src/glob.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/glob.cpp	2024-01-17 19:24:44.467218337 +0800
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/glob.cpp opencv-4.10.0/modules/core/src/glob.cpp
+--- opencv-4.10.0.orig/modules/core/src/glob.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/glob.cpp	2024-06-04 21:07:18.096333587 +0800
 @@ -243,7 +243,6 @@ static void glob_rec(const cv::String& d
      if ((dir = opendir (directory.c_str())) != 0)
      {
@@ -245,9 +245,9 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/glob.cpp opencv-4.9.0/modules/cor
          closedir(dir);
      }
      else
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/matrix.cpp opencv-4.9.0/modules/core/src/matrix.cpp
---- opencv-4.9.0.orig/modules/core/src/matrix.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/matrix.cpp	2024-01-17 19:24:44.467218337 +0800
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/matrix.cpp opencv-4.10.0/modules/core/src/matrix.cpp
+--- opencv-4.10.0.orig/modules/core/src/matrix.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/matrix.cpp	2024-06-04 21:07:18.096333587 +0800
 @@ -698,18 +698,10 @@ void Mat::create(int d, const int* _size
  #endif
          if(!a)
@@ -287,9 +287,9 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/matrix.cpp opencv-4.9.0/modules/c
  
      updateContinuityFlag();
  
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/parallel/parallel.cpp opencv-4.9.0/modules/core/src/parallel/parallel.cpp
---- opencv-4.9.0.orig/modules/core/src/parallel/parallel.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/parallel/parallel.cpp	2024-01-17 19:24:44.468218337 +0800
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/parallel/parallel.cpp opencv-4.10.0/modules/core/src/parallel/parallel.cpp
+--- opencv-4.10.0.orig/modules/core/src/parallel/parallel.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/parallel/parallel.cpp	2024-06-04 21:07:18.097333583 +0800
 @@ -60,7 +60,6 @@ std::shared_ptr<ParallelForAPI> createPa
              }
              isKnown = true;
@@ -313,9 +313,9 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/parallel/parallel.cpp opencv-4.9.
      }
      if (name.empty())
      {
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp opencv-4.9.0/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp
---- opencv-4.9.0.orig/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp	2024-01-17 19:24:44.468218337 +0800
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp opencv-4.10.0/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp
+--- opencv-4.10.0.orig/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp	2024-06-04 21:07:18.097333583 +0800
 @@ -155,15 +155,10 @@ protected:
      void initBackend()
      {
@@ -351,9 +351,9 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/parallel/plugin_parallel_wrapper.
      }
  }
  
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/parallel.cpp opencv-4.9.0/modules/core/src/parallel.cpp
---- opencv-4.9.0.orig/modules/core/src/parallel.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/parallel.cpp	2024-01-17 19:24:44.468218337 +0800
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/parallel.cpp opencv-4.10.0/modules/core/src/parallel.cpp
+--- opencv-4.10.0.orig/modules/core/src/parallel.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/parallel.cpp	2024-06-04 21:07:18.097333583 +0800
 @@ -351,29 +351,9 @@ namespace {
              CV_TRACE_ARG_VALUE(range_end, "range.end", (int64)r.end);
  #endif
@@ -401,10 +401,10 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/parallel.cpp opencv-4.9.0/modules
      }
      else // nested parallel_for_() calls are not parallelized
      {
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/persistence.cpp opencv-4.9.0/modules/core/src/persistence.cpp
---- opencv-4.9.0.orig/modules/core/src/persistence.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/persistence.cpp	2024-01-17 19:24:44.469218337 +0800
-@@ -711,7 +711,7 @@ bool FileStorage::Impl::open(const char
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/persistence.cpp opencv-4.10.0/modules/core/src/persistence.cpp
+--- opencv-4.10.0.orig/modules/core/src/persistence.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/persistence.cpp	2024-06-04 21:07:18.097333583 +0800
+@@ -723,7 +723,7 @@ bool FileStorage::Impl::open(const char
          strbufpos = bufOffset;
          bufofs = 0;
  
@@ -413,7 +413,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/persistence.cpp opencv-4.9.0/modu
              char *ptr = bufferStart();
              ptr[0] = ptr[1] = ptr[2] = '\0';
              FileNode root_nodes(fs_ext, 0, 0);
-@@ -752,13 +752,6 @@ bool FileStorage::Impl::open(const char
+@@ -764,13 +764,6 @@ bool FileStorage::Impl::open(const char
                  }
              }
          }
@@ -427,7 +427,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/persistence.cpp opencv-4.9.0/modu
  
          // release resources that we do not need anymore
          closeFile();
-@@ -1891,18 +1884,12 @@ FileStorage::~FileStorage()
+@@ -1903,18 +1896,12 @@ FileStorage::~FileStorage()
  
  bool FileStorage::open(const String& filename, int flags, const String& encoding)
  {
@@ -446,10 +446,10 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/persistence.cpp opencv-4.9.0/modu
  }
  
  bool FileStorage::isOpened() const { return p->is_opened; }
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/system.cpp opencv-4.9.0/modules/core/src/system.cpp
---- opencv-4.9.0.orig/modules/core/src/system.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/system.cpp	2024-01-17 19:24:44.469218337 +0800
-@@ -1304,7 +1304,6 @@ void error( const Exception& exc )
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/system.cpp opencv-4.10.0/modules/core/src/system.cpp
+--- opencv-4.10.0.orig/modules/core/src/system.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/system.cpp	2024-06-04 21:07:18.098333578 +0800
+@@ -1273,7 +1273,6 @@ void error( const Exception& exc )
          *p = 0;
      }
  
@@ -457,7 +457,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/system.cpp opencv-4.9.0/modules/c
  #ifdef __GNUC__
  # if !defined __clang__ && !defined __APPLE__
      // this suppresses this warning: "noreturn" function does return [enabled by default]
-@@ -2106,15 +2105,9 @@ void* TLSDataContainer::getData() const
+@@ -2075,15 +2074,9 @@ void* TLSDataContainer::getData() const
      {
          // Create new data instance and save it to TLS storage
          pData = createDataInstance();
@@ -473,7 +473,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/system.cpp opencv-4.9.0/modules/c
      }
      return pData;
  }
-@@ -2218,7 +2211,7 @@ inline bool parseOption(const std::strin
+@@ -2187,7 +2180,7 @@ inline bool parseOption(const std::strin
      {
          return false;
      }
@@ -482,7 +482,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/system.cpp opencv-4.9.0/modules/c
  }
  
  template<>
-@@ -2239,7 +2232,7 @@ inline size_t parseOption(const std::str
+@@ -2208,7 +2201,7 @@ inline size_t parseOption(const std::str
          return v * 1024 * 1024;
      else if (suffixStr == "KB" || suffixStr == "Kb" || suffixStr == "kb")
          return v * 1024;
@@ -491,7 +491,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/system.cpp opencv-4.9.0/modules/c
  }
  
  template<>
-@@ -2282,16 +2275,11 @@ static inline const char * envRead(const
+@@ -2251,16 +2244,11 @@ static inline const char * envRead(const
  template<typename T>
  inline T read(const std::string & k, const T & defaultValue)
  {
@@ -508,9 +508,9 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/system.cpp opencv-4.9.0/modules/c
      return defaultValue;
  }
  
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/umatrix.cpp opencv-4.9.0/modules/core/src/umatrix.cpp
---- opencv-4.9.0.orig/modules/core/src/umatrix.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/umatrix.cpp	2024-01-17 19:24:44.469218337 +0800
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/umatrix.cpp opencv-4.10.0/modules/core/src/umatrix.cpp
+--- opencv-4.10.0.orig/modules/core/src/umatrix.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/umatrix.cpp	2024-06-04 21:07:18.098333578 +0800
 @@ -602,14 +602,9 @@ UMat Mat::getUMat(AccessFlag accessFlags
          new_u->originalUMatData = u;
      }
@@ -589,9 +589,9 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/umatrix.cpp opencv-4.9.0/modules/
      CV_XADD(&u->refcount, -1);
      CV_Assert(u->data != 0 && "Error mapping of UMat to host memory.");
      return Mat();
-diff -Nuarp opencv-4.9.0.orig/modules/core/src/utils/filesystem.cpp opencv-4.9.0/modules/core/src/utils/filesystem.cpp
---- opencv-4.9.0.orig/modules/core/src/utils/filesystem.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/core/src/utils/filesystem.cpp	2024-01-17 19:24:44.469218337 +0800
+diff -Nuarp opencv-4.10.0.orig/modules/core/src/utils/filesystem.cpp opencv-4.10.0/modules/core/src/utils/filesystem.cpp
+--- opencv-4.10.0.orig/modules/core/src/utils/filesystem.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/core/src/utils/filesystem.cpp	2024-06-04 21:07:18.098333578 +0800
 @@ -508,14 +508,9 @@ cv::String getCacheDirectory(const char*
                      && !utils::fs::isDirectory(default_cache_path))
                  {
@@ -607,10 +607,10 @@ diff -Nuarp opencv-4.9.0.orig/modules/core/src/utils/filesystem.cpp opencv-4.9.0
                      if (!existedCacheDirs.empty())
                      {
                          CV_LOG_WARNING(NULL, "Creating new OpenCV cache directory: " << default_cache_path);
-diff -Nuarp opencv-4.9.0.orig/modules/imgproc/src/contours.cpp opencv-4.9.0/modules/imgproc/src/contours.cpp
---- opencv-4.9.0.orig/modules/imgproc/src/contours.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/imgproc/src/contours.cpp	2024-01-17 19:24:44.470218337 +0800
-@@ -1759,7 +1759,6 @@ cvFindContours_Impl( void*  img,  CvMemS
+diff -Nuarp opencv-4.10.0.orig/modules/imgproc/src/contours.cpp opencv-4.10.0/modules/imgproc/src/contours.cpp
+--- opencv-4.10.0.orig/modules/imgproc/src/contours.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/imgproc/src/contours.cpp	2024-06-04 21:07:18.098333578 +0800
+@@ -1760,7 +1760,6 @@ cvFindContours_Impl( void*  img,  CvMemS
      }
      else
      {
@@ -618,7 +618,7 @@ diff -Nuarp opencv-4.9.0.orig/modules/imgproc/src/contours.cpp opencv-4.9.0/modu
          {
              scanner = cvStartFindContours_Impl( img, storage, cntHeaderSize, mode, method, offset,
                                              needFillBorder);
-@@ -1771,12 +1770,6 @@ cvFindContours_Impl( void*  img,  CvMemS
+@@ -1772,12 +1771,6 @@ cvFindContours_Impl( void*  img,  CvMemS
              }
              while( contour != 0 );
          }
@@ -631,9 +631,9 @@ diff -Nuarp opencv-4.9.0.orig/modules/imgproc/src/contours.cpp opencv-4.9.0/modu
  
          *firstContour = cvEndFindContours( &scanner );
      }
-diff -Nuarp opencv-4.9.0.orig/modules/video/src/tracking/detail/tracking_feature.cpp opencv-4.9.0/modules/video/src/tracking/detail/tracking_feature.cpp
---- opencv-4.9.0.orig/modules/video/src/tracking/detail/tracking_feature.cpp	2023-12-28 00:46:55.000000000 +0800
-+++ opencv-4.9.0/modules/video/src/tracking/detail/tracking_feature.cpp	2024-01-17 19:24:44.470218337 +0800
+diff -Nuarp opencv-4.10.0.orig/modules/video/src/tracking/detail/tracking_feature.cpp opencv-4.10.0/modules/video/src/tracking/detail/tracking_feature.cpp
+--- opencv-4.10.0.orig/modules/video/src/tracking/detail/tracking_feature.cpp	2024-06-02 04:41:06.000000000 +0800
++++ opencv-4.10.0/modules/video/src/tracking/detail/tracking_feature.cpp	2024-06-04 21:07:18.099333573 +0800
 @@ -107,15 +107,9 @@ void CvHaarEvaluator::generateFeatures(i
  
  CvHaarEvaluator::FeatureHaar::FeatureHaar(Size patchSize)
