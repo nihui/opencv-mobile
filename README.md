@@ -17,13 +17,13 @@
 
 :heavy_check_mark: Packages for **Windows**, **Linux**, **MacOS** and **WebAssembly** are available now.
 
-:heavy_check_mark: We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.20** and **4.9.0**.
+:heavy_check_mark: We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.20** and **4.10.0**.
 
 :heavy_check_mark: We also provide prebuild package for **Mac-Catalyst**, **watchOS**, **tvOS**, **visionOS** and **Apple xcframework**.
 
 :heavy_check_mark: All the binaries are compiled from source on github action, **no virus**, **no backdoor**, **no secret code**.
 
-|opencv 4.9.0 package size|The official opencv|opencv-mobile|
+|opencv 4.10.0 package size|The official opencv|opencv-mobile|
 |:-:|:-:|:-:|
 |source zip|93.0 MB|8.34 MB|
 |android|242 MB|17.3 MB|
@@ -43,7 +43,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0.zip)
 
 </td>
 </tr>
@@ -57,7 +57,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-android.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-android.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-android.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-android.zip)
 
 </td>
 </tr>
@@ -71,7 +71,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-ios.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-ios.zip)
 
 </td>
 </tr>
@@ -81,7 +81,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-simulator.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-simulator.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-ios-simulator.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-ios-simulator.zip)
 
 </td>
 </tr>
@@ -95,7 +95,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-macos.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-macos.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-macos.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-macos.zip)
 
 </td>
 </tr>
@@ -105,7 +105,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-mac-catalyst.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-mac-catalyst.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-mac-catalyst.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-mac-catalyst.zip)
 
 </td>
 </tr>
@@ -115,7 +115,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-watchos.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-watchos.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-watchos.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-watchos.zip)
 
 </td>
 </tr>
@@ -125,7 +125,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-watchos-simulator.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-watchos-simulator.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-watchos-simulator.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-watchos-simulator.zip)
 
 </td>
 </tr>
@@ -135,7 +135,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-tvos.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-tvos.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-tvos.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-tvos.zip)
 
 </td>
 </tr>
@@ -145,7 +145,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-tvos-simulator.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-tvos-simulator.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-tvos-simulator.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-tvos-simulator.zip)
 
 </td>
 </tr>
@@ -155,7 +155,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-visionos.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-visionos.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-visionos.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-visionos.zip)
 
 </td>
 </tr>
@@ -165,7 +165,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-visionos-simulator.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-visionos-simulator.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-visionos-simulator.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-visionos-simulator.zip)
 
 </td>
 </tr>
@@ -175,7 +175,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-apple.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-apple.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-apple.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-apple.zip)
 
 </td>
 </tr>
@@ -189,7 +189,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2004.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2004.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-ubuntu-2004.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-ubuntu-2004.zip)
 
 </td>
 </tr>
@@ -199,7 +199,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2204.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2204.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-ubuntu-2204.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-ubuntu-2204.zip)
 
 </td>
 </tr>
@@ -213,7 +213,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2015.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2015.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-windows-vs2015.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-windows-vs2015.zip)
 
 </td>
 </tr>
@@ -223,7 +223,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2017.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2017.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-windows-vs2017.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-windows-vs2017.zip)
 
 </td>
 </tr>
@@ -233,7 +233,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2019.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2019.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-windows-vs2019.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-windows-vs2019.zip)
 
 </td>
 </tr>
@@ -243,7 +243,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2022.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2022.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-windows-vs2022.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-windows-vs2022.zip)
 
 </td>
 </tr>
@@ -257,7 +257,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-webassembly.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-webassembly.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-webassembly.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-webassembly.zip)
 
 </td>
 </tr>
@@ -271,7 +271,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-armlinux.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-armlinux.zip)
-  [<img src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-armlinux.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-armlinux.zip)
 
 </td>
 </tr>
@@ -294,8 +294,8 @@ https://github.com/nihui/opencv-mobile/releases/latest
   <br />riscv64-linux-musl<br />
   &#9989; HW JPG decoder<br />
   &#9989; MIPI CSI camera<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-milkv-duo.zip">
-    <img alt="opencv4-milkv-duo" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-milkv-duo.zip">
+    <img alt="opencv4-milkv-duo" src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -306,8 +306,8 @@ https://github.com/nihui/opencv-mobile/releases/latest
   <br />riscv64-linux-musl<br />
   &#9989; HW JPG decoder<br />
   &#9989; MIPI CSI camera<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-licheerv-nano.zip">
-    <img alt="opencv4-licheerv-nano" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-licheerv-nano.zip">
+    <img alt="opencv4-licheerv-nano" src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -318,8 +318,8 @@ https://github.com/nihui/opencv-mobile/releases/latest
   <br />arm-linux-uclibcgnueabihf<br />
   &#9989; HW JPG encoder<br />
   &#9989; MIPI CSI camera<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-luckfox-pico.zip">
-    <img alt="opencv4-luckfox-pico" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-luckfox-pico.zip">
+    <img alt="opencv4-luckfox-pico" src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">
   </a>
 </td>
 </tr>
@@ -330,8 +330,8 @@ https://github.com/nihui/opencv-mobile/releases/latest
     <br /><b>yuzuki-lizard</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-yuzuki-lizard.zip">
-    <img alt="opencv4-yuzuki-lizard" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-yuzuki-lizard.zip">
+    <img alt="opencv4-yuzuki-lizard" src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -343,8 +343,8 @@ https://github.com/nihui/opencv-mobile/releases/latest
   &#9989; HW JPG decoder<br />
   &#9989; HW JPG encoder<br />
   &#9989; MIPI CSI camera<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-tinyvision.zip">
-    <img alt="opencv4-tinyvision" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-tinyvision.zip">
+    <img alt="opencv4-tinyvision" src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -355,8 +355,8 @@ https://github.com/nihui/opencv-mobile/releases/latest
   <br />arm-openwrt-linux-gnueabi<br />
   &#9989; HW JPG decoder<br />
   &#9989; HW JPG encoder<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-yuzuki-chameleon.zip">
-    <img alt="opencv4-yuzuki-chameleon" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-yuzuki-chameleon.zip">
+    <img alt="opencv4-yuzuki-chameleon" src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">
   </a>
 </td>
 </tr>
@@ -367,8 +367,8 @@ https://github.com/nihui/opencv-mobile/releases/latest
     <br /><b>purple-pi</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-purple-pi.zip">
-    <img alt="opencv4-purple-pi" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-purple-pi.zip">
+    <img alt="opencv4-purple-pi" src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -379,8 +379,8 @@ https://github.com/nihui/opencv-mobile/releases/latest
   <br />arm-linux-gnueabi<br />
   &#9989; HW JPG decoder<br />
   &#9989; HW JPG encoder<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0-myir-t113i.zip">
-    <img alt="opencv4-myir-t113i" src="https://img.shields.io/badge/download-4.9.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-myir-t113i.zip">
+    <img alt="opencv4-myir-t113i" src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -395,7 +395,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 2. Modify ```<project dir>/app/src/main/jni/CMakeListst.txt``` to find and link opencv
 
 ```cmake
-set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.9.0-android/sdk/native/jni)
+set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.10.0-android/sdk/native/jni)
 find_package(OpenCV REQUIRED)
 
 target_link_libraries(your_jni_target ${OpenCV_LIBS})
@@ -412,7 +412,7 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 3. Pass ```-DOpenCV_STATIC=ON``` to cmake option for windows build
 
 ```cmake
-set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.9.0-armlinux/arm-linux-gnueabihf/lib/cmake/opencv4)
+set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.10.0-armlinux/arm-linux-gnueabihf/lib/cmake/opencv4)
 find_package(OpenCV REQUIRED)
 
 target_link_libraries(your_target ${OpenCV_LIBS})
@@ -431,9 +431,9 @@ The opencv-mobile source code package is the result of steps 1 and 2. Based on i
 
 **step 1. download opencv-mobile source**
 ```shell
-wget -q https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.9.0.zip
-unzip -q opencv-mobile-4.9.0.zip
-cd opencv-mobile-4.9.0
+wget -q https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0.zip
+unzip -q opencv-mobile-4.10.0.zip
+cd opencv-mobile-4.10.0
 ```
 
 **step 2. apply your opencv option changes to options.txt**
@@ -455,7 +455,7 @@ make install
 
 **step 4. make a package**
 ```shell
-zip -r -9 opencv-mobile-4.9.0-mypackage.zip install
+zip -r -9 opencv-mobile-4.10.0-mypackage.zip install
 ```
 
 # Some notes
