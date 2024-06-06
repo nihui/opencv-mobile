@@ -292,6 +292,9 @@ jobs:
     - name: package
       run: |
         mkdir ${{ env.PACKAGE_NAME }}
+        mkdir ${{ env.PACKAGE_NAME }}/x86_64
+        mkdir ${{ env.PACKAGE_NAME }}/armeabi-v7a
+        mkdir ${{ env.PACKAGE_NAME }}/arm64-v8a
         cp -rf ${{ env.SOURCE_DIR }}/build-x86_64/install/* ${{ env.PACKAGE_NAME }}/x86_64/
         cp -rf ${{ env.SOURCE_DIR }}/build-armeabi-v7a/install/* ${{ env.PACKAGE_NAME }}/armeabi-v7a/
         cp -rf ${{ env.SOURCE_DIR }}/build-arm64-v8a/install/* ${{ env.PACKAGE_NAME }}/arm64-v8a/
