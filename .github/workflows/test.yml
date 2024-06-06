@@ -221,6 +221,16 @@ jobs:
         cd ..
         mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
         zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
+    - name: upload-opencv2-source
+      uses: actions/upload-artifact@v4
+      with:
+        name: opencv-mobile-2.4.13.7-source
+        path: opencv-mobile-2.4.13.7.zip
+    - name: upload-opencv3-source
+      uses: actions/upload-artifact@v4
+      with:
+        name: opencv-mobile-3.4.20-source
+        path: opencv-mobile-3.4.20.zip
     - name: upload-opencv4-source
       uses: actions/upload-artifact@v4
       with:
