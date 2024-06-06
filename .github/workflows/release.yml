@@ -337,6 +337,101 @@ jobs:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
 
+  harmonyos:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.10.0]
+    env:
+      OHOS_NDK_CMAKE: $GITHUB_WORKSPACE/ohos-sdk/linux/native/build-tools/cmake/bin/cmake
+      COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/ohos-sdk/linux/native/build/cmake/ohos.toolchain.cmake \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_BUILD_TYPE=Release \
+    steps:
+    - uses: actions/checkout@v4
+    - name: ndk-fix-debug
+      run: |
+        wget https://repo.huaweicloud.com/harmonyos/os/4.1.1-Release/ohos-sdk-windows_linux-public.tar.gz
+        tar -xf ohos-sdk-windows_linux-public.tar.gz
+        cd ohos-sdk/linux
+        unzip -q native-linux-x64-4.1.7.8-Release.zip
+    - uses: actions/download-artifact@v4
+      with:
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
+    - name: setup-opencv-source
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-harmonyos" >> $GITHUB_ENV
+    - name: build-armeabi-v7a
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        ${{ env.OHOS_NDK_CMAKE }} ${{ env.COMMON_CMAKE_OPTIONS }} -DOHOS_ARCH="armeabi-v7a" \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        ${{ env.OHOS_NDK_CMAKE }} --build . -j $(nproc)
+        ${{ env.OHOS_NDK_CMAKE }} --build . --target install
+    - name: build-arm64-v8a
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        ${{ env.OHOS_NDK_CMAKE }} ${{ env.COMMON_CMAKE_OPTIONS }} -DOHOS_ARCH="arm64-v8a" \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        ${{ env.OHOS_NDK_CMAKE }} --build . -j $(nproc)
+        ${{ env.OHOS_NDK_CMAKE }} --build . --target install
+    - name: build-x86_64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-x86_64 && cd build-x86_64
+        ${{ env.OHOS_NDK_CMAKE }} ${{ env.COMMON_CMAKE_OPTIONS }} -DOHOS_ARCH="x86_64" \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        ${{ env.OHOS_NDK_CMAKE }} --build . -j $(nproc)
+        ${{ env.OHOS_NDK_CMAKE }} --build . --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGE_NAME }}
+        mkdir ${{ env.PACKAGE_NAME }}/x86_64
+        mkdir ${{ env.PACKAGE_NAME }}/armeabi-v7a
+        mkdir ${{ env.PACKAGE_NAME }}/arm64-v8a
+        cp -rf ${{ env.SOURCE_DIR }}/build-x86_64/install/* ${{ env.PACKAGE_NAME }}/x86_64/
+        cp -rf ${{ env.SOURCE_DIR }}/build-armeabi-v7a/install/* ${{ env.PACKAGE_NAME }}/armeabi-v7a/
+        cp -rf ${{ env.SOURCE_DIR }}/build-arm64-v8a/install/* ${{ env.PACKAGE_NAME }}/arm64-v8a/
+        zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
+    - name: set-opencv-dir
+      if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
+      run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
+    - name: set-opencv-dir
+      if: matrix.opencv-version == '4.10.0'
+      run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
+    - name: test-armeabi-v7a
+      run: |
+        cd test
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        ${{ env.OHOS_NDK_CMAKE }} ${{ env.COMMON_CMAKE_OPTIONS }} -DOHOS_ARCH="armeabi-v7a" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/armeabi-v7a/${{ env.OPENCV_SUBDIR }} ..
+        ${{ env.OHOS_NDK_CMAKE }} --build . -j $(nproc)
+    - name: test-arm64-v8a
+      run: |
+        cd test
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        ${{ env.OHOS_NDK_CMAKE }} ${{ env.COMMON_CMAKE_OPTIONS }} -DOHOS_ARCH="arm64-v8a" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/arm64-v8a/${{ env.OPENCV_SUBDIR }} ..
+        ${{ env.OHOS_NDK_CMAKE }} --build . -j $(nproc)
+    - name: test-x86_64
+      run: |
+        cd test
+        mkdir build-x86_64 && cd build-x86_64
+        ${{ env.OHOS_NDK_CMAKE }} ${{ env.COMMON_CMAKE_OPTIONS }} -DOHOS_ARCH="x86_64" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/x86_64/${{ env.OPENCV_SUBDIR }} ..
+        ${{ env.OHOS_NDK_CMAKE }} --build . -j $(nproc)
+    - name: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
+
   ios:
     needs: [setup]
     runs-on: macos-13
@@ -1747,7 +1842,7 @@ jobs:
   release:
     permissions:
       contents: write  # for softprops/action-gh-release to create a release
-    needs: [setup, android, ios, ios-simulator, armlinux, macos, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator, windows, ubuntu, webassembly, apple, devboard]
+    needs: [setup, android, harmonyos, ios, ios-simulator, armlinux, macos, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator, windows, ubuntu, webassembly, apple, devboard]
     runs-on: ubuntu-latest
     steps:
     - name: download
