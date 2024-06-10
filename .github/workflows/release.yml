@@ -63,6 +63,7 @@ jobs:
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-enable-cxx11.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-newer-msvc.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-windows-arm-arch.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
         cp ../patches/draw_text.h ../patches/mono_font_data.h modules/core/src/
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
@@ -135,6 +136,8 @@ jobs:
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-emscripten-include.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-newer-msvc.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-windows-arm-arch.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
         cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
@@ -205,6 +208,7 @@ jobs:
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-windows-arm-arch.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
         cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
@@ -1368,13 +1372,43 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
+    - name: build-arm
+      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm; cd build-arm
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=ARM $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake --build . --config Release -j 4
+        cmake --build . --config Release --target install
+    - name: build-arm64
+      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm64; cd build-arm64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=ARM64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake --build . --config Release -j 4
+        cmake --build . --config Release --target install
     - name: package
+      if: matrix.os-compiler.msvc-version == 'vs2015' || matrix.os-compiler.msvc-version == 'vs2017'
       run: |
         mkdir ${{ env.PACKAGE_NAME }}
         mkdir ${{ env.PACKAGE_NAME }}/x86
         mkdir ${{ env.PACKAGE_NAME }}/x64
         Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x86\install\*" -Destination "${{ env.PACKAGE_NAME }}\x86"
         Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x64\install\*" -Destination "${{ env.PACKAGE_NAME }}\x64"
+        7z a -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
+    - name: package
+      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
+      run: |
+        mkdir ${{ env.PACKAGE_NAME }}
+        mkdir ${{ env.PACKAGE_NAME }}/x86
+        mkdir ${{ env.PACKAGE_NAME }}/x64
+        mkdir ${{ env.PACKAGE_NAME }}/arm
+        mkdir ${{ env.PACKAGE_NAME }}/arm64
+        Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x86\install\*" -Destination "${{ env.PACKAGE_NAME }}\x86"
+        Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x64\install\*" -Destination "${{ env.PACKAGE_NAME }}\x64"
+        Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-arm\install\*" -Destination "${{ env.PACKAGE_NAME }}\arm"
+        Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-arm64\install\*" -Destination "${{ env.PACKAGE_NAME }}\arm64"
         7z a -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
     - name: test-x86
       run: |
@@ -1387,6 +1421,20 @@ jobs:
         cd test
         mkdir build-x64; cd build-x64
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x64" -DOpenCV_STATIC=ON ..
+        cmake --build . --config Release -j 4
+    - name: test-arm
+      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
+      run: |
+        cd test
+        mkdir build-arm; cd build-arm
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\arm" -DOpenCV_STATIC=ON ..
+        cmake --build . --config Release -j 4
+    - name: test-arm64
+      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
+      run: |
+        cd test
+        mkdir build-arm64; cd build-arm64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\arm64" -DOpenCV_STATIC=ON ..
         cmake --build . --config Release -j 4
     - name: upload-zip
       uses: actions/upload-artifact@v4

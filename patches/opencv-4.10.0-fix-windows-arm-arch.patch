@@ -1,0 +1,30 @@
+diff -Nuarp opencv-4.10.0.orig/cmake/OpenCVDetectCXXCompiler.cmake opencv-4.10.0/cmake/OpenCVDetectCXXCompiler.cmake
+--- opencv-4.10.0.orig/cmake/OpenCVDetectCXXCompiler.cmake	2024-06-02 19:41:07.000000000 +0800
++++ opencv-4.10.0/cmake/OpenCVDetectCXXCompiler.cmake	2024-06-10 14:58:22.061466618 +0800
+@@ -150,9 +150,9 @@ elseif(MSVC)
+   # see Modules/CMakeGenericSystem.cmake
+   if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
+     set(OpenCV_ARCH "x64")
+-  elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "ARM64")
++  elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "(ARM64|arm64)")
+     set(OpenCV_ARCH "ARM64")
+-  elseif("${CMAKE_GENERATOR}" MATCHES "ARM")
++  elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "(ARM|arm)")
+     set(OpenCV_ARCH "ARM")
+   elseif("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
+     set(OpenCV_ARCH "x64")
+diff -Nuarp opencv-4.10.0.orig/cmake/templates/OpenCVConfig.root-WIN32.cmake.in opencv-4.10.0/cmake/templates/OpenCVConfig.root-WIN32.cmake.in
+--- opencv-4.10.0.orig/cmake/templates/OpenCVConfig.root-WIN32.cmake.in	2024-06-02 19:41:07.000000000 +0800
++++ opencv-4.10.0/cmake/templates/OpenCVConfig.root-WIN32.cmake.in	2024-06-10 14:58:43.470327117 +0800
+@@ -99,9 +99,9 @@ elseif(MSVC)
+   # see Modules/CMakeGenericSystem.cmake
+   if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
+     set(OpenCV_ARCH "x64")
+-  elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "ARM64")
++  elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "(ARM64|arm64)")
+     set(OpenCV_ARCH "ARM64")
+-  elseif("${CMAKE_GENERATOR}" MATCHES "ARM")
++  elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "(ARM|arm)")
+     set(OpenCV_ARCH "ARM")
+   elseif("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
+     set(OpenCV_ARCH "x64")
