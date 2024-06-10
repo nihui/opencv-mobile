@@ -129,7 +129,7 @@ jobs:
       run: |
         cd ${{ env.SOURCE_DIR }}
         mkdir build-arm64; cd build-arm64
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64 $(type ../options.txt) -DCMAKE_SYSTEM_PROCESSOR=ARM64 -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
     - name: package
