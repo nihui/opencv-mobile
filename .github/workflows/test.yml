@@ -237,7 +237,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [3.4.20, 4.10.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.10.0]
         os-compiler:
           - { msvc-version: vs2019, windows-version: 2019, toolset-version: v142 }
           - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143 }
