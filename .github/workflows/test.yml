@@ -125,6 +125,13 @@ jobs:
         unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
         echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $env:GITHUB_ENV
         echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-windows-${{ matrix.os-compiler.msvc-version }}" >> $env:GITHUB_ENV
+    - name: build-arm
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm; cd build-arm
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=ARM $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake --build . --config Release -j 4
+        cmake --build . --config Release --target install
     - name: build-arm64
       run: |
         cd ${{ env.SOURCE_DIR }}
@@ -135,9 +142,17 @@ jobs:
     - name: package
       run: |
         mkdir ${{ env.PACKAGE_NAME }}
+        mkdir ${{ env.PACKAGE_NAME }}/arm
         mkdir ${{ env.PACKAGE_NAME }}/arm64
+        Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-arm\install\*" -Destination "${{ env.PACKAGE_NAME }}\arm"
         Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-arm64\install\*" -Destination "${{ env.PACKAGE_NAME }}\arm64"
         7z a -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
+    - name: test-arm
+      run: |
+        cd test
+        mkdir build-arm; cd build-arm
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\arm" -DOpenCV_STATIC=ON ..
+        cmake --build . --config Release -j 4
     - name: test-arm64
       run: |
         cd test
