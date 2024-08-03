@@ -29,7 +29,6 @@
 |android|292 MB|17.7 MB|
 |ios|207 MB|3.97 MB|
 
----
 
 <table>
 <tr>
