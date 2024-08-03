@@ -249,6 +249,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.10.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_DEFAULT_CMP0057=NEW \
         -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
         -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
         -DANDROID_PLATFORM=android-21 \
