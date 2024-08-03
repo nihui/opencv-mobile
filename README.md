@@ -29,6 +29,17 @@
 |android|292 MB|17.7 MB|
 |ios|207 MB|3.97 MB|
 
+
+<table>
+<tr>
+<td>
+<b>Technical Exchange QQ Group</b><br />
+623504742（opencv-mobile夸夸群）<br/>
+</td>
+</tr>
+</table>
+
+
 # Download
 
 https://github.com/nihui/opencv-mobile/releases/latest
