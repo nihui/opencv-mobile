@@ -1,16 +1,74 @@
-diff -Nuarp opencv-3.4.20.orig/modules/imgproc/src/drawing.cpp opencv-3.4.20/modules/imgproc/src/drawing.cpp
---- opencv-3.4.20.orig/modules/imgproc/src/drawing.cpp	2023-06-27 19:29:13.000000000 +0800
-+++ opencv-3.4.20/modules/imgproc/src/drawing.cpp	2023-12-09 17:09:13.910181866 +0800
-@@ -40,6 +40,8 @@
- //M*/
- #include "precomp.hpp"
+diff -Nuarp opencv-3.4.20.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv-3.4.20/modules/imgproc/include/opencv2/imgproc.hpp
+--- opencv-3.4.20.orig/modules/imgproc/include/opencv2/imgproc.hpp	2024-08-03 13:22:07.649774626 +0800
++++ opencv-3.4.20/modules/imgproc/include/opencv2/imgproc.hpp	2024-08-03 13:23:14.297551785 +0800
+@@ -4912,6 +4912,37 @@ CV_EXPORTS_W double getFontScaleFromHeig
+                                            const int pixelHeight,
+                                            const int thickness = 1);
  
-+#include "draw_text.h"
++class FontFaceImpl;
++class CV_EXPORTS_W FontFace
++{
++public:
++    FontFace();
++    FontFace(const String& fontPath);
 +
++    ~FontFace();
++
++protected:
++    void set_glyph(int count, const unsigned int* unicode, const unsigned char* bitmaps);
++
++public:
++    FontFaceImpl* const d;
++};
++
++enum PutTextFlags
++{
++    PUT_TEXT_ALIGN_LEFT=0,  // put the text to the right from the origin
++    PUT_TEXT_ALIGN_CENTER=1,// center the text at the origin; not implemented yet
++    PUT_TEXT_ALIGN_RIGHT=2, // put the text to the left of the origin
++    PUT_TEXT_ALIGN_MASK=3,  // alignment mask
++    PUT_TEXT_ORIGIN_TL=0,
++    PUT_TEXT_ORIGIN_BL=32,  // treat the target image as having bottom-left origin
++    PUT_TEXT_WRAP=128       // wrap text to the next line if it does not fit
++};
++
++CV_EXPORTS_W Point putText(InputOutputArray img, const String &text, Point org, Scalar color, const FontFace &fface, int size, int weight=0, PutTextFlags flags=PUT_TEXT_ALIGN_LEFT, Range wrap=Range());
++
++CV_EXPORTS_W Rect getTextSize(Size imgsize, const String& text, Point org, const FontFace& fontface, int size, int weight=0, PutTextFlags flags=PUT_TEXT_ALIGN_LEFT, Range wrap=Range());
++
+ /** @brief Class for iterating over all pixels on a raster line segment.
+ 
+ The class LineIterator is used to get each pixel of a raster line connecting
+diff -Nuarp opencv-3.4.20.orig/modules/imgproc/src/drawing.cpp opencv-3.4.20/modules/imgproc/src/drawing.cpp
+--- opencv-3.4.20.orig/modules/imgproc/src/drawing.cpp	2024-08-03 13:22:07.653774613 +0800
++++ opencv-3.4.20/modules/imgproc/src/drawing.cpp	2024-08-03 13:30:01.392190643 +0800
+@@ -42,6 +42,25 @@
+ 
  namespace cv
  {
++class FontFaceImpl
++{
++public:
++    FontFaceImpl();
++
++public:
++    int glyph_count;
++    const unsigned int* glyph_unicode;
++    const unsigned char* glyph_bitmaps;
++
++public:
++    const unsigned char* get_glyph_bitmap(unsigned int ch) const;
++};
++}
++
++#include "draw_text.h"
++
++namespace cv
++{
  
-@@ -2051,6 +2053,7 @@ void polylines( Mat& img, const Point* c
+ enum { XY_SHIFT = 16, XY_ONE = 1 << XY_SHIFT, DRAWING_STORAGE_BLOCK = (1<<12) - 256 };
+ 
+@@ -2051,6 +2070,7 @@ void polylines( Mat& img, const Point* c
  }
  
  
@@ -18,7 +76,7 @@ diff -Nuarp opencv-3.4.20.orig/modules/imgproc/src/drawing.cpp opencv-3.4.20/mod
  enum { FONT_SIZE_SHIFT=8, FONT_ITALIC_ALPHA=(1 << 8),
         FONT_ITALIC_DIGIT=(2 << 8), FONT_ITALIC_PUNCT=(4 << 8),
         FONT_ITALIC_BRACES=(8 << 8), FONT_HAVE_GREEK=(16 << 8),
-@@ -2265,6 +2268,7 @@ inline void readCheck(int &c, int &i, co
+@@ -2265,6 +2285,7 @@ inline void readCheck(int &c, int &i, co
  }
  
  extern const char* g_HersheyGlyphs[];
@@ -26,7 +84,7 @@ diff -Nuarp opencv-3.4.20.orig/modules/imgproc/src/drawing.cpp opencv-3.4.20/mod
  
  void putText( InputOutputArray _img, const String& text, Point org,
                int fontFace, double fontScale, Scalar color,
-@@ -2278,6 +2282,35 @@ void putText( InputOutputArray _img, con
+@@ -2278,6 +2299,35 @@ void putText( InputOutputArray _img, con
          return;
      }
      Mat img = _img.getMat();
@@ -62,7 +120,7 @@ diff -Nuarp opencv-3.4.20.orig/modules/imgproc/src/drawing.cpp opencv-3.4.20/mod
      const int* ascii = getFontData(fontFace);
  
      double buf[4];
-@@ -2332,10 +2365,21 @@ void putText( InputOutputArray _img, con
+@@ -2332,10 +2382,21 @@ void putText( InputOutputArray _img, con
          }
          view_x += dx;
      }
@@ -84,7 +142,7 @@ diff -Nuarp opencv-3.4.20.orig/modules/imgproc/src/drawing.cpp opencv-3.4.20/mod
      Size size;
      double view_x = 0;
      const char **faces = cv::g_HersheyGlyphs;
-@@ -2362,10 +2406,13 @@ Size getTextSize( const String& text, in
+@@ -2362,10 +2423,13 @@ Size getTextSize( const String& text, in
      if( _base_line )
          *_base_line = cvRound(base_line*fontScale + thickness*0.5);
      return size;
@@ -98,15 +156,104 @@ diff -Nuarp opencv-3.4.20.orig/modules/imgproc/src/drawing.cpp opencv-3.4.20/mod
      // By https://stackoverflow.com/a/27898487/1531708
      const int* ascii = getFontData(fontFace);
  
-@@ -2373,6 +2420,7 @@ double getFontScaleFromHeight(const int
+@@ -2373,6 +2437,96 @@ double getFontScaleFromHeight(const int
      int cap_line = (ascii[0] >> 4) & 15;
  
      return static_cast<double>(pixelHeight - static_cast<double>((thickness + 1)) / 2.0) / static_cast<double>(cap_line + base_line);
 +#endif
++}
++
++FontFaceImpl::FontFaceImpl()
++{
++    glyph_count = 0;
++    glyph_unicode = 0;
++    glyph_bitmaps = 0;
++}
++
++const unsigned char* FontFaceImpl::get_glyph_bitmap(unsigned int ch) const
++{
++    if (!glyph_count || !glyph_unicode || !glyph_bitmaps)
++        return 0;
++
++    for (int i = 0; i < glyph_count; i++)
++    {
++        if (glyph_unicode[i] == ch)
++            return glyph_bitmaps + i * 40 * 20;
++    }
++
++    return 0;
++}
++
++FontFace::FontFace() : d(new FontFaceImpl)
++{
++}
++
++FontFace::~FontFace()
++{
++    delete d;
++}
++
++void FontFace::set_glyph(int count, const unsigned int* unicode, const unsigned char* bitmaps)
++{
++    d->glyph_count = count;
++    d->glyph_unicode = unicode;
++    d->glyph_bitmaps = bitmaps;
++}
++
++Point putText(InputOutputArray _img, const String& text, Point org, Scalar color, const FontFace& fontface, int size, int weight, PutTextFlags flags, Range wrap)
++{
++    CV_INSTRUMENT_REGION();
++
++    if ( text.empty() )
++    {
++        return org;
++    }
++    Mat img = _img.getMat();
++
++    const int yoffset = org.y - size * 2;
++
++    unsigned int _color = 0;
++    unsigned char* border_color = (unsigned char*)&_color;
++
++    if (img.channels() == 1)
++    {
++        border_color[0] = color[0];
++        draw_text_c1(img.data, img.cols, img.rows, text.c_str(), org.x, yoffset, size, _color, fontface);
++    }
++    else if (img.channels() == 3)
++    {
++        border_color[0] = color[0];
++        border_color[1] = color[1];
++        border_color[2] = color[2];
++        draw_text_c3(img.data, img.cols, img.rows, text.c_str(), org.x, yoffset, size, _color, fontface);
++    }
++    else if (img.channels() == 4)
++    {
++        border_color[0] = color[0];
++        border_color[1] = color[1];
++        border_color[2] = color[2];
++        border_color[3] = color[3];
++        draw_text_c4(img.data, img.cols, img.rows, text.c_str(), org.x, yoffset, size, _color, fontface);
++    }
++
++    int w;
++    int h;
++    get_text_drawing_size(text.c_str(), size, &w, &h, fontface);
++
++    return Point(org.x + w, org.y);
++}
++
++Rect getTextSize(Size imgsize, const String& text, Point org, const FontFace& fontface, int size, int weight, PutTextFlags flags, Range wrap)
++{
++    int w;
++    int h;
++    get_text_drawing_size(text.c_str(), size, &w, &h, fontface);
++
++    return Rect(org.x, org.y - size * 2, w, h);
  }
  
  }
-@@ -2879,7 +2927,7 @@ cvInitFont( CvFont *font, int font_face,
+@@ -2879,7 +3033,7 @@ cvInitFont( CvFont *font, int font_face,
  {
      CV_Assert( font != 0 && hscale > 0 && vscale > 0 && thickness >= 0 );
  
@@ -116,8 +263,8 @@ diff -Nuarp opencv-3.4.20.orig/modules/imgproc/src/drawing.cpp opencv-3.4.20/mod
      font->hscale = (float)hscale;
      font->vscale = (float)vscale;
 diff -Nuarp opencv-3.4.20.orig/modules/imgproc/src/hershey_fonts.cpp opencv-3.4.20/modules/imgproc/src/hershey_fonts.cpp
---- opencv-3.4.20.orig/modules/imgproc/src/hershey_fonts.cpp	2023-06-27 19:29:13.000000000 +0800
-+++ opencv-3.4.20/modules/imgproc/src/hershey_fonts.cpp	2023-12-09 17:02:22.175067906 +0800
+--- opencv-3.4.20.orig/modules/imgproc/src/hershey_fonts.cpp	2024-08-03 13:22:07.654774610 +0800
++++ opencv-3.4.20/modules/imgproc/src/hershey_fonts.cpp	2024-08-03 13:22:25.006716593 +0800
 @@ -51,6 +51,7 @@
  namespace cv
  {
