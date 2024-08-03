@@ -41,7 +41,7 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/include/opencv2/core/core.hpp open
  /*!
 diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/modules/core/src/drawing.cpp
 --- opencv-2.4.13.7.orig/modules/core/src/drawing.cpp	2024-08-03 13:33:29.648494328 +0800
-+++ opencv-2.4.13.7/modules/core/src/drawing.cpp	2024-08-03 13:36:49.532698129 +0800
++++ opencv-2.4.13.7/modules/core/src/drawing.cpp	2024-08-03 14:19:07.916992598 +0800
 @@ -42,6 +42,25 @@
  
  namespace cv
@@ -140,7 +140,7 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
      Size size;
      double view_x = 0;
      const char **faces = cv::g_HersheyGlyphs;
-@@ -2294,6 +2354,96 @@ Size getTextSize( const string& text, in
+@@ -2294,6 +2354,94 @@ Size getTextSize( const string& text, in
      if( _base_line )
          *_base_line = cvRound(base_line*fontScale + thickness*0.5);
      return size;
@@ -186,8 +186,6 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
 +
 +Point putText(InputOutputArray _img, const String& text, Point org, Scalar color, const FontFace& fontface, int size, int weight, PutTextFlags flags, Range wrap)
 +{
-+    CV_INSTRUMENT_REGION();
-+
 +    if ( text.empty() )
 +    {
 +        return org;
@@ -237,7 +235,7 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
  }
  
  }
-@@ -2679,7 +2829,7 @@ cvInitFont( CvFont *font, int font_face,
+@@ -2679,7 +2827,7 @@ cvInitFont( CvFont *font, int font_face,
  {
      CV_Assert( font != 0 && hscale > 0 && vscale > 0 && thickness >= 0 );
  
