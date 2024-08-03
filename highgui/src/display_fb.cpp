@@ -142,62 +142,126 @@ int display_fb_impl::show_image(const unsigned char* bgrdata, int width, int hei
         // write(fd, bgr.data, xres_virtual * 240 * 2);
     }
 
-    // BGR888 to RGB565
-#if 1
-    for (int y = 0; y < height; y++)
+
+    if (bits_per_pixel == 16)
     {
-        const unsigned char* p = bgrdata + y * width * 3;
-        unsigned short* pout = (unsigned short*)fb_base + y * width;// FIXME HARDCODE
+        // BGR888 to RGB565
+        for (int y = 0; y < height; y++)
+        {
+            const unsigned char* p = bgrdata + y * width * 3;
+            unsigned short* pout = (unsigned short*)fb_base + y * width;// FIXME HARDCODE
 
-        int x = 0;
+            int x = 0;
 #if __ARM_NEON
-        for (; x + 15 < width; x += 16)
-        {
-            __builtin_prefetch(p + 48);
-            uint8x16x3_t vsrc = vld3q_u8(p);
+            for (; x + 15 < width; x += 16)
+            {
+                __builtin_prefetch(p + 48);
+                uint8x16x3_t vsrc = vld3q_u8(p);
 
-            uint16x8_t vdst0 = vshll_n_u8(vget_low_u8(vsrc.val[2]), 8);
-            uint16x8_t vdst1 = vshll_n_u8(vget_high_u8(vsrc.val[2]), 8);
-            vdst0 = vsriq_n_u16(vdst0, vshll_n_u8(vget_low_u8(vsrc.val[1]), 8), 5);
-            vdst1 = vsriq_n_u16(vdst1, vshll_n_u8(vget_high_u8(vsrc.val[1]), 8), 5);
-            vdst0 = vsriq_n_u16(vdst0, vshll_n_u8(vget_low_u8(vsrc.val[0]), 8), 11);
-            vdst1 = vsriq_n_u16(vdst1, vshll_n_u8(vget_high_u8(vsrc.val[0]), 8), 11);
+                uint16x8_t vdst0 = vshll_n_u8(vget_low_u8(vsrc.val[2]), 8);
+                uint16x8_t vdst1 = vshll_n_u8(vget_high_u8(vsrc.val[2]), 8);
+                vdst0 = vsriq_n_u16(vdst0, vshll_n_u8(vget_low_u8(vsrc.val[1]), 8), 5);
+                vdst1 = vsriq_n_u16(vdst1, vshll_n_u8(vget_high_u8(vsrc.val[1]), 8), 5);
+                vdst0 = vsriq_n_u16(vdst0, vshll_n_u8(vget_low_u8(vsrc.val[0]), 8), 11);
+                vdst1 = vsriq_n_u16(vdst1, vshll_n_u8(vget_high_u8(vsrc.val[0]), 8), 11);
 
-            vst1q_u16(pout, vdst0);
-            vst1q_u16(pout + 8, vdst1);
+                vst1q_u16(pout, vdst0);
+                vst1q_u16(pout + 8, vdst1);
 
-            p += 48;
-            pout += 16;
-        }
-        for (; x + 7 < width; x += 8)
-        {
-            uint8x8x3_t vsrc = vld3_u8(p);
+                p += 48;
+                pout += 16;
+            }
+            for (; x + 7 < width; x += 8)
+            {
+                uint8x8x3_t vsrc = vld3_u8(p);
 
-            uint16x8_t vdst = vshll_n_u8(vsrc.val[2], 8);
-            vdst = vsriq_n_u16(vdst, vshll_n_u8(vsrc.val[1], 8), 5);
-            vdst = vsriq_n_u16(vdst, vshll_n_u8(vsrc.val[0], 8), 11);
+                uint16x8_t vdst = vshll_n_u8(vsrc.val[2], 8);
+                vdst = vsriq_n_u16(vdst, vshll_n_u8(vsrc.val[1], 8), 5);
+                vdst = vsriq_n_u16(vdst, vshll_n_u8(vsrc.val[0], 8), 11);
 
-            vst1q_u16(pout, vdst);
+                vst1q_u16(pout, vdst);
 
-            p += 24;
-            pout += 8;
-        }
+                p += 24;
+                pout += 8;
+            }
 #endif // __ARM_NEON
-        for (; x < width; x++)
-        {
-            uchar b = p[0];
-            uchar g = p[1];
-            uchar r = p[2];
+            for (; x < width; x++)
+            {
+                uchar b = p[0];
+                uchar g = p[1];
+                uchar r = p[2];
 
-            pout[0] = (r >> 3 << 11) | (g >> 2 << 5) | (b >> 3);
+                pout[0] = (r >> 3 << 11) | (g >> 2 << 5) | (b >> 3);
 
-            p += 3;
-            pout += 1;
+                p += 3;
+                pout += 1;
+            }
+
+            // pout += xres_virtual - 240;
         }
-
-        // pout += xres_virtual - 240;
     }
-#endif
+
+    if (bits_per_pixel == 32)
+    {
+        // RGB888 to RGBA8888
+        for (int y = 0; y < height; y++)
+        {
+            const unsigned char* p = bgrdata + y * width * 3;
+            unsigned char* pout = (unsigned char*)fb_base + y * width * 4;// FIXME HARDCODE
+
+            int x = 0;
+#if __ARM_NEON
+            uint8x16_t _v255 = vdupq_n_u8(255);
+            for (; x + 15 < width; x += 16)
+            {
+                __builtin_prefetch(p + 48);
+                uint8x16x3_t _rgb = vld3q_u8(p);
+
+                uint8x16x4_t _rgba;
+                _rgba.val[0] = _rgb.val[0];
+                _rgba.val[1] = _rgb.val[1];
+                _rgba.val[2] = _rgb.val[2];
+                _rgba.val[3] = _v255;
+
+                vst4q_u8(pout, _rgba);
+
+                p += 48;
+                pout += 64;
+            }
+            for (; x + 7 < width; x += 8)
+            {
+                uint8x8x3_t _rgb = vld3_u8(p);
+
+                uint8x8x4_t _rgba;
+                _rgba.val[0] = _rgb.val[0];
+                _rgba.val[1] = _rgb.val[1];
+                _rgba.val[2] = _rgb.val[2];
+                _rgba.val[3] = vget_low_u8(_v255);
+
+                vst4_u8(pout, _rgba);
+
+                p += 24;
+                pout += 32;
+            }
+#endif // __ARM_NEON
+            for (; x < width; x++)
+            {
+                uchar r = p[0];
+                uchar g = p[1];
+                uchar b = p[2];
+
+                pout[0] = r;
+                pout[1] = g;
+                pout[2] = b;
+                pout[3] = 255;
+
+                p += 3;
+                pout += 4;
+            }
+
+            // pout += xres_virtual - 240;
+        }
+    }
 
     // fsync(fb_fd);
 
