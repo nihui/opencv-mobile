@@ -61,8 +61,7 @@ static int get_device_model()
             // luckfox pico family and plus pro max mini variants
             device_model = 1;
         }
-
-        if (strncmp(buf, "LockzhinerVisionModule", sizeof("LockzhinerVisionModule")) == 0)
+        else if (strncmp(buf, "LockzhinerVisionModule", sizeof("LockzhinerVisionModule")) == 0)
         {
             // LockzhinerVisionModule
             device_model = 1;
