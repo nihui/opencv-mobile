@@ -56,15 +56,15 @@ static int get_device_model()
         fgets(buf, 1024, fp);
         fclose(fp);
 
-        if (strncmp(buf, "Luckfox Pico", 12) == 0)
+        if (strncmp(buf, "Luckfox Pico", sizeof("Luckfox Pico")) == 0)
         {
             // luckfox pico family and plus pro max mini variants
             device_model = 1;
         }
 
-        if (strncmp(buf, "LockzhinerVisionModule", 12) == 0)
+        if (strncmp(buf, "LockzhinerVisionModule", sizeof("LockzhinerVisionModule")) == 0)
         {
-            // luckfox pico family and plus pro max mini variants
+            // LockzhinerVisionModule
             device_model = 1;
         }
     }
