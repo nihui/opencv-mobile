@@ -456,14 +456,30 @@ vim options.txt
 
 **step 3. build your opencv package with cmake**
 ```shell
-mkdir -p build
-cd build
+mkdir -p build && cd build
+
+# Normal conditions
 cmake -DCMAKE_INSTALL_PREFIX=install \
   -DCMAKE_BUILD_TYPE=Release \
   `cat ../options.txt` \
   -DBUILD_opencv_world=OFF ..
-make -j4
-make install
+
+# Luckfox or LockzhinerVisionModule
+export TOOLCHAIN_ROOT_PATH=/path/to/arm-rockchip830-linux-uclibcgnueabihf
+cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchains/arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake \
+      -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
+      -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
+      -DCMAKE_INSTALL_PREFIX=install \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DWITH_RK=ON \
+      `cat ../options.txt` \
+      -DBUILD_opencv_world=OFF \
+      -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON \
+      -DWITH_OPENMP=OFF \
+      -DOPENCV_DISABLE_THREAD_SUPPORT=ON ..
+
+cmake --build . -j $(nproc)
+cmake --build . --target install
 ```
 
 **step 4. make a package**
