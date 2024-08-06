@@ -57,17 +57,10 @@ function applyCustomFont() {
             }
         }
 
-        const fontFace = `@font-face {
-            font-family: 'CustomFont';
-            src: url('${event.target.result}');
-        }`;
-
-        document.head.innerHTML += `<style>${fontFace}</style>`;
-
-        const resultImg = document.getElementById('result');
-        resultImg.src = '';
+        const myFont = new FontFace('CustomFont', `url(${event.target.result})`);
+        myFont.load();
+        document.fonts.add(myFont);
     };
-
     reader.readAsDataURL(fontFile);
 }
 
@@ -102,8 +95,12 @@ document.getElementById('convert-btn').addEventListener('click', function() {
         ctx.font = fontSize + "px CustomFont";
         const metrics = ctx.measureText(s);
         return unicode > 127 && metrics.width > fontSize / 2;
-    }).sort(function(a, b){
-        return getUnicode(a) > getUnicode(b);
+    }).sort(function(a,b){
+        a1 = getUnicode(a);
+        b1 = getUnicode(b);
+        if (a1>b1) return 1;
+        if (a1<b1) return -1;
+        return 0;
     }).filter(function(el,i,a){return i===a.indexOf(el)});
 
     let yc = Math.floor(words.length / 20) + 1;
