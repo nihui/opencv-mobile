@@ -2523,7 +2523,15 @@ diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/kaze/AKAZEFeatures.h openc
 diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/matchers.cpp opencv-4.10.0/modules/features2d/src/matchers.cpp
 --- opencv-4.10.0.orig/modules/features2d/src/matchers.cpp	2024-06-04 21:20:08.748197018 +0800
 +++ opencv-4.10.0/modules/features2d/src/matchers.cpp	2024-06-04 21:25:27.160977672 +0800
-@@ -528,18 +528,7 @@ DescriptorMatcher::~DescriptorMatcher()
+@@ -44,7 +44,6 @@
+ #include "opencv2/flann/miniflann.hpp"
+ #endif
+ #include <limits>
+-#include "opencl_kernels_features2d.hpp"
+ 
+ #if defined(HAVE_EIGEN) && EIGEN_WORLD_VERSION == 2
+ #  if defined(_MSC_VER)
+@@ -529,18 +528,7 @@ DescriptorMatcher::~DescriptorMatcher()
  
  void DescriptorMatcher::add( InputArrayOfArrays _descriptors )
  {
@@ -2543,7 +2551,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/matchers.cpp opencv-4.10.0
      {
          std::vector<Mat> descriptors;
          _descriptors.getMatVector(descriptors);
-@@ -552,7 +541,7 @@ void DescriptorMatcher::add( InputArrayO
+@@ -553,7 +541,7 @@ void DescriptorMatcher::add( InputArrayO
      }
      else
      {
@@ -2552,7 +2560,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/matchers.cpp opencv-4.10.0
      }
  }
  
-@@ -563,13 +552,12 @@ const std::vector<Mat>& DescriptorMatche
+@@ -564,13 +552,12 @@ const std::vector<Mat>& DescriptorMatche
  
  void DescriptorMatcher::clear()
  {
@@ -2567,7 +2575,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/matchers.cpp opencv-4.10.0
  }
  
  void DescriptorMatcher::train()
-@@ -624,17 +612,16 @@ void DescriptorMatcher::checkMasks( Inpu
+@@ -625,17 +612,16 @@ void DescriptorMatcher::checkMasks( Inpu
      if( isMaskSupported() && !masks.empty() )
      {
          // Check masks
@@ -2588,7 +2596,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/matchers.cpp opencv-4.10.0
                  CV_Assert(masks[i].type() == CV_8UC1
                      && masks[i].rows == queryDescriptorsCount
                      && masks[i].cols == rows);
-@@ -756,13 +743,13 @@ static bool ocl_knnMatch(InputArray quer
+@@ -757,13 +743,13 @@ static bool ocl_knnMatch(InputArray quer
  void BFMatcher::knnMatchImpl( InputArray _queryDescriptors, std::vector<std::vector<DMatch> >& matches, int knn,
                               InputArrayOfArrays _masks, bool compactResult )
  {
@@ -2604,7 +2612,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/matchers.cpp opencv-4.10.0
      {
          matches.clear();
          return;
-@@ -771,17 +758,6 @@ void BFMatcher::knnMatchImpl( InputArray
+@@ -772,17 +758,6 @@ void BFMatcher::knnMatchImpl( InputArray
      std::vector<Mat> masks;
      _masks.getMatVector(masks);
  
@@ -2622,7 +2630,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/matchers.cpp opencv-4.10.0
  #ifdef HAVE_OPENCL
      int trainDescVectorSize = trainDescCollection.empty() ? (int)utrainDescCollection.size() : (int)trainDescCollection.size();
      Size trainDescSize = trainDescCollection.empty() ? utrainDescCollection[0].size() : trainDescCollection[0].size();
-@@ -833,16 +809,6 @@ void BFMatcher::knnMatchImpl( InputArray
+@@ -834,16 +809,6 @@ void BFMatcher::knnMatchImpl( InputArray
  #endif
  
      Mat queryDescriptors = _queryDescriptors.getMat();
@@ -2639,7 +2647,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/matchers.cpp opencv-4.10.0
  
      matches.reserve(queryDescriptors.rows);
  
-@@ -907,10 +873,10 @@ static bool ocl_radiusMatch(InputArray q
+@@ -908,10 +873,10 @@ static bool ocl_radiusMatch(InputArray q
  void BFMatcher::radiusMatchImpl( InputArray _queryDescriptors, std::vector<std::vector<DMatch> >& matches,
                                  float maxDistance, InputArrayOfArrays _masks, bool compactResult )
  {
@@ -2652,7 +2660,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/matchers.cpp opencv-4.10.0
      {
          matches.clear();
          return;
-@@ -919,17 +885,6 @@ void BFMatcher::radiusMatchImpl( InputAr
+@@ -920,17 +885,6 @@ void BFMatcher::radiusMatchImpl( InputAr
      std::vector<Mat> masks;
      _masks.getMatVector(masks);
  
@@ -2670,7 +2678,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/matchers.cpp opencv-4.10.0
  #ifdef HAVE_OPENCL
      int trainDescVectorSize = trainDescCollection.empty() ? (int)utrainDescCollection.size() : (int)trainDescCollection.size();
      Size trainDescSize = trainDescCollection.empty() ? utrainDescCollection[0].size() : trainDescCollection[0].size();
-@@ -959,16 +914,6 @@ void BFMatcher::radiusMatchImpl( InputAr
+@@ -960,16 +914,6 @@ void BFMatcher::radiusMatchImpl( InputAr
  #endif
  
      Mat queryDescriptors = _queryDescriptors.getMat();
@@ -2687,7 +2695,39 @@ diff -Nuarp opencv-4.10.0.orig/modules/features2d/src/matchers.cpp opencv-4.10.0
  
      matches.resize(queryDescriptors.rows);
      Mat dist, distf;
-@@ -1162,13 +1107,6 @@ void FlannBasedMatcher::train()
+@@ -1114,21 +1058,7 @@ void FlannBasedMatcher::add( InputArrayO
+ {
+     DescriptorMatcher::add( _descriptors );
+ 
+-    if( _descriptors.isUMatVector() )
+-    {
+-        std::vector<UMat> descriptors;
+-        _descriptors.getUMatVector( descriptors );
+-
+-        for( size_t i = 0; i < descriptors.size(); i++ )
+-        {
+-            addedDescCount += descriptors[i].rows;
+-        }
+-    }
+-    else if( _descriptors.isUMat() )
+-    {
+-        addedDescCount += _descriptors.getUMat().rows;
+-    }
+-    else if( _descriptors.isMatVector() )
++    if( _descriptors.isMatVector() )
+     {
+         std::vector<Mat> descriptors;
+         _descriptors.getMatVector(descriptors);
+@@ -1143,7 +1073,7 @@ void FlannBasedMatcher::add( InputArrayO
+     }
+     else
+     {
+-        CV_Assert( _descriptors.isUMat() || _descriptors.isUMatVector() || _descriptors.isMat() || _descriptors.isMatVector() );
++        CV_Assert( _descriptors.isMat() || _descriptors.isMatVector() );
+     }
+ }
+ 
+@@ -1163,13 +1093,6 @@ void FlannBasedMatcher::train()
  
      if( !flannIndex || mergedDescriptors.size() < addedDescCount )
      {
