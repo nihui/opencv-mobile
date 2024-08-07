@@ -56,12 +56,12 @@ static int get_device_model()
         fgets(buf, 1024, fp);
         fclose(fp);
 
-        if (strncmp(buf, "Luckfox Pico", sizeof("Luckfox Pico") - 1) == 0)
+        if (strncmp(buf, "Luckfox Pico", 12) == 0)
         {
             // luckfox pico family and plus pro max mini variants
             device_model = 1;
         }
-        else if (strncmp(buf, "LockzhinerVisionModule", sizeof("LockzhinerVisionModule") - 1) == 0)
+        else if (strncmp(buf, "LockzhinerVisionModule", 22) == 0)
         {
             // LockzhinerVisionModule
             device_model = 1;
@@ -350,113 +350,26 @@ typedef XCamReturn (*rk_aiq_error_cb)(rk_aiq_err_msg_t* err_msg);
 typedef XCamReturn (*rk_aiq_metas_cb)(rk_aiq_metas_t* metas);
 // typedef XCamReturn (*rk_aiq_hwevt_cb)(rk_aiq_hwevt_t* hwevt);
 
-/*!
- * const char* rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd(const char* vd);
- * \brief get sensor entity name from video node
- * \param[in] vd             pp stream video node full path
- * \return return the binded sensor name
- */
 typedef const char* (*PFN_rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd)(const char* vd);
 
-/*!
- * XCamReturn rk_aiq_uapi2_sysctl_getStaticMetas(const char* sns_ent_name, rk_aiq_static_info_t* static_info);
- */
 typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_getStaticMetas)(const char* sns_ent_name, rk_aiq_static_info_t* static_info);
 
-/*!
- * XCamReturn rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId(int index, rk_aiq_static_info_t* static_info);
- */
 typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId)(int index, rk_aiq_static_info_t* static_info);
 
-/**
- * XCamReturn rk_aiq_uapi2_sysctl_preInit_tb_info(const char* sns_ent_name, const rk_aiq_tb_info_t* info);
- * @brief set thunder boot info to aiq
- *
- * @param sns_ent_name sensor name
- * @param is_pre_aiq is pre-customer aiq
- *
- * @return 0 if no error
- */
 typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_preInit_tb_info)(const char* sns_ent_name, const rk_aiq_tb_info_t* info);
 
-/**
- * XCamReturn rk_aiq_uapi2_sysctl_preInit_scene(const char* sns_ent_name, const char *main_scene, const char *sub_scene);
- */
 typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_preInit_scene)(const char* sns_ent_name, const char *main_scene, const char *sub_scene);
 
-
-// XCamReturn rk_aiq_uapi2_sysctl_preInit(const char* sns_ent_name, rk_aiq_working_mode_t mode, const char* force_iq_file);
-
-/*!
- * rk_aiq_sys_ctx_t* rk_aiq_uapi2_sysctl_init(const char* sns_ent_name,const char* iq_file_dir,rk_aiq_error_cb err_cb,rk_aiq_metas_cb metas_cb);
- * \brief initialze aiq control system context
- * Should call before any other APIs
- *
- * \param[in] sns_ent_name    active sensor media entity name. This represents the unique camera module\n
- *                            in system. And the whole active pipeline could be retrieved by this.
- * \param[in] iq_file_dir     define the search directory of the iq files.
- * \param[in] err_cb          not mandatory. it's used to return system errors to user.
- * \param[in] metas_cb        not mandatory. it's used to return the metas(sensor exposure settings,\n
- *                            isp settings, etc.) for each frame
- * \return return system context if success, or NULL if failure.
- */
 typedef rk_aiq_sys_ctx_t* (*PFN_rk_aiq_uapi2_sysctl_init)(const char* sns_ent_name, const char* iq_file_dir, rk_aiq_error_cb err_cb, rk_aiq_metas_cb metas_cb);
 
-/*!
- * XCamReturn rk_aiq_uapi2_sysctl_prepare(const rk_aiq_sys_ctx_t* ctx, uint32_t  width, uint32_t  height, rk_aiq_working_mode_t mode);
- * \brief prepare aiq control system before runninig
- * prepare AIQ running enviroment, should be called before \ref rk_aiq_uapi2_sysctl_start.\n
- * And if re-prepared is required after \ref rk_aiq_uapi2_sysctl_start is called,\n
- * should call \ref rk_aiq_uapi2_sysctl_stop firstly.
- *
- * \param[in] ctx             the context returned by \ref rk_aiq_uapi2_sysctl_init
- * \param[in] width           sensor active output width, just used to check internally
- * \param[in] height          sensor active output height, just used to check internally
- * \param[in] mode            pipleline working mode
- * \return return 0 if success
- */
 typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_prepare)(const rk_aiq_sys_ctx_t* ctx, uint32_t  width, uint32_t  height, rk_aiq_working_mode_t mode);
 
-/*!
- * XCamReturn rk_aiq_uapi2_sysctl_start(const rk_aiq_sys_ctx_t* ctx);
- * \brief start aiq control system
- * should be called after \ref rk_aiq_uapi2_sysctl_prepare. After this call,
- * the aiq system repeats getting 3A statistics from ISP driver, running
- * aiq algorimths(AE, AWB, AF, etc.), setting new parameters to drivers.
- *
- * \param[in] ctx             the context returned by \ref rk_aiq_uapi2_sysctl_init
- * \return return 0 if success
- */
 typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_start)(const rk_aiq_sys_ctx_t* ctx);
 
-/*!
- * XCamReturn _rk_aiq_uapi2_sysctl_stop(const rk_aiq_sys_ctx_t* ctx, bool keep_ext_hw_st);
- * \brief stop aiq control system
- *
- * \param[in] ctx             the context returned by \ref rk_aiq_uapi2_sysctl_init
- * \param[in] keep_ext_hw_st  do not change external devices status, like ircut/cpsl
- * \return return 0 if success
- */
 typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_stop)(const rk_aiq_sys_ctx_t* ctx, bool keep_ext_hw_st);
 
-/*!
- * void rk_aiq_uapi2_sysctl_deinit(rk_aiq_sys_ctx_t* ctx);
- * \brief deinitialze aiq context
- * Should not be called in started state
- *
- * \param[in] ctx             the context returned by \ref rk_aiq_uapi2_sysctl_init
- */
 typedef void (*PFN_rk_aiq_uapi2_sysctl_deinit)(rk_aiq_sys_ctx_t* ctx);
 
-/**
- * @brief set device buffer count, currently only for raw tx/rx device
- *
- * @param sns_ent_name: Sensor entity name, can get from #rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd
- * @param dev_ent: Device entity string, if equals "rkraw_tx" or "rkraw_rx", will set for all tx/rx devices
- * @param buf_cnt: V4l2 buffer count for video device of entity #dev_ent
- *
- * @return XCAM_RETURN_NO_ERROR if no error, otherwise return values < 0
- */
 typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_preInit_devBufCnt)(const char* sns_ent_name, const char* dev_ent, int buf_cnt);
 }
 
