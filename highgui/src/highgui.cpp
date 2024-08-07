@@ -51,6 +51,9 @@
 #if CV_WITH_RK
 #include "jpeg_encoder_rk_mpp.h"
 #endif
+#if defined __linux__
+#include "display_fb.h"
+#endif
 
 namespace cv {
 //
@@ -772,14 +775,28 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
 
 void imshow(const String& winname, InputArray mat)
 {
-    fprintf(stderr, "imshow save image to %s.png", winname.c_str());
-    imwrite(winname + ".png", mat);
+    // fprintf(stderr, "imshow save image to %s.png\n", winname.c_str());
+    // imwrite(winname + ".png", mat);
+
+#if __linux__
+    display_fb dpy;
+    dpy.open();
+
+    int width = dpy.get_width();
+    int height = dpy.get_height();
+
+    Mat img = mat.getMat();
+
+    cv::resize(img, img, cv::Size(width, height));
+
+    dpy.show_image(img.data, img.cols, img.rows);
+#endif
 }
 
 int waitKey(int delay)
 {
     (void)delay;
-    fprintf(stderr, "waitKey stub");
+    fprintf(stderr, "waitKey stub\n");
     return -1;
 }
 
