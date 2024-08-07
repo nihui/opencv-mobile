@@ -1201,24 +1201,29 @@ int capture_v4l2_rk_aiq_impl::open(int width, int height, float fps)
 
         rk_aiq_static_info_t aiq_static_info;
         constexpr int cam_id = 0;
-        rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId(cam_id, &aiq_static_info);
-        if (aiq_static_info.sensor_info.phyId == -1) {
-            fprintf(stderr, "ERROR: aiq_static_info.sensor_info.phyId is %d\n", aiq_static_info.sensor_info.phyId);
-            goto OUT;
+
+        char *sns_entity_name = nullptr;
+        {
+            XCamReturn ret = rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId(cam_id, &aiq_static_info);
+            if ((aiq_static_info.sensor_info.phyId == -1) || (ret != XCAM_RETURN_NO_ERROR)) {
+                fprintf(stderr, "ERROR: aiq_static_info.sensor_info.phyId is %d\n", aiq_static_info.sensor_info.phyId);
+                goto OUT;
+            }
+            sns_entity_name = aiq_static_info.sensor_info.sensor_name;
         }
 
         char iq_file_dir[] = "/oem/usr/share/iqfiles";
-        fprintf(stderr, "ID: %d, sensor_name is %s, iqfiles is %s\n", cam_id, aiq_static_info.sensor_info.sensor_name, iq_file_dir);
+        fprintf(stderr, "ID: %d, sensor_name is %s, iqfiles is %s\n", cam_id, sns_entity_name, iq_file_dir);
 
         char dev_ent[] = "rkraw_rx";
-        rk_aiq_uapi2_sysctl_preInit_devBufCnt(aiq_static_info.sensor_info.sensor_name, dev_ent, 2);
+        rk_aiq_uapi2_sysctl_preInit_devBufCnt(sns_entity_name, dev_ent, 2);
 
         // preinit scene
         {
-            XCamReturn ret = rk_aiq_uapi2_sysctl_preInit_scene(aiq_static_info.sensor_info.sensor_name, "normal", "day");
+            XCamReturn ret = rk_aiq_uapi2_sysctl_preInit_scene(sns_entity_name, "normal", "day");
             if (ret != XCAM_RETURN_NO_ERROR)
             {
-                fprintf(stderr, "rk_aiq_uapi2_sysctl_preInit_scene %s failed %d\n", aiq_static_info.sensor_info.sensor_name, ret);
+                fprintf(stderr, "rk_aiq_uapi2_sysctl_preInit_scene %s failed %d\n", sns_entity_name, ret);
                 goto OUT;
             }
         }
@@ -1226,10 +1231,10 @@ int capture_v4l2_rk_aiq_impl::open(int width, int height, float fps)
 
         {
             // TODO /oem/usr/share/iqfiles/sc3336_CMK-OT2119-PC1_30IRC-F16.json
-            aiq_ctx = rk_aiq_uapi2_sysctl_init(aiq_static_info.sensor_info.sensor_name, "/oem/usr/share/iqfiles", NULL, NULL);
+            aiq_ctx = rk_aiq_uapi2_sysctl_init(sns_entity_name, "/oem/usr/share/iqfiles", NULL, NULL);
             if (!aiq_ctx)
             {
-                fprintf(stderr, "rk_aiq_uapi2_sysctl_init %s failed\n", aiq_static_info.sensor_info.sensor_name);
+                fprintf(stderr, "rk_aiq_uapi2_sysctl_init %s failed\n", sns_entity_name);
                 goto OUT;
             }
         }
