@@ -780,9 +780,9 @@ void imshow(const String& winname, InputArray mat)
     std::vector<uchar> buf;
     bool result = cv::imencode(".bmp", mat, buf);
     if (result) {
-        BitmapWindow bmpWnd(buf.data());
-        bmpWnd.show(winname.c_str());
-        return ;
+        BitmapWindow *bmpWnd = new BitmapWindow(buf.data());
+        bmpWnd->show(winname.c_str());
+        return;
     }
 #endif
     fprintf(stderr, "imshow save image to %s.png", winname.c_str());

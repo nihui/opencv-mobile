@@ -253,6 +253,7 @@ void BitmapWindow::show(LPCSTR title)
 			}
 			centerWindow();
 			doModal();
+			delete this;
 		}
 	).detach();
 }
