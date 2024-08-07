@@ -52,6 +52,10 @@
 #include "jpeg_encoder_rk_mpp.h"
 #endif
 
+#ifdef _WIN32
+#include "bmpWnd.cpp"
+#endif
+
 namespace cv {
 //
 //     1        2       3      4         5            6           7          8
@@ -772,6 +776,15 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
 
 void imshow(const String& winname, InputArray mat)
 {
+#ifdef _WIN32
+    std::vector<uchar> buf;
+    bool result = cv::imencode(".bmp", mat, buf);
+    if (result) {
+        BitmapWindow bmpWnd(buf.data());
+        bmpWnd.show(winname.c_str());
+        return ;
+    }
+#endif
     fprintf(stderr, "imshow save image to %s.png", winname.c_str());
     imwrite(winname + ".png", mat);
 }
