@@ -53,7 +53,7 @@
 #endif
 
 #ifdef _WIN32
-#include "bmpWnd.cpp"
+#include "display_win32.h"
 #endif
 
 namespace cv {
