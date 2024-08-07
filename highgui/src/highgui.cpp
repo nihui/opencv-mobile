@@ -781,7 +781,7 @@ void imshow(const String& winname, InputArray mat)
     bool result = cv::imencode(".bmp", mat, buf);
     if (result) {
         BitmapWindow *bmpWnd = new BitmapWindow(buf.data());
-        bmpWnd->show(winname.c_str());
+        bmpWnd->show(winname.c_str()); // when this window is closed, automatically frees the BitmapWindow object
         return;
     }
 #endif
