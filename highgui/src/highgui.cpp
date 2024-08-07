@@ -54,6 +54,7 @@
 
 #ifdef _WIN32
 #include "display_win32.h"
+#include <thread>
 #endif
 
 namespace cv {
@@ -777,13 +778,17 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
 void imshow(const String& winname, InputArray mat)
 {
 #ifdef _WIN32
-    std::vector<uchar> buf;
-    bool result = cv::imencode(".bmp", mat, buf);
+    std::vector<uchar>* _buf = new std::vector<uchar>;
+    bool result = cv::imencode(".bmp", mat, *_buf);
     if (result) {
-        BitmapWindow *bmpWnd = new BitmapWindow(buf.data());
-        bmpWnd->show(winname.c_str()); // when this window is closed, automatically frees the BitmapWindow object
+        std::thread([](std::vector<uchar> *buf,const String& title){
+        BitmapWindow bmpWnd(buf->data());
+        bmpWnd.show(title.c_str());
+        delete buf;
         return;
+        }, _buf , winname ).detach();
     }
+    return ;
 #endif
     fprintf(stderr, "imshow save image to %s.png", winname.c_str());
     imwrite(winname + ".png", mat);

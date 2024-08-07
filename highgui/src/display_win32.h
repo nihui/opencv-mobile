@@ -1,4 +1,5 @@
 // Created by szx0427
+// Patch by futz12
 // on 2024/08/07
 
 #pragma once
@@ -43,24 +44,23 @@ public:
 	virtual ~SimpleWindow();
 };
 
+// 防止那些你用不到的基类函数干扰你，我直接以protected方式继承
 class BitmapWindow : protected SimpleWindow
 {
 private:
 	virtual LRESULT windowProc(UINT msg, WPARAM wParam, LPARAM lParam);
 	int m_xSrc, m_ySrc; // internally managed by drawBitmap
 protected:
-	uint8_t *m_bits;
+	const void *m_bits;
 	BITMAPINFO m_bi;
 	void drawBitmap(int horz = -1, int vert = -1);
 public:
 	using SimpleWindow::getHwnd;
 	explicit BitmapWindow(const void *bmpFileData);
-	virtual ~BitmapWindow();
 	void show(LPCSTR title);
 };
 
 // only returns horizontal scale factor (generally equals the vertical one which is ignored)
 float getDpiFactor();
-
 
 #endif
