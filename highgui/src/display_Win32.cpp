@@ -1,8 +1,8 @@
 // Created by szx0427
-// on 2024/03/08
+// on 2024/08/07
 
 #ifdef _WIN32
-#include "bmpWnd.h"
+#include "display_win32.h"
 #include <cassert>
 #include <stdexcept>
 #include <iostream>
@@ -223,24 +223,39 @@ void BitmapWindow::drawBitmap(int horz, int vert)
 }
 
 BitmapWindow::BitmapWindow(const void *bmpFileData)
-	: m_bits((uint8_t *)bmpFileData + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER))
-	, m_xSrc(0)
+	//: m_bits((uint8_t *)bmpFileData + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER))
+	: m_xSrc(0)
 	, m_ySrc(0)
 {
 	ZeroMemory(&m_bi, sizeof(m_bi));
 	memcpy(&m_bi.bmiHeader, ((uint8_t *)bmpFileData + sizeof(BITMAPFILEHEADER)), sizeof(BITMAPINFOHEADER));
+
+	BITMAPFILEHEADER* fileHeader = (BITMAPFILEHEADER *)bmpFileData;
+	auto bitsSize = fileHeader->bfSize - sizeof(BITMAPFILEHEADER) - sizeof(BITMAPINFOHEADER);
+	m_bits = new uint8_t[bitsSize];
+	memcpy(m_bits, (uint8_t*)bmpFileData + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER), bitsSize);
+}
+
+BitmapWindow::~BitmapWindow()
+{
+	delete[] m_bits;
 }
 
 void BitmapWindow::show(LPCSTR title)
 {
-	float scaleFactor = getDpiFactor();
-	if (!create(title, (WS_OVERLAPPEDWINDOW | WS_HSCROLL | WS_VSCROLL) & ~WS_MAXIMIZEBOX, 0, 0, 800 * scaleFactor, 640 * scaleFactor)) {
-		// 窗口创建失败了
-		std::cerr << "ERROR: Bitmap window creation failed\n";
-		return;
-	}
-	centerWindow();
-	doModal();
+	std::thread(
+		[this, title]() {
+			float scaleFactor = getDpiFactor();
+			if (!create(title, (WS_OVERLAPPEDWINDOW | WS_HSCROLL | WS_VSCROLL) & ~WS_MAXIMIZEBOX, 0, 0, 800 * scaleFactor, 640 * scaleFactor)) {
+				// 窗口创建失败了
+				std::cerr << "ERROR: Bitmap window creation failed\n";
+				return;
+			}
+			centerWindow();
+			doModal();
+			delete this;
+		}
+	).detach();
 }
 
 float getDpiFactor()
@@ -250,5 +265,6 @@ float getDpiFactor()
 	ReleaseDC(nullptr, hdc);
 	return factor;
 }
+
 
 #endif // _WIN32
