@@ -1202,14 +1202,16 @@ int capture_v4l2_rk_aiq_impl::open(int width, int height, float fps)
         rk_aiq_static_info_t aiq_static_info;
         constexpr int cam_id = 0;
 
-        char *sns_entity_name = nullptr;
+        const char *sns_entity_name;
         {
             XCamReturn ret = rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId(cam_id, &aiq_static_info);
-            if ((aiq_static_info.sensor_info.phyId == -1) || (ret != XCAM_RETURN_NO_ERROR)) {
+            if ((aiq_static_info.sensor_info.phyId != -1) && (ret == XCAM_RETURN_NO_ERROR)) {
+                sns_entity_name = aiq_static_info.sensor_info.sensor_name;
+            } else {
                 fprintf(stderr, "ERROR: aiq_static_info.sensor_info.phyId is %d\n", aiq_static_info.sensor_info.phyId);
+                sns_entity_name = rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd("/dev/video11");
                 goto OUT;
             }
-            sns_entity_name = aiq_static_info.sensor_info.sensor_name;
         }
 
         char iq_file_dir[] = "/oem/usr/share/iqfiles";
