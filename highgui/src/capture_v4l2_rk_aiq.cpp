@@ -1214,8 +1214,8 @@ int capture_v4l2_rk_aiq_impl::open(int width, int height, float fps)
             }
         }
 
-        char iq_file_dir[] = "/oem/usr/share/iqfiles";
-        fprintf(stderr, "ID: %d, sensor_name is %s, iqfiles is %s\n", cam_id, sns_entity_name, iq_file_dir);
+        // char iq_file_dir[] = "/oem/usr/share/iqfiles";
+        // fprintf(stderr, "ID: %d, sensor_name is %s, iqfiles is %s\n", cam_id, sns_entity_name, iq_file_dir);
 
         rk_aiq_uapi2_sysctl_preInit_devBufCnt(sns_entity_name, "rkraw_rx", 2);
 
