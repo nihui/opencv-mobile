@@ -779,17 +779,65 @@ void imshow(const String& winname, InputArray mat)
     // imwrite(winname + ".png", mat);
 
 #if __linux__
-    display_fb dpy;
-    dpy.open();
+    if (winname == "fb")
+    {
+        static display_fb dpy;
+        if (dpy.open() == 0)
+        {
+            const int dpy_w = dpy.get_width();
+            const int dpy_h = dpy.get_height();
 
-    int width = dpy.get_width();
-    int height = dpy.get_height();
+            Mat img = mat.getMat();
 
-    Mat img = mat.getMat();
+            // bgra to bgr
+            if (img.type() == CV_8UC4)
+            {
+                Mat img2;
+                cvtColor(img, img2, COLOR_BGRA2BGR);
+                img = img2;
+            }
 
-    cv::resize(img, img, cv::Size(width, height));
+            // resize and add border
+            const int img_w = img.cols;
+            const int img_h = img.rows;
+            if (img_w != dpy_w || img_h != dpy_h)
+            {
+                Mat img2;
+                if (img.type() == CV_8UC1)
+                {
+                    img2.create(dpy_h, dpy_w, CV_8UC1);
+                    img2 = cv::Scalar(0);
+                }
+                if (img.type() == CV_8UC3)
+                {
+                    img2.create(dpy_h, dpy_w, CV_8UC3);
+                    img2 = cv::Scalar(0, 0, 0);
+                }
 
-    dpy.show_image(img.data, img.cols, img.rows);
+                if (img_w * dpy_h > dpy_w * img_h)
+                {
+                    const int img2_h = dpy_w * img_h / img_w;
+                    cv::resize(img, img2(cv::Rect(0, (dpy_h - img2_h) / 2, dpy_w, img2_h)), cv::Size(dpy_w, img2_h));
+                }
+                else
+                {
+                    const int img2_w = dpy_h * img_w / img_h;
+                    cv::resize(img, img2(cv::Rect((dpy_w - img2_w) / 2, 0, img2_w, dpy_h)), cv::Size(img2_w, dpy_h));
+                }
+
+                img = img2;
+            }
+
+            if (img.type() == CV_8UC1)
+            {
+                dpy.show_gray(img.data, img.cols, img.rows);
+            }
+            if (img.type() == CV_8UC3)
+            {
+                dpy.show_bgr(img.data, img.cols, img.rows);
+            }
+        }
+    }
 #endif
 }
 

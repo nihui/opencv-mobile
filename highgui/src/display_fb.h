@@ -35,7 +35,8 @@ public:
     int get_width() const;
     int get_height() const;
 
-    int show_image(const unsigned char* bgrdata, int width, int height);
+    int show_bgr(const unsigned char* bgrdata, int width, int height);
+    int show_gray(const unsigned char* graydata, int width, int height);
 
     int close();
 

@@ -48,7 +48,8 @@ public:
 
     int open();
 
-    int show_image(const unsigned char* bgrdata, int width, int height);
+    int show_bgr(const unsigned char* bgrdata, int width, int height);
+    int show_gray(const unsigned char* graydata, int width, int height);
 
     int close();
 
@@ -94,6 +95,9 @@ display_fb_impl::~display_fb_impl()
 
 int display_fb_impl::open()
 {
+    if (fb_base)
+        return 0;
+
     ttyfd = ::open("/dev/tty0", O_RDWR);
     if (ttyfd < 0)
     {
@@ -144,13 +148,12 @@ int display_fb_impl::open()
         const fb_bitfield rgba[3] = { info.red, info.green, info.blue };
         if (info.bits_per_pixel == 32)
         {
-            const fb_bitfield rgb32[3] = {{16, 8, 0}, {8, 8, 0}, {0, 8, 0}};
+            const fb_bitfield rgb32[3] = {{0, 8, 0}, {8, 8, 0}, {16, 8, 0}};
             if (memcmp(rgba, rgb32, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 0;
             }
-
-            const fb_bitfield bgr32[3] = {{0, 8, 0}, {8, 8, 0}, {16, 8, 0}};
+            const fb_bitfield bgr32[3] = {{16, 8, 0}, {8, 8, 0}, {0, 8, 0}};
             if (memcmp(rgba, bgr32, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 1;
@@ -158,13 +161,12 @@ int display_fb_impl::open()
         }
         if (info.bits_per_pixel == 24)
         {
-            const fb_bitfield rgb24[3] = {{16, 8, 0}, {8, 8, 0}, {0, 8, 0}};
+            const fb_bitfield rgb24[3] = {{0, 8, 0}, {8, 8, 0}, {16, 8, 0}};
             if (memcmp(rgba, rgb24, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 2;
             }
-
-            const fb_bitfield bgr24[3] = {{0, 8, 0}, {8, 8, 0}, {16, 8, 0}};
+            const fb_bitfield bgr24[3] = {{16, 8, 0}, {8, 8, 0}, {0, 8, 0}};
             if (memcmp(rgba, bgr24, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 3;
@@ -172,13 +174,12 @@ int display_fb_impl::open()
         }
         if (info.bits_per_pixel == 16)
         {
-            const fb_bitfield rgb565[3] = {{11, 5, 0}, {5, 6, 0}, {0, 5, 0}};
+            const fb_bitfield rgb565[3] = {{0, 5, 0}, {5, 6, 0}, {11, 5, 0}};
             if (memcmp(rgba, rgb565, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 4;
             }
-
-            const fb_bitfield bgr565[3] = {{0, 5, 0}, {5, 6, 0}, {11, 5, 0}};
+            const fb_bitfield bgr565[3] = {{11, 5, 0}, {5, 6, 0}, {0, 5, 0}};
             if (memcmp(rgba, bgr565, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 5;
@@ -196,6 +197,7 @@ int display_fb_impl::open()
         goto OUT;
     }
 
+    fprintf(stderr, "pixel_format = %d\n", pixel_format);
 
     {
     fprintf(stderr, "xres = %u\n", info.xres);
@@ -225,7 +227,7 @@ OUT:
     return -1;
 }
 
-int display_fb_impl::show_image(const unsigned char* bgrdata, int width, int height)
+int display_fb_impl::show_bgr(const unsigned char* bgrdata, int width, int height)
 {
     if (pixel_format == 0)
     {
@@ -524,6 +526,167 @@ int display_fb_impl::show_image(const unsigned char* bgrdata, int width, int hei
     return 0;
 }
 
+int display_fb_impl::show_gray(const unsigned char* graydata, int width, int height)
+{
+    if (pixel_format == 0 || pixel_format == 1)
+    {
+        // GRAY to RGBA8888 or BGRA8888
+        for (int y = 0; y < height; y++)
+        {
+            const unsigned char* p = graydata + y * width;
+            unsigned char* pout = (unsigned char*)fb_base + y * width * 4;// FIXME HARDCODE
+
+            int x = 0;
+#if __ARM_NEON
+            uint8x16_t _v255 = vdupq_n_u8(255);
+            for (; x + 15 < width; x += 16)
+            {
+                __builtin_prefetch(p + 16);
+                uint8x16_t _gray = vld1q_u8(p);
+                uint8x16x4_t _rgba;
+                _rgba.val[0] = _gray;
+                _rgba.val[1] = _gray;
+                _rgba.val[2] = _gray;
+                _rgba.val[3] = _v255;
+                vst4q_u8(pout, _rgba);
+                p += 16;
+                pout += 64;
+            }
+            for (; x + 7 < width; x += 8)
+            {
+                uint8x8_t _gray = vld1_u8(p);
+                uint8x8x4_t _rgba;
+                _rgba.val[0] = _gray;
+                _rgba.val[1] = _gray;
+                _rgba.val[2] = _gray;
+                _rgba.val[3] = vget_low_u8(_v255);
+                vst4_u8(pout, _rgba);
+                p += 8;
+                pout += 32;
+            }
+#endif // __ARM_NEON
+            for (; x < width; x++)
+            {
+                pout[0] = p[0];
+                pout[1] = p[0];
+                pout[2] = p[0];
+                pout[3] = 255;
+                p += 1;
+                pout += 4;
+            }
+
+            // pout += xres_virtual - 240;
+        }
+    }
+    if (pixel_format == 2 || pixel_format == 3)
+    {
+        // GRAY to RGB888 or BGR888
+        for (int y = 0; y < height; y++)
+        {
+            const unsigned char* p = graydata + y * width;
+            unsigned char* pout = (unsigned char*)fb_base + y * width * 3;// FIXME HARDCODE
+
+            int x = 0;
+#if __ARM_NEON
+            for (; x + 15 < width; x += 16)
+            {
+                __builtin_prefetch(p + 16);
+                uint8x16_t _gray = vld1q_u8(p);
+                uint8x16x3_t _rgb;
+                _rgb.val[0] = _gray;
+                _rgb.val[1] = _gray;
+                _rgb.val[2] = _gray;
+                vst3q_u8(pout, _rgb);
+                p += 16;
+                pout += 48;
+            }
+            for (; x + 7 < width; x += 8)
+            {
+                uint8x8_t _gray = vld1_u8(p);
+                uint8x8x3_t _rgb;
+                _rgb.val[0] = _gray;
+                _rgb.val[1] = _gray;
+                _rgb.val[2] = _gray;
+                vst3_u8(pout, _rgb);
+                p += 8;
+                pout += 24;
+            }
+#endif // __ARM_NEON
+            for (; x < width; x++)
+            {
+                pout[0] = p[0];
+                pout[1] = p[0];
+                pout[2] = p[0];
+                p += 1;
+                pout += 3;
+            }
+
+            // pout += xres_virtual - 240;
+        }
+    }
+    if (pixel_format == 4 || pixel_format == 5)
+    {
+        // GRAY to RGB565 or BGR565
+        for (int y = 0; y < height; y++)
+        {
+            const unsigned char* p = graydata + y * width;
+            unsigned short* pout = (unsigned short*)fb_base + y * width;// FIXME HARDCODE
+
+            int x = 0;
+#if __ARM_NEON
+            for (; x + 15 < width; x += 16)
+            {
+                __builtin_prefetch(p + 16);
+                uint8x16_t _gray = vld1q_u8(p);
+                uint16x8_t _p0 = vshll_n_u8(vget_low_u8(_gray), 8);
+                uint16x8_t _p1 = vshll_n_u8(vget_high_u8(_gray), 8);
+                _p0 = vsriq_n_u16(_p0, vshll_n_u8(vget_low_u8(_gray), 8), 5);
+                _p1 = vsriq_n_u16(_p1, vshll_n_u8(vget_high_u8(_gray), 8), 5);
+                _p0 = vsriq_n_u16(_p0, vshll_n_u8(vget_low_u8(_gray), 8), 11);
+                _p1 = vsriq_n_u16(_p1, vshll_n_u8(vget_high_u8(_gray), 8), 11);
+                vst1q_u16(pout, _p0);
+                vst1q_u16(pout + 8, _p1);
+                p += 16;
+                pout += 16;
+            }
+            for (; x + 7 < width; x += 8)
+            {
+                uint8x8_t _gray = vld1_u8(p);
+                uint16x8_t _p = vshll_n_u8(_gray, 8);
+                _p = vsriq_n_u16(_p, vshll_n_u8(_gray, 8), 5);
+                _p = vsriq_n_u16(_p, vshll_n_u8(_gray, 8), 11);
+                vst1q_u16(pout, _p);
+                p += 8;
+                pout += 8;
+            }
+#endif // __ARM_NEON
+            for (; x < width; x++)
+            {
+                pout[0] = (p[0] >> 3 << 11) | (p[0] >> 2 << 5) | (p[0] >> 3);
+                p += 1;
+                pout += 1;
+            }
+
+            // pout += xres_virtual - 240;
+        }
+    }
+    if (pixel_format == 6)
+    {
+        // GRAY to GRAY
+        for (int y = 0; y < height; y++)
+        {
+            const unsigned char* p = graydata + y * width;
+            unsigned char* pout = (unsigned char*)fb_base + y * width;// FIXME HARDCODE
+
+            memcpy(pout, p, width);
+
+            // pout += xres_virtual - 240;
+        }
+    }
+
+    return 0;
+}
+
 int display_fb_impl::close()
 {
     if (fb_base)
@@ -592,9 +755,14 @@ int display_fb::get_height() const
     return d->info.yres;
 }
 
-int display_fb::show_image(const unsigned char* bgrdata, int width, int height)
+int display_fb::show_bgr(const unsigned char* bgrdata, int width, int height)
 {
-    return d->show_image(bgrdata, width, height);
+    return d->show_bgr(bgrdata, width, height);
+}
+
+int display_fb::show_gray(const unsigned char* graydata, int width, int height)
+{
+    return d->show_gray(graydata, width, height);
 }
 
 int display_fb::close()
