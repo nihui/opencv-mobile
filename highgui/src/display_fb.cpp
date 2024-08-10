@@ -161,12 +161,12 @@ int display_fb_impl::open()
         }
         if (info.bits_per_pixel == 24)
         {
-            const fb_bitfield rgb24[3] = {{0, 8, 0}, {8, 8, 0}, {16, 8, 0}};
+            const fb_bitfield rgb24[3] = {{16, 8, 0}, {8, 8, 0}, {0, 8, 0}};
             if (memcmp(rgba, rgb24, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 2;
             }
-            const fb_bitfield bgr24[3] = {{16, 8, 0}, {8, 8, 0}, {0, 8, 0}};
+            const fb_bitfield bgr24[3] = {{0, 8, 0}, {8, 8, 0}, {16, 8, 0}};
             if (memcmp(rgba, bgr24, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 3;
