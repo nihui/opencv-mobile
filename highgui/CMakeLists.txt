@@ -17,7 +17,8 @@ set(highgui_srcs
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   list(APPEND highgui_srcs
-    ${CMAKE_CURRENT_LIST_DIR}/src/capture_v4l2.cpp)
+    ${CMAKE_CURRENT_LIST_DIR}/src/capture_v4l2.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/display_fb.cpp)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
