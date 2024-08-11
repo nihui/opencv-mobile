@@ -1,27 +1,31 @@
-// Created by szx0427
-// on 2024/08/07
+// IMSHOW window for MS Windows
+// ** WITH MULTITHREAD SUPPORT **
+// Copyright (c) 2024 szx0427
+// Ver 1.0 written on 2024/08/11
 
 #pragma once
 
-#ifdef _WIN32
-#include <windows.h>
-#include <map>
-#include <string>
+#include <Windows.h>
 
 class SimpleWindow
 {
 protected:
-	// cannot be modified externally
-	HWND m_hwnd = nullptr;
+	HWND m_hWnd;
+	virtual LRESULT windowProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
 public:
-	friend LRESULT CALLBACK __globalWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	friend static LRESULT CALLBACK __globalWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-	// NOTE: a SimpleWindow object which is already attached to an HWND should NOT be copied; use pointers instead
-	SimpleWindow(const SimpleWindow &) = delete;
-	SimpleWindow &operator=(const SimpleWindow &) = delete;
+	static double getDesktopDpiFactor();
+
+	// NOTE: a SimpleWindow1 object which is already attached to an HWND should NOT be copied; use pointers instead
+	SimpleWindow(const SimpleWindow&) = delete;
+	SimpleWindow& operator=(const SimpleWindow&) = delete;
 
 	SimpleWindow();
+	SimpleWindow(SimpleWindow&& right) noexcept;
+	SimpleWindow& operator=(SimpleWindow&& right) noexcept;
+
 	HWND getHwnd() const;
 	bool create(
 		LPCSTR lpWindowName,
@@ -35,32 +39,49 @@ public:
 		HMENU hMenu = nullptr,
 		LPVOID lpParam = nullptr
 	);
-	// shows window & starts message loop; blocks the thread
-	int doModal();
 	void centerWindow() const;
-	// DefWindowProc
-	virtual LRESULT windowProc(UINT msg, WPARAM wParam, LPARAM lParam);
+
+	void show(int nCmdShow);
+
+#if 0
+	// starts message loop ; blocks the thread calling this
+	// NOT ACTUALLY USED TILL NOW
+	int messageLoop();
+#endif
+
+	void detach();
 	virtual ~SimpleWindow();
 };
 
 class BitmapWindow : protected SimpleWindow
 {
-private:
-	virtual LRESULT windowProc(UINT msg, WPARAM wParam, LPARAM lParam);
-	int m_xSrc, m_ySrc; // internally managed by drawBitmap
 protected:
-	uint8_t *m_bits;
-	BITMAPINFO m_bi;
+	BYTE* m_bits;
+	BITMAPINFO m_bmpInfo;
+	int m_xSrc, m_ySrc;
+	// doubled-buffered painting
+	// NOTE: this is useful in some cases; don't delete these code
+	HDC m_hMemDC;
+	HBITMAP m_hMemBitmap;
+	HGDIOBJ m_hOldBitmap;
+
+	static constexpr int waitKeyTimerId = 150;
+	static constexpr int WM_WAITKEYTIMEOUT = WM_USER + 150;
+
+	// only finds identical-named windows in current process
+	static BitmapWindow* findOCVMWindowByName(LPCSTR windowName);
 	void drawBitmap(int horz = -1, int vert = -1);
+	virtual LRESULT windowProc(UINT msg, WPARAM wParam, LPARAM lParam) override;
+	void updateBitmapData(const BYTE* bmpFileData);
+	void updateScrollBarStatus();
+
 public:
-	using SimpleWindow::getHwnd;
-	explicit BitmapWindow(const void *bmpFileData);
+	using SimpleWindow::SimpleWindow;
+	BitmapWindow();
 	virtual ~BitmapWindow();
-	void show(LPCSTR title);
+	using SimpleWindow::getHwnd;
+
+	static void show(LPCSTR windowName, const BYTE* bmpFileData);
+	// NOTE: only manages the windows created by current thread
+	static int waitKey(UINT delay = 0);
 };
-
-// only returns horizontal scale factor (generally equals the vertical one which is ignored)
-float getDpiFactor();
-
-
-#endif
