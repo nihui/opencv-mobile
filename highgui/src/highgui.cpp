@@ -775,9 +775,6 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
 
 void imshow(const String& winname, InputArray mat)
 {
-    // fprintf(stderr, "imshow save image to %s.png\n", winname.c_str());
-    // imwrite(winname + ".png", mat);
-
 #if __linux__
     if (winname == "fb")
     {
@@ -838,7 +835,12 @@ void imshow(const String& winname, InputArray mat)
             }
         }
     }
+    else
 #endif
+    {
+        fprintf(stderr, "imshow save image to %s.png\n", winname.c_str());
+        imwrite(winname + ".png", mat);
+    }
 }
 
 int waitKey(int delay)
