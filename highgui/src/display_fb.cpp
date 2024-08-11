@@ -148,12 +148,12 @@ int display_fb_impl::open()
         const fb_bitfield rgba[3] = { info.red, info.green, info.blue };
         if (info.bits_per_pixel == 32)
         {
-            const fb_bitfield rgb32[3] = {{0, 8, 0}, {8, 8, 0}, {16, 8, 0}};
+            const fb_bitfield rgb32[3] = {{16, 8, 0}, {8, 8, 0}, {0, 8, 0}};
             if (memcmp(rgba, rgb32, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 0;
             }
-            const fb_bitfield bgr32[3] = {{16, 8, 0}, {8, 8, 0}, {0, 8, 0}};
+            const fb_bitfield bgr32[3] = {{0, 8, 0}, {8, 8, 0}, {16, 8, 0}};
             if (memcmp(rgba, bgr32, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 1;
@@ -174,12 +174,12 @@ int display_fb_impl::open()
         }
         if (info.bits_per_pixel == 16)
         {
-            const fb_bitfield rgb565[3] = {{0, 5, 0}, {5, 6, 0}, {11, 5, 0}};
+            const fb_bitfield rgb565[3] = {{11, 5, 0}, {5, 6, 0}, {0, 5, 0}};
             if (memcmp(rgba, rgb565, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 4;
             }
-            const fb_bitfield bgr565[3] = {{11, 5, 0}, {5, 6, 0}, {0, 5, 0}};
+            const fb_bitfield bgr565[3] = {{0, 5, 0}, {5, 6, 0}, {11, 5, 0}};
             if (memcmp(rgba, bgr565, 3 * sizeof(fb_bitfield)) == 0)
             {
                 pixel_format = 5;
@@ -188,6 +188,20 @@ int display_fb_impl::open()
         if (info.bits_per_pixel == 8)
         {
             pixel_format = 6;
+        }
+    }
+
+    // most spi lcd use big-endian
+    // check /sys/class/graphics/fb0/device/of_node/bgr readable and swap rgb/bgr
+    if (access("/sys/class/graphics/fb0/device/of_node/bgr", R_OK) == 0)
+    {
+        if (pixel_format == 4)
+        {
+            pixel_format = 5;
+        }
+        else if (pixel_format == 5)
+        {
+            pixel_format = 4;
         }
     }
 
