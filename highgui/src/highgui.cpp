@@ -778,12 +778,11 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
 void imshow(const String& winname, InputArray mat)
 {
 #ifdef _WIN32
-    std::vector<uchar>* _buf = new std::vector<uchar>;
-    bool result = cv::imencode(".bmp", mat, *_buf);
+    std::vector<uchar> buf;
+    bool result = cv::imencode(".bmp", mat, buf);
     if (result) {
 		BitmapWindow::show(winname.c_str(), buf.data());
         return;
-        }, _buf , winname ).detach();
     }
     return ;
 #endif
@@ -793,7 +792,13 @@ void imshow(const String& winname, InputArray mat)
 
 int waitKey(int delay)
 {
+#ifdef _WIN32
     return BitmapWindow::waitKey(delay);
+#else
+    (void)delay;
+    fprintf(stderr, "waitKey stub\n");
+    return -1;
+#endif
 }
 
 } // namespace cv

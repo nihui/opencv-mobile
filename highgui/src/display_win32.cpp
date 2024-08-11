@@ -4,15 +4,16 @@
 // Ver 1.0 written on 2024/08/11
 
 #include "display_win32.h"
+#include <algorithm>
 #include <cassert>
 #include <map>
 #include <list>
 #include <mutex>
 
-static constexpr auto classNameBase = "OCVMWndClass20240811";
+static constexpr auto classNameBase = "OCVMWndClass";
 static char className[100]; // real class name for current process.
                             // Use this process-specific name to ensure that picture replacement for identical-named windows
-                            // only works for windows in the same process. The windows in other processes, 
+                            // only works for windows in the same process. The windows in other processes,
 							// even if they have the same name, are ignored by BitmapWindow::show().
                             // That's to say, new windows with the same name will be created.
 
@@ -81,7 +82,7 @@ SimpleWindow& SimpleWindow::operator=(SimpleWindow&& right) noexcept
 
 HWND SimpleWindow::getHwnd() const
 {
-	return !this ? nullptr : m_hWnd;
+	return m_hWnd;
 }
 
 bool SimpleWindow::create(LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, DWORD dwExStyle, HMENU hMenu, LPVOID lpParam)
@@ -92,7 +93,7 @@ bool SimpleWindow::create(LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int 
 	defLockGuard creationLock(g_creationMutex); // use mutex to ensure thread security
 
 	if (!g_ocvmWndClassAtom) {
-		sprintf(className, "%s:%d", classNameBase, GetCurrentProcessId());
+		sprintf(className, "%s:%d", classNameBase, static_cast<int>(GetCurrentProcessId()));
 
 		WNDCLASSA wc;
 		ZeroMemory(&wc, sizeof(wc));
@@ -159,7 +160,7 @@ LRESULT SimpleWindow::windowProc(UINT msg, WPARAM wParam, LPARAM lParam)
 double SimpleWindow::getDesktopDpiFactor()
 {
 	HDC hDC = GetDC(nullptr);
-	double ret = GetDeviceCaps(hDC, LOGPIXELSX) / 96.0;
+	double ret = GetDeviceCaps(hDC, LOGPIXELSX) / static_cast<double>(USER_DEFAULT_SCREEN_DPI);
 	ReleaseDC(nullptr, hDC);
 	return ret;
 }
@@ -201,7 +202,7 @@ void BitmapWindow::drawBitmap(int horz, int vert)
 	if (vert < 0) {
 		vert = GetScrollPos(m_hWnd, SB_VERT);
 	}
-	
+
 	RECT rc;
 	GetClientRect(m_hWnd, &rc);
 	if (m_bmpInfo.bmiHeader.biHeight < 0) {
@@ -227,9 +228,9 @@ int BitmapWindow::waitKey(UINT delay)
 			SetTimer(wnd, waitKeyTimerId, delay, nullptr);
 		}
 	}
-	
+
 	MSG msg;
-	int vkCode = -1;
+	int asciiCode = -1;
 	while (GetMessageA(&msg, nullptr, 0, 0) > 0) {
 		if (msg.hwnd) {
 			if (msg.message == WM_WAITKEYTIMEOUT) {
@@ -243,16 +244,16 @@ int BitmapWindow::waitKey(UINT delay)
 				while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE));
 				return -1;
 			}
-			if (msg.message == WM_KEYDOWN) {
-				vkCode = msg.wParam;
-				PostMessageA(msg.hwnd, WM_CLOSE, 0, 0);
+			if (msg.message == WM_CHAR) {
+				asciiCode = static_cast<int>(msg.wParam);
+				break;
 			}
 			TranslateMessage(&msg);
 			DispatchMessageA(&msg);
 		}
 	}
 
-	return vkCode;
+	return asciiCode;
 }
 
 BitmapWindow::BitmapWindow()
@@ -276,7 +277,7 @@ BitmapWindow::~BitmapWindow()
 	if (m_bits) {
 		safeReleaseArray(m_bits);
 	}
-	
+
 	SelectObject(m_hMemDC, m_hOldBitmap);
 	DeleteObject(m_hMemBitmap);
 	DeleteDC(m_hMemDC);
