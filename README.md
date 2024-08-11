@@ -331,7 +331,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
   <br />arm-linux-uclibcgnueabihf<br />
   &#9989; HW JPG encoder<br />
   &#9989; MIPI CSI camera<br />
-  &#9989; RGB LCD screen<br />
+  &#9989; DPI LCD screen<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-luckfox-pico.zip">
     <img alt="opencv4-luckfox-pico" src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">
   </a>
