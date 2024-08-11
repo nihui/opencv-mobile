@@ -781,10 +781,7 @@ void imshow(const String& winname, InputArray mat)
     std::vector<uchar>* _buf = new std::vector<uchar>;
     bool result = cv::imencode(".bmp", mat, *_buf);
     if (result) {
-        std::thread([](std::vector<uchar> *buf,const String& title){
-        BitmapWindow bmpWnd(buf->data());
-        bmpWnd.show(title.c_str());
-        delete buf;
+		BitmapWindow::show(winname.c_str(), buf.data());
         return;
         }, _buf , winname ).detach();
     }
@@ -796,9 +793,7 @@ void imshow(const String& winname, InputArray mat)
 
 int waitKey(int delay)
 {
-    (void)delay;
-    fprintf(stderr, "waitKey stub");
-    return -1;
+    return BitmapWindow::waitKey(delay);
 }
 
 } // namespace cv
