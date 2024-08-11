@@ -53,6 +53,7 @@ public:
 	virtual ~SimpleWindow();
 };
 
+// 防止那些你用不到的基类函数干扰你，我直接以protected方式继承
 class BitmapWindow : protected SimpleWindow
 {
 protected:
