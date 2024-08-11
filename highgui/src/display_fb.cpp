@@ -195,13 +195,29 @@ int display_fb_impl::open()
     // check /sys/class/graphics/fb0/device/of_node/bgr readable and swap rgb/bgr
     if (access("/sys/class/graphics/fb0/device/of_node/bgr", R_OK) == 0)
     {
-        if (pixel_format == 4)
+        bool swap_bgr = true;
+        FILE* bgrfp = fopen("/sys/class/graphics/fb0/device/of_node/bgr", "rb");
+        if (bgrfp)
         {
-            pixel_format = 5;
+            int value = 1;
+            int nread = fread(&value, 1, sizeof(int), bgrfp);
+            if (nread == sizeof(int))
+            {
+                swap_bgr = value != 0;
+            }
+            fclose(bgrfp);
         }
-        else if (pixel_format == 5)
+
+        if (swap_bgr)
         {
-            pixel_format = 4;
+            if (pixel_format == 4)
+            {
+                pixel_format = 5;
+            }
+            else if (pixel_format == 5)
+            {
+                pixel_format = 4;
+            }
         }
     }
 
