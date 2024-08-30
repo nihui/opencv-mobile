@@ -135,7 +135,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/imgproc/src/drawing.cpp opencv-4.10.0/mod
 +    int h;
 +    get_text_drawing_size(text.c_str(), fontpixelsize, &w, &h);
 +
-+    *_base_line = 0;
++    if(_base_line) *_base_line = 0;
 +
 +    return Size(w, h);
 +#if 0
