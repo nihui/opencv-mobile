@@ -21,6 +21,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     ${CMAKE_CURRENT_LIST_DIR}/src/display_fb.cpp)
 endif()
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  list(APPEND highgui_srcs
+          ${CMAKE_CURRENT_LIST_DIR}/src/display_win32.cpp)
+endif()
+
 if(WITH_CVI)
   list(APPEND highgui_srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/capture_cvi.cpp
