@@ -133,7 +133,7 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
 +    int h;
 +    get_text_drawing_size(text.c_str(), fontpixelsize, &w, &h);
 +
-+    *_base_line = 0;
++    if(_base_line) *_base_line = 0;
 +
 +    return Size(w, h);
 +#if 0
