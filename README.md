@@ -399,6 +399,14 @@ https://github.com/nihui/opencv-mobile/releases/latest
   </a>
 </td>
 <td>
+  <a href="https://www.loongson.cn/news/show?id=673">
+    <img alt="2k0300-fengniao" src="https://github.com/user-attachments/assets/3ff9048d-a2b7-46a4-8534-e8bf5b85a2e1" width="auto" height="120">
+    <br /><b>2k0300-fengniao</b>
+  </a>
+  <br />loongarch64-linux-gnu<br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-2k0300-fengniao.zip">
+    <img alt="opencv4-2k0300-fengniao" src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">
+  </a>
 </td>
 </tr>
 
