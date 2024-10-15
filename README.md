@@ -10,12 +10,13 @@
 ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
 ![MacOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=apple&logoColor=white)
+![HarmonyOS](https://img.shields.io/badge/HarmonyOS-000000?style=for-the-badge&logo=harmonyos&logoColor=white)
 ![Firefox](https://img.shields.io/badge/Firefox-FF7139?style=for-the-badge&logo=Firefox-Browser&logoColor=white)
 ![Chrome](https://img.shields.io/badge/Chrome-4285F4?style=for-the-badge&logo=Google-chrome&logoColor=white)
 
 :heavy_check_mark: This project provides the minimal build of opencv library for the **Android**, **iOS** and **ARM Linux** platforms.
 
-:heavy_check_mark: Packages for **Windows**, **Linux**, **MacOS** and **WebAssembly** are available now.
+:heavy_check_mark: Packages for **Windows**, **Linux**, **MacOS**, **HarmonyOS** and **WebAssembly** are available now.
 
 :heavy_check_mark: We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.20** and **4.10.0**.
 
@@ -71,6 +72,20 @@ https://github.com/nihui/opencv-mobile/releases/latest
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-android.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-android.zip)
   [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-android.zip)
+
+</td>
+</tr>
+
+<tr>
+<td>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/HMOS_Logo_Icon.svg/240px-HMOS_Logo_Icon.svg.png" width="64" height="auto">
+</td>
+<td>HarmonyOS</td>
+<td>
+
+  [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-harmonyos.zip)
+  [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-harmonyos.zip)
+  [<img src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-harmonyos.zip)
 
 </td>
 </tr>
