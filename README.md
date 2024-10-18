@@ -439,7 +439,7 @@ find_package(OpenCV REQUIRED)
 target_link_libraries(your_jni_target ${OpenCV_LIBS})
 ```
 
-# Usage iOS and MacOS
+# Usage iOS, macOS, watchOS, tvOS, visionOS
 
 1. Extract archive, and drag ```opencv2.framework``` or ```opencv2.xcframework``` into your project
 
