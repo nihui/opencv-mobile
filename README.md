@@ -561,7 +561,7 @@ display image
 
 int main()
 {
-    cv::Mat bgr = cv::imread("atari.jpg", 1);
+    cv::Mat bgr = cv::imread("im.jpg", 1);
 
     cv::imshow("fb", bgr);
 
