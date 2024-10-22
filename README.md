@@ -26,6 +26,8 @@
 
 :heavy_check_mark: ***NEW FEATURE*** [`cv::putText` supports full-width CJK characters](#cvputtext-supports-full-width-cjk-characters)
 
+:heavy_check_mark: ***NEW FEATURE*** [`cv::imshow` supports Linux framebuffer and Windows](#cvimshow-supports-linux-framebuffer-and-windows)
+
 |opencv 4.10.0 package size|The official opencv|opencv-mobile|
 |:-:|:-:|:-:|
 |source zip|95.2 MB|8.25 MB|
@@ -541,6 +543,60 @@ int main()
     return 0;
 }
 ```
+
+## `cv::imshow` supports Linux framebuffer and Windows
+
+In Linux, `cv::imshow` can display images on the screen (`/dev/fb0`) via the [Linux Framebuffer API](https://www.kernel.org/doc/html/latest/fb/api.html). `cv::imshow` can work without desktop environment (gnome, KDE Plasma, xfce, etc.) or window manager (X or wayland), making it suitable for embedded scenarios. The first argument to `cv::imshow` must be **`fb`**.
+
+In Windows, `cv::imshow` will use the Windows API to create a simple window for displaying.
+
+<table>
+<tr><td>
+
+display image
+
+```cpp
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+int main()
+{
+    cv::Mat bgr = cv::imread("atari.jpg", 1);
+
+    cv::imshow("fb", bgr);
+
+    return 0;
+}
+```
+
+</td><td>
+
+realtime camera preview
+
+```cpp
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+int main()
+{
+    cv::VideoCapture cap;
+    cap.set(cv::CAP_PROP_FRAME_WIDTH, 320);
+    cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
+    cap.open(0);
+
+    cv::Mat bgr;
+    while (1)
+    {
+        cap >> bgr;
+        cv::imshow("fb", bgr);
+    }
+
+    return 0;
+}
+```
+
+</td></tr>
+</table>
 
 # opencv modules included
 
