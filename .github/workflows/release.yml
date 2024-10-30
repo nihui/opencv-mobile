@@ -1772,6 +1772,15 @@ jobs:
             setup-env-cmd: |
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
             cmake-options: -DWITH_RK=ON
+          
+          - name: lockzhiner-vision-module
+            single-core: true
+            cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
+            setup-toolchain-cmd: |
+              git clone --depth 1 https://gitee.com/LockzhinerAI/arm-rockchip830-linux-uclibcgnueabihf.git arm-rockchip830-linux-uclibcgnueabihf
+            setup-env-cmd: |
+              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/arm-rockchip830-linux-uclibcgnueabihf
+            cmake-options: -DWITH_RK=ON
 
           - name: yuzuki-lizard
             single-core: true
