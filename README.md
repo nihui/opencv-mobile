@@ -426,7 +426,19 @@ https://github.com/nihui/opencv-mobile/releases/latest
   </a>
 </td>
 </tr>
-
+<td>
+  <a href="https://gitee.com/LockzhinerAI/LockzhinerVisionModule">
+    <img alt="lockzhiner-vision-module" src="https://github.com/user-attachments/assets/67252677-a336-4a88-9c65-f10d34c6c1f2" width="auto" height="120">
+    <br /><b>lockzhiner-vision-module</b>
+  </a>
+  <br />arm-linux-uclibcgnueabihf<br />
+  &#9989; HW JPG encoder<br />
+  &#9989; MIPI CSI camera<br />
+  &#9989; DPI LCD screen<br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.10.0-lockzhiner-vision-module.zip">
+    <img alt="opencv4-lockzhiner-vision-module" src="https://img.shields.io/badge/download-4.10.0-blue?style=for-the-badge">
+  </a>
+</td>
 </table>
 
 # Usage Android

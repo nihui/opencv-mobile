@@ -1835,6 +1835,15 @@ jobs:
             setup-env-cmd: |
               export LOONGARCH64_ROOT_PATH=$GITHUB_WORKSPACE/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5
             cmake-options: -DCPU_BASELINE='' -DCPU_DISPATCH=''
+          
+          - name: lockzhiner-vision-module
+            single-core: true
+            cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
+            setup-toolchain-cmd: |
+              git clone --depth 1 https://gitee.com/LockzhinerAI/arm-rockchip830-linux-uclibcgnueabihf.git arm-rockchip830-linux-uclibcgnueabihf
+            setup-env-cmd: |
+              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/arm-rockchip830-linux-uclibcgnueabihf
+            cmake-options: -DWITH_RK=ON
 
     env:
       COMMON_CMAKE_OPTIONS: |
