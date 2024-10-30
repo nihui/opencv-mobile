@@ -428,7 +428,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </tr>
 <td>
   <a href="https://gitee.com/LockzhinerAI/LockzhinerVisionModule">
-    <img alt="lockzhiner-vision-module" src="https://ai-studio-static-online.cdn.bcebos.com/a3e7acf99e7247baa7b44b832aff40b67fe7b94c01fa498782e6b0406575310f" width="auto" height="120">
+    <img alt="lockzhiner-vision-module" src="https://github.com/user-attachments/assets/67252677-a336-4a88-9c65-f10d34c6c1f2" width="auto" height="120">
     <br /><b>lockzhiner-vision-module</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
