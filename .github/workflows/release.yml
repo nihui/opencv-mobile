@@ -1763,15 +1763,6 @@ jobs:
             setup-env-cmd: |
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
             cmake-options: -DWITH_CVI=ON
-
-          - name: luckfox-pico
-            single-core: true
-            cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
-            setup-toolchain-cmd: |
-              git clone --depth 1 https://github.com/LuckfoxTECH/luckfox-pico.git luckfox-pico
-            setup-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
-            cmake-options: -DWITH_RK=ON
           
           - name: lockzhiner-vision-module
             single-core: true
@@ -1844,6 +1835,15 @@ jobs:
             setup-env-cmd: |
               export LOONGARCH64_ROOT_PATH=$GITHUB_WORKSPACE/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5
             cmake-options: -DCPU_BASELINE='' -DCPU_DISPATCH=''
+
+          - name: luckfox-pico
+            single-core: true
+            cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
+            setup-toolchain-cmd: |
+              git clone --depth 1 https://github.com/LuckfoxTECH/luckfox-pico.git luckfox-pico
+            setup-env-cmd: |
+              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
+            cmake-options: -DWITH_RK=ON
 
     env:
       COMMON_CMAKE_OPTIONS: |
