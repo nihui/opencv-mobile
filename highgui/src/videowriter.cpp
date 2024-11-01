@@ -45,9 +45,9 @@ public:
 VideoWriterImpl::VideoWriterImpl()
 {
     is_opened = false;
-    width = 640;
-    height = 480;
-    fps = 30;
+    width = 0;
+    height = 0;
+    fps = 0;
 }
 
 VideoWriter::VideoWriter() : d(new VideoWriterImpl)
@@ -106,9 +106,9 @@ void VideoWriter::release()
     }
 
     d->is_opened = false;
-    d->width = 640;
-    d->height = 480;
-    d->fps = 30;
+    d->width = 0;
+    d->height = 0;
+    d->fps = 0;
 }
 
 VideoWriter& VideoWriter::operator<<(const Mat& image)
