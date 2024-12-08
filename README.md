@@ -444,7 +444,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 # Usage Android
 
 1. Extract archive to ```<project dir>/app/src/main/jni/```
-2. Modify ```<project dir>/app/src/main/jni/CMakeListst.txt``` to find and link opencv
+2. Modify ```<project dir>/app/src/main/jni/CMakeLists.txt``` to find and link opencv
 
 ```cmake
 set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-4.10.0-android/sdk/native/jni)
@@ -460,7 +460,7 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 # Usage ARM Linux, Windows, Linux, WebAssembly
 
 1. Extract archive to ```<project dir>/```
-2. Modify ```<project dir>/CMakeListst.txt``` to find and link opencv
+2. Modify ```<project dir>/CMakeLists.txt``` to find and link opencv
 3. Pass ```-DOpenCV_STATIC=ON``` to cmake option for windows build
 
 ```cmake
