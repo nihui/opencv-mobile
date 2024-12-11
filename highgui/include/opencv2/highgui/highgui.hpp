@@ -95,6 +95,28 @@ private:
     VideoCaptureImpl* const d;
 };
 
+class VideoWriterImpl;
+class CV_EXPORTS_W VideoWriter
+{
+public:
+    VideoWriter();
+
+    ~VideoWriter();
+
+    bool open(int http_port);
+
+    bool isOpened() const;
+
+    void release();
+
+    VideoWriter& operator<<(const Mat& bgr_image);
+
+    void write(const Mat& image);
+
+protected:
+    VideoWriterImpl* const d;
+};
+
 } // namespace cv
 
 #endif // OPENCV_HIGHGUI_HPP
