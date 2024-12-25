@@ -1,0 +1,363 @@
+name: release
+on: pull_request
+# on:
+#   push:
+#     tags:
+#       - '*'
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
+  IOS_DEPLOYMENT_TARGET: '13.0'
+  MAC_DEPLOYMENT_TARGET: '11.0'
+  MAC_CATALYST_DEPLOYMENT_TARGET: '13.1'
+  WATCHOS_DEPLOYMENT_TARGET: '6.0'
+  TVOS_DEPLOYMENT_TARGET: '11.0'
+  VISIONOS_DEPLOYMENT_TARGET: '1.0'
+  ENABLE_BITCODE: OFF
+  ENABLE_ARC: OFF
+  ENABLE_VISIBILITY: OFF
+  EMSCRIPTEN_VERSION: 3.1.28
+
+permissions:
+  contents: read
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: get-version
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+    - name: opencv2-source
+      env:
+        opencv-version: 2.4.13.7
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
+        unzip -q opencv-${{ env.opencv-version }}.zip
+        rm opencv-${{ env.opencv-version }}.zip
+        cd opencv-${{ env.opencv-version }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+
+        rm modules/core/src/gl_*
+        rm modules/core/src/gpumat.cpp
+        rm modules/core/src/opengl_*
+        rm modules/core/include/opencv2/core/cuda_*
+        rm modules/core/include/opencv2/core/devmem2d.hpp
+        rm modules/core/include/opencv2/core/gpumat.hpp
+        rm modules/core/include/opencv2/core/opengl_*
+        rm modules/core/include/opencv2/core/wimage.hpp
+
+        rm -rf modules/dynamicuda
+        rm -rf modules/gpu
+        rm -rf modules/ocl
+
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-gpu.patch
+
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-highgui-include.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-link-stdc++.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-enable-cxx11.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-newer-msvc.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-windows-arm-arch.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
+        cp ../patches/draw_text.h ../patches/mono_font_data.h modules/core/src/
+        cp ../patches/fontface.html ./
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+        rm -rf 3rdparty apps data doc samples platforms
+        rm -rf modules/java
+        rm -rf modules/python
+        rm -rf modules/ts
+        sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
+        cp ../opencv2_cmake_options.txt ./options.txt
+        cd ..
+        mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
+        zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
+    - name: opencv3-source
+      env:
+        opencv-version: 3.4.20
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
+        unzip -q opencv-${{ env.opencv-version }}.zip
+        rm opencv-${{ env.opencv-version }}.zip
+        cd opencv-${{ env.opencv-version }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+
+        rm modules/core/src/cuda_*
+        rm modules/core/src/direct*
+        rm modules/core/src/gl_*
+        rm modules/core/src/intel_gpu_*
+        rm modules/core/src/ocl*
+        rm modules/core/src/opengl.cpp
+        rm modules/core/src/ovx.cpp
+        rm modules/core/src/umatrix.hpp
+        rm modules/core/src/va_intel.cpp
+
+        rm modules/core/include/opencv2/core/cuda*.hpp
+        rm modules/core/include/opencv2/core/directx.hpp
+        rm modules/core/include/opencv2/core/ippasync.hpp
+        rm modules/core/include/opencv2/core/ocl*.hpp
+        rm modules/core/include/opencv2/core/opengl.hpp
+        rm modules/core/include/opencv2/core/ovx.hpp
+        rm modules/core/include/opencv2/core/private.cuda.hpp
+        rm modules/core/include/opencv2/core/va_intel.hpp
+        rm modules/core/include/opencv2/core/wimage.hpp
+        rm -rf modules/core/include/opencv2/core/cuda
+        rm -rf modules/core/include/opencv2/core/opencl
+        rm -rf modules/core/include/opencv2/core/openvx
+
+        rm modules/photo/src/denoising.cuda.cpp
+        rm modules/photo/include/opencv2/photo/cuda.hpp
+
+        rm -rf modules/cuda*
+        rm -rf modules/cudev
+
+        find modules -type d | xargs -i rm -rf {}/src/cuda
+        find modules -type d | xargs -i rm -rf {}/src/opencl
+        find modules -type d | xargs -i rm -rf {}/perf/cuda
+        find modules -type d | xargs -i rm -rf {}/perf/opencl
+        find modules -type f | xargs -i sed -i '/opencl_kernels/d' {}
+        find modules -type f | xargs -i sed -i '/cuda.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/opengl.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ocl_defs.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ocl.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ovx_defs.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ovx.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/va_intel.hpp/d' {}
+
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-gpu.patch
+
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-emscripten-include.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-newer-msvc.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-windows-arm-arch.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
+        cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
+        cp ../patches/fontface.html ./
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+        rm -rf 3rdparty apps data doc samples platforms
+        rm -rf modules/java
+        rm -rf modules/js
+        rm -rf modules/python
+        rm -rf modules/ts
+        rm -rf modules/dnn
+        sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
+        cp ../opencv3_cmake_options.txt ./options.txt
+        cd ..
+        mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
+        zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
+    - name: opencv4-source
+      env:
+        opencv-version: 4.10.0
+      run: |
+        wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
+        unzip -q opencv-${{ env.opencv-version }}.zip
+        rm opencv-${{ env.opencv-version }}.zip
+        cd opencv-${{ env.opencv-version }}
+        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
+        rm -rf modules/gapi
+
+        rm modules/core/src/cuda_*
+        rm modules/core/src/direct*
+        rm modules/core/src/gl_*
+        rm modules/core/src/intel_gpu_*
+        rm modules/core/src/ocl*
+        rm modules/core/src/opengl.cpp
+        rm modules/core/src/ovx.cpp
+        rm modules/core/src/umatrix.hpp
+        rm modules/core/src/va_intel.cpp
+        rm modules/core/src/va_wrapper.impl.hpp
+
+        rm modules/core/include/opencv2/core/cuda*.hpp
+        rm modules/core/include/opencv2/core/directx.hpp
+        rm modules/core/include/opencv2/core/ocl*.hpp
+        rm modules/core/include/opencv2/core/opengl.hpp
+        rm modules/core/include/opencv2/core/ovx.hpp
+        rm modules/core/include/opencv2/core/private.cuda.hpp
+        rm modules/core/include/opencv2/core/va_*.hpp
+        rm -rf modules/core/include/opencv2/core/cuda
+        rm -rf modules/core/include/opencv2/core/opencl
+        rm -rf modules/core/include/opencv2/core/openvx
+
+        rm modules/photo/src/denoising.cuda.cpp
+        rm modules/photo/include/opencv2/photo/cuda.hpp
+
+        find modules -type d | xargs -i rm -rf {}/src/cuda
+        find modules -type d | xargs -i rm -rf {}/src/opencl
+        find modules -type d | xargs -i rm -rf {}/perf/cuda
+        find modules -type d | xargs -i rm -rf {}/perf/opencl
+        find modules -type f | xargs -i sed -i '/opencl_kernels/d' {}
+        find modules -type f | xargs -i sed -i '/cuda.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/opengl.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ocl_defs.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ocl.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ovx_defs.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/ovx.hpp/d' {}
+        find modules -type f | xargs -i sed -i '/va_intel.hpp/d' {}
+
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-gpu.patch
+
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-windows-arm-arch.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
+        cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
+        cp ../patches/fontface.html ./
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
+        rm -rf modules/highgui
+        cp -r ../highgui modules/
+        rm -rf 3rdparty apps data doc samples platforms
+        rm -rf modules/java
+        rm -rf modules/js
+        rm -rf modules/python
+        rm -rf modules/ts
+        rm -rf modules/dnn
+        sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
+        cp ../opencv4_cmake_options.txt ./options.txt
+        cd ..
+        mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
+        zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
+    - name: upload-opencv2-source
+      uses: actions/upload-artifact@v4
+      with:
+        name: opencv-mobile-2.4.13.7-source
+        path: opencv-mobile-2.4.13.7.zip
+    - name: upload-opencv3-source
+      uses: actions/upload-artifact@v4
+      with:
+        name: opencv-mobile-3.4.20-source
+        path: opencv-mobile-3.4.20.zip
+    - name: upload-opencv4-source
+      uses: actions/upload-artifact@v4
+      with:
+        name: opencv-mobile-4.10.0-source
+        path: opencv-mobile-4.10.0.zip
+
+  android:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        opencv-version: [2.4.13.7, 3.4.20, 4.10.0]
+    env:
+      COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_DEFAULT_CMP0057=NEW \
+        -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
+        -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
+        -DANDROID_PLATFORM=android-21 \
+        -DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON \
+        -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_BUILD_TYPE=Release \
+    steps:
+    - uses: actions/checkout@v4
+    - name: ndk-fix-debug
+      run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
+    - uses: actions/download-artifact@v4
+      with:
+        name: opencv-mobile-${{ matrix.opencv-version }}-source
+    - name: setup-opencv-source
+      run: |
+        unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
+        echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-android" >> $GITHUB_ENV
+    - name: build-armeabi-v7a
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: build-arm64-v8a
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="arm64-v8a" \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON -DOPENCV_EXTRA_FLAGS="-mno-outline-atomics" ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: build-x86
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-x86 && cd build-x86
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86" \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: build-x86_64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-x86_64 && cd build-x86_64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86_64" \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: build-riscv64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-riscv64 && cd build-riscv64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="riscv64" \
+            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+        cmake --build . -j $(nproc)
+        cmake --build . --target install
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGE_NAME }}
+        cp -rf ${{ env.SOURCE_DIR }}/build-x86/install/* ${{ env.PACKAGE_NAME }}/
+        cp -rf ${{ env.SOURCE_DIR }}/build-x86_64/install/* ${{ env.PACKAGE_NAME }}/
+        cp -rf ${{ env.SOURCE_DIR }}/build-riscv64/install/* ${{ env.PACKAGE_NAME }}/
+        cp -rf ${{ env.SOURCE_DIR }}/build-armeabi-v7a/install/* ${{ env.PACKAGE_NAME }}/
+        cp -rf ${{ env.SOURCE_DIR }}/build-arm64-v8a/install/* ${{ env.PACKAGE_NAME }}/
+        zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
+    - name: test-armeabi-v7a
+      run: |
+        cd test
+        mkdir build-armeabi-v7a && cd build-armeabi-v7a
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
+        cmake --build . -j $(nproc)
+    - name: test-arm64-v8a
+      run: |
+        cd test
+        mkdir build-arm64-v8a && cd build-arm64-v8a
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="arm64-v8a" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
+        cmake --build . -j $(nproc)
+    - name: test-x86
+      run: |
+        cd test
+        mkdir build-x86 && cd build-x86
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
+        cmake --build . -j $(nproc)
+    - name: test-x86_64
+      run: |
+        cd test
+        mkdir build-x86_64 && cd build-x86_64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86_64" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
+        cmake --build . -j $(nproc)
+    - name: test-riscv64
+      run: |
+        cd test
+        mkdir build-riscv64 && cd build-riscv64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="riscv64" \
+            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
+        cmake --build . -j $(nproc)
+    - name: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}
+        path: ${{ env.PACKAGE_NAME }}.zip
