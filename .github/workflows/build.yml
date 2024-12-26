@@ -256,6 +256,7 @@ jobs:
         -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
         -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
         -DANDROID_PLATFORM=android-21 \
+        -DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON \
         -DANDROID_CPP_FEATURES="no-rtti no-exceptions" \
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
@@ -1376,14 +1377,6 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
-    - name: build-arm
-      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
-      run: |
-        cd ${{ env.SOURCE_DIR }}
-        mkdir build-arm; cd build-arm
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=ARM $(type ../options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 4
-        cmake --build . --config Release --target install
     - name: build-arm64
       if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
       run: |
@@ -1407,11 +1400,9 @@ jobs:
         mkdir ${{ env.PACKAGE_NAME }}
         mkdir ${{ env.PACKAGE_NAME }}/x86
         mkdir ${{ env.PACKAGE_NAME }}/x64
-        mkdir ${{ env.PACKAGE_NAME }}/arm
         mkdir ${{ env.PACKAGE_NAME }}/arm64
         Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x86\install\*" -Destination "${{ env.PACKAGE_NAME }}\x86"
         Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x64\install\*" -Destination "${{ env.PACKAGE_NAME }}\x64"
-        Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-arm\install\*" -Destination "${{ env.PACKAGE_NAME }}\arm"
         Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-arm64\install\*" -Destination "${{ env.PACKAGE_NAME }}\arm64"
         7z a -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
     - name: test-x86
@@ -1425,13 +1416,6 @@ jobs:
         cd test
         mkdir build-x64; cd build-x64
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x64" -DOpenCV_STATIC=ON ..
-        cmake --build . --config Release -j 4
-    - name: test-arm
-      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
-      run: |
-        cd test
-        mkdir build-arm; cd build-arm
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\arm" -DOpenCV_STATIC=ON ..
         cmake --build . --config Release -j 4
     - name: test-arm64
       if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
