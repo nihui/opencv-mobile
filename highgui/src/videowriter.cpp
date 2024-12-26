@@ -61,25 +61,28 @@ VideoWriter::~VideoWriter()
     delete d;
 }
 
-bool VideoWriter::open(int http_port)
+bool VideoWriter::open(const String& name, int port)
 {
     if (d->is_opened)
     {
         release();
     }
 
+    if (name == "httpjpg")
+    {
 #if defined __linux__
-    if (writer_http::supported())
-    {
-        int ret = d->wt_http.open(http_port);
-        if (ret == 0)
+        if (writer_http::supported())
         {
-            d->is_opened = true;
+            int ret = d->wt_http.open(port);
+            if (ret == 0)
+            {
+                d->is_opened = true;
+            }
         }
-    }
-    else
+        else
 #endif
-    {
+        {
+        }
     }
 
     return d->is_opened;

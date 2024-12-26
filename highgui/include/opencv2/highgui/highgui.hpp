@@ -103,7 +103,7 @@ public:
 
     ~VideoWriter();
 
-    bool open(int http_port);
+    bool open(const String& name, int port);
 
     bool isOpened() const;
 
