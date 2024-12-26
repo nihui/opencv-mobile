@@ -784,11 +784,11 @@ void imshow(const String& winname, InputArray mat)
     std::vector<uchar> buf;
     bool result = cv::imencode(".bmp", mat, buf);
     if (result) {
-		BitmapWindow::show(winname.c_str(), buf.data());
+        BitmapWindow::show(winname.c_str(), buf.data());
         return;
     }
     return ;
-#elif __linux__
+#elif __linux__ && !__ANDROID__
     if (winname == "fb")
     {
         static display_fb dpy;
