@@ -304,20 +304,11 @@ jobs:
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j $(nproc)
         cmake --build . --target install
-    - name: build-riscv64
-      run: |
-        cd ${{ env.SOURCE_DIR }}
-        mkdir build-riscv64 && cd build-riscv64
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="riscv64" \
-            `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
-        cmake --build . -j $(nproc)
-        cmake --build . --target install
     - name: package
       run: |
         mkdir ${{ env.PACKAGE_NAME }}
         cp -rf ${{ env.SOURCE_DIR }}/build-x86/install/* ${{ env.PACKAGE_NAME }}/
         cp -rf ${{ env.SOURCE_DIR }}/build-x86_64/install/* ${{ env.PACKAGE_NAME }}/
-        cp -rf ${{ env.SOURCE_DIR }}/build-riscv64/install/* ${{ env.PACKAGE_NAME }}/
         cp -rf ${{ env.SOURCE_DIR }}/build-armeabi-v7a/install/* ${{ env.PACKAGE_NAME }}/
         cp -rf ${{ env.SOURCE_DIR }}/build-arm64-v8a/install/* ${{ env.PACKAGE_NAME }}/
         zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
@@ -347,13 +338,6 @@ jobs:
         cd test
         mkdir build-x86_64 && cd build-x86_64
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="x86_64" \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
-        cmake --build . -j $(nproc)
-    - name: test-riscv64
-      run: |
-        cd test
-        mkdir build-riscv64 && cd build-riscv64
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DANDROID_ABI="riscv64" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
         cmake --build . -j $(nproc)
     - name: upload
