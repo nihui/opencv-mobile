@@ -21,11 +21,12 @@
 #include <string.h>
 #include <time.h>
 
+#include <arpa/inet.h>
+#include <ifaddrs.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
 #include <unistd.h>
 
 #include <pthread.h>
@@ -266,20 +267,29 @@ void writer_http_impl::mainloop()
 
     // print streaming url
     {
-        char ac[256];
-        if (::gethostname(ac, sizeof(ac)) == 0)
+        struct ifaddrs *ifaddr, *ifa;
+
+        if (getifaddrs(&ifaddr) == -1)
+            goto OUT;
+
+        for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next)
         {
-            struct hostent* phe = gethostbyname(ac);
-            if (phe)
+            if (ifa->ifa_addr == NULL)
+                continue;
+
+            int family = ifa->ifa_addr->sa_family;
+
+            if (family == AF_INET)
             {
-                for (int i = 0; phe->h_addr_list[i] != 0; i++)
-                {
-                    struct in_addr addr;
-                    memcpy(&addr, phe->h_addr_list[i], sizeof(struct in_addr));
-                    fprintf(stderr, "streaming at http://%s:%d\n", inet_ntoa(addr), port);
-                }
+                void* addr = &((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
+                char addressBuffer[INET_ADDRSTRLEN];
+                inet_ntop(AF_INET, addr, addressBuffer, INET_ADDRSTRLEN);
+
+                fprintf(stderr, "streaming at http://%s:%d\n", addressBuffer, port);
             }
         }
+
+        freeifaddrs(ifaddr);
 
         fprintf(stderr, "streaming at http://127.0.0.1:%d\n", port);
     }
