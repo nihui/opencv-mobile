@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#if defined __linux__
+#if defined __linux__ && !__ANDROID__
 #include "writer_http.h"
 #endif
 
@@ -37,7 +37,7 @@ public:
     int height;
     float fps;
 
-#if defined __linux__
+#if defined __linux__ && !__ANDROID__
     writer_http wt_http;
 #endif
 };
@@ -70,7 +70,7 @@ bool VideoWriter::open(const String& name, int port)
 
     if (name == "httpjpg")
     {
-#if defined __linux__
+#if defined __linux__ && !__ANDROID__
         if (writer_http::supported())
         {
             int ret = d->wt_http.open(port);
@@ -98,7 +98,7 @@ void VideoWriter::release()
     if (!d->is_opened)
         return;
 
-#if defined __linux__
+#if defined __linux__ && !__ANDROID__
     if (writer_http::supported())
     {
         d->wt_http.close();
@@ -126,7 +126,7 @@ void VideoWriter::write(const Mat& image)
     if (!d->is_opened)
         return;
 
-#if defined __linux__
+#if defined __linux__ && !__ANDROID__
     if (writer_http::supported())
     {
         // encode jpg
