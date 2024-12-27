@@ -28,6 +28,8 @@
 
 :heavy_check_mark: ***NEW FEATURE*** [`cv::imshow` supports Linux framebuffer and Windows](#cvimshow-supports-linux-framebuffer-and-windows)
 
+:heavy_check_mark: ***NEW FEATURE*** [`cv::VideoWriter` supports jpg streaming over http](#cvvideowriter-supports-jpg-streaming-over-http)
+
 |opencv 4.10.0 package size|The official opencv|opencv-mobile|
 |:-:|:-:|:-:|
 |source zip|95.2 MB|8.25 MB|
@@ -609,6 +611,35 @@ int main()
 
 </td></tr>
 </table>
+
+## `cv::VideoWriter` supports jpg streaming over http
+
+In Linux, `cv::VideoWriter` could be used for streaming images as jpg over http, while it is noop on other platforms. Initialize a `cv::VideoWriter` instance, `open` the writer with name `httpjpg` and a port number, then it will setup a simple http server. You can open the streaming url with a web browser, and image will be shown in the browser as soon as it is sent to the writer. The image size and content can be dynamic, which is useful for streaming frames from a live camera.
+
+```cpp
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+int main()
+{
+    cv::VideoCapture cap;
+    cap.open(0);
+
+    cv::VideoWriter http;
+    http.open("httpjpg", 7766);
+
+    // open streaming url http://<server ip>:7766 in web browser
+
+    cv::Mat bgr;
+    while (1)
+    {
+        cap >> bgr;
+        http << bgr;
+    }
+
+    return 0;
+}
+```
 
 # opencv modules included
 

@@ -10,6 +10,7 @@ set(highgui_srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/highgui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/kanna_rotate.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/videocapture.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/videowriter.cpp
 
     # dnn
     ${CMAKE_CURRENT_LIST_DIR}/src/nms.cpp
@@ -18,7 +19,8 @@ set(highgui_srcs
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   list(APPEND highgui_srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/capture_v4l2.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/display_fb.cpp)
+    ${CMAKE_CURRENT_LIST_DIR}/src/display_fb.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/writer_http.cpp)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
