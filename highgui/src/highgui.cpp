@@ -51,7 +51,7 @@
 #if CV_WITH_RK
 #include "jpeg_encoder_rk_mpp.h"
 #endif
-#if defined __linux__
+#if defined __linux__ && !__ANDROID__
 #include "display_fb.h"
 #endif
 
