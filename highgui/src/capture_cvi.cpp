@@ -2547,7 +2547,7 @@ static const struct sns_ini_cfg* get_sns_ini_cfg()
             4,  // bus_id
             29, // sns_i2c_addr
             0,  // mipi_dev
-            {2, 1, 0, -1, -1},  // lane_id
+            {4, 3, 2, -1, -1},  // lane_id
             {0, 0, 0, 0, 0},    // pn_swap
             true,   // mclk_en
             0       // mclk
