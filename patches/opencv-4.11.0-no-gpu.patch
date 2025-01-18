@@ -1,6 +1,6 @@
 diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/base.hpp opencv-4.11.0/modules/core/include/opencv2/core/base.hpp
---- opencv-4.11.0.orig/modules/core/include/opencv2/core/base.hpp	2025-01-18 23:31:52.823608595 +0800
-+++ opencv-4.11.0/modules/core/include/opencv2/core/base.hpp	2025-01-18 23:32:11.519832884 +0800
+--- opencv-4.11.0.orig/modules/core/include/opencv2/core/base.hpp	2025-01-19 00:07:25.164889119 +0800
++++ opencv-4.11.0/modules/core/include/opencv2/core/base.hpp	2025-01-19 00:07:45.979143770 +0800
 @@ -608,8 +608,6 @@ class CV_EXPORTS RNG;
  class CV_EXPORTS Mat;
  class CV_EXPORTS MatExpr;
@@ -38,8 +38,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/base.hpp opencv
  {
  CV_EXPORTS   unsigned long long getIppFeatures();
 diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/cvdef.h opencv-4.11.0/modules/core/include/opencv2/core/cvdef.h
---- opencv-4.11.0.orig/modules/core/include/opencv2/core/cvdef.h	2025-01-18 23:31:52.823608595 +0800
-+++ opencv-4.11.0/modules/core/include/opencv2/core/cvdef.h	2025-01-18 23:32:11.519832884 +0800
+--- opencv-4.11.0.orig/modules/core/include/opencv2/core/cvdef.h	2025-01-19 00:07:25.192889461 +0800
++++ opencv-4.11.0/modules/core/include/opencv2/core/cvdef.h	2025-01-19 00:07:45.979143770 +0800
 @@ -945,4 +945,9 @@ CV_INLINE int CV_FOURCC(char c1, char c2
  #include "opencv2/core/fast_math.hpp" // define cvRound(double)
  #endif
@@ -51,8 +51,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/cvdef.h opencv-
 +
  #endif // OPENCV_CORE_CVDEF_H
 diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/cvstd.inl.hpp opencv-4.11.0/modules/core/include/opencv2/core/cvstd.inl.hpp
---- opencv-4.11.0.orig/modules/core/include/opencv2/core/cvstd.inl.hpp	2025-01-18 23:31:52.823608595 +0800
-+++ opencv-4.11.0/modules/core/include/opencv2/core/cvstd.inl.hpp	2025-01-18 23:32:11.519832884 +0800
+--- opencv-4.11.0.orig/modules/core/include/opencv2/core/cvstd.inl.hpp	2025-01-19 00:07:25.154888997 +0800
++++ opencv-4.11.0/modules/core/include/opencv2/core/cvstd.inl.hpp	2025-01-19 00:07:45.979143770 +0800
 @@ -89,12 +89,6 @@ std::ostream& operator << (std::ostream&
      return out << Formatter::get()->format(mtx);
  }
@@ -67,8 +67,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/cvstd.inl.hpp o
  std::ostream& operator << (std::ostream& out, const Complex<_Tp>& c)
  {
 diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-4.11.0/modules/core/include/opencv2/core/mat.hpp
---- opencv-4.11.0.orig/modules/core/include/opencv2/core/mat.hpp	2025-01-18 23:31:52.823608595 +0800
-+++ opencv-4.11.0/modules/core/include/opencv2/core/mat.hpp	2025-01-18 23:32:11.519832884 +0800
+--- opencv-4.11.0.orig/modules/core/include/opencv2/core/mat.hpp	2025-01-19 00:07:25.181889327 +0800
++++ opencv-4.11.0/modules/core/include/opencv2/core/mat.hpp	2025-01-19 00:07:45.980143782 +0800
 @@ -175,13 +175,7 @@ public:
  #if OPENCV_ABI_COMPATIBILITY < 500
          EXPR              = 6 << KIND_SHIFT,  //!< removed: https://github.com/opencv/opencv/pull/17046
@@ -472,8 +472,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-
  /////////////////////////// multi-dimensional sparse matrix //////////////////////////
  
 diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/mat.inl.hpp opencv-4.11.0/modules/core/include/opencv2/core/mat.inl.hpp
---- opencv-4.11.0.orig/modules/core/include/opencv2/core/mat.inl.hpp	2025-01-18 23:31:52.823608595 +0800
-+++ opencv-4.11.0/modules/core/include/opencv2/core/mat.inl.hpp	2025-01-18 23:35:56.850536046 +0800
+--- opencv-4.11.0.orig/modules/core/include/opencv2/core/mat.inl.hpp	2025-01-19 00:07:25.152888972 +0800
++++ opencv-4.11.0/modules/core/include/opencv2/core/mat.inl.hpp	2025-01-19 00:08:39.406797435 +0800
 @@ -102,8 +102,6 @@ inline _InputArray::_InputArray() { init
  inline _InputArray::_InputArray(int _flags, void* _obj) { init(_flags, _obj); }
  inline _InputArray::_InputArray(const Mat& m) { init(+MAT+ACCESS_READ, &m); }
@@ -577,7 +577,22 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/mat.inl.hpp ope
  
  template<typename _Tp> inline
  _InputOutputArray::_InputOutputArray(std::vector<_Tp>& vec)
-@@ -409,27 +359,6 @@ inline _InputOutputArray::_InputOutputAr
+@@ -394,42 +344,12 @@ template<typename _Tp> inline
+ _InputOutputArray::_InputOutputArray(const _Tp* vec, int n)
+ { init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_RW, vec, Size(n, 1)); }
+ 
+-inline _InputOutputArray::_InputOutputArray(cuda::GpuMat& d_mat)
+-{ init(+CUDA_GPU_MAT + ACCESS_RW, &d_mat); }
+-
+-inline _InputOutputArray::_InputOutputArray(ogl::Buffer& buf)
+-{ init(+OPENGL_BUFFER + ACCESS_RW, &buf); }
+-
+-inline _InputOutputArray::_InputOutputArray(cuda::HostMem& cuda_mem)
+-{ init(+CUDA_HOST_MEM + ACCESS_RW, &cuda_mem); }
+-
+ inline _InputOutputArray::_InputOutputArray(const Mat& m)
+ { init(FIXED_TYPE + FIXED_SIZE + MAT + ACCESS_RW, &m); }
+ 
  inline _InputOutputArray::_InputOutputArray(const std::vector<Mat>& vec)
  { init(FIXED_SIZE + STD_VECTOR_MAT + ACCESS_RW, &vec); }
  
@@ -605,7 +620,7 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/mat.inl.hpp ope
  template<typename _Tp> inline
  _InputOutputArray _InputOutputArray::rawInOut(std::vector<_Tp>& vec)
  {
-@@ -3246,132 +3175,6 @@ const Mat_<_Tp>& operator /= (const Mat_
+@@ -3246,132 +3166,6 @@ const Mat_<_Tp>& operator /= (const Mat_
  
  //////////////////////////////// UMat ////////////////////////////////
  
@@ -739,8 +754,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/mat.inl.hpp ope
  inline bool UMatData::hostCopyObsolete() const { return (flags & HOST_COPY_OBSOLETE) != 0; }
  inline bool UMatData::deviceCopyObsolete() const { return (flags & DEVICE_COPY_OBSOLETE) != 0; }
 diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/operations.hpp opencv-4.11.0/modules/core/include/opencv2/core/operations.hpp
---- opencv-4.11.0.orig/modules/core/include/opencv2/core/operations.hpp	2025-01-18 23:31:52.823608595 +0800
-+++ opencv-4.11.0/modules/core/include/opencv2/core/operations.hpp	2025-01-18 23:32:11.520832896 +0800
+--- opencv-4.11.0.orig/modules/core/include/opencv2/core/operations.hpp	2025-01-19 00:07:25.159889058 +0800
++++ opencv-4.11.0/modules/core/include/opencv2/core/operations.hpp	2025-01-19 00:07:45.980143782 +0800
 @@ -450,12 +450,6 @@ int print(const Mat& mtx, FILE* stream =
      return print(Formatter::get()->format(mtx), stream);
  }
@@ -755,8 +770,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/operations.hpp 
  int print(const std::vector<Point_<_Tp> >& vec, FILE* stream = stdout)
  {
 diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core.hpp opencv-4.11.0/modules/core/include/opencv2/core.hpp
---- opencv-4.11.0.orig/modules/core/include/opencv2/core.hpp	2025-01-18 23:31:52.823608595 +0800
-+++ opencv-4.11.0/modules/core/include/opencv2/core.hpp	2025-01-18 23:32:11.520832896 +0800
+--- opencv-4.11.0.orig/modules/core/include/opencv2/core.hpp	2025-01-19 00:07:25.197889523 +0800
++++ opencv-4.11.0/modules/core/include/opencv2/core.hpp	2025-01-19 00:07:45.980143782 +0800
 @@ -217,8 +217,6 @@ enum ReduceTypes { REDUCE_SUM = 0, //!<
  /** @brief Swaps two matrices
  */
@@ -789,8 +804,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core.hpp opencv-4.11
  /** @brief Calculates a square root of array elements.
  
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/arithm.cpp opencv-4.11.0/modules/core/src/arithm.cpp
---- opencv-4.11.0.orig/modules/core/src/arithm.cpp	2025-01-18 23:31:52.826608631 +0800
-+++ opencv-4.11.0/modules/core/src/arithm.cpp	2025-01-18 23:32:11.520832896 +0800
+--- opencv-4.11.0.orig/modules/core/src/arithm.cpp	2025-01-19 00:07:25.325891089 +0800
++++ opencv-4.11.0/modules/core/src/arithm.cpp	2025-01-19 00:07:45.980143782 +0800
 @@ -418,22 +418,6 @@ void cv::min(const Mat& src1, const Mat&
      binary_op(src1, src2, _dst, noArray(), getMinTab(), false, OCL_OP_MIN );
  }
@@ -829,8 +844,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/arithm.cpp opencv-4.11.0/modules
  *                                      addWeighted                                       *
  \****************************************************************************************/
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/async.cpp opencv-4.11.0/modules/core/src/async.cpp
---- opencv-4.11.0.orig/modules/core/src/async.cpp	2025-01-18 23:31:52.826608631 +0800
-+++ opencv-4.11.0/modules/core/src/async.cpp	2025-01-18 23:32:11.521832907 +0800
+--- opencv-4.11.0.orig/modules/core/src/async.cpp	2025-01-19 00:07:25.292890685 +0800
++++ opencv-4.11.0/modules/core/src/async.cpp	2025-01-19 00:07:45.980143782 +0800
 @@ -40,7 +40,6 @@ struct AsyncArray::Impl
      mutable bool has_result; // Mat, UMat or exception
  
@@ -904,8 +919,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/async.cpp opencv-4.11.0/modules/
              result_mat = makePtr<Mat>();
              value.copyTo(*result_mat.get());
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/channels.cpp opencv-4.11.0/modules/core/src/channels.cpp
---- opencv-4.11.0.orig/modules/core/src/channels.cpp	2025-01-18 23:31:52.826608631 +0800
-+++ opencv-4.11.0/modules/core/src/channels.cpp	2025-01-18 23:32:11.521832907 +0800
+--- opencv-4.11.0.orig/modules/core/src/channels.cpp	2025-01-19 00:07:25.338891248 +0800
++++ opencv-4.11.0/modules/core/src/channels.cpp	2025-01-19 00:07:45.981143795 +0800
 @@ -282,12 +282,10 @@ void cv::mixChannels(InputArrayOfArrays
  
      bool src_is_mat = src.kind() != _InputArray::STD_VECTOR_MAT &&
@@ -937,8 +952,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/channels.cpp opencv-4.11.0/modul
      int nsrc = src_is_mat ? 1 : (int)src.total();
      int ndst = dst_is_mat ? 1 : (int)dst.total();
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/convert.dispatch.cpp opencv-4.11.0/modules/core/src/convert.dispatch.cpp
---- opencv-4.11.0.orig/modules/core/src/convert.dispatch.cpp	2025-01-18 23:31:52.827608643 +0800
-+++ opencv-4.11.0/modules/core/src/convert.dispatch.cpp	2025-01-18 23:32:11.521832907 +0800
+--- opencv-4.11.0.orig/modules/core/src/convert.dispatch.cpp	2025-01-19 00:07:25.320891028 +0800
++++ opencv-4.11.0/modules/core/src/convert.dispatch.cpp	2025-01-19 00:07:45.981143795 +0800
 @@ -301,44 +301,6 @@ void Mat::convertTo(OutputArray dst, int
      }
  }
@@ -985,8 +1000,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/convert.dispatch.cpp opencv-4.11
  
  void convertFp16(InputArray _src, OutputArray _dst)
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/copy.cpp opencv-4.11.0/modules/core/src/copy.cpp
---- opencv-4.11.0.orig/modules/core/src/copy.cpp	2025-01-18 23:31:52.827608643 +0800
-+++ opencv-4.11.0/modules/core/src/copy.cpp	2025-01-18 23:32:11.521832907 +0800
+--- opencv-4.11.0.orig/modules/core/src/copy.cpp	2025-01-19 00:07:25.336891223 +0800
++++ opencv-4.11.0/modules/core/src/copy.cpp	2025-01-19 00:07:45.981143795 +0800
 @@ -327,22 +327,6 @@ void Mat::copyTo( OutputArray _dst ) con
          return;
      }
@@ -1011,8 +1026,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/copy.cpp opencv-4.11.0/modules/c
      {
          _dst.create( rows, cols, type() );
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/dxt.cpp opencv-4.11.0/modules/core/src/dxt.cpp
---- opencv-4.11.0.orig/modules/core/src/dxt.cpp	2025-01-18 23:31:52.827608643 +0800
-+++ opencv-4.11.0/modules/core/src/dxt.cpp	2025-01-18 23:32:11.521832907 +0800
+--- opencv-4.11.0.orig/modules/core/src/dxt.cpp	2025-01-19 00:07:25.339891260 +0800
++++ opencv-4.11.0/modules/core/src/dxt.cpp	2025-01-19 00:07:45.981143795 +0800
 @@ -40,8 +40,6 @@
  //M*/
  
@@ -1023,8 +1038,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/dxt.cpp opencv-4.11.0/modules/co
  
  namespace cv
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/lapack.cpp opencv-4.11.0/modules/core/src/lapack.cpp
---- opencv-4.11.0.orig/modules/core/src/lapack.cpp	2025-01-18 23:31:52.827608643 +0800
-+++ opencv-4.11.0/modules/core/src/lapack.cpp	2025-01-18 23:32:11.521832907 +0800
+--- opencv-4.11.0.orig/modules/core/src/lapack.cpp	2025-01-19 00:07:25.321891040 +0800
++++ opencv-4.11.0/modules/core/src/lapack.cpp	2025-01-19 00:07:45.981143795 +0800
 @@ -1017,13 +1017,6 @@ double invert( InputArray _src, OutputAr
      return result;
  }
@@ -1040,8 +1055,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/lapack.cpp opencv-4.11.0/modules
  /****************************************************************************************\
  *                              Solving a linear system                                   *
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/matmul.dispatch.cpp opencv-4.11.0/modules/core/src/matmul.dispatch.cpp
---- opencv-4.11.0.orig/modules/core/src/matmul.dispatch.cpp	2025-01-18 23:31:52.826608631 +0800
-+++ opencv-4.11.0/modules/core/src/matmul.dispatch.cpp	2025-01-18 23:32:11.521832907 +0800
+--- opencv-4.11.0.orig/modules/core/src/matmul.dispatch.cpp	2025-01-19 00:07:25.305890844 +0800
++++ opencv-4.11.0/modules/core/src/matmul.dispatch.cpp	2025-01-19 00:07:45.981143795 +0800
 @@ -44,10 +44,6 @@
  #include "precomp.hpp"
  #include <opencv2/core/utils/logger.hpp>
@@ -1075,8 +1090,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/matmul.dispatch.cpp opencv-4.11.
  
  
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/matrix_operations.cpp opencv-4.11.0/modules/core/src/matrix_operations.cpp
---- opencv-4.11.0.orig/modules/core/src/matrix_operations.cpp	2025-01-18 23:31:52.826608631 +0800
-+++ opencv-4.11.0/modules/core/src/matrix_operations.cpp	2025-01-18 23:32:11.521832907 +0800
+--- opencv-4.11.0.orig/modules/core/src/matrix_operations.cpp	2025-01-19 00:07:25.331891162 +0800
++++ opencv-4.11.0/modules/core/src/matrix_operations.cpp	2025-01-19 00:07:45.981143795 +0800
 @@ -226,22 +226,6 @@ void cv::setIdentity( InputOutputArray _
  }
  
@@ -1113,8 +1128,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/matrix_operations.cpp opencv-4.1
      _dst.create(dim == 0 ? 1 : src.rows, dim == 0 ? src.cols : 1, dtype);
      Mat dst = _dst.getMat(), temp = dst;
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/matrix_transform.cpp opencv-4.11.0/modules/core/src/matrix_transform.cpp
---- opencv-4.11.0.orig/modules/core/src/matrix_transform.cpp	2025-01-18 23:31:52.826608631 +0800
-+++ opencv-4.11.0/modules/core/src/matrix_transform.cpp	2025-01-18 23:32:11.522832919 +0800
+--- opencv-4.11.0.orig/modules/core/src/matrix_transform.cpp	2025-01-19 00:07:25.330891150 +0800
++++ opencv-4.11.0/modules/core/src/matrix_transform.cpp	2025-01-19 00:07:45.981143795 +0800
 @@ -1105,12 +1105,6 @@ void rotate(InputArray _src, OutputArray
      CV_Assert(_src.dims() <= 2);
      int angle;
@@ -1129,8 +1144,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/matrix_transform.cpp opencv-4.11
      int type = src.type();
      if( src.empty() )
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/matrix_wrap.cpp opencv-4.11.0/modules/core/src/matrix_wrap.cpp
---- opencv-4.11.0.orig/modules/core/src/matrix_wrap.cpp	2025-01-18 23:31:52.826608631 +0800
-+++ opencv-4.11.0/modules/core/src/matrix_wrap.cpp	2025-01-18 23:32:11.522832919 +0800
+--- opencv-4.11.0.orig/modules/core/src/matrix_wrap.cpp	2025-01-19 00:07:25.287890624 +0800
++++ opencv-4.11.0/modules/core/src/matrix_wrap.cpp	2025-01-19 00:07:45.982143807 +0800
 @@ -24,14 +24,6 @@ Mat _InputArray::getMat_(int i) const
          return m->row(i);
      }
@@ -2286,8 +2301,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/matrix_wrap.cpp opencv-4.11.0/mo
          std::vector<Mat>& this_v = *(std::vector<Mat>*)obj;
          CV_Assert(this_v.size() == v.size());
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/precomp.hpp opencv-4.11.0/modules/core/src/precomp.hpp
---- opencv-4.11.0.orig/modules/core/src/precomp.hpp	2025-01-18 23:31:52.826608631 +0800
-+++ opencv-4.11.0/modules/core/src/precomp.hpp	2025-01-18 23:32:11.522832919 +0800
+--- opencv-4.11.0.orig/modules/core/src/precomp.hpp	2025-01-19 00:07:25.337891236 +0800
++++ opencv-4.11.0/modules/core/src/precomp.hpp	2025-01-19 00:07:45.982143807 +0800
 @@ -343,9 +343,6 @@ struct ImplCollector
  struct CoreTLSData
  {
@@ -2311,8 +2326,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/precomp.hpp opencv-4.11.0/module
      int useIPP_NE; // 1 - use, 0 - do not use, -1 - auto/not initialized
  #ifdef HAVE_OPENVX
 diff -Nuarp opencv-4.11.0.orig/modules/core/src/umatrix.cpp opencv-4.11.0/modules/core/src/umatrix.cpp
---- opencv-4.11.0.orig/modules/core/src/umatrix.cpp	2025-01-18 23:31:52.827608643 +0800
-+++ opencv-4.11.0/modules/core/src/umatrix.cpp	2025-01-18 23:32:11.522832919 +0800
+--- opencv-4.11.0.orig/modules/core/src/umatrix.cpp	2025-01-19 00:07:25.320891028 +0800
++++ opencv-4.11.0/modules/core/src/umatrix.cpp	2025-01-19 00:07:45.982143807 +0800
 @@ -40,7 +40,6 @@
  //M*/
  
@@ -2352,8 +2367,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/umatrix.cpp opencv-4.11.0/module
  }
  
 diff -Nuarp opencv-4.11.0.orig/modules/features2d/include/opencv2/features2d.hpp opencv-4.11.0/modules/features2d/include/opencv2/features2d.hpp
---- opencv-4.11.0.orig/modules/features2d/include/opencv2/features2d.hpp	2025-01-18 23:31:52.835608739 +0800
-+++ opencv-4.11.0/modules/features2d/include/opencv2/features2d.hpp	2025-01-18 23:32:11.522832919 +0800
+--- opencv-4.11.0.orig/modules/features2d/include/opencv2/features2d.hpp	2025-01-19 00:07:25.397891969 +0800
++++ opencv-4.11.0/modules/features2d/include/opencv2/features2d.hpp	2025-01-19 00:07:45.982143807 +0800
 @@ -1234,7 +1234,6 @@ protected:
  
      //! Collection of descriptors from train images.
@@ -2363,8 +2378,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/features2d/include/opencv2/features2d.hpp
  
  /** @brief Brute-force descriptor matcher.
 diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/agast.cpp opencv-4.11.0/modules/features2d/src/agast.cpp
---- opencv-4.11.0.orig/modules/features2d/src/agast.cpp	2025-01-18 23:31:52.836608751 +0800
-+++ opencv-4.11.0/modules/features2d/src/agast.cpp	2025-01-18 23:32:11.522832919 +0800
+--- opencv-4.11.0.orig/modules/features2d/src/agast.cpp	2025-01-19 00:07:25.421892263 +0800
++++ opencv-4.11.0/modules/features2d/src/agast.cpp	2025-01-19 00:07:45.982143807 +0800
 @@ -7980,11 +7980,10 @@ public:
          }
  
@@ -2379,8 +2394,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/agast.cpp opencv-4.11.0/mo
              gray = ogray;
          }
 diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/fast.cpp opencv-4.11.0/modules/features2d/src/fast.cpp
---- opencv-4.11.0.orig/modules/features2d/src/fast.cpp	2025-01-18 23:31:52.836608751 +0800
-+++ opencv-4.11.0/modules/features2d/src/fast.cpp	2025-01-18 23:32:11.523832931 +0800
+--- opencv-4.11.0.orig/modules/features2d/src/fast.cpp	2025-01-19 00:07:25.419892239 +0800
++++ opencv-4.11.0/modules/features2d/src/fast.cpp	2025-01-19 00:07:45.982143807 +0800
 @@ -569,11 +569,10 @@ public:
          }
  
@@ -2395,8 +2410,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/fast.cpp opencv-4.11.0/mod
              gray = ogray;
          }
 diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/feature2d.cpp opencv-4.11.0/modules/features2d/src/feature2d.cpp
---- opencv-4.11.0.orig/modules/features2d/src/feature2d.cpp	2025-01-18 23:31:52.836608751 +0800
-+++ opencv-4.11.0/modules/features2d/src/feature2d.cpp	2025-01-18 23:32:11.523832931 +0800
+--- opencv-4.11.0.orig/modules/features2d/src/feature2d.cpp	2025-01-19 00:07:25.429892361 +0800
++++ opencv-4.11.0/modules/features2d/src/feature2d.cpp	2025-01-19 00:07:45.983143819 +0800
 @@ -93,16 +93,6 @@ void Feature2D::detect( InputArrayOfArra
             detect(images.getMat(i), keypoints[i], masks.empty() ? noArray() : masks.getMat(i));
         }
@@ -2431,8 +2446,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/feature2d.cpp opencv-4.11.
      {
          CV_Error(Error::StsBadArg, "descriptors must be vector<Mat> or vector<UMat>");
 diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/gftt.cpp opencv-4.11.0/modules/features2d/src/gftt.cpp
---- opencv-4.11.0.orig/modules/features2d/src/gftt.cpp	2025-01-18 23:31:52.836608751 +0800
-+++ opencv-4.11.0/modules/features2d/src/gftt.cpp	2025-01-18 23:32:11.523832931 +0800
+--- opencv-4.11.0.orig/modules/features2d/src/gftt.cpp	2025-01-19 00:07:25.435892434 +0800
++++ opencv-4.11.0/modules/features2d/src/gftt.cpp	2025-01-19 00:07:45.983143819 +0800
 @@ -122,18 +122,6 @@ public:
          std::vector<Point2f> corners;
          std::vector<float> cornersQuality;
@@ -2453,8 +2468,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/gftt.cpp opencv-4.11.0/mod
              Mat image = _image.getMat(), grayImage = image;
              if( image.type() != CV_8U )
 diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/kaze/AKAZEFeatures.cpp opencv-4.11.0/modules/features2d/src/kaze/AKAZEFeatures.cpp
---- opencv-4.11.0.orig/modules/features2d/src/kaze/AKAZEFeatures.cpp	2025-01-18 23:31:52.837608763 +0800
-+++ opencv-4.11.0/modules/features2d/src/kaze/AKAZEFeatures.cpp	2025-01-18 23:32:11.523832931 +0800
+--- opencv-4.11.0.orig/modules/features2d/src/kaze/AKAZEFeatures.cpp	2025-01-19 00:07:25.423892288 +0800
++++ opencv-4.11.0/modules/features2d/src/kaze/AKAZEFeatures.cpp	2025-01-19 00:07:45.983143819 +0800
 @@ -519,15 +519,7 @@ convertScalePyramid(const std::vector<Ev
   */
  void AKAZEFeatures::Create_Nonlinear_Scale_Space(InputArray image)
@@ -2493,8 +2508,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/kaze/AKAZEFeatures.cpp ope
   * @note We use the Hessian determinant as the feature detector response
   */
 diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/kaze/AKAZEFeatures.h opencv-4.11.0/modules/features2d/src/kaze/AKAZEFeatures.h
---- opencv-4.11.0.orig/modules/features2d/src/kaze/AKAZEFeatures.h	2025-01-18 23:31:52.837608763 +0800
-+++ opencv-4.11.0/modules/features2d/src/kaze/AKAZEFeatures.h	2025-01-18 23:32:11.523832931 +0800
+--- opencv-4.11.0.orig/modules/features2d/src/kaze/AKAZEFeatures.h	2025-01-19 00:07:25.427892337 +0800
++++ opencv-4.11.0/modules/features2d/src/kaze/AKAZEFeatures.h	2025-01-19 00:07:45.983143819 +0800
 @@ -64,9 +64,7 @@ struct Evolution
  };
  
@@ -2506,8 +2521,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/kaze/AKAZEFeatures.h openc
  /* ************************************************************************* */
  // AKAZE Class Declaration
 diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/matchers.cpp opencv-4.11.0/modules/features2d/src/matchers.cpp
---- opencv-4.11.0.orig/modules/features2d/src/matchers.cpp	2025-01-18 23:31:52.836608751 +0800
-+++ opencv-4.11.0/modules/features2d/src/matchers.cpp	2025-01-18 23:37:34.893712217 +0800
+--- opencv-4.11.0.orig/modules/features2d/src/matchers.cpp	2025-01-19 00:07:25.428892349 +0800
++++ opencv-4.11.0/modules/features2d/src/matchers.cpp	2025-01-19 00:07:45.983143819 +0800
 @@ -528,18 +528,7 @@ DescriptorMatcher::~DescriptorMatcher()
  
  void DescriptorMatcher::add( InputArrayOfArrays _descriptors )
@@ -2719,8 +2734,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/matchers.cpp opencv-4.11.0
          flannIndex = makePtr<flann::Index>( mergedDescriptors.getDescriptors(), *indexParams );
      }
 diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/orb.cpp opencv-4.11.0/modules/features2d/src/orb.cpp
---- opencv-4.11.0.orig/modules/features2d/src/orb.cpp	2025-01-18 23:31:52.836608751 +0800
-+++ opencv-4.11.0/modules/features2d/src/orb.cpp	2025-01-18 23:32:11.523832931 +0800
+--- opencv-4.11.0.orig/modules/features2d/src/orb.cpp	2025-01-19 00:07:25.418892226 +0800
++++ opencv-4.11.0/modules/features2d/src/orb.cpp	2025-01-19 00:07:45.983143819 +0800
 @@ -823,10 +823,8 @@ static void uploadORBKeypoints(const std
   * @param keypoints the resulting keypoints, clustered per level
   */
@@ -2778,8 +2793,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/features2d/src/orb.cpp opencv-4.11.0/modu
      }
      else
 diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/contours.cpp opencv-4.11.0/modules/imgproc/src/contours.cpp
---- opencv-4.11.0.orig/modules/imgproc/src/contours.cpp	2025-01-18 23:31:52.842608823 +0800
-+++ opencv-4.11.0/modules/imgproc/src/contours.cpp	2025-01-18 23:32:11.523832931 +0800
+--- opencv-4.11.0.orig/modules/imgproc/src/contours.cpp	2025-01-19 00:07:25.750896288 +0800
++++ opencv-4.11.0/modules/imgproc/src/contours.cpp	2025-01-19 00:07:45.983143819 +0800
 @@ -1820,8 +1820,7 @@ void cv::findContours_legacy( InputArray
      CV_INSTRUMENT_REGION();
  
@@ -2791,8 +2806,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/contours.cpp opencv-4.11.0/mo
      CV_Assert(_contours.empty() || (_contours.channels() == 2 && _contours.depth() == CV_32S));
  
 diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/contours_link.cpp opencv-4.11.0/modules/imgproc/src/contours_link.cpp
---- opencv-4.11.0.orig/modules/imgproc/src/contours_link.cpp	2025-01-18 23:31:52.843608835 +0800
-+++ opencv-4.11.0/modules/imgproc/src/contours_link.cpp	2025-01-18 23:32:11.523832931 +0800
+--- opencv-4.11.0.orig/modules/imgproc/src/contours_link.cpp	2025-01-19 00:07:25.774896582 +0800
++++ opencv-4.11.0/modules/imgproc/src/contours_link.cpp	2025-01-19 00:07:45.983143819 +0800
 @@ -390,8 +390,7 @@ void cv::findContoursLinkRuns(InputArray
  
      // Sanity check: output must be of type vector<vector<Point>>
@@ -2804,8 +2819,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/contours_link.cpp opencv-4.11
      if (!_contours.empty())
          CV_CheckTypeEQ(_contours.type(), CV_32SC2, "Contours must have type CV_32SC2");
 diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/contours_new.cpp opencv-4.11.0/modules/imgproc/src/contours_new.cpp
---- opencv-4.11.0.orig/modules/imgproc/src/contours_new.cpp	2025-01-18 23:31:52.842608823 +0800
-+++ opencv-4.11.0/modules/imgproc/src/contours_new.cpp	2025-01-18 23:32:11.523832931 +0800
+--- opencv-4.11.0.orig/modules/imgproc/src/contours_new.cpp	2025-01-19 00:07:25.758896386 +0800
++++ opencv-4.11.0/modules/imgproc/src/contours_new.cpp	2025-01-19 00:07:45.983143819 +0800
 @@ -653,8 +653,7 @@ void cv::findContours(InputArray _image,
  
      // Sanity check: output must be of type vector<vector<Point>>
@@ -2817,8 +2832,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/contours_new.cpp opencv-4.11.
      const int res_type = (method == 0 /*CV_CHAIN_CODE*/) ? CV_8SC1 : CV_32SC2;
      if (!_contours.empty())
 diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/hough.cpp opencv-4.11.0/modules/imgproc/src/hough.cpp
---- opencv-4.11.0.orig/modules/imgproc/src/hough.cpp	2025-01-18 23:31:52.842608823 +0800
-+++ opencv-4.11.0/modules/imgproc/src/hough.cpp	2025-01-18 23:32:11.524832943 +0800
+--- opencv-4.11.0.orig/modules/imgproc/src/hough.cpp	2025-01-19 00:07:25.765896472 +0800
++++ opencv-4.11.0/modules/imgproc/src/hough.cpp	2025-01-19 00:07:45.983143819 +0800
 @@ -2279,7 +2279,7 @@ static void HoughCircles( InputArray _im
          CV_CheckType(type, type == CV_32FC3 || type == CV_32FC4, "Wrong type of output circles");
      }
@@ -2829,8 +2844,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/hough.cpp opencv-4.11.0/modul
      if( dp <= 0 || minDist <= 0 || param1 <= 0)
          CV_Error( Error::StsOutOfRange, "dp, min_dist and canny_threshold must be all positive numbers" );
 diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/pyramids.cpp opencv-4.11.0/modules/imgproc/src/pyramids.cpp
---- opencv-4.11.0.orig/modules/imgproc/src/pyramids.cpp	2025-01-18 23:31:52.843608835 +0800
-+++ opencv-4.11.0/modules/imgproc/src/pyramids.cpp	2025-01-18 23:32:11.524832943 +0800
+--- opencv-4.11.0.orig/modules/imgproc/src/pyramids.cpp	2025-01-19 00:07:25.772896558 +0800
++++ opencv-4.11.0/modules/imgproc/src/pyramids.cpp	2025-01-19 00:07:45.984143831 +0800
 @@ -1617,16 +1617,6 @@ void cv::buildPyramid( InputArray _src,
  
      CV_Assert(borderType != BORDER_CONSTANT);
@@ -2849,8 +2864,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/pyramids.cpp opencv-4.11.0/mo
      _dst.create( maxlevel + 1, 1, 0 );
      _dst.getMatRef(0) = src;
 diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/resize.cpp opencv-4.11.0/modules/imgproc/src/resize.cpp
---- opencv-4.11.0.orig/modules/imgproc/src/resize.cpp	2025-01-18 23:31:52.843608835 +0800
-+++ opencv-4.11.0/modules/imgproc/src/resize.cpp	2025-01-18 23:32:11.524832943 +0800
+--- opencv-4.11.0.orig/modules/imgproc/src/resize.cpp	2025-01-19 00:07:25.789896766 +0800
++++ opencv-4.11.0/modules/imgproc/src/resize.cpp	2025-01-19 00:07:45.984143831 +0800
 @@ -4224,11 +4224,6 @@ void cv::resize( InputArray _src, Output
      CV_OCL_RUN(_src.dims() <= 2 && _dst.isUMat() && _src.cols() > 10 && _src.rows() > 10,
                 ocl_resize(_src, _dst, dsize, inv_scale_x, inv_scale_y, interpolation))
@@ -2864,8 +2879,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/resize.cpp opencv-4.11.0/modu
      _dst.create(dsize, src.type());
      Mat dst = _dst.getMat();
 diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/smooth.dispatch.cpp opencv-4.11.0/modules/imgproc/src/smooth.dispatch.cpp
---- opencv-4.11.0.orig/modules/imgproc/src/smooth.dispatch.cpp	2025-01-18 23:31:52.843608835 +0800
-+++ opencv-4.11.0/modules/imgproc/src/smooth.dispatch.cpp	2025-01-18 23:32:11.524832943 +0800
+--- opencv-4.11.0.orig/modules/imgproc/src/smooth.dispatch.cpp	2025-01-19 00:07:25.787896741 +0800
++++ opencv-4.11.0/modules/imgproc/src/smooth.dispatch.cpp	2025-01-19 00:07:45.984143831 +0800
 @@ -637,9 +637,7 @@ void GaussianBlur(InputArray _src, Outpu
      if (sigma2 <= 0)
          sigma2 = sigma1;
@@ -2878,8 +2893,8 @@ diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/smooth.dispatch.cpp opencv-4.
  
      int sdepth = CV_MAT_DEPTH(type), cn = CV_MAT_CN(type);
 diff -Nuarp opencv-4.11.0.orig/modules/video/src/camshift.cpp opencv-4.11.0/modules/video/src/camshift.cpp
---- opencv-4.11.0.orig/modules/video/src/camshift.cpp	2025-01-18 23:31:52.853608955 +0800
-+++ opencv-4.11.0/modules/video/src/camshift.cpp	2025-01-18 23:32:11.524832943 +0800
+--- opencv-4.11.0.orig/modules/video/src/camshift.cpp	2025-01-19 00:07:26.134900987 +0800
++++ opencv-4.11.0/modules/video/src/camshift.cpp	2025-01-19 00:07:45.984143831 +0800
 @@ -48,13 +48,8 @@ int cv::meanShift( InputArray _probImage
      Size size;
      int cn;
