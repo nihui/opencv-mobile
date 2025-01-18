@@ -1,7 +1,7 @@
-diff -Nuarp opencv-4.10.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv-4.10.0/modules/imgproc/include/opencv2/imgproc.hpp
---- opencv-4.10.0.orig/modules/imgproc/include/opencv2/imgproc.hpp	2024-08-03 13:16:17.646944880 +0800
-+++ opencv-4.10.0/modules/imgproc/include/opencv2/imgproc.hpp	2024-08-01 23:08:51.014584430 +0800
-@@ -4898,6 +4898,37 @@ CV_EXPORTS_W double getFontScaleFromHeig
+diff -Nuarp opencv-4.11.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv-4.11.0/modules/imgproc/include/opencv2/imgproc.hpp
+--- opencv-4.11.0.orig/modules/imgproc/include/opencv2/imgproc.hpp	2025-01-18 23:31:52.841608811 +0800
++++ opencv-4.11.0/modules/imgproc/include/opencv2/imgproc.hpp	2025-01-18 23:51:23.512571455 +0800
+@@ -4929,6 +4929,37 @@ CV_EXPORTS_W double getFontScaleFromHeig
                                             const int pixelHeight,
                                             const int thickness = 1);
  
@@ -39,12 +39,20 @@ diff -Nuarp opencv-4.10.0.orig/modules/imgproc/include/opencv2/imgproc.hpp openc
  /** @brief Class for iterating over all pixels on a raster line segment.
  
  The class LineIterator is used to get each pixel of a raster line connecting
-diff -Nuarp opencv-4.10.0.orig/modules/imgproc/src/drawing.cpp opencv-4.10.0/modules/imgproc/src/drawing.cpp
---- opencv-4.10.0.orig/modules/imgproc/src/drawing.cpp	2024-08-03 13:16:17.650944867 +0800
-+++ opencv-4.10.0/modules/imgproc/src/drawing.cpp	2024-08-01 23:09:27.473433279 +0800
-@@ -43,6 +43,25 @@ using namespace cv;
+diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/drawing.cpp opencv-4.11.0/modules/imgproc/src/drawing.cpp
+--- opencv-4.11.0.orig/modules/imgproc/src/drawing.cpp	2025-01-18 23:31:52.842608823 +0800
++++ opencv-4.11.0/modules/imgproc/src/drawing.cpp	2025-01-18 23:52:31.767509587 +0800
+@@ -2069,6 +2069,7 @@ void polylines( InputOutputArray _img, c
+ }
  
- namespace cv
+ 
++#if 0
+ enum { FONT_SIZE_SHIFT=8, FONT_ITALIC_ALPHA=(1 << 8),
+        FONT_ITALIC_DIGIT=(2 << 8), FONT_ITALIC_PUNCT=(4 << 8),
+        FONT_ITALIC_BRACES=(8 << 8), FONT_HAVE_GREEK=(16 << 8),
+@@ -2240,6 +2241,25 @@ static const int* getFontData(int fontFa
+ 
+ inline void readCheck(int &c, int &i, const String &text, int fontFace)
  {
 +class FontFaceImpl
 +{
@@ -66,17 +74,9 @@ diff -Nuarp opencv-4.10.0.orig/modules/imgproc/src/drawing.cpp opencv-4.10.0/mod
 +namespace cv
 +{
  
- enum { XY_SHIFT = 16, XY_ONE = 1 << XY_SHIFT, DRAWING_STORAGE_BLOCK = (1<<12) - 256 };
+     int leftBoundary = ' ', rightBoundary = 127;
  
-@@ -2076,6 +2095,7 @@ void polylines( InputOutputArray _img, c
- }
- 
- 
-+#if 0
- enum { FONT_SIZE_SHIFT=8, FONT_ITALIC_ALPHA=(1 << 8),
-        FONT_ITALIC_DIGIT=(2 << 8), FONT_ITALIC_PUNCT=(4 << 8),
-        FONT_ITALIC_BRACES=(8 << 8), FONT_HAVE_GREEK=(16 << 8),
-@@ -2290,6 +2310,7 @@ inline void readCheck(int &c, int &i, co
+@@ -2283,6 +2303,7 @@ inline void readCheck(int &c, int &i, co
  }
  
  extern const char* g_HersheyGlyphs[];
@@ -84,7 +84,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/imgproc/src/drawing.cpp opencv-4.10.0/mod
  
  void putText( InputOutputArray _img, const String& text, Point org,
                int fontFace, double fontScale, Scalar color,
-@@ -2303,6 +2324,35 @@ void putText( InputOutputArray _img, con
+@@ -2296,6 +2317,35 @@ void putText( InputOutputArray _img, con
          return;
      }
      Mat img = _img.getMat();
@@ -120,7 +120,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/imgproc/src/drawing.cpp opencv-4.10.0/mod
      const int* ascii = getFontData(fontFace);
  
      double buf[4];
-@@ -2357,10 +2407,21 @@ void putText( InputOutputArray _img, con
+@@ -2350,10 +2400,21 @@ void putText( InputOutputArray _img, con
          }
          view_x += dx;
      }
@@ -142,7 +142,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/imgproc/src/drawing.cpp opencv-4.10.0/mod
      Size size;
      double view_x = 0;
      const char **faces = cv::g_HersheyGlyphs;
-@@ -2387,10 +2448,13 @@ Size getTextSize( const String& text, in
+@@ -2380,10 +2441,13 @@ Size getTextSize( const String& text, in
      if( _base_line )
          *_base_line = cvRound(base_line*fontScale + thickness*0.5);
      return size;
@@ -156,7 +156,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/imgproc/src/drawing.cpp opencv-4.10.0/mod
      // By https://stackoverflow.com/a/27898487/1531708
      const int* ascii = getFontData(fontFace);
  
-@@ -2398,6 +2462,96 @@ double getFontScaleFromHeight(const int
+@@ -2391,6 +2455,96 @@ double getFontScaleFromHeight(const int
      int cap_line = (ascii[0] >> 4) & 15;
  
      return static_cast<double>(pixelHeight - static_cast<double>((thickness + 1)) / 2.0) / static_cast<double>(cap_line + base_line);
@@ -253,7 +253,7 @@ diff -Nuarp opencv-4.10.0.orig/modules/imgproc/src/drawing.cpp opencv-4.10.0/mod
  }
  
  }
-@@ -2883,7 +3037,7 @@ cvInitFont( CvFont *font, int font_face,
+@@ -2870,7 +3024,7 @@ cvInitFont( CvFont *font, int font_face,
  {
      CV_Assert( font != 0 && hscale > 0 && vscale > 0 && thickness >= 0 );
  
@@ -262,9 +262,9 @@ diff -Nuarp opencv-4.10.0.orig/modules/imgproc/src/drawing.cpp opencv-4.10.0/mod
      font->font_face = font_face;
      font->hscale = (float)hscale;
      font->vscale = (float)vscale;
-diff -Nuarp opencv-4.10.0.orig/modules/imgproc/src/hershey_fonts.cpp opencv-4.10.0/modules/imgproc/src/hershey_fonts.cpp
---- opencv-4.10.0.orig/modules/imgproc/src/hershey_fonts.cpp	2024-08-03 13:16:17.651944863 +0800
-+++ opencv-4.10.0/modules/imgproc/src/hershey_fonts.cpp	2024-08-03 13:16:57.200812630 +0800
+diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/hershey_fonts.cpp opencv-4.11.0/modules/imgproc/src/hershey_fonts.cpp
+--- opencv-4.11.0.orig/modules/imgproc/src/hershey_fonts.cpp	2025-01-18 23:31:52.843608835 +0800
++++ opencv-4.11.0/modules/imgproc/src/hershey_fonts.cpp	2025-01-18 23:51:23.512571455 +0800
 @@ -51,6 +51,7 @@
  namespace cv
  {
