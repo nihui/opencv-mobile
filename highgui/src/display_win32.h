@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <Windows.h>
+#include <windows.h>
 
 class SimpleWindow
 {
@@ -25,7 +25,7 @@ protected:
 	virtual LRESULT windowProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
 public:
-	friend static LRESULT CALLBACK __globalWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	friend LRESULT CALLBACK __globalWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	static double getDesktopDpiFactor();
 

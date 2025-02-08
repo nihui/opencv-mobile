@@ -43,7 +43,7 @@ static inline void safeReleaseArray(T* &array) {
 	array = nullptr;
 }
 
-static LRESULT CALLBACK __globalWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK __globalWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	if (g_wndBeingCreated) {
 		g_wndBeingCreated->m_hWnd = hWnd;
