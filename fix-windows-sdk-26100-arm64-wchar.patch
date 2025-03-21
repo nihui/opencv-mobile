@@ -1,0 +1,20 @@
+--- "Windows Kits/10/include/10.0.26100.0/ucrt/wchar.h"	2025-03-21 11:30:49.000000000 +0000
++++ "Windows Kits/10/include/10.0.26100.0/ucrt/wchar.h"	2025-03-21 11:40:35.766780259 +0000
+@@ -228,7 +228,7 @@ typedef wchar_t _Wint_t;
+         unsigned long Index = 0;
+         wchar_t const* S = _S;
+ 
+-    #if defined(_M_ARM64) || defined(_M_ARM64EC) || defined(_M_HYBRID_X86_ARM64)
++    #if 0//defined(_M_ARM64) || defined(_M_ARM64EC) || defined(_M_HYBRID_X86_ARM64)
+         if (_N >= 4)
+         {
+             uint16x8_t V2 = vdupq_n_u16(_C);
+@@ -352,7 +352,7 @@ typedef wchar_t _Wint_t;
+         wchar_t const* S1 = _S1;
+         wchar_t const* S2 = _S2;
+ 
+-    #if defined(_M_ARM64) || defined(_M_ARM64EC) || defined(_M_HYBRID_X86_ARM64)
++    #if 0//defined(_M_ARM64) || defined(_M_ARM64EC) || defined(_M_HYBRID_X86_ARM64)
+ 
+         while (Count + 8 <= _N)
+         {

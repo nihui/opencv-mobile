@@ -92,10 +92,8 @@ jobs:
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-        mv 3rdparty/hal_rvv .
         mv 3rdparty/kleidicv .
         rm -rf 3rdparty/*
-        mv hal_rvv 3rdparty/
         mv kleidicv 3rdparty/
         rm -rf apps data doc samples platforms
         rm -rf modules/java
@@ -1225,6 +1223,10 @@ jobs:
       COMMON_CMAKE_OPTIONS: -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_INSTALL_PREFIX=install
     steps:
     - uses: actions/checkout@v4
+    - name: patch-windows-sdk
+      run: |
+        cd "C:\Program Files (x86)"
+        C:\msys64\usr\bin\patch.exe -p1 -i $env:GITHUB_WORKSPACE\fix-windows-sdk-26100-arm64-wchar.patch
     - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -1606,7 +1608,7 @@ jobs:
               tar -xf host-tools.tar.gz
             setup-env-cmd: |
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
-            cmake-options: -DWITH_CVI=ON
+            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF
 
           - name: licheerv-nano
             single-core: true
@@ -1616,7 +1618,7 @@ jobs:
               tar -xf host-tools.tar.gz
             setup-env-cmd: |
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
-            cmake-options: -DWITH_CVI=ON
+            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF
 
           - name: luckfox-pico
             single-core: true
