@@ -1224,6 +1224,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: patch-windows-sdk
+      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
       run: |
         cd "C:\Program Files (x86)"
         & "C:\Program Files\Git\usr\bin\patch.exe" -p0 -i $env:GITHUB_WORKSPACE\fix-windows-sdk-26100-arm64-wchar.patch
