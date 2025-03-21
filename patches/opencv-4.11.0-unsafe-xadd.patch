@@ -1,7 +1,7 @@
-diff -Nuarp opencv-4.10.0.orig/modules/core/include/opencv2/core/cvdef.h opencv-4.10.0/modules/core/include/opencv2/core/cvdef.h
---- opencv-4.10.0.orig/modules/core/include/opencv2/core/cvdef.h	2024-06-02 04:41:06.000000000 +0800
-+++ opencv-4.10.0/modules/core/include/opencv2/core/cvdef.h	2024-06-04 20:55:30.670342400 +0800
-@@ -693,33 +693,7 @@ __CV_ENUM_FLAGS_BITWISE_XOR_EQ   (EnumTy
+diff -Nuarp opencv-4.11.0.orig/modules/core/include/opencv2/core/cvdef.h opencv-4.11.0/modules/core/include/opencv2/core/cvdef.h
+--- opencv-4.11.0.orig/modules/core/include/opencv2/core/cvdef.h	2025-01-18 23:41:09.776469917 +0800
++++ opencv-4.11.0/modules/core/include/opencv2/core/cvdef.h	2025-01-18 23:56:07.110333645 +0800
+@@ -694,33 +694,7 @@ __CV_ENUM_FLAGS_BITWISE_XOR_EQ   (EnumTy
  *          exchange-add operation for atomic operations on reference counters            *
  \****************************************************************************************/
  
