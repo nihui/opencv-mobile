@@ -1609,7 +1609,7 @@ jobs:
               tar -xf host-tools.tar.gz
             setup-env-cmd: |
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
-            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
+            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071"
 
           - name: licheerv-nano
             single-core: true
@@ -1619,7 +1619,7 @@ jobs:
               tar -xf host-tools.tar.gz
             setup-env-cmd: |
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
-            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
+            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071"
 
           - name: luckfox-pico
             single-core: true
