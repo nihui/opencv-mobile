@@ -1,5 +1,5 @@
---- "Windows Kits/10/include/10.0.26100.0/ucrt/wchar.h"	2025-03-21 11:30:49.000000000 +0000
-+++ "Windows Kits/10/include/10.0.26100.0/ucrt/wchar.h"	2025-03-21 11:40:35.766780259 +0000
+--- "Windows Kits/10/Include/10.0.26100.0/ucrt/wchar.h"	2025-03-21 11:30:49.000000000 +0000
++++ "Windows Kits/10/Include/10.0.26100.0/ucrt/wchar.h"	2025-03-21 11:40:35.766780259 +0000
 @@ -228,7 +228,7 @@ typedef wchar_t _Wint_t;
          unsigned long Index = 0;
          wchar_t const* S = _S;
