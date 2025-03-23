@@ -1943,13 +1943,13 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-4.11.0-source
+    - name: setup-toolchain
+      run: ${{ matrix.setup-toolchain-cmd }}
     - name: setup-opencv-source
       run: |
         unzip -q opencv-mobile-4.11.0.zip
         echo "SOURCE_DIR=opencv-mobile-4.11.0" >> $GITHUB_ENV
         echo "PACKAGE_NAME=opencv-mobile-4.11.0-${{ matrix.name }}" >> $GITHUB_ENV
-    - name: setup-toolchain
-      run: ${{ matrix.setup-toolchain-cmd }}
 
     - name: build-disable-thread
       if: ${{ matrix.single-core }}
