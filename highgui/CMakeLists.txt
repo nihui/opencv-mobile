@@ -4,6 +4,7 @@ ocv_add_module(highgui opencv_imgproc)
 option(WITH_CVI "build with cvi" OFF)
 option(WITH_AW "build with aw" OFF)
 option(WITH_RK "build with rk" OFF)
+option(WITH_RPI "build with rpi" OFF)
 
 set(highgui_srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/exif.cpp
@@ -51,6 +52,13 @@ if(WITH_RK)
     ${CMAKE_CURRENT_LIST_DIR}/src/jpeg_encoder_rk_mpp.cpp)
   add_definitions(-DCV_WITH_RK=1)
   message(STATUS "highgui rk enabled")
+endif()
+
+if(WITH_RPI)
+  list(APPEND highgui_srcs
+    ${CMAKE_CURRENT_LIST_DIR}/src/jpeg_encoder_v4l_rpi.cpp)
+  add_definitions(-DCV_WITH_RPI=1)
+  message(STATUS "highgui rpi enabled")
 endif()
 
 file(GLOB highgui_ext_hdrs
