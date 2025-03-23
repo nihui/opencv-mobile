@@ -1737,6 +1737,58 @@ jobs:
     strategy:
       matrix:
         include:
+          - name: debian-bullseye-arm
+            os-image: debian:bullseye
+            single-core: false
+            cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake
+            setup-toolchain-cmd: |
+              apt-get update
+              apt-get install -y unzip zip patch cmake g++-arm-linux-gnueabihf
+            setup-env-cmd: |
+              echo "fine :)"
+            setup-test-env-cmd: |
+              echo "fine :)"
+            cmake-options:
+
+          - name: debian-bullseye-aarch64
+            os-image: debian:bullseye
+            single-core: false
+            cmake-toolchain: aarch64-linux-gnu.toolchain.cmake
+            setup-toolchain-cmd: |
+              apt-get update
+              apt-get install -y unzip zip patch cmake g++-aarch64-linux-gnu
+            setup-env-cmd: |
+              echo "fine :)"
+            setup-test-env-cmd: |
+              echo "fine :)"
+            cmake-options:
+
+          - name: debian-bookworm-arm
+            os-image: debian:bookworm
+            single-core: false
+            cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake
+            setup-toolchain-cmd: |
+              apt-get update
+              apt-get install -y unzip zip patch cmake g++-arm-linux-gnueabihf
+            setup-env-cmd: |
+              echo "fine :)"
+            setup-test-env-cmd: |
+              echo "fine :)"
+            cmake-options:
+
+          - name: debian-bookworm-aarch64
+            os-image: debian:bookworm
+            single-core: false
+            cmake-toolchain: aarch64-linux-gnu.toolchain.cmake
+            setup-toolchain-cmd: |
+              apt-get update
+              apt-get install -y unzip zip patch cmake g++-aarch64-linux-gnu
+            setup-env-cmd: |
+              echo "fine :)"
+            setup-test-env-cmd: |
+              echo "fine :)"
+            cmake-options: -DWITH_RPI=ON
+
           - name: milkv-duo
             single-core: true
             cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
@@ -1865,6 +1917,9 @@ jobs:
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/arm-rockchip830-linux-uclibcgnueabihf
             cmake-options: -DWITH_RK=ON
 
+    container:
+      image: ${{ matrix.os-image }}
+
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/${{ matrix.cmake-toolchain }} \
@@ -1878,13 +1933,13 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-4.11.0-source
+    - name: setup-toolchain
+      run: ${{ matrix.setup-toolchain-cmd }}
     - name: setup-opencv-source
       run: |
         unzip -q opencv-mobile-4.11.0.zip
         echo "SOURCE_DIR=opencv-mobile-4.11.0" >> $GITHUB_ENV
         echo "PACKAGE_NAME=opencv-mobile-4.11.0-${{ matrix.name }}" >> $GITHUB_ENV
-    - name: setup-toolchain
-      run: ${{ matrix.setup-toolchain-cmd }}
 
     - name: build-disable-thread
       if: ${{ matrix.single-core }}
