@@ -328,6 +328,19 @@ https://github.com/nihui/opencv-mobile/releases/latest
 
 <table>
 <tr>
+<td colspan=4>
+  <img align="left" alt="debian" src="https://www.debian.org/logos/openlogo-nd-100.png" width="auto" height="200">
+  <b>Debian, Raspberry Pi OS, Armbian, or any debian based os</b><br />
+  &#9989; HW JPG encoder (Raspberry Pi)<br />
+
+||arm|aarch64|
+|---|---|---|
+|bullseye|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.11.0-debian-bullseye-arm.zip"><img alt="opencv4-debian" src="https://img.shields.io/badge/download-4.11.0-blue?style=for-the-badge"></a>|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.11.0-debian-bullseye-aarch64.zip"><img alt="opencv4-debian" src="https://img.shields.io/badge/download-4.11.0-blue?style=for-the-badge"></a>|
+|bookworm|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.11.0-debian-bookworm-arm.zip"><img alt="opencv4-debian" src="https://img.shields.io/badge/download-4.11.0-blue?style=for-the-badge"></a>|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.11.0-debian-bookworm-aarch64.zip"><img alt="opencv4-debian" src="https://img.shields.io/badge/download-4.11.0-blue?style=for-the-badge"></a>|
+
+</td>
+</tr>
+<tr>
 <td>
   <a href="https://milkv.io/duo">
     <img alt="milkv-duo" src="https://milkv.io/docs/duo/duo-v1.2.png" width="auto" height="120">
