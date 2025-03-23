@@ -1,9 +1,9 @@
-diff -Nuarp opencv-2.4.13.7.orig/modules/core/include/opencv2/core/core.hpp opencv-2.4.13.7/modules/core/include/opencv2/core/core.hpp
---- opencv-2.4.13.7.orig/modules/core/include/opencv2/core/core.hpp	2024-08-03 13:33:29.646494334 +0800
-+++ opencv-2.4.13.7/modules/core/include/opencv2/core/core.hpp	2024-08-03 13:35:12.013094855 +0800
-@@ -2732,6 +2732,37 @@ CV_EXPORTS_W Size getTextSize(const stri
-                             double fontScale, int thickness,
-                             CV_OUT int* baseLine);
+diff -Nuarp opencv-4.11.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv-4.11.0/modules/imgproc/include/opencv2/imgproc.hpp
+--- opencv-4.11.0.orig/modules/imgproc/include/opencv2/imgproc.hpp	2025-01-19 00:07:25.706895750 +0800
++++ opencv-4.11.0/modules/imgproc/include/opencv2/imgproc.hpp	2025-01-19 00:19:27.955301521 +0800
+@@ -4929,6 +4929,37 @@ CV_EXPORTS_W double getFontScaleFromHeig
+                                            const int pixelHeight,
+                                            const int thickness = 1);
  
 +class FontFaceImpl;
 +class CV_EXPORTS_W FontFace
@@ -36,13 +36,13 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/include/opencv2/core/core.hpp open
 +
 +CV_EXPORTS_W Rect getTextSize(Size imgsize, const String& text, Point org, const FontFace& fontface, int size, int weight=0, PutTextFlags flags=PUT_TEXT_ALIGN_LEFT, Range wrap=Range());
 +
- ///////////////////////////////// Mat_<_Tp> ////////////////////////////////////
+ /** @brief Class for iterating over all pixels on a raster line segment.
  
- /*!
-diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/modules/core/src/drawing.cpp
---- opencv-2.4.13.7.orig/modules/core/src/drawing.cpp	2024-08-03 13:33:29.648494328 +0800
-+++ opencv-2.4.13.7/modules/core/src/drawing.cpp	2024-08-03 14:19:07.916992598 +0800
-@@ -42,6 +42,25 @@
+ The class LineIterator is used to get each pixel of a raster line connecting
+diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/drawing.cpp opencv-4.11.0/modules/imgproc/src/drawing.cpp
+--- opencv-4.11.0.orig/modules/imgproc/src/drawing.cpp	2025-01-19 00:07:25.768896509 +0800
++++ opencv-4.11.0/modules/imgproc/src/drawing.cpp	2025-01-19 00:24:39.379680129 +0800
+@@ -43,6 +43,25 @@ using namespace cv;
  
  namespace cv
  {
@@ -65,10 +65,10 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
 +
 +namespace cv
 +{
- 
  enum { XY_SHIFT = 16, XY_ONE = 1 << XY_SHIFT, DRAWING_STORAGE_BLOCK = (1<<12) - 256 };
  
-@@ -1992,6 +2011,7 @@ void polylines( Mat& img, const Point**
+ static const int MAX_THICKNESS = 32767;
+@@ -2069,6 +2088,7 @@ void polylines( InputOutputArray _img, c
  }
  
  
@@ -76,17 +76,19 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
  enum { FONT_SIZE_SHIFT=8, FONT_ITALIC_ALPHA=(1 << 8),
         FONT_ITALIC_DIGIT=(2 << 8), FONT_ITALIC_PUNCT=(4 << 8),
         FONT_ITALIC_BRACES=(8 << 8), FONT_HAVE_GREEK=(16 << 8),
-@@ -2204,12 +2224,41 @@ inline void readCheck(int &c, int &i, co
-     if(c >= rightBoundary || c < leftBoundary)
-         c = '?';
+@@ -2283,6 +2303,7 @@ inline void readCheck(int &c, int &i, co
  }
+ 
+ extern const char* g_HersheyGlyphs[];
 +#endif
  
- void putText( Mat& img, const string& text, Point org,
+ void putText( InputOutputArray _img, const String& text, Point org,
                int fontFace, double fontScale, Scalar color,
-               int thickness, int line_type, bool bottomLeftOrigin )
- 
- {
+@@ -2296,6 +2317,35 @@ void putText( InputOutputArray _img, con
+         return;
+     }
+     Mat img = _img.getMat();
++
 +    const int fontpixelsize = (fontFace == 1 ? 8 : (fontFace == 5 ? 12 : 20)) * fontScale;
 +    const int base_line = 0;
 +    const int yoffset = bottomLeftOrigin ? img.rows - org.y - fontpixelsize * 2 + base_line : org.y - fontpixelsize * 2 + base_line;
@@ -118,14 +120,14 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
      const int* ascii = getFontData(fontFace);
  
      double buf[4];
-@@ -2264,10 +2313,21 @@ void putText( Mat& img, const string& te
+@@ -2350,10 +2400,21 @@ void putText( InputOutputArray _img, con
          }
          view_x += dx;
      }
 +#endif
  }
  
- Size getTextSize( const string& text, int fontFace, double fontScale, int thickness, int* _base_line)
+ Size getTextSize( const String& text, int fontFace, double fontScale, int thickness, int* _base_line)
  {
 +    const int fontpixelsize = (fontFace == 1 ? 8 : (fontFace == 5 ? 12 : 20)) * fontScale;
 +
@@ -140,10 +142,24 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
      Size size;
      double view_x = 0;
      const char **faces = cv::g_HersheyGlyphs;
-@@ -2294,6 +2354,94 @@ Size getTextSize( const string& text, in
+@@ -2380,10 +2441,13 @@ Size getTextSize( const String& text, in
      if( _base_line )
          *_base_line = cvRound(base_line*fontScale + thickness*0.5);
      return size;
++#endif
+ }
+ 
+ double getFontScaleFromHeight(const int fontFace, const int pixelHeight, const int thickness)
+ {
++    return pixelHeight / (fontFace == 1 ? 16 : (fontFace == 5 ? 24 : 40));
++#if 0
+     // By https://stackoverflow.com/a/27898487/1531708
+     const int* ascii = getFontData(fontFace);
+ 
+@@ -2391,6 +2455,96 @@ double getFontScaleFromHeight(const int
+     int cap_line = (ascii[0] >> 4) & 15;
+ 
+     return static_cast<double>(pixelHeight - static_cast<double>((thickness + 1)) / 2.0) / static_cast<double>(cap_line + base_line);
 +#endif
 +}
 +
@@ -186,6 +202,8 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
 +
 +Point putText(InputOutputArray _img, const String& text, Point org, Scalar color, const FontFace& fontface, int size, int weight, PutTextFlags flags, Range wrap)
 +{
++    CV_INSTRUMENT_REGION();
++
 +    if ( text.empty() )
 +    {
 +        return org;
@@ -235,7 +253,7 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
  }
  
  }
-@@ -2679,7 +2827,7 @@ cvInitFont( CvFont *font, int font_face,
+@@ -2870,7 +3024,7 @@ cvInitFont( CvFont *font, int font_face,
  {
      CV_Assert( font != 0 && hscale > 0 && vscale > 0 && thickness >= 0 );
  
@@ -244,18 +262,18 @@ diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/drawing.cpp opencv-2.4.13.7/mo
      font->font_face = font_face;
      font->hscale = (float)hscale;
      font->vscale = (float)vscale;
-diff -Nuarp opencv-2.4.13.7.orig/modules/core/src/tables.cpp opencv-2.4.13.7/modules/core/src/tables.cpp
---- opencv-2.4.13.7.orig/modules/core/src/tables.cpp	2024-08-03 13:33:29.648494328 +0800
-+++ opencv-2.4.13.7/modules/core/src/tables.cpp	2024-08-03 13:33:44.160445806 +0800
-@@ -204,6 +204,7 @@ const uchar g_Saturate8u[] =
-     255
- };
+diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/hershey_fonts.cpp opencv-4.11.0/modules/imgproc/src/hershey_fonts.cpp
+--- opencv-4.11.0.orig/modules/imgproc/src/hershey_fonts.cpp	2025-01-19 00:07:25.781896668 +0800
++++ opencv-4.11.0/modules/imgproc/src/hershey_fonts.cpp	2025-01-19 00:19:27.956301532 +0800
+@@ -51,6 +51,7 @@
+ namespace cv
+ {
  
 +#if 0
  const char* g_HersheyGlyphs[] = {
   "",
   "MWRMNV RMVV PSTS",
-@@ -3506,6 +3507,7 @@ const char* g_HersheyGlyphs[] = {
+@@ -3353,6 +3354,7 @@ const char* g_HersheyGlyphs[] = {
   "",
   "",
   0 };

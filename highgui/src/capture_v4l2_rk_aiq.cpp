@@ -16,7 +16,6 @@
 
 #include "capture_v4l2_rk_aiq.h"
 
-#if defined __linux__
 #include <errno.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -60,6 +59,11 @@ static int get_device_model()
         if (strncmp(buf, "Luckfox Pico", 12) == 0)
         {
             // luckfox pico family and plus pro max mini variants
+            device_model = 1;
+        }
+        else if (strncmp(buf, "LockzhinerVisionModule", 22) == 0)
+        {
+            // LockzhinerVisionModule
             device_model = 1;
         }
     }
@@ -350,11 +354,11 @@ typedef const char* (*PFN_rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd)(const char*
 
 typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_getStaticMetas)(const char* sns_ent_name, rk_aiq_static_info_t* static_info);
 
+typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId)(int index, rk_aiq_static_info_t* static_info);
+
 typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_preInit_tb_info)(const char* sns_ent_name, const rk_aiq_tb_info_t* info);
 
 typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_preInit_scene)(const char* sns_ent_name, const char *main_scene, const char *sub_scene);
-
-// XCamReturn rk_aiq_uapi2_sysctl_preInit(const char* sns_ent_name, rk_aiq_working_mode_t mode, const char* force_iq_file);
 
 typedef rk_aiq_sys_ctx_t* (*PFN_rk_aiq_uapi2_sysctl_init)(const char* sns_ent_name, const char* iq_file_dir, rk_aiq_error_cb err_cb, rk_aiq_metas_cb metas_cb);
 
@@ -366,6 +370,7 @@ typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_stop)(const rk_aiq_sys_ctx_t* ctx, 
 
 typedef void (*PFN_rk_aiq_uapi2_sysctl_deinit)(rk_aiq_sys_ctx_t* ctx);
 
+typedef XCamReturn (*PFN_rk_aiq_uapi2_sysctl_preInit_devBufCnt)(const char* sns_ent_name, const char* dev_ent, int buf_cnt);
 }
 
 static void* librkaiq = 0;
@@ -379,6 +384,8 @@ static PFN_rk_aiq_uapi2_sysctl_prepare rk_aiq_uapi2_sysctl_prepare = 0;
 static PFN_rk_aiq_uapi2_sysctl_start rk_aiq_uapi2_sysctl_start = 0;
 static PFN_rk_aiq_uapi2_sysctl_stop rk_aiq_uapi2_sysctl_stop = 0;
 static PFN_rk_aiq_uapi2_sysctl_deinit rk_aiq_uapi2_sysctl_deinit = 0;
+static PFN_rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId = 0;
+static PFN_rk_aiq_uapi2_sysctl_preInit_devBufCnt rk_aiq_uapi2_sysctl_preInit_devBufCnt = 0;
 
 static int load_rkaiq_library()
 {
@@ -411,6 +418,8 @@ static int load_rkaiq_library()
     rk_aiq_uapi2_sysctl_start = (PFN_rk_aiq_uapi2_sysctl_start)dlsym(librkaiq, "rk_aiq_uapi2_sysctl_start");
     rk_aiq_uapi2_sysctl_stop = (PFN_rk_aiq_uapi2_sysctl_stop)dlsym(librkaiq, "rk_aiq_uapi2_sysctl_stop");
     rk_aiq_uapi2_sysctl_deinit = (PFN_rk_aiq_uapi2_sysctl_deinit)dlsym(librkaiq, "rk_aiq_uapi2_sysctl_deinit");
+    rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId = (PFN_rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId)dlsym(librkaiq, "rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId");
+    rk_aiq_uapi2_sysctl_preInit_devBufCnt = (PFN_rk_aiq_uapi2_sysctl_preInit_devBufCnt)dlsym(librkaiq, "rk_aiq_uapi2_sysctl_preInit_devBufCnt");
 
     return 0;
 }
@@ -1186,85 +1195,68 @@ int capture_v4l2_rk_aiq_impl::open(int width, int height, float fps)
     }
 
     {
+        char hdr_str[16];
+        snprintf(hdr_str, sizeof(hdr_str), "%d", (int)RK_AIQ_WORKING_MODE_NORMAL);
+        setenv("HDR_MODE", hdr_str, 1);
 
-    const char* sns_entity_name = rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd("/dev/video11");
+        rk_aiq_static_info_t aiq_static_info;
+        constexpr int cam_id = 0;
 
-    // printf("sns_entity_name = %s\n", sns_entity_name);
-
-    // // query sensor meta info
-    // {
-    //     rk_aiq_static_info_t s_info;
-    //     XCamReturn ret = rk_aiq_uapi2_sysctl_getStaticMetas(sns_entity_name, &s_info);
-    //     if (ret != XCAM_RETURN_NO_ERROR)
-    //     {
-    //         fprintf(stderr, "rk_aiq_uapi2_sysctl_getStaticMetas %s failed %d\n", sns_entity_name, ret);
-    //     }
-    //
-    //     for (int i = 0; i < SUPPORT_FMT_MAX; i++)
-    //     {
-    //         rk_frame_fmt_t& fmt = s_info.sensor_info.support_fmt[i];
-    //         const char* pf = (const char*)&fmt.format;
-    //         fprintf(stderr, "fmt %d x %d  %c%c%c%c  %d %d\n", fmt.width, fmt.height, pf[0], pf[1], pf[2], pf[3], fmt.fps, fmt.hdr_mode);
-    //     }
-    // }
-
-    // preinit tb info
-    {
-        rk_aiq_tb_info_t tb_info;
-        tb_info.magic = sizeof(rk_aiq_tb_info_t) - 2;
-        tb_info.is_pre_aiq = false;
-        XCamReturn ret = rk_aiq_uapi2_sysctl_preInit_tb_info(sns_entity_name, &tb_info);
-        if (ret != XCAM_RETURN_NO_ERROR)
+        const char *sns_entity_name;
         {
-            fprintf(stderr, "rk_aiq_uapi2_sysctl_preInit_tb_info %s failed %d\n", sns_entity_name, ret);
-            goto OUT;
+            XCamReturn ret = rk_aiq_uapi2_sysctl_enumStaticMetasByPhyId(cam_id, &aiq_static_info);
+            if ((aiq_static_info.sensor_info.phyId != -1) && (ret == XCAM_RETURN_NO_ERROR)) {
+                sns_entity_name = aiq_static_info.sensor_info.sensor_name;
+            } else {
+                fprintf(stderr, "ERROR: aiq_static_info.sensor_info.phyId is %d\n", aiq_static_info.sensor_info.phyId);
+                sns_entity_name = rk_aiq_uapi2_sysctl_getBindedSnsEntNmByVd("/dev/video11");
+                goto OUT;
+            }
         }
-    }
 
-    // printf("preinit tb info done\n");
+        // char iq_file_dir[] = "/oem/usr/share/iqfiles";
+        // fprintf(stderr, "ID: %d, sensor_name is %s, iqfiles is %s\n", cam_id, sns_entity_name, iq_file_dir);
 
-    // preinit scene
-    {
-        XCamReturn ret = rk_aiq_uapi2_sysctl_preInit_scene(sns_entity_name, "normal", "day");
-        if (ret != XCAM_RETURN_NO_ERROR)
+        rk_aiq_uapi2_sysctl_preInit_devBufCnt(sns_entity_name, "rkraw_rx", 2);
+
+        // preinit scene
         {
-            fprintf(stderr, "rk_aiq_uapi2_sysctl_preInit_scene %s failed %d\n", sns_entity_name, ret);
-            goto OUT;
+            XCamReturn ret = rk_aiq_uapi2_sysctl_preInit_scene(sns_entity_name, "normal", "day");
+            if (ret != XCAM_RETURN_NO_ERROR)
+            {
+                fprintf(stderr, "rk_aiq_uapi2_sysctl_preInit_scene %s failed %d\n", sns_entity_name, ret);
+                goto OUT;
+            }
         }
-    }
+        // printf("preinit scene done\n");
 
-    // printf("preinit scene done\n");
-
-    {
-        // TODO /oem/usr/share/iqfiles/sc3336_CMK-OT2119-PC1_30IRC-F16.json
-        aiq_ctx = rk_aiq_uapi2_sysctl_init(sns_entity_name, "/oem/usr/share/iqfiles", NULL, NULL);
-        if (!aiq_ctx)
         {
-            fprintf(stderr, "rk_aiq_uapi2_sysctl_init %s failed\n", sns_entity_name);
-            goto OUT;
+            // TODO /oem/usr/share/iqfiles/sc3336_CMK-OT2119-PC1_30IRC-F16.json
+            aiq_ctx = rk_aiq_uapi2_sysctl_init(sns_entity_name, "/oem/usr/share/iqfiles", NULL, NULL);
+            if (!aiq_ctx)
+            {
+                fprintf(stderr, "rk_aiq_uapi2_sysctl_init %s failed\n", sns_entity_name);
+                goto OUT;
+            }
         }
-    }
 
-    // printf("rk_aiq_uapi2_sysctl_init done\n");
+        // printf("rk_aiq_uapi2_sysctl_init done\n");
 
-    /*
-        * rk_aiq_uapi_setFecEn(aiq_ctx, true);
-        * rk_aiq_uapi_setFecCorrectDirection(aiq_ctx, FEC_CORRECT_DIRECTION_Y);
-        */
-
-    {
-        XCamReturn ret = rk_aiq_uapi2_sysctl_prepare(aiq_ctx, cap_width, cap_height, RK_AIQ_WORKING_MODE_NORMAL);
-        if (ret != XCAM_RETURN_NO_ERROR)
+        /*
+         * rk_aiq_uapi_setFecEn(aiq_ctx, true);
+         * rk_aiq_uapi_setFecCorrectDirection(aiq_ctx, FEC_CORRECT_DIRECTION_Y);
+         */
         {
-            fprintf(stderr, "rk_aiq_uapi2_sysctl_prepare failed %d\n", ret);
-            goto OUT;
+            XCamReturn ret = rk_aiq_uapi2_sysctl_prepare(aiq_ctx, cap_width, cap_height, RK_AIQ_WORKING_MODE_NORMAL);
+            if (ret != XCAM_RETURN_NO_ERROR)
+            {
+                fprintf(stderr, "rk_aiq_uapi2_sysctl_prepare failed %d\n", ret);
+                goto OUT;
+            }
         }
-    }
 
-    // printf("rk_aiq_uapi2_sysctl_prepare done\n");
-
-    // ret = rk_aiq_uapi2_setMirrorFlip(aiq_ctx, false, false, 3);
-
+        // printf("rk_aiq_uapi2_sysctl_prepare done\n");
+        // ret = rk_aiq_uapi2_setMirrorFlip(aiq_ctx, false, false, 3);
     }
 
     // control format and size
@@ -1776,64 +1768,3 @@ int capture_v4l2_rk_aiq::close()
 }
 
 } // namespace cv
-
-#else // defined __linux__
-
-namespace cv {
-
-bool capture_v4l2_rk_aiq::supported()
-{
-    return false;
-}
-
-capture_v4l2_rk_aiq::capture_v4l2_rk_aiq() : d(0)
-{
-}
-
-capture_v4l2_rk_aiq::~capture_v4l2_rk_aiq()
-{
-}
-
-int capture_v4l2_rk_aiq::open(int width, int height, float fps)
-{
-    return -1;
-}
-
-int capture_v4l2_rk_aiq::get_width() const
-{
-    return -1;
-}
-
-int capture_v4l2_rk_aiq::get_height() const
-{
-    return -1;
-}
-
-float capture_v4l2_rk_aiq::get_fps() const
-{
-    return 0.f;
-}
-
-int capture_v4l2_rk_aiq::start_streaming()
-{
-    return -1;
-}
-
-int capture_v4l2_rk_aiq::read_frame(unsigned char* bgrdata)
-{
-    return -1;
-}
-
-int capture_v4l2_rk_aiq::stop_streaming()
-{
-    return -1;
-}
-
-int capture_v4l2_rk_aiq::close()
-{
-    return -1;
-}
-
-} // namespace cv
-
-#endif // defined __linux__

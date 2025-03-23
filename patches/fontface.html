@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Text to Font Header</title>
+<style>
+#text-input {
+    width: 100%;
+    min-height: 220px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+#convert-btn {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+}
+#result {
+    margin-top: 20px;
+    text-align: center;
+}
+</style>
+</head>
+<body>
+<textarea id="text-input" placeholder="Input text here...
+在此输入文字..."></textarea><br />
+<label for="font-file">Please select font 请选择字体(TTF)：</label>
+<input type="file" id="font-file" accept=".ttf" onchange="applyCustomFont()" required>
+<button id="convert-btn">Convert to Font Header<br>转换为字体 Header</button>
+<img id="result" style="max-width: 100%;">
+<script>
+function applyCustomFont() {
+    const fontFileInput = document.getElementById('font-file');
+
+    if (fontFileInput.files.length == 0)
+    {
+        alert('Please select font!\n请选择字体！');
+        return;
+    }
+
+    const fontFile = fontFileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+
+        const styleTags = document.getElementsByTagName('style');
+        for (let i = 0; i < styleTags.length; i++) {
+            const styleTag = styleTags[i];
+            if (styleTag.innerHTML.includes('CustomFont')) {
+                document.head.removeChild(styleTag);
+                break;
+            }
+        }
+
+        const myFont = new FontFace('CustomFont', `url(${event.target.result})`);
+        myFont.load();
+        document.fonts.add(myFont);
+    };
+    reader.readAsDataURL(fontFile);
+}
+
+function getUnicode(a) {
+    var unicode;
+    if (a.length == 1) {
+        unicode = a.charCodeAt(0);
+    }
+    else {
+        unicode = ((a.charCodeAt(0) - 0xD800) * 0x400 + (a.charCodeAt(1) - 0xDC00) + 0x10000);
+    }
+    if (unicode < 0) {
+        unicode = a.charCodeAt(0);
+    }
+    return unicode;
+}
+
+document.getElementById('convert-btn').addEventListener('click', function() {
+    const textInput = document.getElementById('text-input').value;
+    if (!textInput) {
+        alert('Please input text!\n请输入文字！');
+        return;
+    }
+
+    const fontSize = 40;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+    // filter full-width and sort and unique
+    let words = Array.from(textInput).filter(function(s){
+        const unicode = getUnicode(s);
+        ctx.font = fontSize + "px CustomFont";
+        const metrics = ctx.measureText(s);
+        return unicode > 127 && metrics.width > fontSize / 2;
+    }).sort(function(a,b){
+        a1 = getUnicode(a);
+        b1 = getUnicode(b);
+        if (a1>b1) return 1;
+        if (a1<b1) return -1;
+        return 0;
+    }).filter(function(el,i,a){return i===a.indexOf(el)});
+
+    let yc = Math.floor(words.length / 20) + 1;
+    let xc = Math.min(words.length, 20);
+    canvas.width = (fontSize + 10) * xc;
+    canvas.height = (fontSize + 10) * yc;
+
+    // draw text on canvas
+    for (let i = 0; i < words.length; i++) {
+        let y = Math.floor(i / 20);
+        let x = i - y * 20;
+
+        let fontSizeAdjusted = fontSize - 4;
+
+        ctx.fillStyle = "black";
+        ctx.fillRect(x * (fontSize + 10), y * (fontSize + 10), fontSize + 10, fontSize + 10);
+
+        ctx.font = fontSizeAdjusted + "px CustomFont";
+        ctx.fillStyle = "white";
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        ctx.fillText(words[i], x * (fontSize + 10) + 5 + Math.floor(fontSize / 2), y * (fontSize + 10) + 5 + Math.floor(fontSize / 2) + 1);
+    }
+
+    let cHeaderContent = `#ifndef MYFONTFACE_H\n#define MYFONTFACE_H\n\n`;
+
+    cHeaderContent += `#include <opencv2/core/core.hpp>\n#include <opencv2/imgproc/imgproc.hpp>\n\n`;
+
+    cHeaderContent += `class MyFontFace : public cv::FontFace\n{\npublic:\nMyFontFace()\n{\n`;
+
+    // write unicode codes
+    cHeaderContent += `static const unsigned int font_glyph_unicode[${words.length}] = {\n    `;
+    for (let i = 0; i < words.length; i++) {
+
+        const unicode = getUnicode(words[i]);
+
+        if (i + 1 == words.length)
+            cHeaderContent += `${unicode}\n`;
+        else
+            cHeaderContent += `${unicode}, `;
+    }
+    cHeaderContent += `};\n`;
+
+    // write pixels
+    cHeaderContent += `static const unsigned char font_glyph_bitmaps[${words.length}][40 * 20] = {\n`;
+    for (let i = 0; i < words.length; i++) {
+        let y = Math.floor(i / 20);
+        let x = i - y * 20;
+
+        const imageData = ctx.getImageData(x * (fontSize + 10) + 5, y * (fontSize + 10) + 5, fontSize, fontSize).data;
+
+        let grayImageData = '';
+        for (let j = 0; j < fontSize; j++) {
+            grayImageData += '        ';
+
+            for (let k = 0; k + 1 < fontSize; k += 2) {
+
+                const gray0 = imageData[(j * fontSize + k) * 4];
+                const gray1 = imageData[(j * fontSize + k + 1) * 4];
+
+                const gray01 = (Math.floor(gray1 / 16) << 4) + Math.floor(gray0 / 16)
+
+                if (k + 2 == fontSize)
+                    grayImageData += `${gray01},\n`;
+                else
+                    grayImageData += `${gray01}, `;
+            }
+
+            if (j + 1 == fontSize)
+                grayImageData = grayImageData.slice(0, -2) + '\n';
+        }
+
+        if (i + 1 == words.length)
+            cHeaderContent += `    {\n${grayImageData}    }\n`;
+        else
+            cHeaderContent += `    {\n${grayImageData}    },\n`;
+    }
+    cHeaderContent += `};\n`;
+
+    cHeaderContent += `set_glyph(${words.length}, (const unsigned int*)font_glyph_unicode, (const unsigned char*)font_glyph_bitmaps);\n`;
+
+    cHeaderContent += `}\n};\n\n`;
+
+    cHeaderContent += `#endif // MYFONTFACE_H\n`;
+
+    const blob = new Blob([cHeaderContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'myfontface.h';
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // show image
+    const resultImg = document.getElementById('result');
+    resultImg.src = canvas.toDataURL();
+});
+</script>
+</body>
+</html>

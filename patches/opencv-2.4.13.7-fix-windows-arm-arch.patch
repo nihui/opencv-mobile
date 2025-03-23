@@ -1,0 +1,50 @@
+diff -Nuarp opencv-2.4.13.7.orig/cmake/OpenCVConfig.cmake opencv-2.4.13.7/cmake/OpenCVConfig.cmake
+--- opencv-2.4.13.7.orig/cmake/OpenCVConfig.cmake	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/cmake/OpenCVConfig.cmake	2024-06-10 15:05:13.943493559 +0800
+@@ -64,12 +64,17 @@ endif()
+ if(DEFINED OpenCV_ARCH AND DEFINED OpenCV_RUNTIME)
+   # custom overrided values
+ elseif(MSVC)
+-  if(CMAKE_CL_64)
+-    set(OpenCV_ARCH x64)
+-    set(OpenCV_TBB_ARCH intel64)
++  # see Modules/CMakeGenericSystem.cmake
++  if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
++    set(OpenCV_ARCH "x64")
++  elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "(ARM64|arm64)")
++    set(OpenCV_ARCH "ARM64")
++  elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "(ARM|arm)")
++    set(OpenCV_ARCH "ARM")
++  elseif("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
++    set(OpenCV_ARCH "x64")
+   else()
+     set(OpenCV_ARCH x86)
+-    set(OpenCV_TBB_ARCH ia32)
+   endif()
+   if(MSVC_VERSION EQUAL 1400)
+     set(OpenCV_RUNTIME vc8)
+diff -Nuarp opencv-2.4.13.7.orig/cmake/OpenCVDetectCXXCompiler.cmake opencv-2.4.13.7/cmake/OpenCVDetectCXXCompiler.cmake
+--- opencv-2.4.13.7.orig/cmake/OpenCVDetectCXXCompiler.cmake	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/cmake/OpenCVDetectCXXCompiler.cmake	2024-06-10 15:05:01.441716441 +0800
+@@ -85,11 +85,19 @@ endif()
+ if(DEFINED OpenCV_ARCH AND DEFINED OpenCV_RUNTIME)
+   # custom overrided values
+ elseif(MSVC)
+-  if(CMAKE_CL_64)
+-    set(OpenCV_ARCH x64)
++  # see Modules/CMakeGenericSystem.cmake
++  if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
++    set(OpenCV_ARCH "x64")
++  elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "(ARM64|arm64)")
++    set(OpenCV_ARCH "ARM64")
++  elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "(ARM|arm)")
++    set(OpenCV_ARCH "ARM")
++  elseif("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
++    set(OpenCV_ARCH "x64")
+   else()
+     set(OpenCV_ARCH x86)
+   endif()
++
+   if(MSVC_VERSION EQUAL 1400)
+     set(OpenCV_RUNTIME vc8)
+   elseif(MSVC_VERSION EQUAL 1500)

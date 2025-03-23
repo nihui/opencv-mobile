@@ -17,7 +17,6 @@
 
 #include "capture_cvi.h"
 
-#if defined __linux__
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1856,9 +1855,9 @@ static int load_sns_obj_library()
         goto OUT;
     }
 
-    if (device_model == 1 || device_model == 2)
+    if (device_model == 1 || device_model == 2 || device_model == 4)
     {
-        // milkv duo or milkv duo 256
+        // milkv duo or milkv duo 256 or milkv duos
         libsns_obj = dlopen("libsns_gc2083.so", RTLD_LOCAL | RTLD_NOW);
         if (!libsns_obj)
         {
@@ -2556,6 +2555,21 @@ static const struct sns_ini_cfg* get_sns_ini_cfg()
 
         return &lpirvnano;
     }
+    if (device_model == 4)
+    {
+        // milkv duo s
+        static const struct sns_ini_cfg duos = {
+            3,  // bus_id
+            37, // sns_i2c_addr
+            0,  // mipi_dev
+            {2, 0, 1, -1, -1},  // lane_id
+            {0, 0, 0, 0, 0},    // pn_swap
+            false,  // mclk_en
+            0       // mclk
+        };
+
+        return &duos;
+    }
 
     return NULL;
 }
@@ -2574,9 +2588,9 @@ static const struct sensor_cfg* get_sensor_cfg()
 {
     const int device_model = get_device_model();
 
-    if (device_model == 1 || device_model == 2)
+    if (device_model == 1 || device_model == 2 || device_model == 4)
     {
-        // milkv duo or milkv duo 256
+        // milkv duo or milkv duo 256 or milkv duos
         // gc2083 info
         static const struct sensor_cfg gc2083 = {
             1920,   // cap_width
@@ -4237,61 +4251,3 @@ int capture_cvi::close()
 }
 
 } // namespace cv
-#else // defined __linux__
-namespace cv {
-
-bool capture_cvi::supported()
-{
-    return false;
-}
-
-capture_cvi::capture_cvi() : d(0)
-{
-}
-
-capture_cvi::~capture_cvi()
-{
-}
-
-int capture_cvi::open(int /*width*/, int /*height*/, float /*fps*/)
-{
-    return -1;
-}
-
-int capture_cvi::get_width() const
-{
-    return -1;
-}
-
-int capture_cvi::get_height() const
-{
-    return -1;
-}
-
-float capture_cvi::get_fps() const
-{
-    return 0.f;
-}
-
-int capture_cvi::start_streaming()
-{
-    return -1;
-}
-
-int capture_cvi::read_frame(unsigned char* /*bgrdata*/)
-{
-    return -1;
-}
-
-int capture_cvi::stop_streaming()
-{
-    return -1;
-}
-
-int capture_cvi::close()
-{
-    return -1;
-}
-
-} // namespace cv
-#endif // defined __linux__
