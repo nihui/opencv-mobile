@@ -1790,7 +1790,6 @@ jobs:
             cmake-options: -DWITH_RPI=ON
 
           - name: milkv-duo
-            os-image:
             single-core: true
             cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
             setup-toolchain-cmd: |
@@ -1805,7 +1804,6 @@ jobs:
             cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
 
           - name: licheerv-nano
-            os-image:
             single-core: true
             cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
             setup-toolchain-cmd: |
@@ -1820,7 +1818,6 @@ jobs:
             cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
 
           - name: luckfox-pico
-            os-image:
             single-core: true
             cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
             setup-toolchain-cmd: |
@@ -1832,7 +1829,6 @@ jobs:
             cmake-options: -DWITH_RK=ON
 
           - name: yuzuki-lizard
-            os-image:
             single-core: true
             cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
             setup-toolchain-cmd: |
@@ -1847,7 +1843,6 @@ jobs:
             cmake-options: -DWITH_AW=ON
 
           - name: tinyvision
-            os-image:
             single-core: true
             cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
             setup-toolchain-cmd: |
@@ -1862,7 +1857,6 @@ jobs:
             cmake-options: -DWITH_AW=ON
 
           - name: yuzuki-chameleon
-            os-image:
             single-core: false
             cmake-toolchain: arm-openwrt-linux-gnueabi.toolchain.cmake
             setup-toolchain-cmd: |
@@ -1877,7 +1871,6 @@ jobs:
             cmake-options: -DWITH_AW=ON
 
           - name: purple-pi
-            os-image:
             single-core: false
             cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake
             setup-toolchain-cmd: |
@@ -1891,7 +1884,6 @@ jobs:
             cmake-options:
 
           - name: myir-t113i
-            os-image:
             single-core: false
             cmake-toolchain: arm-linux-gnueabi.toolchain.cmake
             setup-toolchain-cmd: |
@@ -1903,7 +1895,6 @@ jobs:
             cmake-options: -DWITH_AW=ON
 
           - name: 2k0300-fengniao
-            os-image:
             single-core: true
             cmake-toolchain: loongarch64-linux-gnu.toolchain.cmake
             setup-toolchain-cmd: |
@@ -1916,7 +1907,6 @@ jobs:
             cmake-options: -DCPU_BASELINE='' -DCPU_DISPATCH=''
 
           - name: lockzhiner-vision-module
-            os-image:
             single-core: true
             cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
             setup-toolchain-cmd: |
