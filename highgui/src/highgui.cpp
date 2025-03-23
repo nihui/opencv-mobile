@@ -426,15 +426,32 @@ bool imwrite(const String& filename, InputArray _img, const std::vector<int>& pa
                 }
             }
 
-            jpeg_encoder_v4l_rpi e;
-            int ret = e.init(img.cols, img.rows, c, quality);
-            if (ret == 0)
+            // cache jpeg_encoder_v4l_rpi context
+            static int old_w = 0;
+            static int old_h = 0;
+            static int old_ch = 0;
+            static int old_quality = 0;
+            static jpeg_encoder_v4l_rpi e;
+            if (img.cols == old_w && img.rows == old_h && c == old_ch && quality == old_quality)
             {
-                ret = e.encode(img.data, filename.c_str());
+                int ret = e.encode(img.data, filename.c_str());
+                if (ret == 0)
+                    return true;
+            }
+            else
+            {
+                int ret = e.init(img.cols, img.rows, c, quality);
                 if (ret == 0)
                 {
-                    e.deinit();
-                    return true;
+                    ret = e.encode(img.data, filename.c_str());
+                    if (ret == 0)
+                    {
+                        old_w = img.cols;
+                        old_h = img.rows;
+                        old_ch = c;
+                        old_quality = quality;
+                        return true;
+                    }
                 }
             }
 
