@@ -61,7 +61,7 @@ public:
     capture_v4l2_impl();
     ~capture_v4l2_impl();
 
-    int open(int width, int height, float fps);
+    int open(int index, int width, int height, float fps);
 
     int start_streaming();
 
@@ -150,12 +150,12 @@ static float fit_score(int cap_width, int cap_height, int width, int height)
     return iou * 20 + ioo * 80;
 }
 
-int capture_v4l2_impl::open(int width, int height, float fps)
+int capture_v4l2_impl::open(int index, int width, int height, float fps)
 {
     int dev_index = -1;
 
     // enumerate /dev/video%d and find capture + streaming
-    for (int i = 0; i < 64; i++)
+    for (int i = index; i < 64; i++)
     {
         sprintf(devpath, "/dev/video%d", i);
 
@@ -916,9 +916,9 @@ capture_v4l2::~capture_v4l2()
     delete d;
 }
 
-int capture_v4l2::open(int width, int height, float fps)
+int capture_v4l2::open(int index, int width, int height, float fps)
 {
-    return d->open(width, height, fps);
+    return d->open(index, width, height, fps);
 }
 
 int capture_v4l2::get_width() const
