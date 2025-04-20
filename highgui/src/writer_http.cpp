@@ -138,7 +138,7 @@ public:
 
     int open(int port);
 
-    void write_jpgbuf(const unsigned char* jpg_data, int size);
+    void write_jpgbuf(const std::vector<unsigned char>& jpgbuf);
 
     void close();
 
@@ -153,6 +153,7 @@ public:
     void mainloop();
 
     // cv::Mat bgr_to_send;
+    std::vector<unsigned char> jpgbuf;
     const unsigned char* jpg_data;
     int jpg_size;
     int exit_flag;
@@ -215,7 +216,7 @@ int writer_http_impl::open(int _port)
     return 0;
 }
 
-void writer_http_impl::write_jpgbuf(const unsigned char* _jpg_data, int size)
+void writer_http_impl::write_jpgbuf(const std::vector<unsigned char>& _jpgbuf)
 {
     if (!looper)
         return;
@@ -227,8 +228,9 @@ void writer_http_impl::write_jpgbuf(const unsigned char* _jpg_data, int size)
             pthread_cond_wait(&cond, &mutex);
         }
 
-        jpg_data = _jpg_data;
-        jpg_size = size;
+        jpgbuf = _jpgbuf;
+        jpg_data = jpgbuf.data();
+        jpg_size = jpgbuf.size();
     }
     pthread_mutex_unlock(&mutex);
 
@@ -350,7 +352,7 @@ void writer_http_impl::mainloop()
 
                             client.send((const char*)jpg_data, jpg_size);
 
-                            // fprintf(stderr, "[INFO] 4\n");
+                            // fprintf(stderr, "[INFO] 4  %4s\n", jpg_data);
 
                             client.send("\r\n--frame\r\n", 11);
                         }
@@ -460,9 +462,9 @@ int writer_http::open(int port)
     return d->open(port);
 }
 
-void writer_http::write_jpgbuf(const unsigned char* jpgdata, int size)
+void writer_http::write_jpgbuf(const std::vector<unsigned char>& jpgbuf)
 {
-    d->write_jpgbuf(jpgdata, size);
+    d->write_jpgbuf(jpgbuf);
 }
 
 void writer_http::close()

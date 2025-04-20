@@ -17,6 +17,8 @@
 #ifndef WRITER_HTTP_H
 #define WRITER_HTTP_H
 
+#include <vector>
+
 namespace cv {
 
 class writer_http_impl;
@@ -30,7 +32,7 @@ public:
 
     int open(int port);
 
-    void write_jpgbuf(const unsigned char* jpg_data, int size);
+    void write_jpgbuf(const std::vector<unsigned char>& jpgbuf);
 
     void close();
 
