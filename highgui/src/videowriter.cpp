@@ -133,7 +133,7 @@ void VideoWriter::write(const Mat& image)
         std::vector<uchar> buf;
         cv::imencode(".JPG", image, buf);
 
-        d->wt_http.write_jpgbuf((const unsigned char*)buf.data(), buf.size());
+        d->wt_http.write_jpgbuf(buf);
     }
     else
 #endif
