@@ -5,6 +5,7 @@ option(WITH_CVI "build with cvi" OFF)
 option(WITH_AW "build with aw" OFF)
 option(WITH_RK "build with rk" OFF)
 option(WITH_RPI "build with rpi" OFF)
+option(WITH_CIX "build with cix" OFF)
 
 set(highgui_srcs
     ${CMAKE_CURRENT_LIST_DIR}/src/exif.cpp
@@ -59,6 +60,13 @@ if(WITH_RPI)
     ${CMAKE_CURRENT_LIST_DIR}/src/jpeg_encoder_v4l_rpi.cpp)
   add_definitions(-DCV_WITH_RPI=1)
   message(STATUS "highgui rpi enabled")
+endif()
+
+if(WITH_CIX)
+  list(APPEND highgui_srcs
+    ${CMAKE_CURRENT_LIST_DIR}/src/jpeg_encoder_v4l_cix.cpp)
+  add_definitions(-DCV_WITH_CIX=1)
+  message(STATUS "highgui cix enabled")
 endif()
 
 file(GLOB highgui_ext_hdrs
