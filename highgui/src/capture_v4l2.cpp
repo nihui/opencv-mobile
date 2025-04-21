@@ -154,14 +154,14 @@ int capture_v4l2_impl::open(int index, int width, int height, float fps)
 {
     int dev_index = -1;
 
-    // enumerate /dev/video%d and find capture + streaming
-    for (int i = index; i < 64; i++)
+    // try index first
+    while (1)
     {
-        sprintf(devpath, "/dev/video%d", i);
+        sprintf(devpath, "/dev/video%d", index);
 
         fd = ::open(devpath, O_RDWR | O_NONBLOCK, 0);
         if (fd < 0)
-            continue;
+            break;
 
         // query cap
         {
@@ -172,7 +172,7 @@ int capture_v4l2_impl::open(int index, int width, int height, float fps)
             {
                 fprintf(stderr, "%s ioctl VIDIOC_QUERYCAP failed %d %s\n", devpath, errno, strerror(errno));
                 ::close(fd);
-                continue;
+                break;
             }
 
             fprintf(stderr, "   devpath = %s\n", devpath);
@@ -195,19 +195,78 @@ int capture_v4l2_impl::open(int index, int width, int height, float fps)
             {
                 fprintf(stderr, "%s is not V4L2_CAP_VIDEO_CAPTURE or V4L2_CAP_VIDEO_CAPTURE_MPLANE\n", devpath);
                 ::close(fd);
-                continue;
+                break;
             }
 
             if (!(caps.capabilities & V4L2_CAP_STREAMING))
             {
                 fprintf(stderr, "%s is not V4L2_CAP_STREAMING\n", devpath);
                 ::close(fd);
-                continue;
+                break;
             }
         }
 
-        dev_index = i;
+        dev_index = index;
         break;
+    }
+
+    if (dev_index == -1)
+    {
+        // enumerate /dev/video%d and find capture + streaming
+        for (int i = 0; i < 64; i++)
+        {
+            sprintf(devpath, "/dev/video%d", i);
+
+            fd = ::open(devpath, O_RDWR | O_NONBLOCK, 0);
+            if (fd < 0)
+                continue;
+
+            // query cap
+            {
+                struct v4l2_capability caps;
+                memset(&caps, 0, sizeof(caps));
+
+                if (ioctl(fd, VIDIOC_QUERYCAP, &caps))
+                {
+                    fprintf(stderr, "%s ioctl VIDIOC_QUERYCAP failed %d %s\n", devpath, errno, strerror(errno));
+                    ::close(fd);
+                    continue;
+                }
+
+                fprintf(stderr, "   devpath = %s\n", devpath);
+                fprintf(stderr, "   driver = %s\n", caps.driver);
+                fprintf(stderr, "   card = %s\n", caps.card);
+                fprintf(stderr, "   bus_info = %s\n", caps.bus_info);
+                fprintf(stderr, "   version = %x\n", caps.version);
+                fprintf(stderr, "   capabilities = %x\n", caps.capabilities);
+                fprintf(stderr, "   device_caps = %x\n", caps.device_caps);
+
+                if (caps.capabilities & V4L2_CAP_VIDEO_CAPTURE)
+                {
+                    buf_type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+                }
+                else if (caps.capabilities & V4L2_CAP_VIDEO_CAPTURE_MPLANE)
+                {
+                    buf_type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+                }
+                else
+                {
+                    fprintf(stderr, "%s is not V4L2_CAP_VIDEO_CAPTURE or V4L2_CAP_VIDEO_CAPTURE_MPLANE\n", devpath);
+                    ::close(fd);
+                    continue;
+                }
+
+                if (!(caps.capabilities & V4L2_CAP_STREAMING))
+                {
+                    fprintf(stderr, "%s is not V4L2_CAP_STREAMING\n", devpath);
+                    ::close(fd);
+                    continue;
+                }
+            }
+
+            dev_index = i;
+            break;
+        }
     }
 
     if (dev_index == -1)
