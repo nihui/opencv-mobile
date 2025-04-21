@@ -75,6 +75,9 @@ static bool is_device_whitelisted()
     return get_device_model() > 0;
 }
 
+namespace jpeg_encoder_v4l_cix_internal
+{
+
 class v4l2_m2m_device
 {
 public:
@@ -858,6 +861,8 @@ int v4l2_m2m_device::recv(PFN_recv_buffer rb_callback, void* userdata) const
     return 0;
 }
 
+} // namespace jpeg_encoder_v4l_cix_internal
+
 class jpeg_encoder_v4l_cix_impl
 {
 public:
@@ -878,7 +883,7 @@ protected:
     int height;
     int ch;
     int quality;
-    v4l2_m2m_device enc;
+    jpeg_encoder_v4l_cix_internal::v4l2_m2m_device enc;
 };
 
 jpeg_encoder_v4l_cix_impl::jpeg_encoder_v4l_cix_impl()
@@ -1061,7 +1066,7 @@ struct enc_context
 
     std::vector<unsigned char>* outdata;
     const char* outfilepath;
-    const v4l2_m2m_device* enc;
+    const jpeg_encoder_v4l_cix_internal::v4l2_m2m_device* enc;
 };
 
 static __u32 on_enc_send(void* input_data, __u32 input_data_length, __u32 width, __u32 height, __u32 bytesperline, void* userdata)
