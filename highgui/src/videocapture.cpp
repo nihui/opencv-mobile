@@ -158,7 +158,7 @@ bool VideoCapture::open(int index)
 #if defined __linux__
     if (capture_v4l2::supported())
     {
-        int ret = d->cap_v4l2.open(d->width, d->height, d->fps);
+        int ret = d->cap_v4l2.open(index, d->width, d->height, d->fps);
         if (ret == 0)
         {
             d->width = d->cap_v4l2.get_width();

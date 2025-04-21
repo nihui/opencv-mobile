@@ -30,7 +30,7 @@ public:
     capture_v4l2();
     ~capture_v4l2();
 
-    int open(int width = 640, int height = 480, float fps = 30);
+    int open(int index, int width = 640, int height = 480, float fps = 30);
 
     int get_width() const;
     int get_height() const;
