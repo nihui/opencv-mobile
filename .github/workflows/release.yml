@@ -76,6 +76,7 @@ jobs:
         rm -rf modules/ts
         sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
         cp ../opencv2_cmake_options.txt ./options.txt
+        cp -r ../toolchains .
         cd ..
         mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
         zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
@@ -153,6 +154,7 @@ jobs:
         rm -rf modules/dnn
         sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
         cp ../opencv3_cmake_options.txt ./options.txt
+        cp -r ../toolchains .
         cd ..
         mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
         zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
@@ -228,6 +230,7 @@ jobs:
         rm -rf modules/dnn
         sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
         cp ../opencv4_cmake_options.txt ./options.txt
+        cp -r ../toolchains .
         cd ..
         mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
         zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
@@ -1787,7 +1790,7 @@ jobs:
               echo "fine :)"
             setup-test-env-cmd: |
               echo "fine :)"
-            cmake-options: -DWITH_RPI=ON
+            cmake-options: -DWITH_KLEIDICV=ON -DWITH_RPI=ON -DWITH_CIX=ON
 
           - name: milkv-duo
             single-core: true
