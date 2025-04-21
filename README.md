@@ -331,7 +331,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 <td colspan=4>
   <img align="left" alt="debian" src="https://www.debian.org/logos/openlogo-nd-100.png" width="auto" height="200">
   <b>Debian, Raspberry Pi OS, Armbian, or any debian based os</b><br />
-  &#9989; HW JPG encoder (Raspberry Pi)<br />
+  &#9989; HW JPG encoder (Raspberry Pi, Radxa Orion O6)<br />
 
 ||arm|aarch64|
 |---|---|---|
