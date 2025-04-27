@@ -1900,7 +1900,7 @@ jobs:
             single-core: true
             cmake-toolchain: loongarch64-linux-gnu.toolchain.cmake
             setup-toolchain-cmd: |
-              wget -q http://ftp.loongnix.cn/toolchain/gcc/release/loongarch/gcc8/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5.tar.xz
+              wget -q https://ftp.loongnix.cn/toolchain/gcc/release/loongarch/gcc8/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5.tar.xz
               tar -xf loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5.tar.xz
             setup-env-cmd: |
               export LOONGARCH64_ROOT_PATH=$GITHUB_WORKSPACE/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5
