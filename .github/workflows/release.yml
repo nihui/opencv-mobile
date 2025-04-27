@@ -1447,7 +1447,6 @@ jobs:
       matrix:
         opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
         os-ubuntu:
-          - { ubuntu-id: 2004, ubuntu-version: 20.04 }
           - { ubuntu-id: 2204, ubuntu-version: 22.04 }
           - { ubuntu-id: 2404, ubuntu-version: 24.04 }
     runs-on: ubuntu-${{ matrix.os-ubuntu.ubuntu-version }}
@@ -1497,7 +1496,7 @@ jobs:
 
   webassembly:
     needs: [setup]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
