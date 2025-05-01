@@ -97,6 +97,11 @@ static void test_httpjpg()
 {
     cv::Mat bgr = cv::imread("in.jpg", 1);
 
+    cv::VideoWriter http;
+    http.open("httpjpg", 7766);
+
+    // open streaming url http://<server ip>:7766 in web browser
+
     while (1)
     {
         http << bgr;
