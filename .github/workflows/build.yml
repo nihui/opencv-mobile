@@ -484,6 +484,11 @@ jobs:
         cmake --build . -j $(nproc)
         cmake --build . --target install
 
+    - name: package
+      run: |
+        mkdir ${{ env.PACKAGE_NAME }}
+        cp -rf ${{ env.SOURCE_DIR }}/build/install/* ${{ env.PACKAGE_NAME }}/
+
     - name: test
       run: |
         cd test
@@ -492,10 +497,8 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/lib/cmake/opencv4 ..
         cmake --build . -j $(nproc)
 
-    - name: package
+    - name: package-2
       run: |
-        mkdir ${{ env.PACKAGE_NAME }}
-        cp -rf ${{ env.SOURCE_DIR }}/build/install/* ${{ env.PACKAGE_NAME }}/
         cp test/build/opencv-mobile-test ${{ env.PACKAGE_NAME }}/
         zip -9 -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
 
