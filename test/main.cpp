@@ -80,7 +80,30 @@ static void test_display()
     cv::imshow("fb", bgr);
 }
 
+static void test_camera_display()
+{
+    cv::VideoCapture cap;
+    cap.open(0);
+
+    cv::Mat bgr;
+    while (1)
+    {
+        cap >> bgr;
+        cv::imshow("fb", bgr);
+    }
+}
+
 static void test_httpjpg()
+{
+    cv::Mat bgr = cv::imread("in.jpg", 1);
+
+    while (1)
+    {
+        http << bgr;
+    }
+}
+
+static void test_camera_httpjpg()
 {
     cv::VideoCapture cap;
     cap.open(0);
@@ -112,14 +135,18 @@ int main(int argc, char** argv)
         fprintf(stderr, "0 = test_image\n");
         fprintf(stderr, "1 = test_camera\n");
         fprintf(stderr, "2 = test_display\n");
-        fprintf(stderr, "3 = test_httpjpg\n");
+        fprintf(stderr, "3 = test_camera_display\n");
+        fprintf(stderr, "4 = test_httpjpg\n");
+        fprintf(stderr, "5 = test_camera_httpjpg\n");
         return -1;
     }
 
     if (test_mode == 0) test_image();
     if (test_mode == 1) test_camera();
     if (test_mode == 2) test_display();
-    if (test_mode == 3) test_httpjpg();
+    if (test_mode == 3) test_camera_display();
+    if (test_mode == 4) test_httpjpg();
+    if (test_mode == 5) test_camera_httpjpg();
 
     return 0;
 }
