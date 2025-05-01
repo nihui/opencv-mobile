@@ -134,9 +134,9 @@ int main(int argc, char** argv)
         test_mode = atoi(argv[1]);
     }
 
-    if (test_mode < 0 || test_mode > 3)
+    if (test_mode < 0 || test_mode > 5)
     {
-        fprintf(stderr, "usage: %s [0/1/2/3]\n", argv[0]);
+        fprintf(stderr, "usage: %s [0/1/2/3/4/5]\n", argv[0]);
         fprintf(stderr, "0 = test_image\n");
         fprintf(stderr, "1 = test_camera\n");
         fprintf(stderr, "2 = test_display\n");
