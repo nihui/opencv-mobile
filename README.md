@@ -213,19 +213,9 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </tr>
 
 <tr>
-<td rowspan=3>
+<td rowspan=2>
   <img src="https://user-images.githubusercontent.com/25181517/186884153-99edc188-e4aa-4c84-91b0-e2df260ebc33.png" width="64" height="auto">
 </td>
-<td>Ubuntu-20.04</td>
-<td>
-
-  [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2004.zip)
-  [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2004.zip)
-  [<img src="https://img.shields.io/badge/download-4.11.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.11.0-ubuntu-2004.zip)
-
-</td>
-</tr>
-<tr>
 <td>Ubuntu-22.04</td>
 <td>
 
