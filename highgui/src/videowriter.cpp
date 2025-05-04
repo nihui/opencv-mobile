@@ -20,83 +20,68 @@
 #include <stdio.h>
 #include <string.h>
 
-#if defined __linux__ && !__ANDROID__
+#if (defined __linux__ && !__ANDROID__) || _WIN32
 #include "writer_http.h"
 #endif
 
 namespace cv {
+    class VideoWriterImpl {
+    public:
+        VideoWriterImpl();
 
-class VideoWriterImpl
-{
-public:
-    VideoWriterImpl();
+    public:
+        bool is_opened;
+        int width;
+        int height;
+        float fps;
 
-public:
-    bool is_opened;
-    int width;
-    int height;
-    float fps;
-
-#if defined __linux__ && !__ANDROID__
-    writer_http wt_http;
+#if (defined __linux__ && !__ANDROID__) || _WIN32
+        writer_http wt_http;
 #endif
-};
+    };
 
-VideoWriterImpl::VideoWriterImpl()
-{
-    is_opened = false;
-    width = 0;
-    height = 0;
-    fps = 0;
-}
-
-VideoWriter::VideoWriter() : d(new VideoWriterImpl)
-{
-}
-
-VideoWriter::~VideoWriter()
-{
-    release();
-
-    delete d;
-}
-
-bool VideoWriter::open(const String& name, int port)
-{
-    if (d->is_opened)
-    {
-        release();
+    VideoWriterImpl::VideoWriterImpl() {
+        is_opened = false;
+        width = 0;
+        height = 0;
+        fps = 0;
     }
 
-    if (name == "httpjpg")
-    {
-#if defined __linux__ && !__ANDROID__
-        if (writer_http::supported())
-        {
-            int ret = d->wt_http.open(port);
-            if (ret == 0)
-            {
-                d->is_opened = true;
+    VideoWriter::VideoWriter() : d(new VideoWriterImpl) {
+    }
+
+    VideoWriter::~VideoWriter() {
+        release();
+
+        delete d;
+    }
+
+    bool VideoWriter::open(const String &name, int port) {
+        if (d->is_opened) {
+            release();
+        }
+
+#if (defined __linux__ && !__ANDROID__) || _WIN32
+        if (name == "httpjpg") {
+            if (writer_http::supported()) {
+                int ret = d->wt_http.open(port);
+                if (ret == 0) {
+                    d->is_opened = true;
+                }
             }
         }
-        else
 #endif
-        {
-        }
+
+        return d->is_opened;
     }
 
-    return d->is_opened;
-}
+    bool VideoWriter::isOpened() const {
+        return d->is_opened;
+    }
 
-bool VideoWriter::isOpened() const
-{
-    return d->is_opened;
-}
-
-void VideoWriter::release()
-{
-    if (!d->is_opened)
-        return;
+    void VideoWriter::release() {
+        if (!d->is_opened)
+            return;
 
 #if defined __linux__ && !__ANDROID__
     if (writer_http::supported())
@@ -105,40 +90,33 @@ void VideoWriter::release()
     }
     else
 #endif
-    {
+        {
+        }
+
+        d->is_opened = false;
+        d->width = 0;
+        d->height = 0;
+        d->fps = 0;
     }
 
-    d->is_opened = false;
-    d->width = 0;
-    d->height = 0;
-    d->fps = 0;
-}
+    VideoWriter &VideoWriter::operator<<(const Mat &image) {
+        write(image);
 
-VideoWriter& VideoWriter::operator<<(const Mat& image)
-{
-    write(image);
-
-    return *this;
-}
-
-void VideoWriter::write(const Mat& image)
-{
-    if (!d->is_opened)
-        return;
-
-#if defined __linux__ && !__ANDROID__
-    if (writer_http::supported())
-    {
-        // encode jpg
-        std::vector<uchar> buf;
-        cv::imencode(".JPG", image, buf);
-
-        d->wt_http.write_jpgbuf(buf);
+        return *this;
     }
-    else
+
+    void VideoWriter::write(const Mat &image) {
+        if (!d->is_opened)
+            return;
+
+#if (defined __linux__ && !__ANDROID__) || _WIN32
+        if (writer_http::supported()) {
+            // encode jpg
+            std::vector<uchar> buf;
+            cv::imencode(".JPG", image, buf);
+
+            d->wt_http.write_jpgbuf(buf);
+        }
 #endif
-    {
     }
-}
-
 } // namespace cv
