@@ -1872,6 +1872,18 @@ jobs:
               export STAGING_DIR=$GITHUB_WORKSPACE/toolchain
             cmake-options: -DWITH_AW=ON
 
+          - name: avaota-f1
+            single-core: true
+            cmake-toolchain: riscv32-linux-musl.toolchain.cmake
+            setup-toolchain-cmd: |
+              wget -q https://github.com/AvaotaSBC/toolchains/releases/download/v821-toolchains/nds32le-linux-musl-v5d.tar.xz
+              tar -xf nds32le-linux-musl-v5d.tar.xz
+            setup-env-cmd: |
+              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/nds32le-linux-musl-v5d
+            setup-test-env-cmd: |
+              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/nds32le-linux-musl-v5d
+            cmake-options: -DWITH_AW=ON
+
           - name: purple-pi
             single-core: false
             cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake

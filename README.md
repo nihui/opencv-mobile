@@ -213,19 +213,9 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </tr>
 
 <tr>
-<td rowspan=3>
+<td rowspan=2>
   <img src="https://user-images.githubusercontent.com/25181517/186884153-99edc188-e4aa-4c84-91b0-e2df260ebc33.png" width="64" height="auto">
 </td>
-<td>Ubuntu-20.04</td>
-<td>
-
-  [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2004.zip)
-  [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2004.zip)
-  [<img src="https://img.shields.io/badge/download-4.11.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.11.0-ubuntu-2004.zip)
-
-</td>
-</tr>
-<tr>
 <td>Ubuntu-22.04</td>
 <td>
 
@@ -421,6 +411,16 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </tr>
 <tr>
 <td>
+  <a href="https://github.com/AvaotaSBC/AvaotaF1">
+    <img alt="avaota-f1" src="https://github.com/user-attachments/assets/2f67508c-4f9f-4fe1-8155-ca97e8a12001" width="auto" height="120">
+    <br /><b>avaota-f1</b>
+  </a>
+  <br />riscv32-linux-musl<br />
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.11.0-avaota-f1.zip">
+    <img alt="opencv4-avaota-f1" src="https://img.shields.io/badge/download-4.11.0-blue?style=for-the-badge">
+  </a>
+</td>
+<td>
   <a href="http://www.industio.cn/product-item-5.html">
     <img alt="purple-pi" src="https://img01.71360.com/file/read/www2/M00/38/09/wKj2K2MMbSKAXKhHAAJMw0S-VfY400.jpg" width="auto" height="120">
     <br /><b>purple-pi</b>
@@ -442,6 +442,8 @@ https://github.com/nihui/opencv-mobile/releases/latest
     <img alt="opencv4-myir-t113i" src="https://img.shields.io/badge/download-4.11.0-blue?style=for-the-badge">
   </a>
 </td>
+</tr>
+<tr>
 <td>
   <a href="https://www.loongson.cn/news/show?id=673">
     <img alt="2k0300-fengniao" src="https://github.com/user-attachments/assets/3ff9048d-a2b7-46a4-8534-e8bf5b85a2e1" width="auto" height="120">
@@ -452,7 +454,6 @@ https://github.com/nihui/opencv-mobile/releases/latest
     <img alt="opencv4-2k0300-fengniao" src="https://img.shields.io/badge/download-4.11.0-blue?style=for-the-badge">
   </a>
 </td>
-</tr>
 <td>
   <a href="https://gitee.com/LockzhinerAI/LockzhinerVisionModule">
     <img alt="lockzhiner-vision-module" src="https://github.com/user-attachments/assets/67252677-a336-4a88-9c65-f10d34c6c1f2" width="auto" height="120">
@@ -466,6 +467,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
     <img alt="opencv4-lockzhiner-vision-module" src="https://img.shields.io/badge/download-4.11.0-blue?style=for-the-badge">
   </a>
 </td>
+</tr>
 </table>
 
 # Usage Android
