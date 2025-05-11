@@ -422,7 +422,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 <tr>
 <td>
   <a href="https://github.com/AvaotaSBC/AvaotaF1">
-    <img alt="avaota-f1" src="https://github.com/AvaotaSBC/AvaotaF1/blob/main/Assets/post/README/%E4%B8%BB%E5%9B%BE_05-17447077800621-732d5f5f87dee5b96ef8ef4346d33a3e.jpg" width="auto" height="120">
+    <img alt="avaota-f1" src="https://github.com/user-attachments/assets/2f67508c-4f9f-4fe1-8155-ca97e8a12001" width="auto" height="120">
     <br /><b>avaota-f1</b>
   </a>
   <br />riscv32-linux-musl<br />
