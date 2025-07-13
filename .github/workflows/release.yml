@@ -169,6 +169,8 @@ jobs:
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
 
+        truncate -s 0 cmake/platforms/OpenCV-Linux.cmake
+
         rm modules/core/src/cuda_*
         rm modules/core/src/direct*
         rm modules/core/src/gl_*
