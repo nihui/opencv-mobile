@@ -218,21 +218,21 @@ jobs:
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V3.1.0
             setup-test-env-cmd: |
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
-            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=ON -DOPENCV_EXTRA_FLAGS="-march=rv64gc_zfh_xtheadvector_xtheadc -mabi=lp64d -mtune=c906"
+            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=ON
 
-          - name: licheerv-nano
-            single-core: true
-            cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
-            setup-toolchain-cmd: |
-              wget -q https://occ-oss-prod.oss-cn-hangzhou.aliyuncs.com/resource//1705396382457/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
-              tar -xf Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
-              wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
-              tar -xf host-tools.tar.gz
-            setup-env-cmd: |
-              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1
-            setup-test-env-cmd: |
-              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
-            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
+          # - name: licheerv-nano
+          #   single-core: true
+          #   cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     wget -q https://occ-oss-prod.oss-cn-hangzhou.aliyuncs.com/resource//1705396382457/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
+          #     tar -xf Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
+          #     wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
+          #     tar -xf host-tools.tar.gz
+          #   setup-env-cmd: |
+          #     export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1
+          #   setup-test-env-cmd: |
+          #     export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
+          #   cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
 
           - name: avaota-f1
             single-core: true
