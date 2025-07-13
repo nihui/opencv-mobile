@@ -18,7 +18,7 @@
 
 :heavy_check_mark: Packages for **Windows**, **Linux**, **MacOS**, **HarmonyOS** and **WebAssembly** are available now.
 
-:heavy_check_mark: We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.20** and **4.11.0**.
+:heavy_check_mark: We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.20** and **4.12.0**.
 
 :heavy_check_mark: We also provide prebuild package for **Mac-Catalyst**, **watchOS**, **tvOS**, **visionOS** and **Apple xcframework**.
 
@@ -30,7 +30,7 @@
 
 :heavy_check_mark: ***NEW FEATURE*** [`cv::VideoWriter` supports jpg streaming over http](#cvvideowriter-supports-jpg-streaming-over-http)
 
-|opencv 4.11.0 package size|The official opencv|opencv-mobile|
+|opencv 4.12.0 package size|The official opencv|opencv-mobile|
 |:-:|:-:|:-:|
 |source zip|95.3 MB|8.17 MB|
 |android|301 MB|18 MB|

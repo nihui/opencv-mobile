@@ -1,0 +1,45 @@
+diff -Nuarp opencv-4.12.0-orig/modules/core/include/opencv2/core/base.hpp opencv-4.12.0-no-gpu-manual/modules/core/include/opencv2/core/base.hpp
+--- opencv-4.12.0-orig/modules/core/include/opencv2/core/base.hpp	2025-07-13 06:04:01.145783391 +0000
++++ opencv-4.12.0-no-gpu-manual/modules/core/include/opencv2/core/base.hpp	2025-07-13 06:08:36.526977684 +0000
+@@ -672,8 +672,6 @@ class CV_EXPORTS RNG;
+ class CV_EXPORTS Mat;
+ class CV_EXPORTS MatExpr;
+ 
+-class CV_EXPORTS UMat;
+-
+ class CV_EXPORTS SparseMat;
+ typedef Mat MatND;
+ 
+@@ -695,19 +693,6 @@ namespace ogl
+     class CV_EXPORTS Arrays;
+ }
+ 
+-namespace cuda
+-{
+-    class CV_EXPORTS GpuMat;
+-    class CV_EXPORTS HostMem;
+-    class CV_EXPORTS Stream;
+-    class CV_EXPORTS Event;
+-}
+-
+-namespace cudev
+-{
+-    template <typename _Tp> class GpuMat_;
+-}
+-
+ namespace ipp
+ {
+ CV_EXPORTS   unsigned long long getIppFeatures();
+diff -Nuarp opencv-4.12.0-orig/modules/core/include/opencv2/core/cvdef.h opencv-4.12.0-no-gpu-manual/modules/core/include/opencv2/core/cvdef.h
+--- opencv-4.12.0-orig/modules/core/include/opencv2/core/cvdef.h	2025-07-13 06:04:01.147783399 +0000
++++ opencv-4.12.0-no-gpu-manual/modules/core/include/opencv2/core/cvdef.h	2025-07-13 06:08:58.261071532 +0000
+@@ -945,4 +945,9 @@ CV_INLINE int CV_FOURCC(char c1, char c2
+ #include "opencv2/core/fast_math.hpp" // define cvRound(double)
+ #endif
+ 
++#define CV_OCL_RUN_(condition, func, ...)
++#define CV_OCL_RUN(condition, func) CV_OCL_RUN_(condition, func)
++
++#define CV_OVX_RUN(condition, func, ...)
++
+ #endif // OPENCV_CORE_CVDEF_H
