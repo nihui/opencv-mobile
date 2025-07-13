@@ -218,7 +218,7 @@ jobs:
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V3.1.0
             setup-test-env-cmd: |
               export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
-            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=ON
+            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=ON -DOPENCV_EXTRA_FLAGS="-march=rv64gc_zfh_xtheadvector_xtheadc -mabi=lp64d -mtune=c906"
 
           - name: licheerv-nano
             single-core: true
