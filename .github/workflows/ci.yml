@@ -1,9 +1,5 @@
-name: release
-# on: pull_request
-on:
-  push:
-    tags:
-      - '*'
+name: ci
+on: pull_request
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
@@ -31,133 +27,6 @@ jobs:
     - name: get-version
       id: get_version
       run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
-    - name: opencv2-source
-      env:
-        opencv-version: 2.4.13.7
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
-        unzip -q opencv-${{ env.opencv-version }}.zip
-        rm opencv-${{ env.opencv-version }}.zip
-        cd opencv-${{ env.opencv-version }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-
-        rm modules/core/src/gl_*
-        rm modules/core/src/gpumat.cpp
-        rm modules/core/src/opengl_*
-        rm modules/core/include/opencv2/core/cuda_*
-        rm modules/core/include/opencv2/core/devmem2d.hpp
-        rm modules/core/include/opencv2/core/gpumat.hpp
-        rm modules/core/include/opencv2/core/opengl_*
-        rm modules/core/include/opencv2/core/wimage.hpp
-
-        rm -rf modules/dynamicuda
-        rm -rf modules/gpu
-        rm -rf modules/ocl
-
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-gpu.patch
-
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-highgui-include.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-link-stdc++.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-enable-cxx11.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-newer-msvc.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-windows-arm-arch.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
-        cp ../patches/draw_text.h ../patches/mono_font_data.h modules/core/src/
-        cp ../patches/fontface.html ./
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-        rm -rf 3rdparty apps data doc samples platforms
-        rm -rf modules/java
-        rm -rf modules/python
-        rm -rf modules/ts
-        sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
-        cp ../opencv2_cmake_options.txt ./options.txt
-        cp -r ../toolchains .
-        cd ..
-        mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
-        zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
-    - name: opencv3-source
-      env:
-        opencv-version: 3.4.20
-      run: |
-        wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
-        unzip -q opencv-${{ env.opencv-version }}.zip
-        rm opencv-${{ env.opencv-version }}.zip
-        cd opencv-${{ env.opencv-version }}
-        truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
-
-        rm modules/core/src/cuda_*
-        rm modules/core/src/direct*
-        rm modules/core/src/gl_*
-        rm modules/core/src/intel_gpu_*
-        rm modules/core/src/ocl*
-        rm modules/core/src/opengl.cpp
-        rm modules/core/src/ovx.cpp
-        rm modules/core/src/umatrix.hpp
-        rm modules/core/src/va_intel.cpp
-
-        rm modules/core/include/opencv2/core/cuda*.hpp
-        rm modules/core/include/opencv2/core/directx.hpp
-        rm modules/core/include/opencv2/core/ippasync.hpp
-        rm modules/core/include/opencv2/core/ocl*.hpp
-        rm modules/core/include/opencv2/core/opengl.hpp
-        rm modules/core/include/opencv2/core/ovx.hpp
-        rm modules/core/include/opencv2/core/private.cuda.hpp
-        rm modules/core/include/opencv2/core/va_intel.hpp
-        rm modules/core/include/opencv2/core/wimage.hpp
-        rm -rf modules/core/include/opencv2/core/cuda
-        rm -rf modules/core/include/opencv2/core/opencl
-        rm -rf modules/core/include/opencv2/core/openvx
-
-        rm modules/photo/src/denoising.cuda.cpp
-        rm modules/photo/include/opencv2/photo/cuda.hpp
-
-        rm -rf modules/cuda*
-        rm -rf modules/cudev
-
-        find modules -type d | xargs -i rm -rf {}/src/cuda
-        find modules -type d | xargs -i rm -rf {}/src/opencl
-        find modules -type d | xargs -i rm -rf {}/perf/cuda
-        find modules -type d | xargs -i rm -rf {}/perf/opencl
-        find modules -type f | xargs -i sed -i '/opencl_kernels/d' {}
-        find modules -type f | xargs -i sed -i '/cuda.hpp/d' {}
-        find modules -type f | xargs -i sed -i '/opengl.hpp/d' {}
-        find modules -type f | xargs -i sed -i '/ocl_defs.hpp/d' {}
-        find modules -type f | xargs -i sed -i '/ocl.hpp/d' {}
-        find modules -type f | xargs -i sed -i '/ovx_defs.hpp/d' {}
-        find modules -type f | xargs -i sed -i '/ovx.hpp/d' {}
-        find modules -type f | xargs -i sed -i '/va_intel.hpp/d' {}
-
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-gpu.patch
-
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-emscripten-include.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-newer-msvc.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-windows-arm-arch.patch
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
-        cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
-        cp ../patches/fontface.html ./
-        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
-        rm -rf modules/highgui
-        cp -r ../highgui modules/
-        rm -rf 3rdparty apps data doc samples platforms
-        rm -rf modules/java
-        rm -rf modules/js
-        rm -rf modules/python
-        rm -rf modules/ts
-        rm -rf modules/dnn
-        sed -e 's/__VERSION__/${{ env.opencv-version }}/g' ../patches/Info.plist > ./Info.plist
-        cp ../opencv3_cmake_options.txt ./options.txt
-        cp -r ../toolchains .
-        cd ..
-        mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
-        zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
     - name: opencv4-source
       env:
         opencv-version: 4.12.0
@@ -236,16 +105,6 @@ jobs:
         cd ..
         mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
         zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
-    - name: upload-opencv2-source
-      uses: actions/upload-artifact@v4
-      with:
-        name: opencv-mobile-2.4.13.7-source
-        path: opencv-mobile-2.4.13.7.zip
-    - name: upload-opencv3-source
-      uses: actions/upload-artifact@v4
-      with:
-        name: opencv-mobile-3.4.20-source
-        path: opencv-mobile-3.4.20.zip
     - name: upload-opencv4-source
       uses: actions/upload-artifact@v4
       with:
@@ -257,7 +116,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_DEFAULT_CMP0057=NEW \
@@ -359,7 +218,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       OHOS_NDK_CMAKE: $GITHUB_WORKSPACE/ohos-sdk/linux/native/build-tools/cmake/bin/cmake
       COMMON_CMAKE_OPTIONS: |
@@ -454,7 +313,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -526,7 +385,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -608,7 +467,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
@@ -702,7 +561,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -788,7 +647,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -870,7 +729,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -952,7 +811,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1034,7 +893,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1116,7 +975,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1198,7 +1057,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1270,7 +1129,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1351,7 +1210,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
         os-compiler:
           - { msvc-version: vs2015, windows-version: 2022, toolset-version: v140 }
           - { msvc-version: vs2017, windows-version: 2022, toolset-version: v141 }
@@ -1447,7 +1306,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
         os-ubuntu:
           - { ubuntu-id: 2204, ubuntu-version: 22.04 }
           - { ubuntu-id: 2404, ubuntu-version: 24.04 }
@@ -1501,7 +1360,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
@@ -1636,7 +1495,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
     - uses: actions/checkout@v4
@@ -2000,22 +1859,3 @@ jobs:
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
-
-  release:
-    permissions:
-      contents: write  # for softprops/action-gh-release to create a release
-    needs: [setup, android, harmonyos, ios, ios-simulator, armlinux, macos, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator, windows, ubuntu, webassembly, apple, devboard]
-    runs-on: ubuntu-latest
-    steps:
-    - name: download
-      uses: actions/download-artifact@v4
-      with:
-        path: artifacts
-
-    - name: create-release
-      uses: softprops/action-gh-release@v2
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag_name: ${{ needs.setup.outputs.VERSION }}
-        name: Release ${{ needs.setup.outputs.VERSION }}
-        files: artifacts/*/*.zip
