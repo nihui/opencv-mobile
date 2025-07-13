@@ -1361,11 +1361,6 @@ jobs:
       COMMON_CMAKE_OPTIONS: -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_INSTALL_PREFIX=install
     steps:
     - uses: actions/checkout@v4
-    - name: patch-windows-sdk
-      if: matrix.os-compiler.msvc-version == 'vs2022'
-      run: |
-        cd "C:\Program Files (x86)"
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p0 -i $env:GITHUB_WORKSPACE\fix-windows-sdk-26100-arm64-wchar.patch
     - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -1834,8 +1829,8 @@ jobs:
             single-core: true
             cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
             setup-toolchain-cmd: |
-              wget -q https://github.com/YuzukiHD/Yuzukilizard/releases/download/Toolchains/toolchain-sunxi-musl-gcc-830.tar.gz
-              tar -xf toolchain-sunxi-musl-gcc-830.tar.gz
+              wget -q https://github.com/YuzukiHD/sunxi-bsp-toolchains/releases/download/1.0.0/toolchain-sunxi-musl-arm-gcc-830.tar.gz
+              tar -xf toolchain-sunxi-musl-arm-gcc-830.tar.gz
             setup-env-cmd: |
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
               export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
@@ -1848,8 +1843,8 @@ jobs:
             single-core: true
             cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
             setup-toolchain-cmd: |
-              wget -q https://github.com/YuzukiHD/Yuzukilizard/releases/download/Toolchains/toolchain-sunxi-musl-gcc-830.tar.gz
-              tar -xf toolchain-sunxi-musl-gcc-830.tar.gz
+              wget -q https://github.com/YuzukiHD/sunxi-bsp-toolchains/releases/download/1.0.0/toolchain-sunxi-musl-arm-gcc-830.tar.gz
+              tar -xf toolchain-sunxi-musl-arm-gcc-830.tar.gz
             setup-env-cmd: |
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
               export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
