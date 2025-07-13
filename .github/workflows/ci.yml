@@ -90,9 +90,7 @@ jobs:
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-        mv 3rdparty/kleidicv .
         rm -rf 3rdparty/*
-        mv kleidicv 3rdparty/
         rm -rf apps data doc samples platforms
         rm -rf modules/java
         rm -rf modules/js
