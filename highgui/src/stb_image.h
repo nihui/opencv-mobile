@@ -3074,6 +3074,27 @@ static void stbi__idct_simd(stbi_uc *out, int out_stride, short data[64])
       vint16m1_t out3 = __riscv_vnsra_wx_i16m1(__riscv_vadd_vv_i32m2(x3, x4, vl), 17, vl);
       vint16m1_t out4 = __riscv_vnsra_wx_i16m1(__riscv_vsub_vv_i32m2(x3, x4, vl), 17, vl);
 
+#ifdef __THEAD_VERSION__
+      // clamp 0~255
+      vuint8m1_t out0u8 = __riscv_vnclipu_wx_u8m1(__riscv_vreinterpret_v_i16m2_u16m2(__riscv_vset_v_i16m1_i16m2(__riscv_vmax_vx_i16m1(out0, 0, vl))), 0, __RISCV_VXRM_RNU, vl);
+      vuint8m1_t out7u8 = __riscv_vnclipu_wx_u8m1(__riscv_vreinterpret_v_i16m2_u16m2(__riscv_vset_v_i16m1_i16m2(__riscv_vmax_vx_i16m1(out7, 0, vl))), 0, __RISCV_VXRM_RNU, vl);
+      vuint8m1_t out1u8 = __riscv_vnclipu_wx_u8m1(__riscv_vreinterpret_v_i16m2_u16m2(__riscv_vset_v_i16m1_i16m2(__riscv_vmax_vx_i16m1(out1, 0, vl))), 0, __RISCV_VXRM_RNU, vl);
+      vuint8m1_t out6u8 = __riscv_vnclipu_wx_u8m1(__riscv_vreinterpret_v_i16m2_u16m2(__riscv_vset_v_i16m1_i16m2(__riscv_vmax_vx_i16m1(out6, 0, vl))), 0, __RISCV_VXRM_RNU, vl);
+      vuint8m1_t out2u8 = __riscv_vnclipu_wx_u8m1(__riscv_vreinterpret_v_i16m2_u16m2(__riscv_vset_v_i16m1_i16m2(__riscv_vmax_vx_i16m1(out2, 0, vl))), 0, __RISCV_VXRM_RNU, vl);
+      vuint8m1_t out5u8 = __riscv_vnclipu_wx_u8m1(__riscv_vreinterpret_v_i16m2_u16m2(__riscv_vset_v_i16m1_i16m2(__riscv_vmax_vx_i16m1(out5, 0, vl))), 0, __RISCV_VXRM_RNU, vl);
+      vuint8m1_t out3u8 = __riscv_vnclipu_wx_u8m1(__riscv_vreinterpret_v_i16m2_u16m2(__riscv_vset_v_i16m1_i16m2(__riscv_vmax_vx_i16m1(out3, 0, vl))), 0, __RISCV_VXRM_RNU, vl);
+      vuint8m1_t out4u8 = __riscv_vnclipu_wx_u8m1(__riscv_vreinterpret_v_i16m2_u16m2(__riscv_vset_v_i16m1_i16m2(__riscv_vmax_vx_i16m1(out4, 0, vl))), 0, __RISCV_VXRM_RNU, vl);
+
+      // 8x8 transpose
+      __riscv_vsse8_v_u8m1(out + 0, out_stride, out0u8, vl);
+      __riscv_vsse8_v_u8m1(out + 1, out_stride, out1u8, vl);
+      __riscv_vsse8_v_u8m1(out + 2, out_stride, out2u8, vl);
+      __riscv_vsse8_v_u8m1(out + 3, out_stride, out3u8, vl);
+      __riscv_vsse8_v_u8m1(out + 4, out_stride, out4u8, vl);
+      __riscv_vsse8_v_u8m1(out + 5, out_stride, out5u8, vl);
+      __riscv_vsse8_v_u8m1(out + 6, out_stride, out6u8, vl);
+      __riscv_vsse8_v_u8m1(out + 7, out_stride, out7u8, vl);
+#else // __THEAD_VERSION__
       // clamp 0~255
       vuint8mf2_t out0u8 = __riscv_vnclipu_wx_u8mf2(__riscv_vreinterpret_v_i16m1_u16m1(__riscv_vmax_vx_i16m1(out0, 0, vl)), 0, __RISCV_VXRM_RNU, vl);
       vuint8mf2_t out7u8 = __riscv_vnclipu_wx_u8mf2(__riscv_vreinterpret_v_i16m1_u16m1(__riscv_vmax_vx_i16m1(out7, 0, vl)), 0, __RISCV_VXRM_RNU, vl);
@@ -3093,6 +3114,7 @@ static void stbi__idct_simd(stbi_uc *out, int out_stride, short data[64])
       __riscv_vsse8_v_u8mf2(out + 5, out_stride, out5u8, vl);
       __riscv_vsse8_v_u8mf2(out + 6, out_stride, out6u8, vl);
       __riscv_vsse8_v_u8mf2(out + 7, out_stride, out7u8, vl);
+#endif // __THEAD_VERSION__
    }
 }
 
