@@ -1,9 +1,9 @@
 name: release
-# on: pull_request
-on:
-  push:
-    tags:
-      - '*'
+on: pull_request
+# on:
+#   push:
+#     tags:
+#       - '*'
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
@@ -255,7 +255,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_DEFAULT_CMP0057=NEW \
@@ -357,7 +357,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       OHOS_NDK_CMAKE: $GITHUB_WORKSPACE/ohos-sdk/linux/native/build-tools/cmake/bin/cmake
       COMMON_CMAKE_OPTIONS: |
@@ -452,7 +452,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -524,7 +524,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -606,7 +606,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
@@ -700,7 +700,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -786,7 +786,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -868,7 +868,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -950,7 +950,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1032,7 +1032,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1114,7 +1114,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1196,7 +1196,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1268,7 +1268,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1349,7 +1349,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
         os-compiler:
           - { msvc-version: vs2015, windows-version: 2022, toolset-version: v140 }
           - { msvc-version: vs2017, windows-version: 2022, toolset-version: v141 }
@@ -1461,7 +1461,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
         os-ubuntu:
           - { ubuntu-id: 2204, ubuntu-version: 22.04 }
           - { ubuntu-id: 2404, ubuntu-version: 24.04 }
@@ -1515,7 +1515,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
@@ -1650,7 +1650,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [4.12.0]
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
     - uses: actions/checkout@v4
