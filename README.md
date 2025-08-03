@@ -32,9 +32,9 @@
 
 |opencv 4.12.0 package size|The official opencv|opencv-mobile|
 |:-:|:-:|:-:|
-|source zip|95.3 MB|8.17 MB|
-|android|301 MB|18 MB|
-|ios|209 MB|3.83 MB|
+|source zip|95.5 MB|8.78 MB|
+|android|299 MB|18.6 MB|
+|ios|211 MB|3.85 MB|
 
 
 <table>
