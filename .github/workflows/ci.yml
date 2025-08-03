@@ -133,26 +133,26 @@ jobs:
         unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
         echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $env:GITHUB_ENV
         echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-windows-${{ matrix.os-compiler.msvc-version }}" >> $env:GITHUB_ENV
-    - name: build-x86
-      run: |
-        cd ${{ env.SOURCE_DIR }}
-        mkdir build-x86; cd build-x86
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 4
-        cmake --build . --config Release --target install
-    - name: build-x64
-      run: |
-        cd ${{ env.SOURCE_DIR }}
-        mkdir build-x64; cd build-x64
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
-        cmake --build . --config Release -j 4
-        cmake --build . --config Release --target install
+    # - name: build-x86
+    #   run: |
+    #     cd ${{ env.SOURCE_DIR }}
+    #     mkdir build-x86; cd build-x86
+    #     cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+    #     cmake --build . --config Release -j 4
+    #     cmake --build . --config Release --target install
+    # - name: build-x64
+    #   run: |
+    #     cd ${{ env.SOURCE_DIR }}
+    #     mkdir build-x64; cd build-x64
+    #     cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+    #     cmake --build . --config Release -j 4
+    #     cmake --build . --config Release --target install
     - name: build-arm64
       if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
       run: |
         cd ${{ env.SOURCE_DIR }}
         mkdir build-arm64; cd build-arm64
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=ARM64 -DCMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION=10.0.22621.0 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=ARM64 -DCMAKE_WINDOWS_KITS_10_DIR="C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0" -DCMAKE_SYSTEM_VERSION=10.0.19041.0 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
     - name: package

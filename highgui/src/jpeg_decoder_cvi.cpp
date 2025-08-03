@@ -2232,9 +2232,9 @@ int jpeg_decoder_cvi_impl::decode(const unsigned char* jpgdata, int jpgsize, uns
             int j = 0;
             int n = w2;
             while (n > 0) {
-                size_t vl = vsetvl_e8m8(n);
-                vuint8m8_t bgr = vle8_v_u8m8(ptr + j, vl);
-                vse8_v_u8m8(outbgr, bgr, vl);
+                size_t vl = __riscv_vsetvl_e8m8(n);
+                vuint8m8_t bgr = __riscv_vle8_v_u8m8(ptr + j, vl);
+                __riscv_vse8_v_u8m8(outbgr, bgr, vl);
                 outbgr += vl;
                 j += vl;
                 n -= vl;
