@@ -1,7 +1,7 @@
-diff -Nuarp opencv-4.11.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv-4.11.0/modules/imgproc/include/opencv2/imgproc.hpp
---- opencv-4.11.0.orig/modules/imgproc/include/opencv2/imgproc.hpp	2025-01-19 00:07:25.706895750 +0800
-+++ opencv-4.11.0/modules/imgproc/include/opencv2/imgproc.hpp	2025-01-19 00:19:27.955301521 +0800
-@@ -4929,6 +4929,37 @@ CV_EXPORTS_W double getFontScaleFromHeig
+diff -Nuarp opencv-4.12.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv-4.12.0/modules/imgproc/include/opencv2/imgproc.hpp
+--- opencv-4.12.0.orig/modules/imgproc/include/opencv2/imgproc.hpp	2025-07-13 20:34:53.921109201 +0800
++++ opencv-4.12.0/modules/imgproc/include/opencv2/imgproc.hpp	2025-07-13 20:47:35.128999775 +0800
+@@ -4985,6 +4985,37 @@ CV_EXPORTS_W double getFontScaleFromHeig
                                             const int pixelHeight,
                                             const int thickness = 1);
  
@@ -39,9 +39,9 @@ diff -Nuarp opencv-4.11.0.orig/modules/imgproc/include/opencv2/imgproc.hpp openc
  /** @brief Class for iterating over all pixels on a raster line segment.
  
  The class LineIterator is used to get each pixel of a raster line connecting
-diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/drawing.cpp opencv-4.11.0/modules/imgproc/src/drawing.cpp
---- opencv-4.11.0.orig/modules/imgproc/src/drawing.cpp	2025-01-19 00:07:25.768896509 +0800
-+++ opencv-4.11.0/modules/imgproc/src/drawing.cpp	2025-01-19 00:24:39.379680129 +0800
+diff -Nuarp opencv-4.12.0.orig/modules/imgproc/src/drawing.cpp opencv-4.12.0/modules/imgproc/src/drawing.cpp
+--- opencv-4.12.0.orig/modules/imgproc/src/drawing.cpp	2025-07-13 20:34:53.982915100 +0800
++++ opencv-4.12.0/modules/imgproc/src/drawing.cpp	2025-07-13 20:47:35.129302958 +0800
 @@ -43,6 +43,25 @@ using namespace cv;
  
  namespace cv
@@ -262,9 +262,9 @@ diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/drawing.cpp opencv-4.11.0/mod
      font->font_face = font_face;
      font->hscale = (float)hscale;
      font->vscale = (float)vscale;
-diff -Nuarp opencv-4.11.0.orig/modules/imgproc/src/hershey_fonts.cpp opencv-4.11.0/modules/imgproc/src/hershey_fonts.cpp
---- opencv-4.11.0.orig/modules/imgproc/src/hershey_fonts.cpp	2025-01-19 00:07:25.781896668 +0800
-+++ opencv-4.11.0/modules/imgproc/src/hershey_fonts.cpp	2025-01-19 00:19:27.956301532 +0800
+diff -Nuarp opencv-4.12.0.orig/modules/imgproc/src/hershey_fonts.cpp opencv-4.12.0/modules/imgproc/src/hershey_fonts.cpp
+--- opencv-4.12.0.orig/modules/imgproc/src/hershey_fonts.cpp	2025-07-13 20:34:53.994911429 +0800
++++ opencv-4.12.0/modules/imgproc/src/hershey_fonts.cpp	2025-07-13 20:47:35.129521420 +0800
 @@ -51,6 +51,7 @@
  namespace cv
  {
