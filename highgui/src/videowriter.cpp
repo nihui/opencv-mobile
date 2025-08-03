@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#if (defined __linux__ && !__ANDROID__) || _WIN32
+#if ((defined __linux__ && !__ANDROID__) || defined(_WIN32))
 #include "writer_http.h"
 #endif
 
