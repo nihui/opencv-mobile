@@ -113,8 +113,8 @@ jobs:
     needs: [setup]
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        fail-fast: false
         include:
           - name: milkv-duo
             single-core: true
