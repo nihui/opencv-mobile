@@ -115,8 +115,6 @@ jobs:
       matrix:
         opencv-version: [4.12.0]
         os-compiler:
-          # - { msvc-version: vs2015, windows-version: 2022, toolset-version: v140 }
-          # - { msvc-version: vs2017, windows-version: 2022, toolset-version: v141 }
           - { msvc-version: vs2019, windows-version: 2022, toolset-version: v142 }
           - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143 }
     runs-on: windows-${{ matrix.os-compiler.windows-version }}
@@ -133,22 +131,21 @@ jobs:
         unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
         echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $env:GITHUB_ENV
         echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-windows-${{ matrix.os-compiler.msvc-version }}" >> $env:GITHUB_ENV
-    # - name: build-x86
-    #   run: |
-    #     cd ${{ env.SOURCE_DIR }}
-    #     mkdir build-x86; cd build-x86
-    #     cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
-    #     cmake --build . --config Release -j 4
-    #     cmake --build . --config Release --target install
-    # - name: build-x64
-    #   run: |
-    #     cd ${{ env.SOURCE_DIR }}
-    #     mkdir build-x64; cd build-x64
-    #     cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
-    #     cmake --build . --config Release -j 4
-    #     cmake --build . --config Release --target install
+    - name: build-x86
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-x86; cd build-x86
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake --build . --config Release -j 4
+        cmake --build . --config Release --target install
+    - name: build-x64
+      run: |
+        cd ${{ env.SOURCE_DIR }}
+        mkdir build-x64; cd build-x64
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake --build . --config Release -j 4
+        cmake --build . --config Release --target install
     - name: build-arm64
-      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
       run: |
         cd ${{ env.SOURCE_DIR }}
         mkdir build-arm64; cd build-arm64
@@ -156,16 +153,6 @@ jobs:
         cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
     - name: package
-      if: matrix.os-compiler.msvc-version == 'vs2015' || matrix.os-compiler.msvc-version == 'vs2017'
-      run: |
-        mkdir ${{ env.PACKAGE_NAME }}
-        mkdir ${{ env.PACKAGE_NAME }}/x86
-        mkdir ${{ env.PACKAGE_NAME }}/x64
-        Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x86\install\*" -Destination "${{ env.PACKAGE_NAME }}\x86"
-        Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x64\install\*" -Destination "${{ env.PACKAGE_NAME }}\x64"
-        7z a -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
-    - name: package
-      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
       run: |
         mkdir ${{ env.PACKAGE_NAME }}
         mkdir ${{ env.PACKAGE_NAME }}/x86
@@ -188,7 +175,6 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . --config Release -j 4
     - name: test-arm64
-      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
       run: |
         cd test
         mkdir build-arm64; cd build-arm64
