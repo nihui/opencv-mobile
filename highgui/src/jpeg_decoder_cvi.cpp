@@ -2279,7 +2279,7 @@ int jpeg_decoder_cvi_impl::decode(const unsigned char* jpgdata, int jpgsize, uns
             while (n > 0) {
                 size_t vl = __riscv_vsetvl_e8m2(n);
                 vuint8m2_t g = __riscv_vle8_v_u8m2(ptr + j, vl);
-                vuint8m2x3_t o = __riscv_vcreate_u8m2x3(g, g, g);
+                vuint8m2x3_t o = __riscv_vcreate_v_u8m2x3(g, g, g);
                 __riscv_vsseg3e8_v_u8m2x3(outbgr, o, vl);
                 outbgr += vl * 3;
                 j += vl;
