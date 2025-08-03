@@ -2228,13 +2228,24 @@ int jpeg_decoder_cvi_impl::decode(const unsigned char* jpgdata, int jpgsize, uns
 
         for (int i = 0; i < h2; i++)
         {
-#if __riscv_vector
+#if __riscv_vector_071
             int j = 0;
             int n = w2;
             while (n > 0) {
                 size_t vl = vsetvl_e8m8(n);
                 vuint8m8_t bgr = vle8_v_u8m8(ptr + j, vl);
                 vse8_v_u8m8(outbgr, bgr, vl);
+                outbgr += vl;
+                j += vl;
+                n -= vl;
+            }
+#elif __riscv_vector
+            int j = 0;
+            int n = w2;
+            while (n > 0) {
+                size_t vl = __riscv_vsetvl_e8m8(n);
+                vuint8m8_t bgr = __riscv_vle8_v_u8m8(ptr + j, vl);
+                __riscv_vse8_v_u8m8(outbgr, bgr, vl);
                 outbgr += vl;
                 j += vl;
                 n -= vl;
@@ -2273,7 +2284,7 @@ int jpeg_decoder_cvi_impl::decode(const unsigned char* jpgdata, int jpgsize, uns
 
         for (int i = 0; i < height; i++)
         {
-#if __riscv_vector
+#if __riscv_vector_071
             int j = 0;
             int n = width;
             while (n > 0) {
@@ -2281,6 +2292,18 @@ int jpeg_decoder_cvi_impl::decode(const unsigned char* jpgdata, int jpgsize, uns
                 vuint8m2_t g = vle8_v_u8m2(ptr + j, vl);
                 vuint8m2x3_t o = vcreate_u8m2x3(g, g, g);
                 vsseg3e8_v_u8m2x3(outbgr, o, vl);
+                outbgr += vl * 3;
+                j += vl;
+                n -= vl;
+            }
+#elif __riscv_vector
+            int j = 0;
+            int n = width;
+            while (n > 0) {
+                size_t vl = __riscv_vsetvl_e8m2(n);
+                vuint8m2_t g = __riscv_vle8_v_u8m2(ptr + j, vl);
+                vuint8m2x3_t o = __riscv_vcreate_v_u8m2x3(g, g, g);
+                __riscv_vsseg3e8_v_u8m2x3(outbgr, o, vl);
                 outbgr += vl * 3;
                 j += vl;
                 n -= vl;

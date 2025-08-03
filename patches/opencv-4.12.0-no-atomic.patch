@@ -1,7 +1,7 @@
-diff -Nuarp opencv-4.11.0.orig/modules/core/src/mathfuncs.cpp opencv-4.11.0/modules/core/src/mathfuncs.cpp
---- opencv-4.11.0.orig/modules/core/src/mathfuncs.cpp	2025-01-18 23:31:52.827608643 +0800
-+++ opencv-4.11.0/modules/core/src/mathfuncs.cpp	2025-01-18 23:55:21.143734178 +0800
-@@ -2170,8 +2170,13 @@ const double* getExpTab64f()
+diff -Nuarp opencv-4.12.0.orig/modules/core/src/mathfuncs.cpp opencv-4.12.0/modules/core/src/mathfuncs.cpp
+--- opencv-4.12.0.orig/modules/core/src/mathfuncs.cpp	2025-07-13 20:34:53.536599577 +0800
++++ opencv-4.12.0/modules/core/src/mathfuncs.cpp	2025-07-13 20:49:01.526535532 +0800
+@@ -1929,8 +1929,13 @@ const double* getExpTab64f()
  const float* getExpTab32f()
  {
      static float CV_DECL_ALIGNED(64) expTab_f[EXPTAB_MASK+1];
@@ -15,10 +15,10 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/mathfuncs.cpp opencv-4.11.0/modu
      {
          for( int j = 0; j <= EXPTAB_MASK; j++ )
              expTab_f[j] = (float)expTab[j];
-diff -Nuarp opencv-4.11.0.orig/modules/core/src/parallel.cpp opencv-4.11.0/modules/core/src/parallel.cpp
---- opencv-4.11.0.orig/modules/core/src/parallel.cpp	2025-01-18 23:43:48.356574419 +0800
-+++ opencv-4.11.0/modules/core/src/parallel.cpp	2025-01-18 23:55:21.143734178 +0800
-@@ -497,6 +497,7 @@ void parallel_for_(const cv::Range& rang
+diff -Nuarp opencv-4.12.0.orig/modules/core/src/parallel.cpp opencv-4.12.0/modules/core/src/parallel.cpp
+--- opencv-4.12.0.orig/modules/core/src/parallel.cpp	2025-07-13 20:34:53.534609328 +0800
++++ opencv-4.12.0/modules/core/src/parallel.cpp	2025-07-13 20:49:01.526709430 +0800
+@@ -517,6 +517,7 @@ void parallel_for_(const cv::Range& rang
      if (range.empty())
          return;
  
@@ -26,7 +26,7 @@ diff -Nuarp opencv-4.11.0.orig/modules/core/src/parallel.cpp opencv-4.11.0/modul
      static std::atomic<bool> flagNestedParallelFor(false);
      bool isNotNestedRegion = !flagNestedParallelFor.load();
      if (isNotNestedRegion)
-@@ -509,6 +510,7 @@ void parallel_for_(const cv::Range& rang
+@@ -535,6 +536,7 @@ void parallel_for_(const cv::Range& rang
          }
      }
      else // nested parallel_for_() calls are not parallelized

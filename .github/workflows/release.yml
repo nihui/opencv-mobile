@@ -160,7 +160,7 @@ jobs:
         zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
     - name: opencv4-source
       env:
-        opencv-version: 4.11.0
+        opencv-version: 4.12.0
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
         unzip -q opencv-${{ env.opencv-version }}.zip
@@ -168,6 +168,8 @@ jobs:
         cd opencv-${{ env.opencv-version }}
         truncate -s 0 cmake/OpenCVFindLibsGrfmt.cmake
         rm -rf modules/gapi
+
+        truncate -s 0 cmake/platforms/OpenCV-Linux.cmake
 
         rm modules/core/src/cuda_*
         rm modules/core/src/direct*
@@ -219,9 +221,7 @@ jobs:
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
         rm -rf modules/highgui
         cp -r ../highgui modules/
-        mv 3rdparty/kleidicv .
-        rm -rf 3rdparty/*
-        mv kleidicv 3rdparty/
+        rm -rf 3rdparty
         rm -rf apps data doc samples platforms
         rm -rf modules/java
         rm -rf modules/js
@@ -247,15 +247,15 @@ jobs:
     - name: upload-opencv4-source
       uses: actions/upload-artifact@v4
       with:
-        name: opencv-mobile-4.11.0-source
-        path: opencv-mobile-4.11.0.zip
+        name: opencv-mobile-4.12.0-source
+        path: opencv-mobile-4.12.0.zip
 
   android:
     needs: [setup]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_DEFAULT_CMP0057=NEW \
@@ -357,7 +357,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       OHOS_NDK_CMAKE: $GITHUB_WORKSPACE/ohos-sdk/linux/native/build-tools/cmake/bin/cmake
       COMMON_CMAKE_OPTIONS: |
@@ -418,7 +418,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.11.0'
+      if: matrix.opencv-version == '4.12.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: test-armeabi-v7a
       run: |
@@ -452,7 +452,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -524,7 +524,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -606,7 +606,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
@@ -666,7 +666,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.11.0'
+      if: matrix.opencv-version == '4.12.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: test-arm-linux-gnueabi
       run: |
@@ -700,7 +700,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -786,7 +786,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -868,7 +868,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -950,7 +950,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1032,7 +1032,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1114,7 +1114,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1196,7 +1196,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1268,7 +1268,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1349,11 +1349,11 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
         os-compiler:
-          - { msvc-version: vs2015, windows-version: 2019, toolset-version: v140 }
-          - { msvc-version: vs2017, windows-version: 2019, toolset-version: v141 }
-          - { msvc-version: vs2019, windows-version: 2019, toolset-version: v142 }
+          - { msvc-version: vs2015, windows-version: 2022, toolset-version: v140 }
+          - { msvc-version: vs2017, windows-version: 2022, toolset-version: v141 }
+          - { msvc-version: vs2019, windows-version: 2022, toolset-version: v142 }
           - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143 }
     runs-on: windows-${{ matrix.os-compiler.windows-version }}
     env:
@@ -1361,11 +1361,6 @@ jobs:
       COMMON_CMAKE_OPTIONS: -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_INSTALL_PREFIX=install
     steps:
     - uses: actions/checkout@v4
-    - name: patch-windows-sdk
-      if: matrix.os-compiler.msvc-version == 'vs2022'
-      run: |
-        cd "C:\Program Files (x86)"
-        & "C:\Program Files\Git\usr\bin\patch.exe" -p0 -i $env:GITHUB_WORKSPACE\fix-windows-sdk-26100-arm64-wchar.patch
     - uses: actions/download-artifact@v4
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -1374,6 +1369,27 @@ jobs:
         unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
         echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $env:GITHUB_ENV
         echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-windows-${{ matrix.os-compiler.msvc-version }}" >> $env:GITHUB_ENV
+
+    - name: Install and Setup VS 2015 (v140) Build Tools
+      if: matrix.os-compiler.msvc-version == 'vs2015'
+      run: |
+        $vs140Path = "C:/vs140_build_tools"
+        Invoke-WebRequest -Uri "https://aka.ms/vs/15/release/vs_buildtools.exe" -OutFile vs_buildtools.exe
+        Start-Process -FilePath "vs_buildtools.exe" -ArgumentList "--installPath `"$vs140Path`" --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.140 --quiet --wait --norestart --nocache" -Wait
+        $vcvarsPath = (Get-ChildItem -Path $vs140Path -Filter "vcvars64.bat" -Recurse | Select-Object -First 1).FullName
+        $cmd = "`"$vcvarsPath`" && powershell -Command `"`$env:PATH;`$env:INCLUDE;`$env:LIB`""
+        $output = cmd.exe /c $cmd
+        $lines = $output -split "`r`n"
+        echo "PATH=$($lines[0]);$($env:PATH)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo "INCLUDE=$($lines[1])" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo "LIB=$($lines[2])" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+    - name: Install VS 2017 (v141) Build Tools
+      if: matrix.os-compiler.msvc-version == 'vs2017'
+      run: |
+        $vsInstallPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+        Start-Process -FilePath "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe" -ArgumentList "modify --installPath `"$vsInstallPath`" --add Microsoft.VisualStudio.Component.VC.v141.x86.x64 --quiet --norestart --nocache" -Wait
+
     - name: build-x86
       run: |
         cd ${{ env.SOURCE_DIR }}
@@ -1393,7 +1409,7 @@ jobs:
       run: |
         cd ${{ env.SOURCE_DIR }}
         mkdir build-arm64; cd build-arm64
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=ARM64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=ARM64 -DCMAKE_WINDOWS_KITS_10_DIR="C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0" -DCMAKE_SYSTEM_VERSION="10.0.22621.0" $(type ../options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
     - name: package
@@ -1445,7 +1461,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
         os-ubuntu:
           - { ubuntu-id: 2204, ubuntu-version: 22.04 }
           - { ubuntu-id: 2404, ubuntu-version: 24.04 }
@@ -1480,7 +1496,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.11.0'
+      if: matrix.opencv-version == '4.12.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: test
       run: |
@@ -1499,7 +1515,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
@@ -1585,7 +1601,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.11.0'
+      if: matrix.opencv-version == '4.12.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: test
       run: |
@@ -1634,7 +1650,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.11.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
     - uses: actions/checkout@v4
@@ -1834,8 +1850,8 @@ jobs:
             single-core: true
             cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
             setup-toolchain-cmd: |
-              wget -q https://github.com/YuzukiHD/Yuzukilizard/releases/download/Toolchains/toolchain-sunxi-musl-gcc-830.tar.gz
-              tar -xf toolchain-sunxi-musl-gcc-830.tar.gz
+              wget -q https://github.com/YuzukiHD/sunxi-bsp-toolchains/releases/download/1.0.0/toolchain-sunxi-musl-arm-gcc-830.tar.gz
+              tar -xf toolchain-sunxi-musl-arm-gcc-830.tar.gz
             setup-env-cmd: |
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
               export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
@@ -1848,8 +1864,8 @@ jobs:
             single-core: true
             cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
             setup-toolchain-cmd: |
-              wget -q https://github.com/YuzukiHD/Yuzukilizard/releases/download/Toolchains/toolchain-sunxi-musl-gcc-830.tar.gz
-              tar -xf toolchain-sunxi-musl-gcc-830.tar.gz
+              wget -q https://github.com/YuzukiHD/sunxi-bsp-toolchains/releases/download/1.0.0/toolchain-sunxi-musl-arm-gcc-830.tar.gz
+              tar -xf toolchain-sunxi-musl-arm-gcc-830.tar.gz
             setup-env-cmd: |
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
               export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
@@ -1870,6 +1886,18 @@ jobs:
             setup-test-env-cmd: |
               export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain
               export STAGING_DIR=$GITHUB_WORKSPACE/toolchain
+            cmake-options: -DWITH_AW=ON
+
+          - name: avaota-f1
+            single-core: true
+            cmake-toolchain: riscv32-linux-musl.toolchain.cmake
+            setup-toolchain-cmd: |
+              wget -q https://github.com/AvaotaSBC/toolchains/releases/download/v821-toolchains/nds32le-linux-musl-v5d.tar.xz
+              tar -xf nds32le-linux-musl-v5d.tar.xz
+            setup-env-cmd: |
+              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/nds32le-linux-musl-v5d
+            setup-test-env-cmd: |
+              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/nds32le-linux-musl-v5d
             cmake-options: -DWITH_AW=ON
 
           - name: purple-pi
@@ -1934,20 +1962,20 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/download-artifact@v4
       with:
-        name: opencv-mobile-4.11.0-source
+        name: opencv-mobile-4.12.0-source
     - name: setup-toolchain
       run: ${{ matrix.setup-toolchain-cmd }}
     - name: setup-opencv-source
       run: |
-        unzip -q opencv-mobile-4.11.0.zip
-        echo "SOURCE_DIR=opencv-mobile-4.11.0" >> $GITHUB_ENV
-        echo "PACKAGE_NAME=opencv-mobile-4.11.0-${{ matrix.name }}" >> $GITHUB_ENV
+        unzip -q opencv-mobile-4.12.0.zip
+        echo "SOURCE_DIR=opencv-mobile-4.12.0" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-4.12.0-${{ matrix.name }}" >> $GITHUB_ENV
 
     - name: build-disable-thread
       if: ${{ matrix.single-core }}
       run: |
         cd ${{ env.SOURCE_DIR }}
-        patch -p1 -i ../patches/opencv-4.11.0-no-atomic.patch
+        patch -p1 -i ../patches/opencv-4.12.0-no-atomic.patch
         mkdir build && cd build
         ${{ matrix.setup-env-cmd }}
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} ${{ matrix.cmake-options }} \
