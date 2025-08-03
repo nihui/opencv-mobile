@@ -3876,7 +3876,18 @@ int capture_cvi_impl::read_frame(unsigned char* bgrdata)
 
         for (int i = 0; i < h2; i++)
         {
-#if __riscv_vector
+#if __riscv_vector_071
+            int j = 0;
+            int n = w2;
+            while (n > 0) {
+                size_t vl = vsetvl_e8m8(n);
+                vuint8m8_t bgr = vle8_v_u8m8(ptr + j, vl);
+                vse8_v_u8m8(bgrdata, bgr, vl);
+                bgrdata += vl;
+                j += vl;
+                n -= vl;
+            }
+#elif __riscv_vector
             int j = 0;
             int n = w2;
             while (n > 0) {
