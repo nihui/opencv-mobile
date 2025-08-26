@@ -27,7 +27,7 @@ jobs:
     outputs:
       VERSION: ${{ steps.get_version.outputs.VERSION }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: get-version
       id: get_version
       run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
@@ -267,7 +267,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: ndk-fix-debug
       run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
     - uses: actions/download-artifact@v5
@@ -365,7 +365,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: ndk-fix-debug
       run: |
         wget https://repo.huaweicloud.com/harmonyos/os/4.1.1-Release/ohos-sdk-windows_linux-public.tar.gz
@@ -466,7 +466,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -538,7 +538,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -619,7 +619,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -711,7 +711,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -800,7 +800,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -882,7 +882,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -964,7 +964,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -1046,7 +1046,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -1128,7 +1128,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -1210,7 +1210,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -1282,7 +1282,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -1360,7 +1360,7 @@ jobs:
       UseMultiToolTask: true
       COMMON_CMAKE_OPTIONS: -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_INSTALL_PREFIX=install
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -1469,7 +1469,7 @@ jobs:
     env:
       COMMON_CMAKE_OPTIONS: -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
@@ -1522,7 +1522,7 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: emsdk
       run: |
         git clone https://github.com/emscripten-core/emsdk.git
@@ -1653,7 +1653,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: setup-opencv-package
       run: |
         echo "MACOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-macos" >> $GITHUB_ENV
@@ -1959,7 +1959,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: actions/download-artifact@v5
       with:
         name: opencv-mobile-4.12.0-source
