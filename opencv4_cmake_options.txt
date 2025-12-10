@@ -88,3 +88,4 @@
 -DBUILD_opencv_objdetect=OFF
 -DBUILD_opencv_stitching=OFF
 -DBUILD_opencv_ml=OFF
+-DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON
