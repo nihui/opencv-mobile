@@ -16,10 +16,12 @@
 
 // IMSHOW window for MS Windows
 #include "display_win32.h"
+
 #include <algorithm>
 #include <cassert>
-#include <map>
+#include <cstdio>
 #include <list>
+#include <map>
 #include <mutex>
 
 static constexpr auto classNameBase = "OCVMWndClass";
