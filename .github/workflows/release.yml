@@ -1351,10 +1351,10 @@ jobs:
       matrix:
         opencv-version: [4.13.0]
         os-compiler:
-          - { msvc-version: vs2015, windows-version: 2022, toolset-version: v140 }
-          - { msvc-version: vs2017, windows-version: 2022, toolset-version: v141 }
-          - { msvc-version: vs2019, windows-version: 2022, toolset-version: v142 }
-          - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143 }
+          - { msvc-version: vs2015, windows-version: 2022, toolset-version: v140, windows-sdk-version: 22621 }
+          - { msvc-version: vs2017, windows-version: 2022, toolset-version: v141, windows-sdk-version: 22621 }
+          - { msvc-version: vs2019, windows-version: 2022, toolset-version: v142, windows-sdk-version: 26100 }
+          - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143, windows-sdk-version: 26100 }
     runs-on: windows-${{ matrix.os-compiler.windows-version }}
     env:
       UseMultiToolTask: true
@@ -1390,18 +1390,22 @@ jobs:
         $vsInstallPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
         Start-Process -FilePath "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe" -ArgumentList "modify --installPath `"$vsInstallPath`" --add Microsoft.VisualStudio.Component.VC.v141.x86.x64 --quiet --norestart --nocache" -Wait
 
+    - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2.4
+      with:
+        sdk-version: ${{ matrix.os-compiler.windows-sdk-version }}
+
     - name: build-x86
       run: |
         cd ${{ env.SOURCE_DIR }}
         mkdir build-x86; cd build-x86
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32,version=10.0.${{ matrix.os-compiler.windows-sdk-version }}.0 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
     - name: build-x64
       run: |
         cd ${{ env.SOURCE_DIR }}
         mkdir build-x64; cd build-x64
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64,version=10.0.${{ matrix.os-compiler.windows-sdk-version }}.0 $(type ../options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
     - name: build-arm64
@@ -1409,7 +1413,7 @@ jobs:
       run: |
         cd ${{ env.SOURCE_DIR }}
         mkdir build-arm64; cd build-arm64
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=ARM64 -DCMAKE_WINDOWS_KITS_10_DIR="C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0" -DCMAKE_SYSTEM_VERSION="10.0.22621.0" $(type ../options.txt) -DBUILD_opencv_world=OFF ..
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64,version=10.0.${{ matrix.os-compiler.windows-sdk-version }}.0 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=ARM64 -DCMAKE_WINDOWS_KITS_10_DIR="C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0" -DCMAKE_SYSTEM_VERSION="10.0.22621.0" $(type ../options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
     - name: package
@@ -1436,20 +1440,20 @@ jobs:
       run: |
         cd test
         mkdir build-x86; cd build-x86
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x86" -DOpenCV_STATIC=ON ..
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A Win32,version=10.0.${{ matrix.os-compiler.windows-sdk-version }}.0 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x86" -DOpenCV_STATIC=ON ..
         cmake --build . --config Release -j 4
     - name: test-x64
       run: |
         cd test
         mkdir build-x64; cd build-x64
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x64" -DOpenCV_STATIC=ON ..
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64,version=10.0.${{ matrix.os-compiler.windows-sdk-version }}.0 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . --config Release -j 4
     - name: test-arm64
       if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
       run: |
         cd test
         mkdir build-arm64; cd build-arm64
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\arm64" -DOpenCV_STATIC=ON ..
+        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64,version=10.0.${{ matrix.os-compiler.windows-sdk-version }}.0 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\arm64" -DOpenCV_STATIC=ON ..
         cmake --build . --config Release -j 4
     - name: upload-zip
       uses: actions/upload-artifact@v6
