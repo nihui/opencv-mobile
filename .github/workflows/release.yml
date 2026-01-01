@@ -498,7 +498,9 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
+        shopt -s nullglob
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
+        shopt -u nullglob
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
             -o opencv2.framework/Versions/A/opencv2
@@ -580,7 +582,9 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
+        shopt -s nullglob
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
+        shopt -u nullglob
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
             ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
@@ -754,7 +758,9 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
+        shopt -s nullglob
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
+        shopt -u nullglob
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
             ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
@@ -844,7 +850,9 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
+        shopt -s nullglob
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
+        shopt -u nullglob
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
             ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
@@ -1009,7 +1017,9 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
+        shopt -s nullglob
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
+        shopt -u nullglob
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
             ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
@@ -1092,7 +1102,9 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
+        shopt -s nullglob
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
+        shopt -u nullglob
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
             ${{ env.SOURCE_DIR }}/build-arm64e/install/lib/libopencv_world.a ${thirdparty_libs} \
@@ -1175,7 +1187,9 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
+        shopt -s nullglob
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
+        shopt -u nullglob
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
             ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
@@ -1249,7 +1263,9 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
+        shopt -s nullglob
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
+        shopt -u nullglob
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
             -o opencv2.framework/Versions/A/opencv2
@@ -1331,7 +1347,9 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
-        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
+        shopt -s nullglob
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
+        shopt -u nullglob
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
             ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
@@ -1356,6 +1374,7 @@ jobs:
 
   windows:
     needs: [setup]
+    name: "windows-${{ matrix.os-compiler.msvc-version }} (${{ matrix.opencv-version }})"
     strategy:
       matrix:
         opencv-version: [4.13.0]
@@ -1472,6 +1491,7 @@ jobs:
 
   ubuntu:
     needs: [setup]
+    name: "ubuntu-${{ matrix.os-ubuntu.ubuntu-version }} (${{ matrix.opencv-version }})"
     strategy:
       matrix:
         opencv-version: [4.13.0]
@@ -1764,6 +1784,7 @@ jobs:
 
   devboard:
     needs: [setup]
+    name: "devboard-${{ matrix.name }}"
     runs-on: ubuntu-latest
     strategy:
       matrix:
