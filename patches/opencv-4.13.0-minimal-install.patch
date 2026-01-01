@@ -1,6 +1,6 @@
 diff -Nuarp opencv-4.13.0.orig/cmake/OpenCVGenAndroidMK.cmake opencv-4.13.0/cmake/OpenCVGenAndroidMK.cmake
 --- opencv-4.13.0.orig/cmake/OpenCVGenAndroidMK.cmake	2025-12-30 15:52:05.000000000 +0800
-+++ opencv-4.13.0/cmake/OpenCVGenAndroidMK.cmake	2026-01-01 16:47:23.972185861 +0800
++++ opencv-4.13.0/cmake/OpenCVGenAndroidMK.cmake	2026-01-01 17:34:44.846147649 +0800
 @@ -76,6 +76,4 @@ if(ANDROID)
  
    configure_file("${OpenCV_SOURCE_DIR}/cmake/templates/OpenCV.mk.in" "${CMAKE_BINARY_DIR}/unix-install/OpenCV.mk" @ONLY)
@@ -10,7 +10,7 @@ diff -Nuarp opencv-4.13.0.orig/cmake/OpenCVGenAndroidMK.cmake opencv-4.13.0/cmak
  endif(ANDROID)
 diff -Nuarp opencv-4.13.0.orig/cmake/OpenCVUtils.cmake opencv-4.13.0/cmake/OpenCVUtils.cmake
 --- opencv-4.13.0.orig/cmake/OpenCVUtils.cmake	2025-12-30 15:52:05.000000000 +0800
-+++ opencv-4.13.0/cmake/OpenCVUtils.cmake	2026-01-01 16:47:23.972325193 +0800
++++ opencv-4.13.0/cmake/OpenCVUtils.cmake	2026-01-01 17:34:44.846306919 +0800
 @@ -980,11 +980,6 @@ macro(ocv_finalize_status)
      endif()
    endif()
@@ -25,8 +25,19 @@ diff -Nuarp opencv-4.13.0.orig/cmake/OpenCVUtils.cmake opencv-4.13.0/cmake/OpenC
  
 diff -Nuarp opencv-4.13.0.orig/CMakeLists.txt opencv-4.13.0/CMakeLists.txt
 --- opencv-4.13.0.orig/CMakeLists.txt	2025-12-30 15:52:05.000000000 +0800
-+++ opencv-4.13.0/CMakeLists.txt	2026-01-01 16:47:23.972460648 +0800
-@@ -1097,20 +1097,12 @@ ocv_add_modules_compiler_options()
++++ opencv-4.13.0/CMakeLists.txt	2026-01-01 17:35:53.090915688 +0800
+@@ -638,10 +638,6 @@ set(OPENCV_EXTRA_MODULES_PATH "" CACHE P
+ ocv_cmake_hook(POST_CMAKE_BUILD_OPTIONS)
+ 
+ # --- Python Support ---
+-if(NOT IOS AND NOT XROS)
+-  include(cmake/OpenCVDetectPython.cmake)
+-  include(cmake/OpenCVDetectDLPack.cmake)
+-endif()
+ 
+ include(cmake/OpenCVCompilerOptions.cmake)
+ 
+@@ -1097,20 +1093,12 @@ ocv_add_modules_compiler_options()
  ocv_register_modules()
  
  # Generate targets for documentation
@@ -47,7 +58,7 @@ diff -Nuarp opencv-4.13.0.orig/CMakeLists.txt opencv-4.13.0/CMakeLists.txt
  
  # ----------------------------------------------------------------------------
  # Finalization: generate configuration-based files
-@@ -1122,20 +1114,13 @@ ocv_cmake_hook(PRE_FINALIZE)
+@@ -1122,20 +1110,13 @@ ocv_cmake_hook(PRE_FINALIZE)
  include(cmake/OpenCVGenHeaders.cmake)
  
  # Generate opencv.pc for pkg-config command
@@ -68,7 +79,7 @@ diff -Nuarp opencv-4.13.0.orig/CMakeLists.txt opencv-4.13.0/CMakeLists.txt
  
  # Generate ABI descriptor
  include(cmake/OpenCVGenABI.cmake)
-@@ -1161,12 +1146,6 @@ if(INSTALL_TESTS AND OPENCV_TEST_DATA_PA
+@@ -1161,12 +1142,6 @@ if(INSTALL_TESTS AND OPENCV_TEST_DATA_PA
    endif()
  endif()
  
@@ -81,7 +92,7 @@ diff -Nuarp opencv-4.13.0.orig/CMakeLists.txt opencv-4.13.0/CMakeLists.txt
  if(NOT OPENCV_LICENSE_FILE)
    set(OPENCV_LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
  endif()
-@@ -1176,11 +1155,6 @@ if(ANDROID OR NOT UNIX)
+@@ -1176,11 +1151,6 @@ if(ANDROID OR NOT UNIX)
    install(FILES ${OPENCV_LICENSE_FILE}
          PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
          DESTINATION ./ COMPONENT libs)
@@ -95,7 +106,7 @@ diff -Nuarp opencv-4.13.0.orig/CMakeLists.txt opencv-4.13.0/CMakeLists.txt
  if(COMMAND ocv_pylint_finalize)
 diff -Nuarp opencv-4.13.0.orig/data/CMakeLists.txt opencv-4.13.0/data/CMakeLists.txt
 --- opencv-4.13.0.orig/data/CMakeLists.txt	2025-12-30 15:52:05.000000000 +0800
-+++ opencv-4.13.0/data/CMakeLists.txt	2026-01-01 16:47:23.972567340 +0800
++++ opencv-4.13.0/data/CMakeLists.txt	2026-01-01 17:34:44.846595633 +0800
 @@ -1,9 +1,6 @@
  file(GLOB HAAR_CASCADES haarcascades/*.xml)
  file(GLOB LBP_CASCADES lbpcascades/*.xml)
