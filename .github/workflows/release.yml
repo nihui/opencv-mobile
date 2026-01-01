@@ -498,8 +498,9 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
         lipo -create \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -579,9 +580,10 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -752,9 +754,10 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -841,9 +844,10 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -1005,9 +1009,10 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -1087,9 +1092,10 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64e/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64e/install/lib/libopencv_world.a ${thirdparty_libs} \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64e/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64e/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -1169,9 +1175,10 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -1242,8 +1249,9 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
         lipo -create \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -1323,9 +1331,10 @@ jobs:
         ln -s Versions/Current/Headers opencv2.framework/Headers
         ln -s Versions/Current/Resources opencv2.framework/Resources
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
+        thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a(N))
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -1811,145 +1820,171 @@ jobs:
               echo "fine :)"
             cmake-options: -DWITH_KLEIDICV=ON -DWITH_RPI=ON -DWITH_CIX=ON
 
-          - name: milkv-duo
-            single-core: true
-            cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
-            setup-toolchain-cmd: |
-              wget -q https://occ-oss-prod.oss-cn-hangzhou.aliyuncs.com/resource//1705396382457/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
-              tar -xf Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
-              wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
-              tar -xf host-tools.tar.gz
-            setup-env-cmd: |
-              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1
-            setup-test-env-cmd: |
-              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
-            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
-
-          - name: licheerv-nano
-            single-core: true
-            cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
-            setup-toolchain-cmd: |
-              wget -q https://occ-oss-prod.oss-cn-hangzhou.aliyuncs.com/resource//1705396382457/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
-              tar -xf Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
-              wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
-              tar -xf host-tools.tar.gz
-            setup-env-cmd: |
-              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1
-            setup-test-env-cmd: |
-              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
-            cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
-
-          - name: luckfox-pico
-            single-core: true
-            cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
-            setup-toolchain-cmd: |
-              git clone --depth 1 https://github.com/LuckfoxTECH/luckfox-pico.git luckfox-pico
-            setup-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
-            setup-test-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
-            cmake-options: -DWITH_RK=ON
-
-          - name: yuzuki-lizard
-            single-core: true
-            cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
-            setup-toolchain-cmd: |
-              wget -q https://github.com/YuzukiHD/sunxi-bsp-toolchains/releases/download/1.0.0/toolchain-sunxi-musl-arm-gcc-830.tar.gz
-              tar -xf toolchain-sunxi-musl-arm-gcc-830.tar.gz
-            setup-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-              export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-            setup-test-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-              export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-            cmake-options: -DWITH_AW=ON
-
-          - name: tinyvision
-            single-core: true
-            cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
-            setup-toolchain-cmd: |
-              wget -q https://github.com/YuzukiHD/sunxi-bsp-toolchains/releases/download/1.0.0/toolchain-sunxi-musl-arm-gcc-830.tar.gz
-              tar -xf toolchain-sunxi-musl-arm-gcc-830.tar.gz
-            setup-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-              export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-            setup-test-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-              export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
-            cmake-options: -DWITH_AW=ON
-
-          - name: yuzuki-chameleon
-            single-core: false
-            cmake-toolchain: arm-openwrt-linux-gnueabi.toolchain.cmake
-            setup-toolchain-cmd: |
-              wget -q https://github.com/YuzukiHD/YuzukiChameleon/releases/download/0.0.1/toolchain-sunxi-glibc-arm.tar.gz
-              tar -xf toolchain-sunxi-glibc-arm.tar.gz
-            setup-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain
-              export STAGING_DIR=$GITHUB_WORKSPACE/toolchain
-            setup-test-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain
-              export STAGING_DIR=$GITHUB_WORKSPACE/toolchain
-            cmake-options: -DWITH_AW=ON
-
-          - name: avaota-f1
-            single-core: true
-            cmake-toolchain: riscv32-linux-musl.toolchain.cmake
-            setup-toolchain-cmd: |
-              wget -q https://github.com/AvaotaSBC/toolchains/releases/download/v821-toolchains/nds32le-linux-musl-v5d.tar.xz
-              tar -xf nds32le-linux-musl-v5d.tar.xz
-            setup-env-cmd: |
-              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/nds32le-linux-musl-v5d
-            setup-test-env-cmd: |
-              export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/nds32le-linux-musl-v5d
-            cmake-options: -DWITH_AW=ON
-
-          - name: purple-pi
+          - name: debian-trixie-arm
+            os-image: debian:trixie
             single-core: false
             cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake
             setup-toolchain-cmd: |
-              git clone --depth 1 https://github.com/industio/PurPle-Pi-R1.git
-              cd PurPle-Pi-R1/toolchain
-              sh install_toolchain.sh
+              apt-get update
+              apt-get install -y unzip zip patch cmake g++-arm-linux-gnueabihf
             setup-env-cmd: |
-              export PATH=$PATH:$GITHUB_WORKSPACE/PurPle-Pi-R1/toolchain/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin
+              echo "fine :)"
             setup-test-env-cmd: |
-              export PATH=$PATH:$GITHUB_WORKSPACE/PurPle-Pi-R1/toolchain/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin
+              echo "fine :)"
             cmake-options:
 
-          - name: myir-t113i
+          - name: debian-trixie-aarch64
+            os-image: debian:trixie
             single-core: false
-            cmake-toolchain: arm-linux-gnueabi.toolchain.cmake
+            cmake-toolchain: aarch64-linux-gnu.toolchain.cmake
             setup-toolchain-cmd: |
-              git clone --depth 1 https://github.com/MYIR-ALLWINNER/toolchain.git
+              apt-get update
+              apt-get install -y unzip zip patch cmake g++-aarch64-linux-gnu
             setup-env-cmd: |
-              export PATH=$PATH:$GITHUB_WORKSPACE/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin
+              echo "fine :)"
             setup-test-env-cmd: |
-              export PATH=$PATH:$GITHUB_WORKSPACE/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin
-            cmake-options: -DWITH_AW=ON
+              echo "fine :)"
+            cmake-options: -DWITH_KLEIDICV=ON -DWITH_RPI=ON -DWITH_CIX=ON
 
-          - name: 2k0300-fengniao
-            single-core: true
-            cmake-toolchain: loongarch64-linux-gnu.toolchain.cmake
-            setup-toolchain-cmd: |
-              wget -q https://ftp.loongnix.cn/toolchain/gcc/release/loongarch/gcc8/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5.tar.xz
-              tar -xf loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5.tar.xz
-            setup-env-cmd: |
-              export LOONGARCH64_ROOT_PATH=$GITHUB_WORKSPACE/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5
-            setup-test-env-cmd: |
-              export LOONGARCH64_ROOT_PATH=$GITHUB_WORKSPACE/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5
-            cmake-options: -DCPU_BASELINE='' -DCPU_DISPATCH=''
-
-          - name: lockzhiner-vision-module
-            single-core: true
-            cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
-            setup-toolchain-cmd: |
-              git clone --depth 1 https://gitee.com/LockzhinerAI/arm-rockchip830-linux-uclibcgnueabihf.git arm-rockchip830-linux-uclibcgnueabihf
-            setup-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/arm-rockchip830-linux-uclibcgnueabihf
-            setup-test-env-cmd: |
-              export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/arm-rockchip830-linux-uclibcgnueabihf
-            cmake-options: -DWITH_RK=ON
+          # - name: milkv-duo
+          #   single-core: true
+          #   cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     wget -q https://occ-oss-prod.oss-cn-hangzhou.aliyuncs.com/resource//1705396382457/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
+          #     tar -xf Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
+          #     wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
+          #     tar -xf host-tools.tar.gz
+          #   setup-env-cmd: |
+          #     export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1
+          #   setup-test-env-cmd: |
+          #     export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
+          #   cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
+          #
+          # - name: licheerv-nano
+          #   single-core: true
+          #   cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     wget -q https://occ-oss-prod.oss-cn-hangzhou.aliyuncs.com/resource//1705396382457/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
+          #     tar -xf Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1-20240115.tar.gz
+          #     wget -q https://sophon-file.sophon.cn/sophon-prod-s3/drive/23/03/07/16/host-tools.tar.gz
+          #     tar -xf host-tools.tar.gz
+          #   setup-env-cmd: |
+          #     export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/Xuantie-900-gcc-linux-5.10.4-musl64-x86_64-V2.8.1
+          #   setup-test-env-cmd: |
+          #     export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/host-tools/gcc/riscv64-linux-musl-x86_64
+          #   cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
+          #
+          # - name: luckfox-pico
+          #   single-core: true
+          #   cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     git clone --depth 1 https://github.com/LuckfoxTECH/luckfox-pico.git luckfox-pico
+          #   setup-env-cmd: |
+          #     export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
+          #   setup-test-env-cmd: |
+          #     export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/luckfox-pico/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf
+          #   cmake-options: -DWITH_RK=ON
+          #
+          # - name: yuzuki-lizard
+          #   single-core: true
+          #   cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     wget -q https://github.com/YuzukiHD/sunxi-bsp-toolchains/releases/download/1.0.0/toolchain-sunxi-musl-arm-gcc-830.tar.gz
+          #     tar -xf toolchain-sunxi-musl-arm-gcc-830.tar.gz
+          #   setup-env-cmd: |
+          #     export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+          #     export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+          #   setup-test-env-cmd: |
+          #     export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+          #     export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+          #   cmake-options: -DWITH_AW=ON
+          #
+          # - name: tinyvision
+          #   single-core: true
+          #   cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     wget -q https://github.com/YuzukiHD/sunxi-bsp-toolchains/releases/download/1.0.0/toolchain-sunxi-musl-arm-gcc-830.tar.gz
+          #     tar -xf toolchain-sunxi-musl-arm-gcc-830.tar.gz
+          #   setup-env-cmd: |
+          #     export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+          #     export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+          #   setup-test-env-cmd: |
+          #     export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+          #     export STAGING_DIR=$GITHUB_WORKSPACE/toolchain-sunxi-musl-gcc-830/toolchain
+          #   cmake-options: -DWITH_AW=ON
+          #
+          # - name: yuzuki-chameleon
+          #   single-core: false
+          #   cmake-toolchain: arm-openwrt-linux-gnueabi.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     wget -q https://github.com/YuzukiHD/YuzukiChameleon/releases/download/0.0.1/toolchain-sunxi-glibc-arm.tar.gz
+          #     tar -xf toolchain-sunxi-glibc-arm.tar.gz
+          #   setup-env-cmd: |
+          #     export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain
+          #     export STAGING_DIR=$GITHUB_WORKSPACE/toolchain
+          #   setup-test-env-cmd: |
+          #     export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/toolchain
+          #     export STAGING_DIR=$GITHUB_WORKSPACE/toolchain
+          #   cmake-options: -DWITH_AW=ON
+          #
+          # - name: avaota-f1
+          #   single-core: true
+          #   cmake-toolchain: riscv32-linux-musl.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     wget -q https://github.com/AvaotaSBC/toolchains/releases/download/v821-toolchains/nds32le-linux-musl-v5d.tar.xz
+          #     tar -xf nds32le-linux-musl-v5d.tar.xz
+          #   setup-env-cmd: |
+          #     export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/nds32le-linux-musl-v5d
+          #   setup-test-env-cmd: |
+          #     export RISCV_ROOT_PATH=$GITHUB_WORKSPACE/nds32le-linux-musl-v5d
+          #   cmake-options: -DWITH_AW=ON
+          #
+          # - name: purple-pi
+          #   single-core: false
+          #   cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     git clone --depth 1 https://github.com/industio/PurPle-Pi-R1.git
+          #     cd PurPle-Pi-R1/toolchain
+          #     sh install_toolchain.sh
+          #   setup-env-cmd: |
+          #     export PATH=$PATH:$GITHUB_WORKSPACE/PurPle-Pi-R1/toolchain/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin
+          #   setup-test-env-cmd: |
+          #     export PATH=$PATH:$GITHUB_WORKSPACE/PurPle-Pi-R1/toolchain/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin
+          #   cmake-options:
+          #
+          # - name: myir-t113i
+          #   single-core: false
+          #   cmake-toolchain: arm-linux-gnueabi.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     git clone --depth 1 https://github.com/MYIR-ALLWINNER/toolchain.git
+          #   setup-env-cmd: |
+          #     export PATH=$PATH:$GITHUB_WORKSPACE/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin
+          #   setup-test-env-cmd: |
+          #     export PATH=$PATH:$GITHUB_WORKSPACE/toolchain/gcc-linaro-7.2.1-2017.11-x86_64_arm-linux-gnueabi/bin
+          #   cmake-options: -DWITH_AW=ON
+          #
+          # - name: 2k0300-fengniao
+          #   single-core: true
+          #   cmake-toolchain: loongarch64-linux-gnu.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     wget -q https://ftp.loongnix.cn/toolchain/gcc/release/loongarch/gcc8/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5.tar.xz
+          #     tar -xf loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5.tar.xz
+          #   setup-env-cmd: |
+          #     export LOONGARCH64_ROOT_PATH=$GITHUB_WORKSPACE/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5
+          #   setup-test-env-cmd: |
+          #     export LOONGARCH64_ROOT_PATH=$GITHUB_WORKSPACE/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.5
+          #   cmake-options: -DCPU_BASELINE='' -DCPU_DISPATCH=''
+          #
+          # - name: lockzhiner-vision-module
+          #   single-core: true
+          #   cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
+          #   setup-toolchain-cmd: |
+          #     git clone --depth 1 https://gitee.com/LockzhinerAI/arm-rockchip830-linux-uclibcgnueabihf.git arm-rockchip830-linux-uclibcgnueabihf
+          #   setup-env-cmd: |
+          #     export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/arm-rockchip830-linux-uclibcgnueabihf
+          #   setup-test-env-cmd: |
+          #     export TOOLCHAIN_ROOT_PATH=$GITHUB_WORKSPACE/arm-rockchip830-linux-uclibcgnueabihf
+          #   cmake-options: -DWITH_RK=ON
 
     container:
       image: ${{ matrix.os-image }}
