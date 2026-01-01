@@ -1,6 +1,6 @@
-diff -Nuarp opencv-4.12.0.orig/modules/core/include/opencv2/core/bindings_utils.hpp opencv-4.12.0/modules/core/include/opencv2/core/bindings_utils.hpp
---- opencv-4.12.0.orig/modules/core/include/opencv2/core/bindings_utils.hpp	2025-07-13 20:34:53.372129425 +0800
-+++ opencv-4.12.0/modules/core/include/opencv2/core/bindings_utils.hpp	2025-07-13 21:38:10.818186252 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/include/opencv2/core/bindings_utils.hpp opencv-4.13.0/modules/core/include/opencv2/core/bindings_utils.hpp
+--- opencv-4.13.0.orig/modules/core/include/opencv2/core/bindings_utils.hpp	2026-01-01 16:13:41.918139261 +0800
++++ opencv-4.13.0/modules/core/include/opencv2/core/bindings_utils.hpp	2026-01-01 16:42:10.913176657 +0800
 @@ -202,12 +202,6 @@ void generateVectorOfMat(size_t len, int
  }
  
@@ -29,9 +29,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/include/opencv2/core/bindings_utils.
      return p.getArrayResult();
  }
  
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/async.cpp opencv-4.12.0/modules/core/src/async.cpp
---- opencv-4.12.0.orig/modules/core/src/async.cpp	2025-07-13 20:39:13.959090096 +0800
-+++ opencv-4.12.0/modules/core/src/async.cpp	2025-07-13 21:38:10.818321197 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/async.cpp opencv-4.13.0/modules/core/src/async.cpp
+--- opencv-4.13.0.orig/modules/core/src/async.cpp	2026-01-01 16:41:44.635786972 +0800
++++ opencv-4.13.0/modules/core/src/async.cpp	2026-01-01 16:42:10.913304137 +0800
 @@ -100,7 +100,6 @@ struct AsyncArray::Impl
              if (has_exception)
              {
@@ -48,9 +48,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/async.cpp opencv-4.12.0/modules/
          }
          CV_Error(Error::StsInternal, "AsyncArray: invalid state of 'has_result = true'");
          return false;
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/bindings_utils.cpp opencv-4.12.0/modules/core/src/bindings_utils.cpp
---- opencv-4.12.0.orig/modules/core/src/bindings_utils.cpp	2025-07-13 20:34:53.534086711 +0800
-+++ opencv-4.12.0/modules/core/src/bindings_utils.cpp	2025-07-13 21:38:10.818378715 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/bindings_utils.cpp opencv-4.13.0/modules/core/src/bindings_utils.cpp
+--- opencv-4.13.0.orig/modules/core/src/bindings_utils.cpp	2026-01-01 16:13:42.075875343 +0800
++++ opencv-4.13.0/modules/core/src/bindings_utils.cpp	2026-01-01 16:42:10.913373388 +0800
 @@ -22,7 +22,7 @@ String dumpInputArray(InputArray argumen
          return "InputArray: noArray()";
      std::ostringstream ss;
@@ -147,9 +147,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/bindings_utils.cpp opencv-4.12.0
      return ss.str();
  }
  
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/command_line_parser.cpp opencv-4.12.0/modules/core/src/command_line_parser.cpp
---- opencv-4.12.0.orig/modules/core/src/command_line_parser.cpp	2025-07-13 20:34:53.537230759 +0800
-+++ opencv-4.12.0/modules/core/src/command_line_parser.cpp	2025-07-13 21:38:10.818428600 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/command_line_parser.cpp opencv-4.13.0/modules/core/src/command_line_parser.cpp
+--- opencv-4.13.0.orig/modules/core/src/command_line_parser.cpp	2026-01-01 16:13:42.078812517 +0800
++++ opencv-4.13.0/modules/core/src/command_line_parser.cpp	2026-01-01 16:42:10.913429824 +0800
 @@ -119,7 +119,6 @@ static void from_str(const String& str,
  
  void CommandLineParser::getByName(const String& name, bool space_delete, Param type, void* dst) const
@@ -246,10 +246,10 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/command_line_parser.cpp opencv-4
      }
  
      return vec;
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/dxt.cpp opencv-4.12.0/modules/core/src/dxt.cpp
---- opencv-4.12.0.orig/modules/core/src/dxt.cpp	2025-07-13 20:39:13.959381686 +0800
-+++ opencv-4.12.0/modules/core/src/dxt.cpp	2025-07-13 21:37:40.157743062 +0800
-@@ -826,6 +826,30 @@ struct OcvDftOptions {
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/dxt.cpp opencv-4.13.0/modules/core/src/dxt.cpp
+--- opencv-4.13.0.orig/modules/core/src/dxt.cpp	2026-01-01 16:41:44.636083551 +0800
++++ opencv-4.13.0/modules/core/src/dxt.cpp	2026-01-01 16:42:10.913533731 +0800
+@@ -834,6 +834,30 @@ struct OcvDftOptions {
      }
  };
  
@@ -280,7 +280,7 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/dxt.cpp opencv-4.12.0/modules/co
  // mixed-radix complex discrete Fourier transform: double-precision version
  template<typename T> static void
  DFT(const OcvDftOptions & c, const Complex<T>* src, Complex<T>* dst)
-@@ -841,16 +865,7 @@ DFT(const OcvDftOptions & c, const Compl
+@@ -849,16 +873,7 @@ DFT(const OcvDftOptions & c, const Compl
      Complex<T> t;
      T scale = (T)c.scale;
  
@@ -298,9 +298,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/dxt.cpp opencv-4.12.0/modules/co
  
      if( c.useIpp )
      {
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/glob.cpp opencv-4.12.0/modules/core/src/glob.cpp
---- opencv-4.12.0.orig/modules/core/src/glob.cpp	2025-07-13 20:34:53.536156931 +0800
-+++ opencv-4.12.0/modules/core/src/glob.cpp	2025-07-13 21:38:10.818490446 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/glob.cpp opencv-4.13.0/modules/core/src/glob.cpp
+--- opencv-4.13.0.orig/modules/core/src/glob.cpp	2026-01-01 16:13:42.077792909 +0800
++++ opencv-4.13.0/modules/core/src/glob.cpp	2026-01-01 16:42:10.913761088 +0800
 @@ -243,7 +243,6 @@ static void glob_rec(const cv::String& d
      if ((dir = opendir (directory.c_str())) != 0)
      {
@@ -321,9 +321,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/glob.cpp opencv-4.12.0/modules/c
          closedir(dir);
      }
      else
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/matrix.cpp opencv-4.12.0/modules/core/src/matrix.cpp
---- opencv-4.12.0.orig/modules/core/src/matrix.cpp	2025-07-13 20:34:53.545189782 +0800
-+++ opencv-4.12.0/modules/core/src/matrix.cpp	2025-07-13 21:38:10.818552694 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/matrix.cpp opencv-4.13.0/modules/core/src/matrix.cpp
+--- opencv-4.13.0.orig/modules/core/src/matrix.cpp	2026-01-01 16:13:42.086347184 +0800
++++ opencv-4.13.0/modules/core/src/matrix.cpp	2026-01-01 16:42:10.913833525 +0800
 @@ -694,20 +694,11 @@ void Mat::create(int d, const int* _size
          MatAllocator *a = allocator, *a0 = getDefaultAllocator();
          if(!a)
@@ -365,9 +365,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/matrix.cpp opencv-4.12.0/modules
  
      updateContinuityFlag();
  
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/parallel/parallel.cpp opencv-4.12.0/modules/core/src/parallel/parallel.cpp
---- opencv-4.12.0.orig/modules/core/src/parallel/parallel.cpp	2025-07-13 20:34:53.506481139 +0800
-+++ opencv-4.12.0/modules/core/src/parallel/parallel.cpp	2025-07-13 21:38:10.818617917 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/parallel/parallel.cpp opencv-4.13.0/modules/core/src/parallel/parallel.cpp
+--- opencv-4.13.0.orig/modules/core/src/parallel/parallel.cpp	2026-01-01 16:13:42.049334595 +0800
++++ opencv-4.13.0/modules/core/src/parallel/parallel.cpp	2026-01-01 16:42:10.913904629 +0800
 @@ -60,7 +60,6 @@ std::shared_ptr<ParallelForAPI> createPa
              }
              isKnown = true;
@@ -391,9 +391,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/parallel/parallel.cpp opencv-4.1
      }
      if (name.empty())
      {
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp opencv-4.12.0/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp
---- opencv-4.12.0.orig/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp	2025-07-13 20:34:53.506007655 +0800
-+++ opencv-4.12.0/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp	2025-07-13 21:38:10.818654306 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp opencv-4.13.0/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp
+--- opencv-4.13.0.orig/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp	2026-01-01 16:13:42.048901326 +0800
++++ opencv-4.13.0/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp	2026-01-01 16:42:10.913944534 +0800
 @@ -155,15 +155,10 @@ protected:
      void initBackend()
      {
@@ -429,9 +429,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/parallel/plugin_parallel_wrapper
      }
  }
  
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/parallel.cpp opencv-4.12.0/modules/core/src/parallel.cpp
---- opencv-4.12.0.orig/modules/core/src/parallel.cpp	2025-07-13 20:34:53.534609328 +0800
-+++ opencv-4.12.0/modules/core/src/parallel.cpp	2025-07-13 21:38:10.818707437 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/parallel.cpp opencv-4.13.0/modules/core/src/parallel.cpp
+--- opencv-4.13.0.orig/modules/core/src/parallel.cpp	2026-01-01 16:13:42.076306217 +0800
++++ opencv-4.13.0/modules/core/src/parallel.cpp	2026-01-01 16:42:10.914000760 +0800
 @@ -355,29 +355,9 @@ namespace {
              CV_TRACE_ARG_VALUE(range_end, "range.end", (int64)r.end);
  #endif
@@ -462,7 +462,7 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/parallel.cpp opencv-4.12.0/modul
  
              if (!ctx.is_rng_used && !(cv::theRNG() == ctx.rng))
                  ctx.is_rng_used = true;
-@@ -523,16 +503,10 @@ void parallel_for_(const cv::Range& rang
+@@ -519,16 +499,10 @@ void parallel_for_(const cv::Range& rang
        isNotNestedRegion = !flagNestedParallelFor.exchange(true);
      if (isNotNestedRegion)
      {
@@ -479,9 +479,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/parallel.cpp opencv-4.12.0/modul
      }
      else // nested parallel_for_() calls are not parallelized
      {
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/persistence.cpp opencv-4.12.0/modules/core/src/persistence.cpp
---- opencv-4.12.0.orig/modules/core/src/persistence.cpp	2025-07-13 20:34:53.538606458 +0800
-+++ opencv-4.12.0/modules/core/src/persistence.cpp	2025-07-13 21:38:10.818819829 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/persistence.cpp opencv-4.13.0/modules/core/src/persistence.cpp
+--- opencv-4.13.0.orig/modules/core/src/persistence.cpp	2026-01-01 16:13:42.080093018 +0800
++++ opencv-4.13.0/modules/core/src/persistence.cpp	2026-01-01 16:42:10.914127349 +0800
 @@ -758,7 +758,7 @@ bool FileStorage::Impl::open(const char
          strbufpos = bufOffset;
          bufofs = 0;
@@ -524,10 +524,10 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/persistence.cpp opencv-4.12.0/mo
  }
  
  bool FileStorage::isOpened() const { return p->is_opened; }
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/system.cpp opencv-4.12.0/modules/core/src/system.cpp
---- opencv-4.12.0.orig/modules/core/src/system.cpp	2025-07-13 20:34:53.503020142 +0800
-+++ opencv-4.12.0/modules/core/src/system.cpp	2025-07-13 21:38:10.818983909 +0800
-@@ -1272,7 +1272,6 @@ void error( const Exception& exc )
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/system.cpp opencv-4.13.0/modules/core/src/system.cpp
+--- opencv-4.13.0.orig/modules/core/src/system.cpp	2026-01-01 16:13:42.046187574 +0800
++++ opencv-4.13.0/modules/core/src/system.cpp	2026-01-01 16:42:10.914279616 +0800
+@@ -1286,7 +1286,6 @@ void error( const Exception& exc )
          *p = 0;
      }
  
@@ -535,7 +535,7 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/system.cpp opencv-4.12.0/modules
  #ifdef __GNUC__
  # if !defined __clang__ && !defined __APPLE__
      // this suppresses this warning: "noreturn" function does return [enabled by default]
-@@ -2080,15 +2079,9 @@ void* TLSDataContainer::getData() const
+@@ -2094,15 +2093,9 @@ void* TLSDataContainer::getData() const
      {
          // Create new data instance and save it to TLS storage
          pData = createDataInstance();
@@ -551,7 +551,7 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/system.cpp opencv-4.12.0/modules
      }
      return pData;
  }
-@@ -2192,7 +2185,7 @@ inline bool parseOption(const std::strin
+@@ -2206,7 +2199,7 @@ inline bool parseOption(const std::strin
      {
          return false;
      }
@@ -560,7 +560,7 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/system.cpp opencv-4.12.0/modules
  }
  
  template<>
-@@ -2213,7 +2206,7 @@ inline size_t parseOption(const std::str
+@@ -2227,7 +2220,7 @@ inline size_t parseOption(const std::str
          return v * 1024 * 1024;
      else if (suffixStr == "KB" || suffixStr == "Kb" || suffixStr == "kb")
          return v * 1024;
@@ -569,7 +569,7 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/system.cpp opencv-4.12.0/modules
  }
  
  template<>
-@@ -2256,16 +2249,11 @@ static inline const char * envRead(const
+@@ -2270,16 +2263,11 @@ static inline const char * envRead(const
  template<typename T>
  inline T read(const std::string & k, const T & defaultValue)
  {
@@ -586,9 +586,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/system.cpp opencv-4.12.0/modules
      return defaultValue;
  }
  
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/umatrix.cpp opencv-4.12.0/modules/core/src/umatrix.cpp
---- opencv-4.12.0.orig/modules/core/src/umatrix.cpp	2025-07-13 20:39:13.960069736 +0800
-+++ opencv-4.12.0/modules/core/src/umatrix.cpp	2025-07-13 21:38:10.819101641 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/umatrix.cpp opencv-4.13.0/modules/core/src/umatrix.cpp
+--- opencv-4.13.0.orig/modules/core/src/umatrix.cpp	2026-01-01 16:41:44.636790724 +0800
++++ opencv-4.13.0/modules/core/src/umatrix.cpp	2026-01-01 16:42:10.914417666 +0800
 @@ -594,14 +594,9 @@ UMat Mat::getUMat(AccessFlag accessFlags
          new_u->originalUMatData = u;
      }
@@ -667,9 +667,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/umatrix.cpp opencv-4.12.0/module
      CV_XADD(&u->refcount, -1);
      CV_Assert(u->data != 0 && "Error mapping of UMat to host memory.");
      return Mat();
-diff -Nuarp opencv-4.12.0.orig/modules/core/src/utils/filesystem.cpp opencv-4.12.0/modules/core/src/utils/filesystem.cpp
---- opencv-4.12.0.orig/modules/core/src/utils/filesystem.cpp	2025-07-13 20:34:53.528264934 +0800
-+++ opencv-4.12.0/modules/core/src/utils/filesystem.cpp	2025-07-13 21:38:10.819174299 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/core/src/utils/filesystem.cpp opencv-4.13.0/modules/core/src/utils/filesystem.cpp
+--- opencv-4.13.0.orig/modules/core/src/utils/filesystem.cpp	2026-01-01 16:13:42.070341408 +0800
++++ opencv-4.13.0/modules/core/src/utils/filesystem.cpp	2026-01-01 16:42:10.914498618 +0800
 @@ -508,14 +508,9 @@ cv::String getCacheDirectory(const char*
                      && !utils::fs::isDirectory(default_cache_path))
                  {
@@ -685,9 +685,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/core/src/utils/filesystem.cpp opencv-4.12
                      if (!existedCacheDirs.empty())
                      {
                          CV_LOG_WARNING(NULL, "Creating new OpenCV cache directory: " << default_cache_path);
-diff -Nuarp opencv-4.12.0.orig/modules/imgproc/src/contours.cpp opencv-4.12.0/modules/imgproc/src/contours.cpp
---- opencv-4.12.0.orig/modules/imgproc/src/contours.cpp	2025-07-13 20:39:13.961175625 +0800
-+++ opencv-4.12.0/modules/imgproc/src/contours.cpp	2025-07-13 21:38:10.819246104 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/imgproc/src/contours.cpp opencv-4.13.0/modules/imgproc/src/contours.cpp
+--- opencv-4.13.0.orig/modules/imgproc/src/contours.cpp	2026-01-01 16:41:44.637889395 +0800
++++ opencv-4.13.0/modules/imgproc/src/contours.cpp	2026-01-01 16:42:10.914533740 +0800
 @@ -1760,7 +1760,6 @@ cvFindContours_Impl( void*  img,  CvMemS
      }
      else
@@ -709,9 +709,9 @@ diff -Nuarp opencv-4.12.0.orig/modules/imgproc/src/contours.cpp opencv-4.12.0/mo
  
          *firstContour = cvEndFindContours( &scanner );
      }
-diff -Nuarp opencv-4.12.0.orig/modules/video/src/tracking/detail/tracking_feature.cpp opencv-4.12.0/modules/video/src/tracking/detail/tracking_feature.cpp
---- opencv-4.12.0.orig/modules/video/src/tracking/detail/tracking_feature.cpp	2025-07-13 20:34:54.331668306 +0800
-+++ opencv-4.12.0/modules/video/src/tracking/detail/tracking_feature.cpp	2025-07-13 21:38:10.819330454 +0800
+diff -Nuarp opencv-4.13.0.orig/modules/video/src/tracking/detail/tracking_feature.cpp opencv-4.13.0/modules/video/src/tracking/detail/tracking_feature.cpp
+--- opencv-4.13.0.orig/modules/video/src/tracking/detail/tracking_feature.cpp	2026-01-01 16:13:42.844541346 +0800
++++ opencv-4.13.0/modules/video/src/tracking/detail/tracking_feature.cpp	2026-01-01 16:42:10.914667176 +0800
 @@ -107,15 +107,9 @@ void CvHaarEvaluator::generateFeatures(i
  
  CvHaarEvaluator::FeatureHaar::FeatureHaar(Size patchSize)

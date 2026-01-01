@@ -1,9 +1,9 @@
 name: release
-# on: pull_request
-on:
-  push:
-    tags:
-      - '*'
+on: pull_request
+# on:
+#   push:
+#     tags:
+#       - '*'
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
@@ -160,7 +160,7 @@ jobs:
         zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
     - name: opencv4-source
       env:
-        opencv-version: 4.12.0
+        opencv-version: 4.13.0
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
         unzip -q opencv-${{ env.opencv-version }}.zip
@@ -247,15 +247,15 @@ jobs:
     - name: upload-opencv4-source
       uses: actions/upload-artifact@v6
       with:
-        name: opencv-mobile-4.12.0-source
-        path: opencv-mobile-4.12.0.zip
+        name: opencv-mobile-4.13.0-source
+        path: opencv-mobile-4.13.0.zip
 
   android:
     needs: [setup]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_DEFAULT_CMP0057=NEW \
@@ -357,7 +357,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       OHOS_NDK_CMAKE: $GITHUB_WORKSPACE/ohos-sdk/linux/native/build-tools/cmake/bin/cmake
       COMMON_CMAKE_OPTIONS: |
@@ -418,7 +418,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.12.0'
+      if: matrix.opencv-version == '4.13.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: test-armeabi-v7a
       run: |
@@ -449,10 +449,10 @@ jobs:
 
   ios:
     needs: [setup]
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -521,10 +521,10 @@ jobs:
 
   ios-simulator:
     needs: [setup]
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -606,7 +606,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
@@ -666,7 +666,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.12.0'
+      if: matrix.opencv-version == '4.13.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: test-arm-linux-gnueabi
       run: |
@@ -697,10 +697,10 @@ jobs:
 
   macos:
     needs: [setup]
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -783,10 +783,10 @@ jobs:
 
   mac-catalyst:
     needs: [setup]
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -865,10 +865,10 @@ jobs:
 
   watchos:
     needs: [setup]
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -947,10 +947,10 @@ jobs:
 
   watchos-simulator:
     needs: [setup]
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1029,10 +1029,10 @@ jobs:
 
   tvos:
     needs: [setup]
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1111,10 +1111,10 @@ jobs:
 
   tvos-simulator:
     needs: [setup]
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1193,10 +1193,10 @@ jobs:
 
   visionos:
     needs: [setup]
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1265,10 +1265,10 @@ jobs:
 
   visionos-simulator:
     needs: [setup]
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
@@ -1349,7 +1349,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
         os-compiler:
           - { msvc-version: vs2015, windows-version: 2022, toolset-version: v140 }
           - { msvc-version: vs2017, windows-version: 2022, toolset-version: v141 }
@@ -1461,7 +1461,7 @@ jobs:
     needs: [setup]
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
         os-ubuntu:
           - { ubuntu-id: 2204, ubuntu-version: 22.04 }
           - { ubuntu-id: 2404, ubuntu-version: 24.04 }
@@ -1496,7 +1496,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.12.0'
+      if: matrix.opencv-version == '4.13.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: test
       run: |
@@ -1515,7 +1515,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
@@ -1601,7 +1601,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.12.0'
+      if: matrix.opencv-version == '4.13.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: test
       run: |
@@ -1647,10 +1647,10 @@ jobs:
 
   apple:
     needs: [macos, ios, ios-simulator, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator]
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.12.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
     - uses: actions/checkout@v6
@@ -1962,20 +1962,20 @@ jobs:
     - uses: actions/checkout@v6
     - uses: actions/download-artifact@v7
       with:
-        name: opencv-mobile-4.12.0-source
+        name: opencv-mobile-4.13.0-source
     - name: setup-toolchain
       run: ${{ matrix.setup-toolchain-cmd }}
     - name: setup-opencv-source
       run: |
-        unzip -q opencv-mobile-4.12.0.zip
-        echo "SOURCE_DIR=opencv-mobile-4.12.0" >> $GITHUB_ENV
-        echo "PACKAGE_NAME=opencv-mobile-4.12.0-${{ matrix.name }}" >> $GITHUB_ENV
+        unzip -q opencv-mobile-4.13.0.zip
+        echo "SOURCE_DIR=opencv-mobile-4.13.0" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-4.13.0-${{ matrix.name }}" >> $GITHUB_ENV
 
     - name: build-disable-thread
       if: ${{ matrix.single-core }}
       run: |
         cd ${{ env.SOURCE_DIR }}
-        patch -p1 -i ../patches/opencv-4.12.0-no-atomic.patch
+        patch -p1 -i ../patches/opencv-4.13.0-no-atomic.patch
         mkdir build && cd build
         ${{ matrix.setup-env-cmd }}
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} ${{ matrix.cmake-options }} \
@@ -2015,21 +2015,21 @@ jobs:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
 
-  release:
-    permissions:
-      contents: write  # for softprops/action-gh-release to create a release
-    needs: [setup, android, harmonyos, ios, ios-simulator, armlinux, macos, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator, windows, ubuntu, webassembly, apple, devboard]
-    runs-on: ubuntu-latest
-    steps:
-    - name: download
-      uses: actions/download-artifact@v7
-      with:
-        path: artifacts
-
-    - name: create-release
-      uses: softprops/action-gh-release@v2
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag_name: ${{ needs.setup.outputs.VERSION }}
-        name: Release ${{ needs.setup.outputs.VERSION }}
-        files: artifacts/*/*.zip
+  # release:
+  #   permissions:
+  #     contents: write  # for softprops/action-gh-release to create a release
+  #   needs: [setup, android, harmonyos, ios, ios-simulator, armlinux, macos, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator, windows, ubuntu, webassembly, apple, devboard]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: download
+  #     uses: actions/download-artifact@v7
+  #     with:
+  #       path: artifacts
+  #
+  #   - name: create-release
+  #     uses: softprops/action-gh-release@v2
+  #     with:
+  #       token: ${{ secrets.GITHUB_TOKEN }}
+  #       tag_name: ${{ needs.setup.outputs.VERSION }}
+  #       name: Release ${{ needs.setup.outputs.VERSION }}
+  #       files: artifacts/*/*.zip
