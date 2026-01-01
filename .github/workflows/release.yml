@@ -1701,110 +1701,110 @@ jobs:
   #     with:
   #       name: ${{ env.PACKAGE_NAME }}
   #       path: ${{ env.PACKAGE_NAME }}.zip
-
-  apple:
-    needs: [macos, ios, ios-simulator, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator]
-    runs-on: macos-14
-    strategy:
-      matrix:
-        opencv-version: [4.13.0]
-    steps:
-    - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
-    - uses: actions/checkout@v6
-    - name: setup-opencv-package
-      run: |
-        echo "MACOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-macos" >> $GITHUB_ENV
-        echo "IOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios" >> $GITHUB_ENV
-        echo "IOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-simulator" >> $GITHUB_ENV
-        echo "MAC_CATALYST_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-mac-catalyst" >> $GITHUB_ENV
-        echo "WATCHOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-watchos" >> $GITHUB_ENV
-        echo "WATCHOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-watchos-simulator" >> $GITHUB_ENV
-        echo "TVOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-tvos" >> $GITHUB_ENV
-        echo "TVOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-tvos-simulator" >> $GITHUB_ENV
-        echo "VISIONOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-visionos" >> $GITHUB_ENV
-        echo "VISIONOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-visionos-simulator" >> $GITHUB_ENV
-        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-apple" >> $GITHUB_ENV
-    - name: download-macos-package
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ env.MACOS_PACKAGE_NAME }}
-    - name: download-ios-package
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ env.IOS_PACKAGE_NAME }}
-    - name: download-ios-simulator-package
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
-    - name: download-mac-catalyst-package
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ env.MAC_CATALYST_PACKAGE_NAME }}
-    - name: download-watchos-package
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ env.WATCHOS_PACKAGE_NAME }}
-    - name: download-watchos-simulator-package
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ env.WATCHOS_SIMULATOR_PACKAGE_NAME }}
-    - name: download-tvos-package
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ env.TVOS_PACKAGE_NAME }}
-    - name: download-tvos-simulator-package
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ env.TVOS_SIMULATOR_PACKAGE_NAME }}
-    - name: download-visionos-package
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ env.VISIONOS_PACKAGE_NAME }}
-    - name: download-visionos-simulator-package
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ env.VISIONOS_SIMULATOR_PACKAGE_NAME }}
-    - name: create-xcframwork
-      run: |
-        mkdir -p ${{ env.MACOS_PACKAGE_NAME }}
-        mkdir -p ${{ env.IOS_PACKAGE_NAME }}
-        mkdir -p ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
-        mkdir -p ${{ env.MAC_CATALYST_PACKAGE_NAME }}
-        mkdir -p ${{ env.WATCHOS_PACKAGE_NAME }}
-        mkdir -p ${{ env.WATCHOS_SIMULATOR_PACKAGE_NAME }}
-        mkdir -p ${{ env.TVOS_PACKAGE_NAME }}
-        mkdir -p ${{ env.TVOS_SIMULATOR_PACKAGE_NAME }}
-        mkdir -p ${{ env.VISIONOS_PACKAGE_NAME }}
-        mkdir -p ${{ env.VISIONOS_SIMULATOR_PACKAGE_NAME }}
-        unzip -q ${{ env.MACOS_PACKAGE_NAME }}.zip -d ${{ env.MACOS_PACKAGE_NAME }}
-        unzip -q ${{ env.IOS_PACKAGE_NAME }}.zip -d ${{ env.IOS_PACKAGE_NAME }}
-        unzip -q ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}.zip -d ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
-        unzip -q ${{ env.MAC_CATALYST_PACKAGE_NAME }}.zip -d ${{ env.MAC_CATALYST_PACKAGE_NAME }}
-        unzip -q ${{ env.WATCHOS_PACKAGE_NAME }}.zip -d ${{ env.WATCHOS_PACKAGE_NAME }}
-        unzip -q ${{ env.WATCHOS_SIMULATOR_PACKAGE_NAME }}.zip -d ${{ env.WATCHOS_SIMULATOR_PACKAGE_NAME }}
-        unzip -q ${{ env.TVOS_PACKAGE_NAME }}.zip -d ${{ env.TVOS_PACKAGE_NAME }}
-        unzip -q ${{ env.TVOS_SIMULATOR_PACKAGE_NAME }}.zip -d ${{ env.TVOS_SIMULATOR_PACKAGE_NAME }}
-        unzip -q ${{ env.VISIONOS_PACKAGE_NAME }}.zip -d ${{ env.VISIONOS_PACKAGE_NAME }}
-        unzip -q ${{ env.VISIONOS_SIMULATOR_PACKAGE_NAME }}.zip -d ${{ env.VISIONOS_SIMULATOR_PACKAGE_NAME }}
-        xcodebuild -create-xcframework \
-            -framework ${{ env.MACOS_PACKAGE_NAME }}/opencv2.framework \
-            -framework ${{ env.IOS_PACKAGE_NAME }}/opencv2.framework \
-            -framework ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}/opencv2.framework \
-            -framework ${{ env.MAC_CATALYST_PACKAGE_NAME }}/opencv2.framework \
-            -framework ${{ env.WATCHOS_PACKAGE_NAME }}/opencv2.framework \
-            -framework ${{ env.WATCHOS_SIMULATOR_PACKAGE_NAME }}/opencv2.framework \
-            -framework ${{ env.TVOS_PACKAGE_NAME }}/opencv2.framework \
-            -framework ${{ env.TVOS_SIMULATOR_PACKAGE_NAME }}/opencv2.framework \
-            -framework ${{ env.VISIONOS_PACKAGE_NAME }}/opencv2.framework \
-            -framework ${{ env.VISIONOS_SIMULATOR_PACKAGE_NAME }}/opencv2.framework \
-            -output opencv2.xcframework
-        rm -f ${{ env.PACKAGE_NAME }}.zip
-        zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.xcframework
-    - name: upload-zip
-      uses: actions/upload-artifact@v6
-      with:
-        name: ${{ env.PACKAGE_NAME }}
-        path: ${{ env.PACKAGE_NAME }}.zip
+  #
+  # apple:
+  #   needs: [macos, ios, ios-simulator, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator]
+  #   runs-on: macos-14
+  #   strategy:
+  #     matrix:
+  #       opencv-version: [4.13.0]
+  #   steps:
+  #   - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
+  #   - uses: actions/checkout@v6
+  #   - name: setup-opencv-package
+  #     run: |
+  #       echo "MACOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-macos" >> $GITHUB_ENV
+  #       echo "IOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios" >> $GITHUB_ENV
+  #       echo "IOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-ios-simulator" >> $GITHUB_ENV
+  #       echo "MAC_CATALYST_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-mac-catalyst" >> $GITHUB_ENV
+  #       echo "WATCHOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-watchos" >> $GITHUB_ENV
+  #       echo "WATCHOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-watchos-simulator" >> $GITHUB_ENV
+  #       echo "TVOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-tvos" >> $GITHUB_ENV
+  #       echo "TVOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-tvos-simulator" >> $GITHUB_ENV
+  #       echo "VISIONOS_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-visionos" >> $GITHUB_ENV
+  #       echo "VISIONOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-visionos-simulator" >> $GITHUB_ENV
+  #       echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-apple" >> $GITHUB_ENV
+  #   - name: download-macos-package
+  #     uses: actions/download-artifact@v7
+  #     with:
+  #       name: ${{ env.MACOS_PACKAGE_NAME }}
+  #   - name: download-ios-package
+  #     uses: actions/download-artifact@v7
+  #     with:
+  #       name: ${{ env.IOS_PACKAGE_NAME }}
+  #   - name: download-ios-simulator-package
+  #     uses: actions/download-artifact@v7
+  #     with:
+  #       name: ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
+  #   - name: download-mac-catalyst-package
+  #     uses: actions/download-artifact@v7
+  #     with:
+  #       name: ${{ env.MAC_CATALYST_PACKAGE_NAME }}
+  #   - name: download-watchos-package
+  #     uses: actions/download-artifact@v7
+  #     with:
+  #       name: ${{ env.WATCHOS_PACKAGE_NAME }}
+  #   - name: download-watchos-simulator-package
+  #     uses: actions/download-artifact@v7
+  #     with:
+  #       name: ${{ env.WATCHOS_SIMULATOR_PACKAGE_NAME }}
+  #   - name: download-tvos-package
+  #     uses: actions/download-artifact@v7
+  #     with:
+  #       name: ${{ env.TVOS_PACKAGE_NAME }}
+  #   - name: download-tvos-simulator-package
+  #     uses: actions/download-artifact@v7
+  #     with:
+  #       name: ${{ env.TVOS_SIMULATOR_PACKAGE_NAME }}
+  #   - name: download-visionos-package
+  #     uses: actions/download-artifact@v7
+  #     with:
+  #       name: ${{ env.VISIONOS_PACKAGE_NAME }}
+  #   - name: download-visionos-simulator-package
+  #     uses: actions/download-artifact@v7
+  #     with:
+  #       name: ${{ env.VISIONOS_SIMULATOR_PACKAGE_NAME }}
+  #   - name: create-xcframwork
+  #     run: |
+  #       mkdir -p ${{ env.MACOS_PACKAGE_NAME }}
+  #       mkdir -p ${{ env.IOS_PACKAGE_NAME }}
+  #       mkdir -p ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
+  #       mkdir -p ${{ env.MAC_CATALYST_PACKAGE_NAME }}
+  #       mkdir -p ${{ env.WATCHOS_PACKAGE_NAME }}
+  #       mkdir -p ${{ env.WATCHOS_SIMULATOR_PACKAGE_NAME }}
+  #       mkdir -p ${{ env.TVOS_PACKAGE_NAME }}
+  #       mkdir -p ${{ env.TVOS_SIMULATOR_PACKAGE_NAME }}
+  #       mkdir -p ${{ env.VISIONOS_PACKAGE_NAME }}
+  #       mkdir -p ${{ env.VISIONOS_SIMULATOR_PACKAGE_NAME }}
+  #       unzip -q ${{ env.MACOS_PACKAGE_NAME }}.zip -d ${{ env.MACOS_PACKAGE_NAME }}
+  #       unzip -q ${{ env.IOS_PACKAGE_NAME }}.zip -d ${{ env.IOS_PACKAGE_NAME }}
+  #       unzip -q ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}.zip -d ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
+  #       unzip -q ${{ env.MAC_CATALYST_PACKAGE_NAME }}.zip -d ${{ env.MAC_CATALYST_PACKAGE_NAME }}
+  #       unzip -q ${{ env.WATCHOS_PACKAGE_NAME }}.zip -d ${{ env.WATCHOS_PACKAGE_NAME }}
+  #       unzip -q ${{ env.WATCHOS_SIMULATOR_PACKAGE_NAME }}.zip -d ${{ env.WATCHOS_SIMULATOR_PACKAGE_NAME }}
+  #       unzip -q ${{ env.TVOS_PACKAGE_NAME }}.zip -d ${{ env.TVOS_PACKAGE_NAME }}
+  #       unzip -q ${{ env.TVOS_SIMULATOR_PACKAGE_NAME }}.zip -d ${{ env.TVOS_SIMULATOR_PACKAGE_NAME }}
+  #       unzip -q ${{ env.VISIONOS_PACKAGE_NAME }}.zip -d ${{ env.VISIONOS_PACKAGE_NAME }}
+  #       unzip -q ${{ env.VISIONOS_SIMULATOR_PACKAGE_NAME }}.zip -d ${{ env.VISIONOS_SIMULATOR_PACKAGE_NAME }}
+  #       xcodebuild -create-xcframework \
+  #           -framework ${{ env.MACOS_PACKAGE_NAME }}/opencv2.framework \
+  #           -framework ${{ env.IOS_PACKAGE_NAME }}/opencv2.framework \
+  #           -framework ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}/opencv2.framework \
+  #           -framework ${{ env.MAC_CATALYST_PACKAGE_NAME }}/opencv2.framework \
+  #           -framework ${{ env.WATCHOS_PACKAGE_NAME }}/opencv2.framework \
+  #           -framework ${{ env.WATCHOS_SIMULATOR_PACKAGE_NAME }}/opencv2.framework \
+  #           -framework ${{ env.TVOS_PACKAGE_NAME }}/opencv2.framework \
+  #           -framework ${{ env.TVOS_SIMULATOR_PACKAGE_NAME }}/opencv2.framework \
+  #           -framework ${{ env.VISIONOS_PACKAGE_NAME }}/opencv2.framework \
+  #           -framework ${{ env.VISIONOS_SIMULATOR_PACKAGE_NAME }}/opencv2.framework \
+  #           -output opencv2.xcframework
+  #       rm -f ${{ env.PACKAGE_NAME }}.zip
+  #       zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.xcframework
+  #   - name: upload-zip
+  #     uses: actions/upload-artifact@v6
+  #     with:
+  #       name: ${{ env.PACKAGE_NAME }}
+  #       path: ${{ env.PACKAGE_NAME }}.zip
 
   devboard:
     needs: [setup]
