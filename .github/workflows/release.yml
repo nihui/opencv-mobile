@@ -501,8 +501,10 @@ jobs:
         shopt -s nullglob
         thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
         shopt -u nullglob
+        libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            -o ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a
         lipo -create \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -585,9 +587,11 @@ jobs:
         shopt -s nullglob
         thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
         shopt -u nullglob
+        libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            -o ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -761,9 +765,11 @@ jobs:
         shopt -s nullglob
         thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
         shopt -u nullglob
+        libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            -o ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-x86_64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -853,9 +859,11 @@ jobs:
         shopt -s nullglob
         thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
         shopt -u nullglob
+        libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            -o ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -1020,9 +1028,11 @@ jobs:
         shopt -s nullglob
         thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
         shopt -u nullglob
+        libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            -o ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -1104,10 +1114,15 @@ jobs:
         ln -s Versions/Current/opencv2 opencv2.framework/opencv2
         shopt -s nullglob
         thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
+        thirdparty_libs_arm64e=(${{ env.SOURCE_DIR }}/build-arm64e/install/lib/opencv4/3rdparty/*.a)
         shopt -u nullglob
+        libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            -o ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a
+        libtool -static ${{ env.SOURCE_DIR }}/build-arm64e/install/lib/libopencv_world.a ${thirdparty_libs_arm64e} \
+            -o ${{ env.SOURCE_DIR }}/build-arm64e/install/lib/libopencv_world_combined.a
         lipo -create \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64e/install/lib/libopencv_world.a ${thirdparty_libs} \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a \
+            ${{ env.SOURCE_DIR }}/build-arm64e/install/lib/libopencv_world_combined.a \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64e/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64e/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -1190,9 +1205,11 @@ jobs:
         shopt -s nullglob
         thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
         shopt -u nullglob
+        libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            -o ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -1266,8 +1283,10 @@ jobs:
         shopt -s nullglob
         thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
         shopt -u nullglob
+        libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            -o ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a
         lipo -create \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :
@@ -1350,9 +1369,11 @@ jobs:
         shopt -s nullglob
         thirdparty_libs=(${{ env.SOURCE_DIR }}/build-arm64/install/lib/opencv4/3rdparty/*.a)
         shopt -u nullglob
+        libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            -o ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a
         lipo -create \
             ${{ env.SOURCE_DIR }}/build-x86_64/install/lib/libopencv_world.a \
-            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a ${thirdparty_libs} \
+            ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world_combined.a \
             -o opencv2.framework/Versions/A/opencv2
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv4/opencv2/* opencv2.framework/Versions/A/Headers/ || :
         cp -r ${{ env.SOURCE_DIR }}/build-arm64/install/include/opencv2/* opencv2.framework/Versions/A/Headers/ || :

@@ -327,6 +327,7 @@ https://github.com/nihui/opencv-mobile/releases/latest
 |---|---|---|
 |bullseye|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.13.0-debian-bullseye-arm.zip"><img alt="opencv4-debian" src="https://img.shields.io/badge/download-4.13.0-blue?style=for-the-badge"></a>|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.13.0-debian-bullseye-aarch64.zip"><img alt="opencv4-debian" src="https://img.shields.io/badge/download-4.13.0-blue?style=for-the-badge"></a>|
 |bookworm|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.13.0-debian-bookworm-arm.zip"><img alt="opencv4-debian" src="https://img.shields.io/badge/download-4.13.0-blue?style=for-the-badge"></a>|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.13.0-debian-bookworm-aarch64.zip"><img alt="opencv4-debian" src="https://img.shields.io/badge/download-4.13.0-blue?style=for-the-badge"></a>|
+|trixie|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.13.0-debian-trixie-arm.zip"><img alt="opencv4-debian" src="https://img.shields.io/badge/download-4.13.0-blue?style=for-the-badge"></a>|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.13.0-debian-trixie-aarch64.zip"><img alt="opencv4-debian" src="https://img.shields.io/badge/download-4.13.0-blue?style=for-the-badge"></a>|
 
 </td>
 </tr>
