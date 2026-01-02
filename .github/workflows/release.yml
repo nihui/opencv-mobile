@@ -455,6 +455,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
         -DPLATFORM=OS \
         -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET \
@@ -536,6 +537,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
         -DPLATFORM=SIMULATOR \
         -DDEPLOYMENT_TARGET=$IOS_DEPLOYMENT_TARGET \
@@ -721,6 +723,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
         -DDEPLOYMENT_TARGET=$MAC_DEPLOYMENT_TARGET \
         -DENABLE_BITCODE=OFF \
@@ -816,6 +819,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
         -DPLATFORM=MAC_CATALYST \
         -DDEPLOYMENT_TARGET=$MAC_CATALYST_DEPLOYMENT_TARGET \
@@ -907,6 +911,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
         -DPLATFORM=WATCHOS \
         -DDEPLOYMENT_TARGET=$WATCHOS_DEPLOYMENT_TARGET \
@@ -989,6 +994,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
         -DPLATFORM=SIMULATOR_WATCHOS \
         -DDEPLOYMENT_TARGET=$WATCHOS_DEPLOYMENT_TARGET \
@@ -1080,6 +1086,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
         -DPLATFORM=TVOS \
         -DDEPLOYMENT_TARGET=$TVOS_DEPLOYMENT_TARGET \
@@ -1177,6 +1184,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
         -DPLATFORM=SIMULATOR_TVOS \
         -DDEPLOYMENT_TARGET=$TVOS_DEPLOYMENT_TARGET \
@@ -1268,6 +1276,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
         -DPLATFORM=VISIONOS \
         -DDEPLOYMENT_TARGET=$VISIONOS_DEPLOYMENT_TARGET \
@@ -1349,6 +1358,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_TOOLCHAIN_FILE=../../toolchains/ios.toolchain.cmake \
         -DPLATFORM=SIMULATOR_VISIONOS \
         -DDEPLOYMENT_TARGET=$VISIONOS_DEPLOYMENT_TARGET \
