@@ -32,9 +32,9 @@
 
 |opencv 4.13.0 package size|The official opencv|opencv-mobile|
 |:-:|:-:|:-:|
-|source zip|95.7 MB|8.78 MB|
-|android|303 MB|18.6 MB|
-|ios|88.7 MB|3.85 MB|
+|source zip|95.7 MB|8.44 MB|
+|android|303 MB|18.8 MB|
+|ios|88.7 MB|4.25 MB|
 
 
 <table>
@@ -309,7 +309,8 @@ https://github.com/nihui/opencv-mobile/releases/latest
 </tr>
 </table>
 
-* Android package build with ndk r28 and android api 21, [KleidiCV](https://gitlab.arm.com/kleidi/kleidicv) HAL enabled for arm64-v8a
+* Android package build with ndk r29 and android api 21
+* [KleidiCV](https://gitlab.arm.com/kleidi/kleidicv) HAL enabled for Android arm64-v8a, all Apple arm64/arm64e platforms and Linux aarch64 targets
 * iOS / MacOS / Mac-Catalyst / watchOS / tvOS / visionOS package build with Xcode 15.2
 * ARM Linux package build with cross-compiler on Ubuntu-24.04
 * WebAssembly package build with Emscripten 3.1.28
