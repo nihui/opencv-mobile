@@ -1,0 +1,15 @@
+diff -Nuarp opencv-2.4.13.7.orig/CMakeLists.txt opencv-2.4.13.7/CMakeLists.txt
+--- opencv-2.4.13.7.orig/CMakeLists.txt	2018-07-02 20:41:56.000000000 +0800
++++ opencv-2.4.13.7/CMakeLists.txt	2026-01-02 20:52:31.613210331 +0800
+@@ -48,11 +48,6 @@ if(POLICY CMP0026)
+   cmake_policy(SET CMP0026 NEW)
+ endif()
+ 
+-if (POLICY CMP0042)
+-  # silence cmake 3.0+ warnings about MACOSX_RPATH
+-  cmake_policy(SET CMP0042 OLD)
+-endif()
+-
+ # must go before the project command
+ set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+ if(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")

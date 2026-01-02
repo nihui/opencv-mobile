@@ -65,6 +65,7 @@ jobs:
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-newer-msvc.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-windows-arm-arch.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-cmake-cmp0042-new.patch
         cp ../patches/draw_text.h ../patches/mono_font_data.h modules/core/src/
         cp ../patches/fontface.html ./
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-drawing-mono-font.patch
