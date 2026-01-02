@@ -1439,10 +1439,10 @@ jobs:
       matrix:
         opencv-version: [4.13.0]
         os-compiler:
-          - { msvc-version: vs2015, windows-version: 2025, toolset-version: v140, windows-sdk-version: 22621 }
-          - { msvc-version: vs2017, windows-version: 2025, toolset-version: v141, windows-sdk-version: 22621 }
-          - { msvc-version: vs2019, windows-version: 2025, toolset-version: v142, windows-sdk-version: 22621 }
-          - { msvc-version: vs2022, windows-version: 2025, toolset-version: v143, windows-sdk-version: 26100 }
+          - { msvc-version: vs2015, windows-version: 2022, toolset-version: v140, windows-sdk-version: 22621 }
+          - { msvc-version: vs2017, windows-version: 2022, toolset-version: v141, windows-sdk-version: 22621 }
+          - { msvc-version: vs2019, windows-version: 2022, toolset-version: v142, windows-sdk-version: 22621 }
+          - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143, windows-sdk-version: 26100 }
     runs-on: windows-${{ matrix.os-compiler.windows-version }}
     env:
       UseMultiToolTask: true
