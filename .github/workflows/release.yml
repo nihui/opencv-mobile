@@ -271,7 +271,7 @@ jobs:
     - uses: actions/checkout@v6
     - name: ndk-fix-debug
       run: sed -i -e '/^  -g$/d' $ANDROID_NDK_LATEST_HOME/build/cmake/android-legacy.toolchain.cmake
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -373,7 +373,7 @@ jobs:
         tar -xf ohos-sdk-windows_linux-public.tar.gz
         cd ohos-sdk/linux
         unzip -q native-linux-x64-4.1.7.8-Release.zip
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -469,7 +469,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -551,7 +551,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -641,7 +641,7 @@ jobs:
         sudo apt-get install g++-arm-linux-gnueabi g++-arm-linux-gnueabihf g++-aarch64-linux-gnu
 
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -734,7 +734,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -833,7 +833,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -925,7 +925,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -1008,7 +1008,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -1100,7 +1100,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -1198,7 +1198,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -1290,7 +1290,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -1372,7 +1372,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release \
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -1460,7 +1460,7 @@ jobs:
       COMMON_CMAKE_OPTIONS: -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_INSTALL_PREFIX=install
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -1574,7 +1574,7 @@ jobs:
       COMMON_CMAKE_OPTIONS: -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -1633,7 +1633,7 @@ jobs:
         cd emsdk
         ./emsdk install $EMSCRIPTEN_VERSION
         ./emsdk activate $EMSCRIPTEN_VERSION
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-${{ matrix.opencv-version }}-source
     - name: setup-opencv-source
@@ -1772,43 +1772,43 @@ jobs:
         echo "VISIONOS_SIMULATOR_PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-visionos-simulator" >> $GITHUB_ENV
         echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-apple" >> $GITHUB_ENV
     - name: download-macos-package
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: ${{ env.MACOS_PACKAGE_NAME }}
     - name: download-ios-package
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: ${{ env.IOS_PACKAGE_NAME }}
     - name: download-ios-simulator-package
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: ${{ env.IOS_SIMULATOR_PACKAGE_NAME }}
     - name: download-mac-catalyst-package
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: ${{ env.MAC_CATALYST_PACKAGE_NAME }}
     - name: download-watchos-package
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: ${{ env.WATCHOS_PACKAGE_NAME }}
     - name: download-watchos-simulator-package
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: ${{ env.WATCHOS_SIMULATOR_PACKAGE_NAME }}
     - name: download-tvos-package
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: ${{ env.TVOS_PACKAGE_NAME }}
     - name: download-tvos-simulator-package
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: ${{ env.TVOS_SIMULATOR_PACKAGE_NAME }}
     - name: download-visionos-package
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: ${{ env.VISIONOS_PACKAGE_NAME }}
     - name: download-visionos-simulator-package
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: ${{ env.VISIONOS_SIMULATOR_PACKAGE_NAME }}
     - name: create-xcframwork
@@ -2091,7 +2091,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: opencv-mobile-4.13.0-source
     - name: setup-toolchain
@@ -2153,7 +2153,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: download
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         path: artifacts
 
