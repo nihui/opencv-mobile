@@ -236,17 +236,17 @@ jobs:
         mv opencv-${{ env.opencv-version }} opencv-mobile-${{ env.opencv-version }}
         zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
     - name: upload-opencv2-source
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: opencv-mobile-2.4.13.7-source
         path: opencv-mobile-2.4.13.7.zip
     - name: upload-opencv3-source
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: opencv-mobile-3.4.20-source
         path: opencv-mobile-3.4.20.zip
     - name: upload-opencv4-source
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: opencv-mobile-4.13.0-source
         path: opencv-mobile-4.13.0.zip
@@ -348,7 +348,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/sdk/native/jni ..
         cmake --build . -j $(nproc)
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -443,7 +443,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/x86_64/${{ env.OPENCV_SUBDIR }} ..
         ${{ env.OHOS_NDK_CMAKE }} --build . -j $(nproc)
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -525,7 +525,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 4
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -617,7 +617,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 4
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -711,7 +711,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/aarch64-linux-gnu/${{ env.OPENCV_SUBDIR }} ..
         cmake --build . -j $(nproc)
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -807,7 +807,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 4
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -899,7 +899,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 4
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -982,7 +982,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 4
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -1074,7 +1074,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 4
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -1172,7 +1172,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 4
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -1264,7 +1264,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 4
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -1346,7 +1346,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 4
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -1438,7 +1438,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
         cmake --build . -j 4
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -1555,7 +1555,7 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64,version=10.0.${{ matrix.os-compiler.windows-sdk-version }}.0 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\arm64" -DOpenCV_STATIC=ON ..
         cmake --build . --config Release -j 4
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -1609,7 +1609,7 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/${{ env.OPENCV_SUBDIR }} ..
         cmake --build . -j $(nproc)
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -1744,7 +1744,7 @@ jobs:
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/simd-threads/${{ env.OPENCV_SUBDIR }} ..
         cmake --build . -j $(nproc)
     - name: upload
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -1848,7 +1848,7 @@ jobs:
         rm -f ${{ env.PACKAGE_NAME }}.zip
         zip -9 -y -r ${{ env.PACKAGE_NAME }}.zip opencv2.xcframework
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
@@ -2141,7 +2141,7 @@ jobs:
         cmake --build . -j $(nproc)
 
     - name: upload-zip
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.PACKAGE_NAME }}
         path: ${{ env.PACKAGE_NAME }}.zip
