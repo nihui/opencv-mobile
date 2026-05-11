@@ -1489,7 +1489,7 @@ jobs:
         $vsInstallPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
         Start-Process -FilePath "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe" -ArgumentList "modify --installPath `"$vsInstallPath`" --add Microsoft.VisualStudio.Component.VC.v141.x86.x64 --quiet --norestart --nocache" -Wait
 
-    - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2.4
+    - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2.5
       with:
         sdk-version: ${{ matrix.os-compiler.windows-sdk-version }}
 
