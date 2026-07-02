@@ -1,0 +1,910 @@
+diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/bindings_utils.hpp opencv-5.0.0/modules/core/include/opencv2/core/bindings_utils.hpp
+--- opencv-5.0.0.orig/modules/core/include/opencv2/core/bindings_utils.hpp	2026-07-02 21:14:50.718235316 +0800
++++ opencv-5.0.0/modules/core/include/opencv2/core/bindings_utils.hpp	2026-07-02 21:14:50.882824896 +0800
+@@ -202,12 +202,6 @@ void generateVectorOfMat(size_t len, int
+ }
+ 
+ CV_WRAP static inline
+-void testRaiseGeneralException()
+-{
+-    throw std::runtime_error("exception text");
+-}
+-
+-CV_WRAP static inline
+ AsyncArray testAsyncArray(InputArray argument)
+ {
+     AsyncPromise p;
+@@ -219,14 +213,6 @@ CV_WRAP static inline
+ AsyncArray testAsyncException()
+ {
+     AsyncPromise p;
+-    try
+-    {
+-        CV_Error(Error::StsOk, "Test: Generated async error");
+-    }
+-    catch (const cv::Exception& e)
+-    {
+-        p.setException(e);
+-    }
+     return p.getArrayResult();
+ }
+ 
+diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/cvstd_wrapper.hpp opencv-5.0.0/modules/core/include/opencv2/core/cvstd_wrapper.hpp
+--- opencv-5.0.0.orig/modules/core/include/opencv2/core/cvstd_wrapper.hpp	2026-07-02 21:14:50.725630557 +0800
++++ opencv-5.0.0/modules/core/include/opencv2/core/cvstd_wrapper.hpp	2026-07-02 21:14:50.882935425 +0800
+@@ -131,7 +131,7 @@ struct Ptr : public std::shared_ptr<T>
+     Ptr<Y> constCast() const CV_NOEXCEPT { return std::const_pointer_cast<Y>(*this); }
+ 
+     template<typename Y> inline
+-    Ptr<Y> dynamicCast() const CV_NOEXCEPT { return std::dynamic_pointer_cast<Y>(*this); }
++    Ptr<Y> dynamicCast() const CV_NOEXCEPT { return std::static_pointer_cast<Y>(*this); }
+ };
+ 
+ template<typename _Tp, typename ... A1> static inline
+diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/detail/exception_ptr.hpp opencv-5.0.0/modules/core/include/opencv2/core/detail/exception_ptr.hpp
+--- opencv-5.0.0.orig/modules/core/include/opencv2/core/detail/exception_ptr.hpp	2026-07-02 21:14:50.791081539 +0800
++++ opencv-5.0.0/modules/core/include/opencv2/core/detail/exception_ptr.hpp	2026-07-02 21:14:55.273251014 +0800
+@@ -6,11 +6,7 @@
+ #define OPENCV_CORE_DETAILS_EXCEPTION_PTR_H
+ 
+ #ifndef CV__EXCEPTION_PTR
+-#  if defined(__ANDROID__) && defined(ATOMIC_INT_LOCK_FREE) && ATOMIC_INT_LOCK_FREE < 2
+-#    define CV__EXCEPTION_PTR 0  // Not supported, details: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58938
+-#  else
+-#    define CV__EXCEPTION_PTR 1
+-#  endif
++#  define CV__EXCEPTION_PTR 0
+ #endif
+ #ifndef CV__EXCEPTION_PTR
+ #  define CV__EXCEPTION_PTR 0
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/async.cpp opencv-5.0.0/modules/core/src/async.cpp
+--- opencv-5.0.0.orig/modules/core/src/async.cpp	2026-07-02 21:14:50.808308738 +0800
++++ opencv-5.0.0/modules/core/src/async.cpp	2026-07-02 21:14:50.882973477 +0800
+@@ -100,7 +100,6 @@ struct AsyncArray::Impl
+             if (has_exception)
+             {
+                 result_is_fetched = true;
+-                throw cv_exception;
+             }
+             CV_Error(Error::StsInternal, "AsyncArray: invalid state of 'has_result = true'");
+         }
+@@ -264,7 +263,6 @@ struct AsyncArray::Impl
+         if (has_exception)
+         {
+             result_is_fetched = true;
+-            throw cv_exception;
+         }
+         CV_Error(Error::StsInternal, "AsyncArray: invalid state of 'has_result = true'");
+         return false;
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/bindings_utils.cpp opencv-5.0.0/modules/core/src/bindings_utils.cpp
+--- opencv-5.0.0.orig/modules/core/src/bindings_utils.cpp	2026-07-02 21:14:50.620298456 +0800
++++ opencv-5.0.0/modules/core/src/bindings_utils.cpp	2026-07-02 21:14:50.883014935 +0800
+@@ -22,7 +22,7 @@ String dumpInputArray(InputArray argumen
+         return "InputArray: noArray()";
+     std::ostringstream ss;
+     ss << "InputArray:";
+-    try {
++    {
+         do {
+             ss << (argument.empty() ? " empty()=true" : " empty()=false");
+             ss << cv::format(" kind=0x%08llx", (long long int)argument.kind());
+@@ -56,14 +56,6 @@ String dumpInputArray(InputArray argumen
+             ss << " type(-1)=" << cv::typeToString(argument.type(-1));
+         } while (0);
+     }
+-    catch (const std::exception& e)
+-    {
+-        ss << " ERROR: exception occurred: " << e.what();
+-    }
+-    catch (...)
+-    {
+-        ss << " ERROR: unknown exception occurred, dump is non-complete";
+-    }
+     return ss.str();
+ }
+ 
+@@ -73,7 +65,7 @@ CV_EXPORTS_W String dumpInputArrayOfArra
+         return "InputArrayOfArrays: noArray()";
+     std::ostringstream ss;
+     ss << "InputArrayOfArrays:";
+-    try {
++    {
+         do {
+             ss << (argument.empty() ? " empty()=true" : " empty()=false");
+             ss << cv::format(" kind=0x%08llx", (long long int)argument.kind());
+@@ -113,14 +105,6 @@ CV_EXPORTS_W String dumpInputArrayOfArra
+             }
+         } while (0);
+     }
+-    catch (const std::exception& e)
+-    {
+-        ss << " ERROR: exception occurred: " << e.what();
+-    }
+-    catch (...)
+-    {
+-        ss << " ERROR: unknown exception occurred, dump is non-complete";
+-    }
+     return ss.str();
+ }
+ 
+@@ -130,7 +114,7 @@ CV_EXPORTS_W String dumpInputOutputArray
+         return "InputOutputArray: noArray()";
+     std::ostringstream ss;
+     ss << "InputOutputArray:";
+-    try {
++    {
+         do {
+             ss << (argument.empty() ? " empty()=true" : " empty()=false");
+             ss << cv::format(" kind=0x%08llx", (long long int)argument.kind());
+@@ -164,14 +148,6 @@ CV_EXPORTS_W String dumpInputOutputArray
+             ss << " type(-1)=" << cv::typeToString(argument.type(-1));
+         } while (0);
+     }
+-    catch (const std::exception& e)
+-    {
+-        ss << " ERROR: exception occurred: " << e.what();
+-    }
+-    catch (...)
+-    {
+-        ss << " ERROR: unknown exception occurred, dump is non-complete";
+-    }
+     return ss.str();
+ }
+ 
+@@ -181,7 +157,7 @@ CV_EXPORTS_W String dumpInputOutputArray
+         return "InputOutputArrayOfArrays: noArray()";
+     std::ostringstream ss;
+     ss << "InputOutputArrayOfArrays:";
+-    try {
++    {
+         do {
+             ss << (argument.empty() ? " empty()=true" : " empty()=false");
+             ss << cv::format(" kind=0x%08llx", (long long int)argument.kind());
+@@ -221,14 +197,6 @@ CV_EXPORTS_W String dumpInputOutputArray
+             }
+         } while (0);
+     }
+-    catch (const std::exception& e)
+-    {
+-        ss << " ERROR: exception occurred: " << e.what();
+-    }
+-    catch (...)
+-    {
+-        ss << " ERROR: unknown exception occurred, dump is non-complete";
+-    }
+     return ss.str();
+ }
+ 
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/command_line_parser.cpp opencv-5.0.0/modules/core/src/command_line_parser.cpp
+--- opencv-5.0.0.orig/modules/core/src/command_line_parser.cpp	2026-07-02 21:14:50.624707517 +0800
++++ opencv-5.0.0/modules/core/src/command_line_parser.cpp	2026-07-02 21:14:50.883069038 +0800
+@@ -119,7 +119,6 @@ static void from_str(const String& str,
+ 
+ void CommandLineParser::getByName(const String& name, bool space_delete, Param type, void* dst) const
+ {
+-    try
+     {
+         for (size_t i = 0; i < impl->data.size(); i++)
+         {
+@@ -144,12 +143,6 @@ void CommandLineParser::getByName(const
+             }
+         }
+     }
+-    catch (const Exception& e)
+-    {
+-        impl->error = true;
+-        impl->error_message = impl->error_message + "Parameter '"+ name + "': " + e.err + "\n";
+-        return;
+-    }
+ 
+     CV_Error_(Error::StsBadArg, ("undeclared key '%s' requested", name.c_str()));
+ }
+@@ -157,7 +150,6 @@ void CommandLineParser::getByName(const
+ 
+ void CommandLineParser::getByIndex(int index, bool space_delete, Param type, void* dst) const
+ {
+-    try
+     {
+         for (size_t i = 0; i < impl->data.size(); i++)
+         {
+@@ -177,12 +169,6 @@ void CommandLineParser::getByIndex(int i
+             }
+         }
+     }
+-    catch (const Exception& e)
+-    {
+-        impl->error = true;
+-        impl->error_message = impl->error_message + format("Parameter #%d: ", index) + e.err + "\n";
+-        return;
+-    }
+ 
+     CV_Error_(Error::StsBadArg, ("undeclared position %d requested", index));
+ }
+@@ -464,16 +450,7 @@ std::vector<String> CommandLineParser::I
+         {
+             if (begin == true)
+             {
+-                throw cv::Exception(cv::Error::StsParseError,
+-                         String("error in split_range_string(")
+-                         + str
+-                         + String(", ")
+-                         + String(1, fs)
+-                         + String(", ")
+-                         + String(1, ss)
+-                         + String(")"),
+-                         "", __FILE__, __LINE__
+-                         );
++                return vec;
+             }
+             begin = true;
+             word = "";
+@@ -484,16 +461,7 @@ std::vector<String> CommandLineParser::I
+         {
+             if (begin == false)
+             {
+-                throw cv::Exception(cv::Error::StsParseError,
+-                         String("error in split_range_string(")
+-                         + str
+-                         + String(", ")
+-                         + String(1, fs)
+-                         + String(", ")
+-                         + String(1, ss)
+-                         + String(")"),
+-                         "", __FILE__, __LINE__
+-                         );
++                return vec;
+             }
+             begin = false;
+             vec.push_back(word);
+@@ -508,16 +476,7 @@ std::vector<String> CommandLineParser::I
+ 
+     if (begin == true)
+     {
+-        throw cv::Exception(cv::Error::StsParseError,
+-                 String("error in split_range_string(")
+-                 + str
+-                 + String(", ")
+-                 + String(1, fs)
+-                 + String(", ")
+-                 + String(1, ss)
+-                 + String(")"),
+-                 "", __FILE__, __LINE__
+-                );
++        return vec;
+     }
+ 
+     return vec;
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/dxt.cpp opencv-5.0.0/modules/core/src/dxt.cpp
+--- opencv-5.0.0.orig/modules/core/src/dxt.cpp	2026-07-02 21:14:50.808588526 +0800
++++ opencv-5.0.0/modules/core/src/dxt.cpp	2026-07-02 21:14:50.883276770 +0800
+@@ -834,6 +834,30 @@ struct OcvDftOptions {
+     }
+ };
+ 
++template<typename T>
++struct HALDFTCaller;
++
++template<>
++struct HALDFTCaller<float> {
++    static void call(const OcvDftOptions& c, const Complex<float>* src, Complex<float>* dst) {
++        CALL_HAL(dft, cv_hal_dft, reinterpret_cast<const uchar*>(src), reinterpret_cast<uchar*>(dst), CV_32F,
++            c.nf, c.factors, c.scale, c.itab, c.wave, c.tab_size, c.n, c.isInverse, c.noPermute);
++    }
++};
++
++template<>
++struct HALDFTCaller<double> {
++    static void call(const OcvDftOptions& c, const Complex<double>* src, Complex<double>* dst) {
++        CALL_HAL(dft, cv_hal_dft, reinterpret_cast<const uchar*>(src), reinterpret_cast<uchar*>(dst), CV_64F,
++            c.nf, c.factors, c.scale, c.itab, c.wave, c.tab_size, c.n, c.isInverse, c.noPermute);
++    }
++};
++
++template<typename T>
++static void HALDFT(const OcvDftOptions& c, const Complex<T>* src, Complex<T>* dst) {
++    HALDFTCaller<T>::call(c, src, dst);
++}
++
+ // mixed-radix complex discrete Fourier transform: double-precision version
+ template<typename T> static void
+ DFT(const OcvDftOptions & c, const Complex<T>* src, Complex<T>* dst)
+@@ -849,16 +873,7 @@ DFT(const OcvDftOptions & c, const Compl
+     Complex<T> t;
+     T scale = (T)c.scale;
+ 
+-    if(typeid(T) == typeid(float))
+-    {
+-        CALL_HAL(dft, cv_hal_dft, reinterpret_cast<const uchar*>(src), reinterpret_cast<uchar*>(dst), CV_32F,
+-                 c.nf, c.factors, c.scale, c.itab, c.wave, c.tab_size, c.n, c.isInverse, c.noPermute);
+-    }
+-    if(typeid(T) == typeid(double))
+-    {
+-        CALL_HAL(dft, cv_hal_dft, reinterpret_cast<const uchar*>(src), reinterpret_cast<uchar*>(dst), CV_64F,
+-                 c.nf, c.factors, c.scale, c.itab, c.wave, c.tab_size, c.n, c.isInverse, c.noPermute);
+-    }
++    HALDFT(c, src, dst);
+ 
+     if( c.useIpp )
+     {
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/glob.cpp opencv-5.0.0/modules/core/src/glob.cpp
+--- opencv-5.0.0.orig/modules/core/src/glob.cpp	2026-07-02 21:14:50.635290182 +0800
++++ opencv-5.0.0/modules/core/src/glob.cpp	2026-07-02 21:14:50.883422736 +0800
+@@ -243,7 +243,6 @@ static void glob_rec(const cv::String& d
+     if ((dir = opendir (directory.c_str())) != 0)
+     {
+         /* find all the files and directories within directory */
+-        try
+         {
+             struct dirent *ent;
+             while ((ent = readdir (dir)) != 0)
+@@ -267,11 +266,6 @@ static void glob_rec(const cv::String& d
+                     result.push_back(entry);
+             }
+         }
+-        catch (...)
+-        {
+-            closedir(dir);
+-            throw;
+-        }
+         closedir(dir);
+     }
+     else
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix.cpp opencv-5.0.0/modules/core/src/matrix.cpp
+--- opencv-5.0.0.orig/modules/core/src/matrix.cpp	2026-07-02 21:14:50.651197777 +0800
++++ opencv-5.0.0/modules/core/src/matrix.cpp	2026-07-02 21:14:50.883492197 +0800
+@@ -1121,20 +1121,11 @@ void Mat::create(int d0, const int* _siz
+         MatAllocator *a = allocator, *a0 = getDefaultAllocator();
+         if(!a)
+             a = a0;
+-        try
+         {
+             u = a->allocate(dims, size.p, _type, 0, step.p, ACCESS_RW /* ignored */, USAGE_DEFAULT);
+             CV_Assert(u != 0);
+             allocator = a;
+         }
+-        catch (...)
+-        {
+-            if (a == a0)
+-                throw;
+-            u = a0->allocate(dims, size.p, _type, 0, step.p, ACCESS_RW /* ignored */, USAGE_DEFAULT);
+-            CV_Assert(u != 0);
+-            allocator = a0;
+-        }
+         CV_Assert( step[dims-1] == (size_t)CV_ELEM_SIZE(flags) );
+     }
+ 
+@@ -1210,7 +1201,6 @@ Mat::Mat(const Mat& m, const Range& _row
+     }
+ 
+     *this = m;
+-    try
+     {
+         if( _rowRange != Range::all() && _rowRange != Range(0,rows) )
+         {
+@@ -1230,11 +1220,6 @@ Mat::Mat(const Mat& m, const Range& _row
+             flags |= SUBMATRIX_FLAG;
+         }
+     }
+-    catch(...)
+-    {
+-        release();
+-        throw;
+-    }
+ 
+     updateContinuityFlag();
+ 
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/parallel/parallel.cpp opencv-5.0.0/modules/core/src/parallel/parallel.cpp
+--- opencv-5.0.0.orig/modules/core/src/parallel/parallel.cpp	2026-07-02 21:14:50.705957257 +0800
++++ opencv-5.0.0/modules/core/src/parallel/parallel.cpp	2026-07-02 21:14:50.883554896 +0800
+@@ -60,7 +60,6 @@ std::shared_ptr<ParallelForAPI> createPa
+             }
+             isKnown = true;
+         }
+-        try
+         {
+             CV_LOG_DEBUG(NULL, "core(parallel): trying backend: " << info.name << " (priority=" << info.priority << ")");
+             if (!info.backendFactory)
+@@ -79,14 +78,6 @@ std::shared_ptr<ParallelForAPI> createPa
+             getParallelBackendName() = info.name;
+             return backend;
+         }
+-        catch (const std::exception& e)
+-        {
+-            CV_LOG_WARNING(NULL, "core(parallel): can't initialize " << info.name << " backend: " << e.what());
+-        }
+-        catch (...)
+-        {
+-            CV_LOG_WARNING(NULL, "core(parallel): can't initialize " << info.name << " backend: Unknown C++ exception");
+-        }
+     }
+     if (name.empty())
+     {
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp opencv-5.0.0/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp
+--- opencv-5.0.0.orig/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp	2026-07-02 21:14:50.710018101 +0800
++++ opencv-5.0.0/modules/core/src/parallel/plugin_parallel_wrapper.impl.hpp	2026-07-02 21:14:50.883582468 +0800
+@@ -155,15 +155,10 @@ protected:
+     void initBackend()
+     {
+         AutoLock lock(getInitializationMutex());
+-        try
+         {
+             if (!initialized)
+                 loadPlugin();
+         }
+-        catch (...)
+-        {
+-            CV_LOG_INFO(NULL, "core(parallel): exception during plugin loading: " << baseName_ << ". SKIP");
+-        }
+         initialized = true;
+     }
+     void loadPlugin();
+@@ -243,7 +238,6 @@ void PluginParallelBackendFactory::loadP
+         {
+             continue;
+         }
+-        try
+         {
+             auto pluginBackend = std::make_shared<PluginParallelBackend>(lib);
+             if (!pluginBackend)
+@@ -264,10 +258,6 @@ void PluginParallelBackendFactory::loadP
+             backend = pluginBackend;
+             return;
+         }
+-        catch (...)
+-        {
+-            CV_LOG_WARNING(NULL, "core(parallel): exception during plugin initialization: " << toPrintablePath(plugin) << ". SKIP");
+-        }
+     }
+ }
+ 
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/parallel.cpp opencv-5.0.0/modules/core/src/parallel.cpp
+--- opencv-5.0.0.orig/modules/core/src/parallel.cpp	2026-07-02 21:14:50.668382294 +0800
++++ opencv-5.0.0/modules/core/src/parallel.cpp	2026-07-02 21:14:50.883630418 +0800
+@@ -355,29 +355,9 @@ namespace {
+             CV_TRACE_ARG_VALUE(range_end, "range.end", (int64)r.end);
+ #endif
+ 
+-            try
+             {
+                 (*ctx.body)(r);
+             }
+-#if CV__EXCEPTION_PTR
+-            catch (...)
+-            {
+-                ctx.recordException();
+-            }
+-#else
+-            catch (const cv::Exception& e)
+-            {
+-                ctx.recordException(e.what());
+-            }
+-            catch (const std::exception& e)
+-            {
+-                ctx.recordException(e.what());
+-            }
+-            catch (...)
+-            {
+-                ctx.recordException("Unknown exception");
+-            }
+-#endif
+ 
+             if (!ctx.is_rng_used && !(cv::theRNG() == ctx.rng))
+                 ctx.is_rng_used = true;
+@@ -519,16 +499,10 @@ void parallel_for_(const cv::Range& rang
+       isNotNestedRegion = !flagNestedParallelFor.exchange(true);
+     if (isNotNestedRegion)
+     {
+-        try
+         {
+             parallel_for_impl(range, body, nstripes);
+             flagNestedParallelFor = false;
+         }
+-        catch (...)
+-        {
+-            flagNestedParallelFor = false;
+-            throw;
+-        }
+     }
+     else // nested parallel_for_() calls are not parallelized
+     {
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/persistence.cpp opencv-5.0.0/modules/core/src/persistence.cpp
+--- opencv-5.0.0.orig/modules/core/src/persistence.cpp	2026-07-02 21:14:50.671795343 +0800
++++ opencv-5.0.0/modules/core/src/persistence.cpp	2026-07-02 21:14:50.883736509 +0800
+@@ -782,7 +782,7 @@ bool FileStorage::Impl::open(const char
+         strbufpos = bufOffset;
+         bufofs = 0;
+ 
+-        try {
++        {
+             char *ptr = bufferStart();
+             ptr[0] = ptr[1] = ptr[2] = '\0';
+             FileNode root_nodes(fs_ext, 0, 0);
+@@ -824,13 +824,6 @@ bool FileStorage::Impl::open(const char
+                 }
+             }
+         }
+-        catch (...)
+-        {
+-            // FIXIT log error message
+-            is_opened = true;
+-            release();
+-            throw;
+-        }
+ 
+         // release resources that we do not need anymore
+         closeFile();
+@@ -2009,18 +2002,12 @@ FileStorage::~FileStorage()
+ 
+ bool FileStorage::open(const String& filename, int flags, const String& encoding)
+ {
+-    try
+     {
+         bool ok = p->open(filename.c_str(), flags, encoding.c_str());
+         if(ok)
+             state = FileStorage::NAME_EXPECTED + FileStorage::INSIDE_MAP;
+         return ok;
+     }
+-    catch (...)
+-    {
+-        release();
+-        throw;  // re-throw
+-    }
+ }
+ 
+ bool FileStorage::isOpened() const { return p->is_opened; }
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/system.cpp opencv-5.0.0/modules/core/src/system.cpp
+--- opencv-5.0.0.orig/modules/core/src/system.cpp	2026-07-02 21:14:50.691595072 +0800
++++ opencv-5.0.0/modules/core/src/system.cpp	2026-07-02 21:14:50.883888586 +0800
+@@ -1350,7 +1350,6 @@ void error( const Exception& exc )
+         std::terminate();
+     }
+ 
+-    throw exc;
+ #ifdef __GNUC__
+ # if !defined __clang__ && !defined __APPLE__
+     // this suppresses this warning: "noreturn" function does return [enabled by default]
+@@ -2002,15 +2001,9 @@ void* TLSDataContainer::getData() const
+     {
+         // Create new data instance and save it to TLS storage
+         pData = createDataInstance();
+-        try
+         {
+             getTlsStorage().setData(key_, pData);
+         }
+-        catch (...)
+-        {
+-            deleteDataInstance(pData);
+-            throw;
+-        }
+     }
+     return pData;
+ }
+@@ -2114,7 +2107,7 @@ inline bool parseOption(const std::strin
+     {
+         return false;
+     }
+-    throw ParseError(value);
++    return false;
+ }
+ 
+ template<>
+@@ -2135,7 +2128,7 @@ inline size_t parseOption(const std::str
+         return v * 1024 * 1024;
+     else if (suffixStr == "KB" || suffixStr == "Kb" || suffixStr == "kb")
+         return v * 1024;
+-    throw ParseError(value);
++    return v;
+ }
+ 
+ template<>
+@@ -2178,16 +2171,11 @@ static inline const char * envRead(const
+ template<typename T>
+ inline T read(const std::string & k, const T & defaultValue)
+ {
+-    try
+     {
+         const char * res = envRead(k.c_str());
+         if (res)
+             return parseOption<T>(std::string(res));
+     }
+-    catch (const ParseError &err)
+-    {
+-        CV_Error(cv::Error::StsBadArg, err.toString(k));
+-    }
+     return defaultValue;
+ }
+ 
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/umatrix.cpp opencv-5.0.0/modules/core/src/umatrix.cpp
+--- opencv-5.0.0.orig/modules/core/src/umatrix.cpp	2026-07-02 21:14:50.809399990 +0800
++++ opencv-5.0.0/modules/core/src/umatrix.cpp	2026-07-02 21:14:50.884025556 +0800
+@@ -542,14 +542,9 @@ UMat Mat::getUMat(AccessFlag accessFlags
+         new_u->originalUMatData = u;
+     }
+     bool allocated = false;
+-    try
+     {
+         allocated = UMat::getStdAllocator()->allocate(new_u, accessFlags, usageFlags);
+     }
+-    catch (const cv::Exception& e)
+-    {
+-        fprintf(stderr, "Exception: %s\n", e.what());
+-    }
+     if (!allocated)
+     {
+         allocated = getDefaultAllocator()->allocate(new_u, accessFlags, usageFlags);
+@@ -566,7 +561,6 @@ UMat Mat::getUMat(AccessFlag accessFlags
+         CV_XADD(&(u->refcount), 1);
+         CV_XADD(&(u->urefcount), 1);
+     }
+-    try
+     {
+         hdr.flags = flags;
+         hdr.usageFlags = usageFlags;
+@@ -577,16 +571,6 @@ UMat Mat::getUMat(AccessFlag accessFlags
+         hdr.addref();
+         return hdr;
+     }
+-    catch(...)
+-    {
+-        if (u != NULL)
+-        {
+-            CV_XADD(&(u->refcount), -1);
+-            CV_XADD(&(u->urefcount), -1);
+-        }
+-        new_u->currAllocator->deallocate(new_u);
+-        throw;
+-    }
+ 
+ }
+ 
+@@ -643,17 +627,10 @@ void UMat::create(int d0, const int* _si
+             a = a0;
+             a0 = Mat::getDefaultAllocator();
+         }
+-        try
+         {
+             u = a->allocate(dims, size.p, _type, 0, step.p, ACCESS_RW /* ignored */, usageFlags);
+             CV_Assert(u != 0);
+         }
+-        catch(...)
+-        {
+-            if(a != a0)
+-                u = a0->allocate(dims, size.p, _type, 0, step.p, ACCESS_RW /* ignored */, usageFlags);
+-            CV_Assert(u != 0);
+-        }
+         CV_Assert( step[dims-1] == (size_t)CV_ELEM_SIZE(flags) );
+     }
+ 
+@@ -1166,7 +1143,6 @@ Mat UMat::getMat(AccessFlag accessFlags)
+     // TODO Support ACCESS_READ (ACCESS_WRITE) without unnecessary data transfers
+     accessFlags |= ACCESS_RW;
+     UMatDataAutoLock autolock(u);
+-    try
+     {
+         if(CV_XADD(&u->refcount, 1) == 0)
+             u->currAllocator->map(u, accessFlags);
+@@ -1181,11 +1157,6 @@ Mat UMat::getMat(AccessFlag accessFlags)
+             return hdr;
+         }
+     }
+-    catch(...)
+-    {
+-        CV_XADD(&u->refcount, -1);
+-        throw;
+-    }
+     CV_XADD(&u->refcount, -1);
+     CV_Assert(u->data != 0 && "Error mapping of UMat to host memory.");
+     return Mat();
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/utils/filesystem.cpp opencv-5.0.0/modules/core/src/utils/filesystem.cpp
+--- opencv-5.0.0.orig/modules/core/src/utils/filesystem.cpp	2026-07-02 21:14:50.697800747 +0800
++++ opencv-5.0.0/modules/core/src/utils/filesystem.cpp	2026-07-02 21:14:50.884140472 +0800
+@@ -508,14 +508,9 @@ cv::String getCacheDirectory(const char*
+                     && !utils::fs::isDirectory(default_cache_path))
+                 {
+                     std::vector<cv::String> existedCacheDirs;
+-                    try
+                     {
+                         utils::fs::glob_relative(default_cache_path_base, "*", existedCacheDirs, false, true);
+                     }
+-                    catch (...)
+-                    {
+-                        // ignore
+-                    }
+                     if (!existedCacheDirs.empty())
+                     {
+                         CV_LOG_WARNING(NULL, "Creating new OpenCV cache directory: " << default_cache_path);
+diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/solvepnp.cpp opencv-5.0.0/modules/geometry/src/solvepnp.cpp
+--- opencv-5.0.0.orig/modules/geometry/src/solvepnp.cpp	2026-07-02 21:14:50.514744815 +0800
++++ opencv-5.0.0/modules/geometry/src/solvepnp.cpp	2026-07-02 21:14:50.884205726 +0800
+@@ -290,37 +290,16 @@ bool solvePnPRansac(InputArray _opoints,
+ 
+     opoints_inliers.resize(npoints1);
+     ipoints_inliers.resize(npoints1);
+-    try
+     {
+-       if (flags == SOLVEPNP_ITERATIVE && !useExtrinsicGuess)
+-       {
+-          rvec = _local_model.col(0).clone();
+-          tvec = _local_model.col(1).clone();
+-          useExtrinsicGuess = true;
+-       }
+-       result = solvePnP(opoints_inliers, ipoints_inliers, cameraMatrix,
+-                          distCoeffs, rvec, tvec, useExtrinsicGuess,
+-                          (flags == SOLVEPNP_P3P || flags == SOLVEPNP_AP3P) ? SOLVEPNP_EPNP : flags) ? 1 : -1;
+-    }
+-    catch (const cv::Exception& e)
+-    {
+-        if (flags == SOLVEPNP_ITERATIVE &&
+-            npoints1 == 5 &&
+-            e.what() &&
+-            std::string(e.what()).find("DLT algorithm needs at least 6 points") != std::string::npos
+-        )
+-        {
+-            CV_LOG_INFO(NULL, "solvePnPRansac(): solvePnP stage to compute the final pose using points "
+-                "in the consensus set raised DLT 6 points exception, use result from MSS (Minimal Sample Sets) stage instead.");
+-            rvec = _local_model.col(0);    // output rotation vector
+-            tvec = _local_model.col(1);    // output translation vector
+-            result = 1;
+-        }
+-        else
++        if (flags == SOLVEPNP_ITERATIVE && !useExtrinsicGuess)
+         {
+-            // raise other exceptions
+-            throw;
++            rvec = _local_model.col(0).clone();
++            tvec = _local_model.col(1).clone();
++            useExtrinsicGuess = true;
+         }
++        result = solvePnP(opoints_inliers, ipoints_inliers, cameraMatrix,
++                          distCoeffs, rvec, tvec, useExtrinsicGuess,
++                          (flags == SOLVEPNP_P3P || flags == SOLVEPNP_AP3P) ? SOLVEPNP_EPNP : flags) ? 1 : -1;
+     }
+ 
+     if (result <= 0)
+@@ -858,28 +837,24 @@ int solvePnPGeneric( InputArray _opoints
+         IPPE::PoseSolver poseSolver;
+         Mat rvec1, tvec1, rvec2, tvec2;
+         float reprojErr1, reprojErr2;
+-        try
+-        {
+-            poseSolver.solveGeneric(opoints, undistortedPoints, rvec1, tvec1, reprojErr1, rvec2, tvec2, reprojErr2);
++        poseSolver.solveGeneric(opoints, undistortedPoints, rvec1, tvec1, reprojErr1, rvec2, tvec2, reprojErr2);
+ 
+-            if (reprojErr1 < reprojErr2)
+-            {
+-                vec_rvecs.push_back(rvec1);
+-                vec_tvecs.push_back(tvec1);
++        if (reprojErr1 < reprojErr2)
++        {
++            vec_rvecs.push_back(rvec1);
++            vec_tvecs.push_back(tvec1);
+ 
+-                vec_rvecs.push_back(rvec2);
+-                vec_tvecs.push_back(tvec2);
+-            }
+-            else
+-            {
+-                vec_rvecs.push_back(rvec2);
+-                vec_tvecs.push_back(tvec2);
++            vec_rvecs.push_back(rvec2);
++            vec_tvecs.push_back(tvec2);
++        }
++        else
++        {
++            vec_rvecs.push_back(rvec2);
++            vec_tvecs.push_back(tvec2);
+ 
+-                vec_rvecs.push_back(rvec1);
+-                vec_tvecs.push_back(tvec1);
+-            }
++            vec_rvecs.push_back(rvec1);
++            vec_tvecs.push_back(tvec1);
+         }
+-        catch (...) { }
+     }
+     else if (flags == SOLVEPNP_IPPE_SQUARE)
+     {
+@@ -931,27 +906,24 @@ int solvePnPGeneric( InputArray _opoints
+         IPPE::PoseSolver poseSolver;
+         Mat rvec1, tvec1, rvec2, tvec2;
+         float reprojErr1, reprojErr2;
+-        try
+-        {
+-            poseSolver.solveSquare(opoints, undistortedPoints, rvec1, tvec1, reprojErr1, rvec2, tvec2, reprojErr2);
++        poseSolver.solveSquare(opoints, undistortedPoints, rvec1, tvec1, reprojErr1, rvec2, tvec2, reprojErr2);
+ 
+-            if (reprojErr1 < reprojErr2)
+-            {
+-                vec_rvecs.push_back(rvec1);
+-                vec_tvecs.push_back(tvec1);
++        if (reprojErr1 < reprojErr2)
++        {
++            vec_rvecs.push_back(rvec1);
++            vec_tvecs.push_back(tvec1);
+ 
+-                vec_rvecs.push_back(rvec2);
+-                vec_tvecs.push_back(tvec2);
+-            }
+-            else
+-            {
+-                vec_rvecs.push_back(rvec2);
+-                vec_tvecs.push_back(tvec2);
++            vec_rvecs.push_back(rvec2);
++            vec_tvecs.push_back(tvec2);
++        }
++        else
++        {
++            vec_rvecs.push_back(rvec2);
++            vec_tvecs.push_back(tvec2);
+ 
+-                vec_rvecs.push_back(rvec1);
+-                vec_tvecs.push_back(tvec1);
+-            }
+-        } catch (...) { }
++            vec_rvecs.push_back(rvec1);
++            vec_tvecs.push_back(tvec1);
++        }
+     }
+     else if (flags == SOLVEPNP_SQPNP)
+     {
+diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/local_optimization.cpp opencv-5.0.0/modules/geometry/src/usac/local_optimization.cpp
+--- opencv-5.0.0.orig/modules/geometry/src/usac/local_optimization.cpp	2026-07-02 21:14:50.528386350 +0800
++++ opencv-5.0.0/modules/geometry/src/usac/local_optimization.cpp	2026-07-02 21:14:50.884272912 +0800
+@@ -519,7 +519,7 @@ public:
+         points_size = quality_->getPointsSize();
+         threshold = quality_->getThreshold();
+         iou_thr = iou_thr_;
+-        is_covariance = dynamic_cast<const cv::usac::CovarianceSolver*>(solver_.get()) != nullptr;
++        is_covariance = false;
+         mask = std::vector<bool>(points_size);
+         mask_best = std::vector<bool>(points_size);
+         inliers = std::vector<int>(points_size);
+diff -Nuarp opencv-5.0.0.orig/modules/photo/src/ccm/colorspace.cpp opencv-5.0.0/modules/photo/src/ccm/colorspace.cpp
+--- opencv-5.0.0.orig/modules/photo/src/ccm/colorspace.cpp	2026-07-02 21:14:50.195272675 +0800
++++ opencv-5.0.0/modules/photo/src/ccm/colorspace.cpp	2026-07-02 21:14:50.884322565 +0800
+@@ -477,7 +477,7 @@ std::shared_ptr<RGBBase_> GetCS::getRgb(
+             map_cs[COLOR_SPACE_SRGB] = sRGB_CS;
+             map_cs[COLOR_SPACE_SRGBL] = sRGBL_CS;
+         }
+-        return std::dynamic_pointer_cast<RGBBase_>(map_cs[COLOR_SPACE_SRGB]);
++        return std::static_pointer_cast<RGBBase_>(map_cs[COLOR_SPACE_SRGB]);
+ 
+     case cv::ccm::COLOR_SPACE_ADOBE_RGB:
+         if (map_cs.find(COLOR_SPACE_ADOBE_RGB) == map_cs.end())
+@@ -488,7 +488,7 @@ std::shared_ptr<RGBBase_> GetCS::getRgb(
+             map_cs[COLOR_SPACE_ADOBE_RGB] = AdobeRGB_CS;
+             map_cs[COLOR_SPACE_ADOBE_RGBL] = AdobeRGBL_CS;
+         }
+-        return std::dynamic_pointer_cast<RGBBase_>(map_cs[COLOR_SPACE_ADOBE_RGB]);
++        return std::static_pointer_cast<RGBBase_>(map_cs[COLOR_SPACE_ADOBE_RGB]);
+ 
+     case cv::ccm::COLOR_SPACE_WIDE_GAMUT_RGB:
+     {
+@@ -576,7 +576,7 @@ std::shared_ptr<RGBBase_> GetCS::getRgb(
+     default:
+         CV_Error(Error::StsBadArg, "Only RGB color spaces are supported");
+     }
+-    return (std::dynamic_pointer_cast<RGBBase_>)(map_cs[cs_name]);
++    return (std::static_pointer_cast<RGBBase_>)(map_cs[cs_name]);
+ }
+ 
+ std::shared_ptr<ColorSpaceBase> GetCS::getCS(enum ColorSpace cs_name)
+diff -Nuarp opencv-5.0.0.orig/modules/video/src/tracking/detail/tracking_feature.cpp opencv-5.0.0/modules/video/src/tracking/detail/tracking_feature.cpp
+--- opencv-5.0.0.orig/modules/video/src/tracking/detail/tracking_feature.cpp	2026-07-02 21:14:50.090220191 +0800
++++ opencv-5.0.0/modules/video/src/tracking/detail/tracking_feature.cpp	2026-07-02 21:14:50.884374084 +0800
+@@ -107,15 +107,9 @@ void CvHaarEvaluator::generateFeatures(i
+ 
+ CvHaarEvaluator::FeatureHaar::FeatureHaar(Size patchSize)
+ {
+-    try
+     {
+         generateRandomFeature(patchSize);
+     }
+-    catch (...)
+-    {
+-        // FIXIT
+-        throw;
+-    }
+ }
+ 
+ void CvHaarEvaluator::FeatureHaar::generateRandomFeature(Size patchSize)

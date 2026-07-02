@@ -1,0 +1,29 @@
+diff -Nuarp opencv-5.0.0.orig/cmake/templates/OpenCVConfig.cmake.in opencv-5.0.0/cmake/templates/OpenCVConfig.cmake.in
+--- opencv-5.0.0.orig/cmake/templates/OpenCVConfig.cmake.in	2026-07-02 19:28:57.692105366 +0800
++++ opencv-5.0.0/cmake/templates/OpenCVConfig.cmake.in	2026-07-02 19:29:20.769536889 +0800
+@@ -231,7 +231,13 @@ foreach(__cvcomponent ${OpenCV_FIND_COMP
+     # Not using list(APPEND) here, because OpenCV_LIBS may not exist yet.
+     # Also not clearing OpenCV_LIBS anywhere, so that multiple calls
+     # to find_package(OpenCV) with different component lists add up.
+-    set(OpenCV_LIBS ${OpenCV_LIBS} "${__cvcomponent}")
++    set(__cvcomponent_link "${__cvcomponent}")
++    if(NOT OpenCV_SHARED AND TARGET opencv_world AND ";${OpenCV_WORLD_COMPONENTS};" MATCHES ";${__cvcomponent};")
++      set(__cvcomponent_link opencv_world)
++    endif()
++    if(NOT ";${OpenCV_LIBS};" MATCHES ";${__cvcomponent_link};")
++      set(OpenCV_LIBS ${OpenCV_LIBS} "${__cvcomponent_link}")
++    endif()
+     #indicate that module is found
+     string(TOUPPER "${__cvcomponent}" __cvcomponentUP)
+     set(${__cvcomponentUP}_FOUND 1)
+@@ -264,7 +270,10 @@ foreach(__cvcomponent ${OpenCV_FIND_COMP
+   endif()
+   if(TARGET ${__cvcomponent})
+     ocv_map_imported_config(${__cvcomponent})
++  elseif(DEFINED __cvcomponent_link AND TARGET ${__cvcomponent_link})
++    ocv_map_imported_config(${__cvcomponent_link})
+   endif()
++  unset(__cvcomponent_link)
+ endforeach()
+ 
+ if(__remap_warnings AND NOT OpenCV_FIND_QUIETLY)

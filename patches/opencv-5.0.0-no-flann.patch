@@ -1,0 +1,802 @@
+diff -Nuarp opencv-5.0.0.orig/include/opencv2/opencv.hpp opencv-5.0.0/include/opencv2/opencv.hpp
+--- opencv-5.0.0.orig/include/opencv2/opencv.hpp	2026-06-06 02:50:05.000000000 +0800
++++ opencv-5.0.0/include/opencv2/opencv.hpp	2026-07-02 20:40:05.671248716 +0800
+@@ -64,9 +64,6 @@
+ #ifdef HAVE_OPENCV_DNN
+ #include "opencv2/dnn.hpp"
+ #endif
+-#ifdef HAVE_OPENCV_FLANN
+-#include "opencv2/flann.hpp"
+-#endif
+ #ifdef HAVE_OPENCV_HIGHGUI
+ #include "opencv2/highgui.hpp"
+ #endif
+diff -Nuarp opencv-5.0.0.orig/modules/features/CMakeLists.txt opencv-5.0.0/modules/features/CMakeLists.txt
+--- opencv-5.0.0.orig/modules/features/CMakeLists.txt	2026-07-02 20:40:05.391397812 +0800
++++ opencv-5.0.0/modules/features/CMakeLists.txt	2026-07-02 20:40:05.672686372 +0800
+@@ -6,7 +6,7 @@ set(debug_modules "")
+ if(DEBUG_opencv_features)
+   list(APPEND debug_modules opencv_highgui)
+ endif()
+-ocv_define_module(features opencv_imgproc opencv_geometry ${debug_modules} OPTIONAL opencv_flann opencv_dnn WRAP java objc python js)
++ocv_define_module(features opencv_imgproc opencv_geometry ${debug_modules} OPTIONAL opencv_dnn WRAP java objc python js)
+ 
+ ocv_install_3rdparty_licenses(mscr "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mscr/chi_table_LICENSE.txt")
+ ocv_install_3rdparty_licenses(annoylib "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/annoy/LICENSE")
+diff -Nuarp opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp opencv-5.0.0/modules/features/include/opencv2/features.hpp
+--- opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp	2026-07-02 20:40:05.596442619 +0800
++++ opencv-5.0.0/modules/features/include/opencv2/features.hpp	2026-07-02 20:46:39.277199869 +0800
+@@ -46,10 +46,6 @@
+ #include "opencv2/opencv_modules.hpp"
+ #include "opencv2/core.hpp"
+ 
+-#ifdef HAVE_OPENCV_FLANN
+-#include "opencv2/flann/miniflann.hpp"
+-#endif
+-
+ #ifdef HAVE_OPENCV_DNN
+ #include "opencv2/dnn.hpp"
+ #endif
+@@ -999,10 +995,9 @@ public:
+ 
+     /** @brief Trains a descriptor matcher
+ 
+-    Trains a descriptor matcher (for example, the flann index). In all methods to match, the method
+-    train() is run every time before matching. Some descriptor matchers (for example, BruteForceMatcher)
+-    have an empty implementation of this method. Other matchers really train their inner structures (for
+-    example, FlannBasedMatcher trains flann::Index ).
++    Trains a descriptor matcher. In all methods to match, the method train() is run every time before
++    matching. Some descriptor matchers (for example, BruteForceMatcher) have an empty implementation of
++    this method. Other matchers really train their inner structures.
+      */
+     CV_WRAP virtual void train();
+ 
+@@ -1142,7 +1137,6 @@ public:
+     -   `BruteForce-L1`
+     -   `BruteForce-Hamming`
+     -   `BruteForce-Hamming(2)`
+-    -   `FlannBased`
+      */
+     CV_WRAP static Ptr<DescriptorMatcher> create( const String& descriptorMatcherType );
+ 
+@@ -1158,7 +1152,7 @@ public:
+ protected:
+     /**
+      * Class to work with descriptors from several images as with one merged matrix.
+-     * It is used e.g. in FlannBasedMatcher.
++     * It is used by descriptor matcher implementations.
+      */
+     class CV_EXPORTS DescriptorCollection
+     {
+@@ -1245,55 +1239,6 @@ protected:
+     bool crossCheck;
+ };
+ 
+-#if defined(HAVE_OPENCV_FLANN) || defined(CV_DOXYGEN)
+-
+-/** @brief Flann-based descriptor matcher.
+-
+-This matcher trains cv::flann::Index on a train descriptor collection and calls its nearest search
+-methods to find the best matches. So, this matcher may be faster when matching a large train
+-collection than the brute force matcher. FlannBasedMatcher does not support masking permissible
+-matches of descriptor sets because flann::Index does not support this. :
+- */
+-class CV_EXPORTS_W FlannBasedMatcher : public DescriptorMatcher
+-{
+-public:
+-    CV_WRAP FlannBasedMatcher( const Ptr<flann::IndexParams>& indexParams=makePtr<flann::KDTreeIndexParams>(),
+-                       const Ptr<flann::SearchParams>& searchParams=makePtr<flann::SearchParams>() );
+-
+-    virtual void add( InputArrayOfArrays descriptors ) CV_OVERRIDE;
+-    virtual void clear() CV_OVERRIDE;
+-
+-    // Reads matcher object from a file node
+-    virtual void read( const FileNode& ) CV_OVERRIDE;
+-    // Writes matcher object to a file storage
+-    virtual void write( FileStorage& ) const CV_OVERRIDE;
+-
+-    virtual void train() CV_OVERRIDE;
+-    virtual bool isMaskSupported() const CV_OVERRIDE;
+-
+-    CV_WRAP static Ptr<FlannBasedMatcher> create();
+-
+-    CV_NODISCARD_STD virtual Ptr<DescriptorMatcher> clone( bool emptyTrainData=false ) const CV_OVERRIDE;
+-protected:
+-    static void convertToDMatches( const DescriptorCollection& descriptors,
+-                                   const Mat& indices, const Mat& distances,
+-                                   std::vector<std::vector<DMatch> >& matches );
+-
+-    virtual void knnMatchImpl( InputArray queryDescriptors, std::vector<std::vector<DMatch> >& matches, int k,
+-        InputArrayOfArrays masks=noArray(), bool compactResult=false ) CV_OVERRIDE;
+-    virtual void radiusMatchImpl( InputArray queryDescriptors, std::vector<std::vector<DMatch> >& matches, float maxDistance,
+-        InputArrayOfArrays masks=noArray(), bool compactResult=false ) CV_OVERRIDE;
+-
+-    Ptr<flann::IndexParams> indexParams;
+-    Ptr<flann::SearchParams> searchParams;
+-    Ptr<flann::Index> flannIndex;
+-
+-    DescriptorCollection mergedDescriptors;
+-    int addedDescCount;
+-};
+-
+-#endif
+-
+ /** @brief LightGlue feature matcher.
+ 
+ LightGlue is a CNN-based feature matcher, as described in @cite Lindenberger23 . It takes
+diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/modules/features/src/matchers.cpp
+--- opencv-5.0.0.orig/modules/features/src/matchers.cpp	2026-07-02 20:40:05.596913169 +0800
++++ opencv-5.0.0/modules/features/src/matchers.cpp	2026-07-02 20:40:05.674344164 +0800
+@@ -40,9 +40,6 @@
+ //M*/
+ 
+ #include "precomp.hpp"
+-#ifdef HAVE_OPENCV_FLANN
+-#include "opencv2/flann/miniflann.hpp"
+-#endif
+ #include <limits>
+ 
+ #if defined(HAVE_EIGEN) && EIGEN_WORLD_VERSION == 2
+@@ -1081,13 +1078,6 @@ void BFMatcher::radiusMatchImpl( InputAr
+ Ptr<DescriptorMatcher> DescriptorMatcher::create( const String& descriptorMatcherType )
+ {
+     Ptr<DescriptorMatcher> dm;
+-#ifdef HAVE_OPENCV_FLANN
+-    if( !descriptorMatcherType.compare( "FlannBased" ) )
+-    {
+-        dm = makePtr<FlannBasedMatcher>();
+-    }
+-    else
+-#endif
+     if( !descriptorMatcherType.compare( "BruteForce" ) ) // L2
+     {
+         dm = makePtr<BFMatcher>(int(NORM_L2)); // anonymous enums can't be template parameters
+@@ -1123,11 +1113,6 @@ Ptr<DescriptorMatcher> DescriptorMatcher
+ 
+     switch(matcherType)
+     {
+-#ifdef HAVE_OPENCV_FLANN
+-    case FLANNBASED:
+-        name = "FlannBased";
+-        break;
+-#endif
+     case BRUTEFORCE:
+         name = "BruteForce";
+         break;
+@@ -1152,353 +1137,4 @@ Ptr<DescriptorMatcher> DescriptorMatcher
+ 
+ }
+ 
+-#ifdef HAVE_OPENCV_FLANN
+-
+-/*
+- * Flann based matcher
+- */
+-FlannBasedMatcher::FlannBasedMatcher( const Ptr<flann::IndexParams>& _indexParams, const Ptr<flann::SearchParams>& _searchParams )
+-    : indexParams(_indexParams), searchParams(_searchParams), addedDescCount(0)
+-{
+-    CV_Assert( _indexParams );
+-    CV_Assert( _searchParams );
+-}
+-
+-Ptr<FlannBasedMatcher> FlannBasedMatcher::create()
+-{
+-    return makePtr<FlannBasedMatcher>();
+-}
+-
+-void FlannBasedMatcher::add( InputArrayOfArrays _descriptors )
+-{
+-    DescriptorMatcher::add( _descriptors );
+-
+-    if( _descriptors.isMatVector() )
+-    {
+-        std::vector<Mat> descriptors;
+-        _descriptors.getMatVector(descriptors);
+-        for( size_t i = 0; i < descriptors.size(); i++ )
+-        {
+-            addedDescCount += descriptors[i].rows;
+-        }
+-    }
+-    else if( _descriptors.isMat() )
+-    {
+-        addedDescCount += _descriptors.getMat().rows;
+-    }
+-    else
+-    {
+-        CV_Assert( _descriptors.isMat() || _descriptors.isMatVector() );
+-    }
+-}
+-
+-void FlannBasedMatcher::clear()
+-{
+-    DescriptorMatcher::clear();
+-
+-    mergedDescriptors.clear();
+-    flannIndex.release();
+-
+-    addedDescCount = 0;
+-}
+-
+-void FlannBasedMatcher::train()
+-{
+-    CV_INSTRUMENT_REGION();
+-
+-    if( !flannIndex || mergedDescriptors.size() < addedDescCount )
+-    {
+-        mergedDescriptors.set( trainDescCollection );
+-        flannIndex = makePtr<flann::Index>( mergedDescriptors.getDescriptors(), *indexParams );
+-    }
+-}
+-
+-using namespace cv::flann;
+-
+-void FlannBasedMatcher::read( const FileNode& fn)
+-{
+-     if (!indexParams)
+-         indexParams = makePtr<flann::IndexParams>();
+-
+-     FileNode ip = fn["indexParams"];
+-     CV_Assert(ip.type() == FileNode::SEQ);
+-
+-     for(int i = 0; i < (int)ip.size(); ++i)
+-     {
+-        CV_Assert(ip[i].type() == FileNode::MAP);
+-        String _name =  (String)ip[i]["name"];
+-        FlannIndexType type = (FlannIndexType)(int)ip[i]["type"];
+-        CV_CheckLE((int)type, (int)LAST_VALUE_FLANN_INDEX_TYPE, "");
+-
+-        switch(type)
+-        {
+-        case FLANN_INDEX_TYPE_8U:
+-        case FLANN_INDEX_TYPE_8S:
+-        case FLANN_INDEX_TYPE_16U:
+-        case FLANN_INDEX_TYPE_16S:
+-        case FLANN_INDEX_TYPE_32S:
+-            indexParams->setInt(_name, (int) ip[i]["value"]);
+-            break;
+-        case FLANN_INDEX_TYPE_32F:
+-            indexParams->setFloat(_name, (float) ip[i]["value"]);
+-            break;
+-        case FLANN_INDEX_TYPE_64F:
+-            indexParams->setDouble(_name, (double) ip[i]["value"]);
+-            break;
+-        case FLANN_INDEX_TYPE_STRING:
+-            indexParams->setString(_name, (String) ip[i]["value"]);
+-            break;
+-        case FLANN_INDEX_TYPE_BOOL:
+-            indexParams->setBool(_name, (int) ip[i]["value"] != 0);
+-            break;
+-        case FLANN_INDEX_TYPE_ALGORITHM:
+-            indexParams->setAlgorithm((int) ip[i]["value"]);
+-            break;
+-        // don't default: - compiler warning is here
+-        };
+-     }
+-
+-     if (!searchParams)
+-         searchParams = makePtr<flann::SearchParams>();
+-
+-     FileNode sp = fn["searchParams"];
+-     CV_Assert(sp.type() == FileNode::SEQ);
+-
+-     for(int i = 0; i < (int)sp.size(); ++i)
+-     {
+-        CV_Assert(sp[i].type() == FileNode::MAP);
+-        String _name =  (String)sp[i]["name"];
+-        FlannIndexType type = (FlannIndexType)(int)sp[i]["type"];
+-        CV_CheckLE((int)type, (int)LAST_VALUE_FLANN_INDEX_TYPE, "");
+-
+-        switch(type)
+-        {
+-        case FLANN_INDEX_TYPE_8U:
+-        case FLANN_INDEX_TYPE_8S:
+-        case FLANN_INDEX_TYPE_16U:
+-        case FLANN_INDEX_TYPE_16S:
+-        case FLANN_INDEX_TYPE_32S:
+-            searchParams->setInt(_name, (int) sp[i]["value"]);
+-            break;
+-        case FLANN_INDEX_TYPE_32F:
+-            searchParams->setFloat(_name, (float) sp[i]["value"]);
+-            break;
+-        case FLANN_INDEX_TYPE_64F:
+-            searchParams->setDouble(_name, (double) sp[i]["value"]);
+-            break;
+-        case FLANN_INDEX_TYPE_STRING:
+-            searchParams->setString(_name, (String) sp[i]["value"]);
+-            break;
+-        case FLANN_INDEX_TYPE_BOOL:
+-            searchParams->setBool(_name, (int) sp[i]["value"] != 0);
+-            break;
+-        case FLANN_INDEX_TYPE_ALGORITHM:
+-            searchParams->setAlgorithm((int) sp[i]["value"]);
+-            break;
+-        // don't default: - compiler warning is here
+-        };
+-     }
+-
+-    flannIndex.release();
+-}
+-
+-void FlannBasedMatcher::write( FileStorage& fs) const
+-{
+-     writeFormat(fs);
+-     fs << "indexParams" << "[";
+-
+-     if (indexParams)
+-     {
+-         std::vector<String> names;
+-         std::vector<FlannIndexType> types;
+-         std::vector<String> strValues;
+-         std::vector<double> numValues;
+-
+-         indexParams->getAll(names, types, strValues, numValues);
+-
+-         for(size_t i = 0; i < names.size(); ++i)
+-         {
+-             fs << "{" << "name" << names[i] << "type" << types[i] << "value";
+-             FlannIndexType type = (FlannIndexType)types[i];
+-             if ((int)type < 0 || type > LAST_VALUE_FLANN_INDEX_TYPE)
+-             {
+-                 fs << (double)numValues[i];
+-                 fs << "typename" << strValues[i];
+-                 fs << "}";
+-                 continue;
+-             }
+-             switch(type)
+-             {
+-             case FLANN_INDEX_TYPE_8U:
+-                 fs << (uchar)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_8S:
+-                 fs << (char)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_16U:
+-                 fs << (ushort)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_16S:
+-                 fs << (short)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_32S:
+-             case FLANN_INDEX_TYPE_BOOL:
+-             case FLANN_INDEX_TYPE_ALGORITHM:
+-                 fs << (int)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_32F:
+-                 fs << (float)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_64F:
+-                 fs << (double)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_STRING:
+-                 fs << strValues[i];
+-                 break;
+-             // don't default: - compiler warning is here
+-             }
+-             fs << "}";
+-         }
+-     }
+-
+-     fs << "]" << "searchParams" << "[";
+-
+-     if (searchParams)
+-     {
+-         std::vector<String> names;
+-         std::vector<FlannIndexType> types;
+-         std::vector<String> strValues;
+-         std::vector<double> numValues;
+-
+-         searchParams->getAll(names, types, strValues, numValues);
+-
+-         for(size_t i = 0; i < names.size(); ++i)
+-         {
+-             fs << "{" << "name" << names[i] << "type" << types[i] << "value";
+-             FlannIndexType type = (FlannIndexType)types[i];
+-             if ((int)type < 0 || type > LAST_VALUE_FLANN_INDEX_TYPE)
+-             {
+-                 fs << (double)numValues[i];
+-                 fs << "typename" << strValues[i];
+-                 fs << "}";
+-                 continue;
+-             }
+-             switch(type)
+-             {
+-             case FLANN_INDEX_TYPE_8U:
+-                 fs << (uchar)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_8S:
+-                 fs << (char)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_16U:
+-                 fs << (ushort)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_16S:
+-                 fs << (short)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_32S:
+-             case FLANN_INDEX_TYPE_BOOL:
+-             case FLANN_INDEX_TYPE_ALGORITHM:
+-                 fs << (int)numValues[i];
+-                 break;
+-             case CV_32F:
+-                 fs << (float)numValues[i];
+-                 break;
+-             case CV_64F:
+-                 fs << (double)numValues[i];
+-                 break;
+-             case FLANN_INDEX_TYPE_STRING:
+-                 fs << strValues[i];
+-                 break;
+-             // don't default: - compiler warning is here
+-             }
+-             fs << "}";
+-         }
+-     }
+-     fs << "]";
+-}
+-
+-bool FlannBasedMatcher::isMaskSupported() const
+-{
+-    return false;
+-}
+-
+-Ptr<DescriptorMatcher> FlannBasedMatcher::clone( bool emptyTrainData ) const
+-{
+-    Ptr<FlannBasedMatcher> matcher = makePtr<FlannBasedMatcher>(indexParams, searchParams);
+-    if( !emptyTrainData )
+-    {
+-        CV_Error( Error::StsNotImplemented, "deep clone functionality is not implemented, because "
+-                  "Flann::Index has not copy constructor or clone method ");
+-#if 0
+-        //matcher->flannIndex;
+-        matcher->addedDescCount = addedDescCount;
+-        matcher->mergedDescriptors = DescriptorCollection( mergedDescriptors );
+-        std::transform( trainDescCollection.begin(), trainDescCollection.end(),
+-                        matcher->trainDescCollection.begin(), clone_op );
+-#endif
+-    }
+-    return matcher;
+-}
+-
+-void FlannBasedMatcher::convertToDMatches( const DescriptorCollection& collection, const Mat& indices, const Mat& dists,
+-                                           std::vector<std::vector<DMatch> >& matches )
+-{
+-    matches.resize( indices.rows );
+-    for( int i = 0; i < indices.rows; i++ )
+-    {
+-        for( int j = 0; j < indices.cols; j++ )
+-        {
+-            int idx = indices.at<int>(i, j);
+-            if( idx >= 0 )
+-            {
+-                int imgIdx, trainIdx;
+-                collection.getLocalIdx( idx, imgIdx, trainIdx );
+-                float dist = 0;
+-                if (dists.type() == CV_32S)
+-                    dist = static_cast<float>( dists.at<int>(i,j) );
+-                else
+-                    dist = std::sqrt(dists.at<float>(i,j));
+-                matches[i].push_back( DMatch( i, trainIdx, imgIdx, dist ) );
+-            }
+-        }
+-    }
+-}
+-
+-void FlannBasedMatcher::knnMatchImpl( InputArray _queryDescriptors, std::vector<std::vector<DMatch> >& matches, int knn,
+-                                     InputArrayOfArrays /*masks*/, bool /*compactResult*/ )
+-{
+-    CV_INSTRUMENT_REGION();
+-
+-    Mat queryDescriptors = _queryDescriptors.getMat();
+-    Mat indices( queryDescriptors.rows, knn, CV_32SC1 );
+-    Mat dists( queryDescriptors.rows, knn, CV_32FC1);
+-    flannIndex->knnSearch( queryDescriptors, indices, dists, knn, *searchParams );
+-
+-    convertToDMatches( mergedDescriptors, indices, dists, matches );
+-}
+-
+-void FlannBasedMatcher::radiusMatchImpl( InputArray _queryDescriptors, std::vector<std::vector<DMatch> >& matches, float maxDistance,
+-                                         InputArrayOfArrays /*masks*/, bool /*compactResult*/ )
+-{
+-    CV_INSTRUMENT_REGION();
+-
+-    Mat queryDescriptors = _queryDescriptors.getMat();
+-    const int count = mergedDescriptors.size(); // TODO do count as param?
+-    Mat indices( queryDescriptors.rows, count, CV_32SC1, Scalar::all(-1) );
+-    Mat dists( queryDescriptors.rows, count, CV_32FC1, Scalar::all(-1) );
+-    for( int qIdx = 0; qIdx < queryDescriptors.rows; qIdx++ )
+-    {
+-        Mat queryDescriptorsRow = queryDescriptors.row(qIdx);
+-        Mat indicesRow = indices.row(qIdx);
+-        Mat distsRow = dists.row(qIdx);
+-        flannIndex->radiusSearch( queryDescriptorsRow, indicesRow, distsRow, maxDistance*maxDistance, count, *searchParams );
+-    }
+-
+-    convertToDMatches( mergedDescriptors, indices, dists, matches );
+-}
+-
+-#endif
+-
+ }
+diff -Nuarp opencv-5.0.0.orig/modules/geometry/CMakeLists.txt opencv-5.0.0/modules/geometry/CMakeLists.txt
+--- opencv-5.0.0.orig/modules/geometry/CMakeLists.txt	2026-07-02 20:40:05.333023629 +0800
++++ opencv-5.0.0/modules/geometry/CMakeLists.txt	2026-07-02 20:40:05.675602521 +0800
+@@ -4,7 +4,7 @@ set(debug_modules "")
+ if(DEBUG_opencv_geometry)
+   list(APPEND debug_modules opencv_highgui)
+ endif()
+-ocv_define_module(geometry opencv_flann ${debug_modules}
++ocv_define_module(geometry opencv_core ${debug_modules}
+     WRAP java objc python js
+ )
+ ocv_target_link_libraries(${the_module} ${LAPACK_LIBRARIES})
+diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/ransac_solvers.cpp opencv-5.0.0/modules/geometry/src/usac/ransac_solvers.cpp
+--- opencv-5.0.0.orig/modules/geometry/src/usac/ransac_solvers.cpp	2026-07-02 20:40:05.379922963 +0800
++++ opencv-5.0.0/modules/geometry/src/usac/ransac_solvers.cpp	2026-07-02 20:42:49.511377507 +0800
+@@ -211,9 +211,9 @@ UniversalRANSAC::UniversalRANSAC (Ptr<Mo
+             graph = GridNeighborhoodGraph::create(points, points_size,
+                     params->getCellSize(), params->getCellSize(), params->getCellSize(), params->getCellSize(), 10);
+         } else if (params->getNeighborsSearch() == NeighborSearchMethod::NEIGH_FLANN_KNN) {
+-            graph = FlannNeighborhoodGraph::create(points, points_size,params->getKNN(), false, 5, 1);
++            graph = KNearestNeighborhoodGraph::create(points, points_size, params->getKNN(), false);
+         } else if (params->getNeighborsSearch() == NeighborSearchMethod::NEIGH_FLANN_RADIUS) {
+-            graph = RadiusSearchNeighborhoodGraph::create(points, points_size, params->getGraphRadius(), 5, 1);
++            graph = RadiusSearchNeighborhoodGraph::create(points, points_size, params->getGraphRadius());
+         } else CV_Error(cv::Error::StsNotImplemented, "Graph type is not implemented!");
+     }
+ 
+@@ -1339,7 +1339,7 @@ private:
+     int prosac_max_samples = 200000;
+ 
+     // for neighborhood graph
+-    int k_nearest_neighbors = 8;//, flann_search_params = 5, num_kd_trees = 1; // for FLANN
++    int k_nearest_neighbors = 8;
+     int cell_size = 50; // pixels, for grid neighbors searching
+     int radius = 30; // pixels, for radius-search neighborhood graph
+     NeighborSearchMethod neighborsType = NeighborSearchMethod::NEIGH_GRID;
+diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.0.0/modules/geometry/src/usac/utils.cpp
+--- opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp	2026-07-02 20:40:05.383198661 +0800
++++ opencv-5.0.0/modules/geometry/src/usac/utils.cpp	2026-07-02 20:40:05.679421737 +0800
+@@ -4,7 +4,6 @@
+ 
+ #include "../precomp.hpp"
+ #include "../usac.hpp"
+-#include "opencv2/flann/miniflann.hpp"
+ #include <map>
+ 
+ namespace cv { namespace usac {
+@@ -388,8 +387,8 @@ void Utils::densitySort (const Mat &poin
+         sorted_mask[i] = i;
+ 
+     // get neighbors
+-    cv::Ptr<FlannNeighborhoodGraph> graph = FlannNeighborhoodGraph::create(points, points_size, knn,
+-            true /*get distances */, 6, 1);
++    cv::Ptr<KNearestNeighborhoodGraph> graph = KNearestNeighborhoodGraph::create(points, points_size, knn,
++            true /*get distances */);
+ 
+     std::vector<double> sum_knn_distances (points_size, 0);
+     for (int p = 0; p < points_size; p++) {
+@@ -611,68 +610,19 @@ float Utils::findMedian (std::vector<flo
+     }
+ }
+ 
+-// Flann radiusMatch
+-struct FlannMatcher
++static float squaredL2Distance(const Mat& points, int a, int b)
+ {
+-    Ptr<flann::IndexParams> indexParams;
+-    Ptr<flann::SearchParams> searchParams;
+-    Ptr<flann::Index> flannIndex;
+-
+-    FlannMatcher( const Ptr<flann::IndexParams>& _indexParams, const Ptr<flann::SearchParams>& _searchParams )
+-    : indexParams(_indexParams), searchParams(_searchParams)
++    const int dims = points.cols;
++    const float* pa = points.ptr<float>(a);
++    const float* pb = points.ptr<float>(b);
++    float result = 0.f;
++    for (int i = 0; i < dims; i++)
+     {
+-        CV_Assert( _indexParams );
+-        CV_Assert( _searchParams );
++        const float diff = pa[i] - pb[i];
++        result += diff * diff;
+     }
+-
+-    void radiusMatch( const Mat& queryDescriptors, const Mat& trainDescriptors,
+-                      std::vector<std::vector<DMatch> >& matches, float maxDistance)
+-    {
+-        CV_Assert( maxDistance > std::numeric_limits<float>::epsilon() );
+-
+-        if( trainDescriptors.empty() || queryDescriptors.empty() )
+-            return;
+-
+-        matches.clear();
+-
+-        flannIndex = makePtr<flann::Index>( trainDescriptors, *indexParams );
+-
+-        Mat indices( queryDescriptors.rows, 1, CV_32SC1, Scalar::all(-1) );
+-        Mat dists( queryDescriptors.rows, 1, CV_32FC1, Scalar::all(-1) );
+-        for( int qIdx = 0; qIdx < queryDescriptors.rows; qIdx++ )
+-        {
+-            Mat queryDescriptorsRow = queryDescriptors.row(qIdx);
+-            Mat indicesRow = indices.row(qIdx);
+-            Mat distsRow = dists.row(qIdx);
+-            flannIndex->radiusSearch( queryDescriptorsRow, indicesRow, distsRow, maxDistance*maxDistance, 1, *searchParams );
+-        }
+-
+-        convertToDMatches( indices, dists, matches );
+-    }
+-
+-    void convertToDMatches( const Mat& indices, const Mat& dists, std::vector<std::vector<DMatch> >& matches )
+-    {
+-        matches.resize( indices.rows );
+-        for( int i = 0; i < indices.rows; i++ )
+-        {
+-            for( int j = 0; j < indices.cols; j++ )
+-            {
+-                int idx = indices.at<int>(i, j);
+-                if( idx >= 0 )
+-                {
+-                    int imgIdx = 0;
+-                    int trainIdx = idx;
+-                    float dist = 0;
+-                    if (dists.type() == CV_32S)
+-                        dist = static_cast<float>( dists.at<int>(i,j) );
+-                    else
+-                        dist = std::sqrt(dists.at<float>(i,j));
+-                    matches[i].push_back( DMatch( i, trainIdx, imgIdx, dist ) );
+-                }
+-            }
+-        }
+-    }
+-};
++    return result;
++}
+ 
+ ///////////////////////////////// Radius Search Graph /////////////////////////////////////////////
+ class RadiusSearchNeighborhoodGraphImpl : public RadiusSearchNeighborhoodGraph {
+@@ -680,29 +630,20 @@ private:
+     std::vector<std::vector<int>> graph;
+ public:
+     RadiusSearchNeighborhoodGraphImpl (const Mat &container_, int points_size,
+-               double radius, int flann_search_params, int num_kd_trees) {
+-        // Radius search OpenCV works only with float data
++               double radius) {
+         CV_Assert(container_.type() == CV_32F);
++        CV_Assert(points_size <= container_.rows);
+ 
+-        FlannMatcher flann(makePtr<flann::KDTreeIndexParams>(num_kd_trees), makePtr<flann::SearchParams>(flann_search_params));
+-        std::vector<std::vector<DMatch>> neighbours;
+-        flann.radiusMatch(container_, container_, neighbours, (float)radius);
+-
+-        // allocate graph
+-        graph = std::vector<std::vector<int>> (points_size);
+-
+-        int pt = 0;
+-        for (const auto &n : neighbours) {
+-            if (n.size() <= 1)
+-                continue;
+-            auto &graph_row = graph[pt];
+-            graph_row = std::vector<int>(n.size()-1);
+-            int j = 0;
+-            for (const auto &idx : n)
+-                // skip neighbor which has the same index as requested point
+-                if (idx.trainIdx != pt)
+-                    graph_row[j++] = idx.trainIdx;
+-            pt++;
++        const float radius2 = (float)(radius * radius);
++        graph = std::vector<std::vector<int>>(points_size);
++        for (int pt = 0; pt < points_size; pt++) {
++            auto& graph_row = graph[pt];
++            for (int neighbor = 0; neighbor < points_size; neighbor++) {
++                if (neighbor == pt)
++                    continue;
++                if (squaredL2Distance(container_, pt, neighbor) <= radius2)
++                    graph_row.push_back(neighbor);
++            }
+         }
+     }
+     const std::vector<std::vector<int>> &getGraph () const override { return graph; }
+@@ -711,45 +652,40 @@ public:
+     }
+ };
+ Ptr<RadiusSearchNeighborhoodGraph> RadiusSearchNeighborhoodGraph::create (const Mat &points,
+-        int points_size, double radius_, int flann_search_params, int num_kd_trees) {
+-    return makePtr<RadiusSearchNeighborhoodGraphImpl> (points, points_size, radius_,
+-            flann_search_params, num_kd_trees);
++        int points_size, double radius_) {
++    return makePtr<RadiusSearchNeighborhoodGraphImpl> (points, points_size, radius_);
+ }
+ 
+-///////////////////////////////// FLANN Graph /////////////////////////////////////////////
+-class FlannNeighborhoodGraphImpl : public FlannNeighborhoodGraph {
++///////////////////////////////// KNN Graph /////////////////////////////////////////////
++class KNearestNeighborhoodGraphImpl : public KNearestNeighborhoodGraph {
+ private:
+     std::vector<std::vector<int>> graph;
+     std::vector<std::vector<double>> distances;
+ public:
+-    FlannNeighborhoodGraphImpl (const Mat &container_, int points_size, int k_nearest_neighbors,
+-            bool get_distances, int flann_search_params_, int num_kd_trees) {
+-        CV_Assert(k_nearest_neighbors <= points_size);
+-        // FLANN works only with float data
++    KNearestNeighborhoodGraphImpl (const Mat &container_, int points_size, int k_nearest_neighbors,
++            bool get_distances) {
++        CV_Assert(k_nearest_neighbors < points_size);
+         CV_Assert(container_.type() == CV_32F);
+-
+-        flann::Index flannIndex (container_.reshape(1), flann::KDTreeIndexParams(num_kd_trees));
+-        Mat dists, nearest_neighbors;
+-
+-        flannIndex.knnSearch(container_, nearest_neighbors, dists, k_nearest_neighbors+1,
+-                flann::SearchParams(flann_search_params_));
+-
+-        // first nearest neighbor of point is this point itself.
+-        // remove this first column
+-        nearest_neighbors.colRange(1, k_nearest_neighbors+1).copyTo (nearest_neighbors);
++        CV_Assert(points_size <= container_.rows);
+ 
+         graph = std::vector<std::vector<int>>(points_size, std::vector<int>(k_nearest_neighbors));
+-        const auto * const nn = (int *) nearest_neighbors.data;
+-        const auto * const dists_ptr = (float *) dists.data;
+-
+         if (get_distances)
+             distances = std::vector<std::vector<double>>(points_size, std::vector<double>(k_nearest_neighbors));
+ 
+         for (int pt = 0; pt < points_size; pt++) {
+-            std::copy(nn + k_nearest_neighbors*pt, nn + k_nearest_neighbors*pt + k_nearest_neighbors, &graph[pt][0]);
+-            if (get_distances)
+-                std::copy(dists_ptr + k_nearest_neighbors*pt, dists_ptr + k_nearest_neighbors*pt + k_nearest_neighbors,
+-                          &distances[pt][0]);
++            std::vector<std::pair<float, int>> nearest;
++            nearest.reserve(points_size - 1);
++            for (int neighbor = 0; neighbor < points_size; neighbor++) {
++                if (neighbor == pt)
++                    continue;
++                nearest.emplace_back(squaredL2Distance(container_, pt, neighbor), neighbor);
++            }
++            std::partial_sort(nearest.begin(), nearest.begin() + k_nearest_neighbors, nearest.end());
++            for (int i = 0; i < k_nearest_neighbors; i++) {
++                graph[pt][i] = nearest[i].second;
++                if (get_distances)
++                    distances[pt][i] = nearest[i].first;
++            }
+         }
+     }
+     const std::vector<double>& getNeighborsDistances (int idx) const override {
+@@ -762,11 +698,10 @@ public:
+     }
+ };
+ 
+-Ptr<FlannNeighborhoodGraph> FlannNeighborhoodGraph::create(const Mat &points,
+-           int points_size, int k_nearest_neighbors_, bool get_distances,
+-           int flann_search_params_, int num_kd_trees) {
+-    return makePtr<FlannNeighborhoodGraphImpl>(points, points_size,
+-        k_nearest_neighbors_, get_distances, flann_search_params_, num_kd_trees);
++Ptr<KNearestNeighborhoodGraph> KNearestNeighborhoodGraph::create(const Mat &points,
++           int points_size, int k_nearest_neighbors_, bool get_distances) {
++    return makePtr<KNearestNeighborhoodGraphImpl>(points, points_size,
++        k_nearest_neighbors_, get_distances);
+ }
+ 
+ ///////////////////////////////// Grid Neighborhood Graph /////////////////////////////////////////
+diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac.hpp opencv-5.0.0/modules/geometry/src/usac.hpp
+--- opencv-5.0.0.orig/modules/geometry/src/usac.hpp	2026-07-02 20:40:05.368821509 +0800
++++ opencv-5.0.0/modules/geometry/src/usac.hpp	2026-07-02 20:40:05.677751060 +0800
+@@ -526,13 +526,13 @@ public:
+ class RadiusSearchNeighborhoodGraph : public NeighborhoodGraph {
+ public:
+     static Ptr<RadiusSearchNeighborhoodGraph> create (const Mat &points, int points_size,
+-            double radius_, int flann_search_params, int num_kd_trees);
++            double radius_);
+ };
+ 
+-class FlannNeighborhoodGraph : public NeighborhoodGraph {
++class KNearestNeighborhoodGraph : public NeighborhoodGraph {
+ public:
+-    static Ptr<FlannNeighborhoodGraph> create(const Mat &points, int points_size,
+-      int k_nearest_neighbors_, bool get_distances, int flann_search_params, int num_kd_trees);
++    static Ptr<KNearestNeighborhoodGraph> create(const Mat &points, int points_size,
++      int k_nearest_neighbors_, bool get_distances);
+     virtual const std::vector<double> &getNeighborsDistances (int idx) const = 0;
+ };
+ 

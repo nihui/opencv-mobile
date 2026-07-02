@@ -1,0 +1,50 @@
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/mathfuncs.cpp opencv-5.0.0/modules/core/src/mathfuncs.cpp
+--- opencv-5.0.0.orig/modules/core/src/mathfuncs.cpp	2026-07-02 18:25:53.845200406 +0800
++++ opencv-5.0.0/modules/core/src/mathfuncs.cpp	2026-07-02 18:28:38.774099925 +0800
+@@ -1784,8 +1784,13 @@ const double* getExpTab64f()
+ const float* getExpTab32f()
+ {
+     static float CV_DECL_ALIGNED(64) expTab_f[EXPTAB_MASK+1];
++#ifndef OPENCV_DISABLE_THREAD_SUPPORT
+     static std::atomic<bool> expTab_f_initialized(false);
+     if (!expTab_f_initialized.load())
++#else
++    static bool expTab_f_initialized = false;
++    if (!expTab_f_initialized)
++#endif
+     {
+         for( int j = 0; j <= EXPTAB_MASK; j++ )
+             expTab_f[j] = (float)expTab[j];
+@@ -2066,8 +2071,13 @@ const double* getLogTab64f()
+ const float* getLogTab32f()
+ {
+     static float CV_DECL_ALIGNED(64) logTab_f[(LOGTAB_MASK+1)*2];
++#ifndef OPENCV_DISABLE_THREAD_SUPPORT
+     static std::atomic<bool> logTab_f_initialized(false);
+     if (!logTab_f_initialized.load())
++#else
++    static bool logTab_f_initialized = false;
++    if (!logTab_f_initialized)
++#endif
+     {
+         for (int j = 0; j < (LOGTAB_MASK+1)*2; j++)
+             logTab_f[j] = (float)logTab[j];
+diff -Nuarp opencv-5.0.0.orig/modules/core/src/parallel.cpp opencv-5.0.0/modules/core/src/parallel.cpp
+--- opencv-5.0.0.orig/modules/core/src/parallel.cpp	2026-07-02 18:25:54.179162191 +0800
++++ opencv-5.0.0/modules/core/src/parallel.cpp	2026-07-02 18:28:42.391143080 +0800
+@@ -493,6 +493,7 @@ void parallel_for_(const cv::Range& rang
+     if (range.empty())
+         return;
+ 
++#ifndef OPENCV_DISABLE_THREAD_SUPPORT
+     static std::atomic<bool> flagNestedParallelFor(false);
+     bool isNotNestedRegion = !flagNestedParallelFor.load();
+     if (isNotNestedRegion)
+@@ -505,6 +506,7 @@ void parallel_for_(const cv::Range& rang
+         }
+     }
+     else // nested parallel_for_() calls are not parallelized
++#endif
+     {
+         CV_UNUSED(nstripes);
+         body(range);

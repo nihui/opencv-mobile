@@ -1,0 +1,11 @@
+diff -Nuarp opencv-5.0.0.orig/modules/geometry/include/opencv2/geometry/3d.hpp opencv-5.0.0/modules/geometry/include/opencv2/geometry/3d.hpp
+--- opencv-5.0.0.orig/modules/geometry/include/opencv2/geometry/3d.hpp	2026-07-02 20:15:00.088315417 +0800
++++ opencv-5.0.0/modules/geometry/include/opencv2/geometry/3d.hpp	2026-07-02 20:15:00.089910297 +0800
+@@ -8,7 +8,6 @@
+ #include "opencv2/core.hpp"
+ #include "opencv2/core/affine.hpp"
+ #include "opencv2/core/utils/logger.hpp"
+-#include "opencv2/geometry/segment.hpp"
+ 
+ /**
+   @defgroup 3d_projection 3D vision functionality
