@@ -557,7 +557,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -640,7 +640,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -830,7 +830,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -927,7 +927,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1020,7 +1020,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1104,7 +1104,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1197,7 +1197,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1296,7 +1296,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1389,7 +1389,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1472,7 +1472,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1572,6 +1572,12 @@ jobs:
           - { msvc-version: vs2019, windows-version: 2022, toolset-version: v142, windows-sdk-version: 22621 }
           - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143, windows-sdk-version: 26100 }
         include:
+          - opencv-version: 5.0.0
+            os-compiler:
+              msvc-version: vs2019
+              windows-version: 2022
+              toolset-version: v142
+              windows-sdk-version: 22621
           - opencv-version: 5.0.0
             os-compiler:
               msvc-version: vs2022
@@ -1884,7 +1890,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
     - uses: actions/checkout@v7
