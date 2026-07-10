@@ -312,6 +312,7 @@ jobs:
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-static-world-config.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-windows-arm-arch.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-msvc-asm.patch
         rm -rf modules/imgproc/fonts
         rm -f modules/imgproc/src/stb_truetype.cpp
         rm -f modules/imgproc/src/stb_truetype.hpp
@@ -1695,6 +1696,26 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A arm64,version=10.0.${{ matrix.os-compiler.windows-sdk-version }}.0 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_SYSTEM_PROCESSOR=ARM64 -DCMAKE_WINDOWS_KITS_10_DIR="C:/Program Files (x86)/Windows Kits/10/Include/10.0.${{ matrix.os-compiler.windows-sdk-version }}.0" -DCMAKE_SYSTEM_VERSION="10.0.${{ matrix.os-compiler.windows-sdk-version }}.0" $(type ../options.txt) -DBUILD_opencv_world=OFF ..
         cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
+    - name: diagnose-opencv5-static-link-interface
+      if: matrix.opencv-version == '5.0.0'
+      run: |
+        foreach ($arch in @("build-x86", "build-x64", "build-arm64")) {
+          $buildDir = Join-Path "${{ env.SOURCE_DIR }}" $arch
+          Write-Host "=== $arch ASM configuration ==="
+          Select-String -Path (Join-Path $buildDir "CMakeCache.txt") -Pattern '^CMAKE_ASM'
+
+          Write-Host "=== $arch exported OpenMP/pthread dependencies ==="
+          $interfaceLines = @(
+            Get-ChildItem (Join-Path $buildDir "install") -Recurse -Filter "OpenCVModules*.cmake" |
+              Select-String -Pattern 'OpenMP|pthread'
+          )
+          $interfaceLines | ForEach-Object {
+            Write-Host "$($_.Path):$($_.LineNumber):$($_.Line)"
+          }
+          if ($interfaceLines.Where({ $_.Line -match 'pthread' }).Count -ne 0) {
+            throw "pthread leaked into the $arch OpenCV static link interface"
+          }
+        }
     - name: package
       if: matrix.os-compiler.msvc-version == 'vs2015' || matrix.os-compiler.msvc-version == 'vs2017'
       run: |

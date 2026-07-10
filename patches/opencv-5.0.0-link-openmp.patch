@@ -1,33 +1,11 @@
-diff -Nuarp opencv-5.0.0.orig/cmake/OpenCVFindFrameworks.cmake opencv-5.0.0/cmake/OpenCVFindFrameworks.cmake
---- opencv-5.0.0.orig/cmake/OpenCVFindFrameworks.cmake	2026-06-06 02:50:05.000000000 +0800
-+++ opencv-5.0.0/cmake/OpenCVFindFrameworks.cmake	2026-07-10 23:21:15.347551097 +0800
-@@ -29,6 +29,18 @@ endif()
- # --- OpenMP ---
- if(WITH_OPENMP)
-   find_package(OpenMP)
-+  if(MSVC)
-+    # The MSVC OpenMP runtime is selected by the compiler flag. CMake 3.31 may
-+    # mis-detect pthread as an additional implicit OpenMP library.
-+    set(OpenMP_C_LIBRARIES "")
-+    set(OpenMP_CXX_LIBRARIES "")
-+    if(TARGET OpenMP::OpenMP_C)
-+      set_property(TARGET OpenMP::OpenMP_C PROPERTY INTERFACE_LINK_LIBRARIES "")
-+    endif()
-+    if(TARGET OpenMP::OpenMP_CXX)
-+      set_property(TARGET OpenMP::OpenMP_CXX PROPERTY INTERFACE_LINK_LIBRARIES "")
-+    endif()
-+  endif()
-   if(OPENMP_FOUND)
-     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 diff -Nuarp opencv-5.0.0.orig/cmake/OpenCVGenConfig.cmake opencv-5.0.0/cmake/OpenCVGenConfig.cmake
 --- opencv-5.0.0.orig/cmake/OpenCVGenConfig.cmake	2026-06-06 02:50:05.000000000 +0800
-+++ opencv-5.0.0/cmake/OpenCVGenConfig.cmake	2026-07-10 22:14:04.374796993 +0800
++++ opencv-5.0.0/cmake/OpenCVGenConfig.cmake	2026-07-11 00:15:02.015136536 +0800
 @@ -19,6 +19,10 @@ if(HAVE_CUDA)
    endif()
  endif()
  
-+if(HAVE_OPENMP AND NOT MSVC)
++if(HAVE_OPENMP)
 +  ocv_cmake_configure("${CMAKE_CURRENT_LIST_DIR}/templates/OpenCVConfig-OPENMP.cmake.in" OPENMP_CONFIGCMAKE @ONLY)
 +endif()
 +
@@ -36,7 +14,7 @@ diff -Nuarp opencv-5.0.0.orig/cmake/OpenCVGenConfig.cmake opencv-5.0.0/cmake/Ope
      set(OpenCV_ANDROID_NATIVE_API_LEVEL_CONFIGCMAKE 0)
 diff -Nuarp opencv-5.0.0.orig/cmake/templates/OpenCVConfig-OPENMP.cmake.in opencv-5.0.0/cmake/templates/OpenCVConfig-OPENMP.cmake.in
 --- opencv-5.0.0.orig/cmake/templates/OpenCVConfig-OPENMP.cmake.in	1970-01-01 08:00:00.000000000 +0800
-+++ opencv-5.0.0/cmake/templates/OpenCVConfig-OPENMP.cmake.in	2026-07-10 22:14:04.374796993 +0800
++++ opencv-5.0.0/cmake/templates/OpenCVConfig-OPENMP.cmake.in	2026-07-11 00:15:02.016136552 +0800
 @@ -0,0 +1,5 @@
 +set(OpenCV_USE_OPENMP   "@HAVE_OPENMP@")
 +
@@ -45,7 +23,7 @@ diff -Nuarp opencv-5.0.0.orig/cmake/templates/OpenCVConfig-OPENMP.cmake.in openc
 +endif()
 diff -Nuarp opencv-5.0.0.orig/cmake/templates/OpenCVConfig.cmake.in opencv-5.0.0/cmake/templates/OpenCVConfig.cmake.in
 --- opencv-5.0.0.orig/cmake/templates/OpenCVConfig.cmake.in	2026-06-06 02:50:05.000000000 +0800
-+++ opencv-5.0.0/cmake/templates/OpenCVConfig.cmake.in	2026-07-10 22:14:04.375797007 +0800
++++ opencv-5.0.0/cmake/templates/OpenCVConfig.cmake.in	2026-07-11 00:15:02.016136552 +0800
 @@ -94,6 +94,7 @@ endif()
  
  
@@ -56,14 +34,14 @@ diff -Nuarp opencv-5.0.0.orig/cmake/templates/OpenCVConfig.cmake.in opencv-5.0.0
  @IPPICV_CONFIGCMAKE@
 diff -Nuarp opencv-5.0.0.orig/modules/core/CMakeLists.txt opencv-5.0.0/modules/core/CMakeLists.txt
 --- opencv-5.0.0.orig/modules/core/CMakeLists.txt	2026-07-10 22:13:41.669936455 +0800
-+++ opencv-5.0.0/modules/core/CMakeLists.txt	2026-07-10 22:14:04.376797022 +0800
++++ opencv-5.0.0/modules/core/CMakeLists.txt	2026-07-11 00:15:02.017136567 +0800
 @@ -205,8 +205,14 @@ if(HAVE_HPX)
    ocv_target_link_libraries(${the_module} LINK_PRIVATE "${HPX_LIBRARIES}")
  endif()
  
 -if(HAVE_OPENMP AND DEFINED OpenMP_CXX_LIBRARIES AND OpenMP_CXX_LIBRARIES)
 -  ocv_target_link_libraries(${the_module} LINK_PRIVATE "${OpenMP_CXX_LIBRARIES}")
-+if(HAVE_OPENMP AND NOT MSVC)
++if(HAVE_OPENMP)
 +  if(ANDROID_NDK_MAJOR AND (ANDROID_NDK_MAJOR GREATER 20))
 +    ocv_target_link_libraries(${the_module} PUBLIC "-fopenmp" "-static-openmp")
 +  elseif(OpenMP_CXX_FOUND)
@@ -76,7 +54,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/CMakeLists.txt opencv-5.0.0/modules/c
  set(test_libs "")
 diff -Nuarp opencv-5.0.0.orig/modules/video/CMakeLists.txt opencv-5.0.0/modules/video/CMakeLists.txt
 --- opencv-5.0.0.orig/modules/video/CMakeLists.txt	2026-07-10 22:13:41.433304878 +0800
-+++ opencv-5.0.0/modules/video/CMakeLists.txt	2026-07-10 22:14:04.376797022 +0800
++++ opencv-5.0.0/modules/video/CMakeLists.txt	2026-07-11 00:15:02.018136583 +0800
 @@ -12,7 +12,3 @@ ocv_define_module(video
        python
        js
