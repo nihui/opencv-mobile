@@ -339,7 +339,8 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
 
 ### opencv-mobile package for development boards
 
-Development board packages below are built from OpenCV **5.0.0**.
+Development board packages use OpenCV **4.13.0** or **5.0.0** according to
+the C++17 support provided by each board toolchain.
 
 <table>
 <tr>
@@ -430,8 +431,8 @@ Development board packages below are built from OpenCV **5.0.0**.
   <br />arm-openwrt-linux-gnueabi<br />
   &#9989; HW JPG decoder<br />
   &#9989; HW JPG encoder<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-yuzuki-chameleon.zip">
-    <img alt="opencv5-yuzuki-chameleon" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.13.0-yuzuki-chameleon.zip">
+    <img alt="opencv4-yuzuki-chameleon" src="https://img.shields.io/badge/download-4.13.0-blue?style=for-the-badge">
   </a>
 </td>
 </tr>
@@ -464,8 +465,8 @@ Development board packages below are built from OpenCV **5.0.0**.
   <br />arm-linux-gnueabi<br />
   &#9989; HW JPG decoder<br />
   &#9989; HW JPG encoder<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-myir-t113i.zip">
-    <img alt="opencv5-myir-t113i" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.13.0-myir-t113i.zip">
+    <img alt="opencv4-myir-t113i" src="https://img.shields.io/badge/download-4.13.0-blue?style=for-the-badge">
   </a>
 </td>
 </tr>
