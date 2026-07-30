@@ -28,10 +28,11 @@
 </head>
 <body>
 <textarea id="text-input" placeholder="Input text here...
-在此输入文字..."></textarea><br />
-<label for="font-file">Please select font 请选择字体(TTF)：</label>
+在此输入文字...
+ここに文字入力..."></textarea><br />
+<label for="font-file">Please select font 请选择字体 フォントを選択(TTF)：</label>
 <input type="file" id="font-file" accept=".ttf" onchange="applyCustomFont()" required>
-<button id="convert-btn">Convert to Font Header<br>转换为字体 Header</button>
+<button id="convert-btn">Convert to Font Header<br>转换为字体 Header<br>フォントHeaderに変換</button>
 <img id="result" style="max-width: 100%;">
 <script>
 function applyCustomFont() {
@@ -39,7 +40,7 @@ function applyCustomFont() {
 
     if (fontFileInput.files.length == 0)
     {
-        alert('Please select font!\n请选择字体！');
+        alert('Please select font!\n请选择字体！\nフォント選べ！');
         return;
     }
 
@@ -81,7 +82,7 @@ function getUnicode(a) {
 document.getElementById('convert-btn').addEventListener('click', function() {
     const textInput = document.getElementById('text-input').value;
     if (!textInput) {
-        alert('Please input text!\n请输入文字！');
+        alert('Please input text!\n请输入文字！\n文字入れて！');
         return;
     }
 
