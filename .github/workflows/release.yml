@@ -161,7 +161,7 @@ jobs:
         zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
     - name: opencv4-source
       env:
-        opencv-version: 4.13.0
+        opencv-version: 4.14.0
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
         unzip -q opencv-${{ env.opencv-version }}.zip
@@ -345,8 +345,8 @@ jobs:
     - name: upload-opencv4-source
       uses: actions/upload-artifact@v7
       with:
-        name: opencv-mobile-4.13.0-source
-        path: opencv-mobile-4.13.0.zip
+        name: opencv-mobile-4.14.0-source
+        path: opencv-mobile-4.14.0.zip
     - name: upload-opencv5-source
       uses: actions/upload-artifact@v7
       with:
@@ -359,7 +359,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_DEFAULT_CMP0057=NEW \
@@ -462,7 +462,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       OHOS_NDK_CMAKE: $GITHUB_WORKSPACE/ohos-sdk/linux/native/build-tools/cmake/bin/cmake
       COMMON_CMAKE_OPTIONS: |
@@ -523,7 +523,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.13.0'
+      if: matrix.opencv-version == '4.14.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: set-opencv-dir
       if: matrix.opencv-version == '5.0.0'
@@ -561,7 +561,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -600,7 +600,7 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.13.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
       run: |
         opencv_cmake_dir=opencv4
         if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
@@ -649,7 +649,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -697,7 +697,7 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.13.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
       run: |
         opencv_cmake_dir=opencv4
         if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
@@ -747,7 +747,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
@@ -807,7 +807,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.13.0'
+      if: matrix.opencv-version == '4.14.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: set-opencv-dir
       if: matrix.opencv-version == '5.0.0'
@@ -845,7 +845,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -890,7 +890,7 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.13.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
       run: |
         opencv_cmake_dir=opencv4
         if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
@@ -947,7 +947,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -995,7 +995,7 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.13.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
       run: |
         opencv_cmake_dir=opencv4
         if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
@@ -1045,7 +1045,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1130,7 +1130,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1178,7 +1178,7 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.13.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
       run: |
         opencv_cmake_dir=opencv4
         if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
@@ -1228,7 +1228,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1276,7 +1276,7 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.13.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
       run: |
         opencv_cmake_dir=opencv4
         if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
@@ -1332,7 +1332,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1380,7 +1380,7 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.13.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
       run: |
         opencv_cmake_dir=opencv4
         if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
@@ -1430,7 +1430,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1469,7 +1469,7 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.13.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
       run: |
         opencv_cmake_dir=opencv4
         if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
@@ -1518,7 +1518,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1566,7 +1566,7 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.13.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
       run: |
         opencv_cmake_dir=opencv4
         if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
@@ -1616,7 +1616,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0]
         os-compiler:
           - { msvc-version: vs2015, windows-version: 2022, toolset-version: v140, windows-sdk-version: 22621 }
           - { msvc-version: vs2017, windows-version: 2022, toolset-version: v141, windows-sdk-version: 22621 }
@@ -1747,7 +1747,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
         os-ubuntu:
           - { ubuntu-id: 2204, ubuntu-version: 22.04 }
           - { ubuntu-id: 2404, ubuntu-version: 24.04 }
@@ -1782,7 +1782,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.13.0'
+      if: matrix.opencv-version == '4.14.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: set-opencv-dir
       if: matrix.opencv-version == '5.0.0'
@@ -1805,7 +1805,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
@@ -1891,7 +1891,7 @@ jobs:
       if: matrix.opencv-version == '2.4.13.7' || matrix.opencv-version == '3.4.20'
       run: echo "OPENCV_SUBDIR=share/OpenCV" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '4.13.0'
+      if: matrix.opencv-version == '4.14.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: set-opencv-dir
       if: matrix.opencv-version == '5.0.0'
@@ -1944,7 +1944,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.13.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
     - uses: actions/checkout@v7
@@ -2219,7 +2219,7 @@ jobs:
             cmake-options: -DWITH_AW=ON
 
           - name: yuzuki-chameleon
-            opencv-version: 4.13.0
+            opencv-version: 4.14.0
             opencv-cmake-dir: opencv4
             single-core: false
             cmake-toolchain: arm-openwrt-linux-gnueabi.toolchain.cmake
@@ -2264,7 +2264,7 @@ jobs:
             cmake-options:
 
           - name: myir-t113i
-            opencv-version: 4.13.0
+            opencv-version: 4.14.0
             opencv-cmake-dir: opencv4
             single-core: false
             cmake-toolchain: arm-linux-gnueabi.toolchain.cmake
