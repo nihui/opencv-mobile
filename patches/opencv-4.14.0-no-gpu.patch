@@ -1115,6 +1115,18 @@ diff -Nuarp opencv-4.14.0.orig/modules/core/src/matmul.dispatch.cpp opencv-4.14.
  }  // namespace cv::
  
  
+diff -Nuarp opencv-4.14.0.orig/modules/core/src/matrix_expressions.cpp opencv-4.14.0/modules/core/src/matrix_expressions.cpp
+--- opencv-4.14.0.orig/modules/core/src/matrix_expressions.cpp	2026-09-25 14:44:22.756281489 +0800
++++ opencv-4.14.0/modules/core/src/matrix_expressions.cpp	2026-09-25 14:44:29.883864309 +0800
+@@ -1743,7 +1743,7 @@ MatExpr Mat::mul(InputArray m, double sc
+     // a non-owning view of caller memory (e.g. a scalar bound to _InputArray(const double&),
+     // a Matx or a Vec) that the returned MatExpr can outlive, so snapshot it.
+     // See https://github.com/opencv/opencv/issues/23577
+-    if( !m.isMat() && !m.isUMat() )
++    if( !m.isMat() )
+         b = b.clone();
+ 
+     MatExpr e;
 diff -Nuarp opencv-4.14.0.orig/modules/core/src/matrix_operations.cpp opencv-4.14.0/modules/core/src/matrix_operations.cpp
 --- opencv-4.14.0.orig/modules/core/src/matrix_operations.cpp	2026-09-25 14:12:24.098128299 +0800
 +++ opencv-4.14.0/modules/core/src/matrix_operations.cpp	2026-09-25 14:12:28.514252549 +0800
@@ -3108,3 +3120,145 @@ diff -Nuarp opencv-4.14.0.orig/modules/video/src/camshift.cpp opencv-4.14.0/modu
  
      double m00 = m.m00, m10 = m.m10, m01 = m.m01;
      double mu11 = m.mu11, mu20 = m.mu20, mu02 = m.mu02;
+
+diff -Nuarp opencv-4.14.0.orig/modules/features2d/src/akaze.cpp opencv-4.14.0/modules/features2d/src/akaze.cpp
+--- opencv-4.14.0.orig/modules/features2d/src/akaze.cpp	2026-09-25 14:51:58.463264726 +0800
++++ opencv-4.14.0/modules/features2d/src/akaze.cpp	2026-09-25 14:52:11.752014736 +0800
+@@ -188,35 +188,11 @@ namespace cv
+ 
+             AKAZEFeatures impl(options);
+ 
+-            UMatPyramid uPyr;
+-#ifdef HAVE_OPENCL
+-            // NOTE: The AKAZE kernels use excessive private memory 336 bytes per work-item:
+-            // float histogram[36] and float values[48] arrays. On 32-bit Windows, this
+-            // exceeds the driver's private memory limits, causing SEH exception (0xc0000005).
+-#if defined(_M_IX86) || defined(__i386__)
+-            bool use_opencl = false;
+-#else
+-            bool use_opencl = cv::ocl::useOpenCL() && image.isUMat() && descriptor == DESCRIPTOR_MLDB_UPRIGHT
+-                              && !ocl::Device::getDefault().hostUnifiedMemory();
+-#endif
+-            if (use_opencl)
+-            {
+-                impl.GetEvolutionPyramid(uPyr); // Get initialized pyramid
+-                impl.Create_Nonlinear_Scale_Space_UMat(image, uPyr);
+-                if (!useProvidedKeypoints)
+-                {
+-                    impl.Feature_Detection_UMat(uPyr, keypoints);
+-                }
+-            }
+-            else
+-#endif
+-            {
+-                impl.Create_Nonlinear_Scale_Space(image);
++            impl.Create_Nonlinear_Scale_Space(image);
+ 
+-                if (!useProvidedKeypoints)
+-                {
+-                    impl.Feature_Detection(keypoints);
+-                }
++            if (!useProvidedKeypoints)
++            {
++                impl.Feature_Detection(keypoints);
+             }
+ 
+             if (!mask.empty())
+@@ -232,16 +208,7 @@ namespace cv
+ 
+             if(descriptors.needed())
+             {
+-#ifdef HAVE_OPENCL
+-                if (use_opencl)
+-                {
+-                    impl.Compute_Descriptors_UMat(keypoints, descriptors, uPyr);
+-                }
+-                else
+-#endif
+-                {
+-                    impl.Compute_Descriptors(keypoints, descriptors);
+-                }
++                impl.Compute_Descriptors(keypoints, descriptors);
+ 
+                 CV_Assert((descriptors.empty() || descriptors.cols() == descriptorSize()));
+                 CV_Assert((descriptors.empty() || (descriptors.type() == descriptorType())));
+diff -Nuarp opencv-4.14.0.orig/modules/features2d/src/kaze/AKAZEFeatures.cpp opencv-4.14.0/modules/features2d/src/kaze/AKAZEFeatures.cpp
+--- opencv-4.14.0.orig/modules/features2d/src/kaze/AKAZEFeatures.cpp	2026-09-25 14:52:02.152548693 +0800
++++ opencv-4.14.0/modules/features2d/src/kaze/AKAZEFeatures.cpp	2026-09-25 14:52:11.754380752 +0800
+@@ -245,37 +245,21 @@ ocl_compute_kcontrast(InputArray Lx_, In
+ /**
+  * @brief Converts input image to grayscale float image
+  *
+- * @param image any image (Mat or UMat)
+- * @param dst grayscale float image (Mat or UMat)
++ * @param image input image
++ * @param dst grayscale float image
+  */
+ static inline void prepareInputImage(InputArray image, OutputArray dst)
+ {
+-  if (image.isUMat()) {
+-    UMat img = image.getUMat();
+-    if (img.channels() > 1) {
+-      UMat tmp;
+-      cvtColor(image, tmp, COLOR_BGR2GRAY);
+-      img = tmp;
+-    }
++  Mat img = image.getMat();
++  if (img.channels() > 1)
++    cvtColor(image, img, COLOR_BGR2GRAY);
+ 
+-    if (img.depth() == CV_32F)
+-      dst.assign(img);
+-    else if (img.depth() == CV_8U)
+-      img.convertTo(dst, CV_32F, 1.0 / 255.0, 0);
+-    else if (img.depth() == CV_16U)
+-      img.convertTo(dst, CV_32F, 1.0 / 65535.0, 0);
+-  } else {
+-    Mat img = image.getMat();
+-    if (img.channels() > 1)
+-      cvtColor(image, img, COLOR_BGR2GRAY);
+-
+-    if (img.depth() == CV_32F)
+-      dst.assign(img);
+-    else if (img.depth() == CV_8U)
+-      img.convertTo(dst, CV_32F, 1.0 / 255.0, 0);
+-    else if (img.depth() == CV_16U)
+-      img.convertTo(dst, CV_32F, 1.0 / 65535.0, 0);
+-  }
++  if (img.depth() == CV_32F)
++    dst.assign(img);
++  else if (img.depth() == CV_8U)
++    img.convertTo(dst, CV_32F, 1.0 / 255.0, 0);
++  else if (img.depth() == CV_16U)
++    img.convertTo(dst, CV_32F, 1.0 / 65535.0, 0);
+ }
+ 
+ /**
+diff -Nuarp opencv-4.14.0.orig/modules/features2d/src/kaze/AKAZEFeatures.h opencv-4.14.0/modules/features2d/src/kaze/AKAZEFeatures.h
+--- opencv-4.14.0.orig/modules/features2d/src/kaze/AKAZEFeatures.h	2026-09-25 14:52:02.152664863 +0800
++++ opencv-4.14.0/modules/features2d/src/kaze/AKAZEFeatures.h	2026-09-25 14:52:11.753480523 +0800
+@@ -93,11 +93,6 @@ private:
+     std::vector<KeyPoint>& kpts);
+ 
+ public:
+-  void GetEvolutionPyramid(UMatPyramid& uPyr);
+-  void Create_Nonlinear_Scale_Space_UMat(InputArray img, UMatPyramid& uPyr);
+-  void Feature_Detection_UMat(UMatPyramid& uPyr, std::vector<cv::KeyPoint>& kpts);
+-  void Compute_Descriptors_UMat(std::vector<cv::KeyPoint>& kpts, OutputArray desc, UMatPyramid& uPyr);
+-
+   /// Feature description methods
+   void Compute_Keypoints_Orientation(std::vector<cv::KeyPoint>& kpts) const;
+ 
+diff -Nuarp opencv-4.14.0.orig/modules/features2d/src/kaze/TEvolution.h opencv-4.14.0/modules/features2d/src/kaze/TEvolution.h
+--- opencv-4.14.0.orig/modules/features2d/src/kaze/TEvolution.h	2026-09-25 14:51:58.465028726 +0800
++++ opencv-4.14.0/modules/features2d/src/kaze/TEvolution.h	2026-09-25 14:52:11.755192485 +0800
+@@ -38,9 +38,7 @@ struct TEvolutionT
+ };
+ 
+ typedef TEvolutionT<Mat> TEvolution;
+-typedef TEvolutionT<UMat> UTEvolution;
+ typedef std::vector<TEvolution> TPyramid;
+-typedef std::vector<UTEvolution> UTPyramid;
+ 
+ }
+ 
