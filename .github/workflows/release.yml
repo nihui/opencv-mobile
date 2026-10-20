@@ -11,6 +11,10 @@ on:
     tags:
       - '*'
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
   IOS_DEPLOYMENT_TARGET: '13.0'
@@ -1665,7 +1669,7 @@ jobs:
     runs-on: windows-${{ matrix.os-compiler.windows-version }}
     env:
       UseMultiToolTask: true
-      COMMON_CMAKE_OPTIONS: -G "${{ matrix.os-compiler.msvc-version == 'vs2026' && 'Visual Studio 18 2026' || 'Visual Studio 17 2022' }}" -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_PREFIX=install
+      COMMON_CMAKE_OPTIONS: -G "${{ matrix.os-compiler.msvc-version == 'vs2026' && 'Visual Studio 18 2026' || 'Visual Studio 17 2022' }}" -T ${{ matrix.os-compiler.toolset-version }},host=x64 "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" -DCMAKE_INSTALL_PREFIX=install
     steps:
     - uses: actions/checkout@v7
     - uses: actions/download-artifact@v8
@@ -1871,7 +1875,7 @@ jobs:
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
             -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions" \
             -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions" \
-            `cat ../options.txt` -DWITH_PTHREADS_PF=OFF -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+            `cat ../options.txt` -DWITH_OPENMP=OFF -DWITH_PTHREADS_PF=OFF -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: build-simd
@@ -1883,7 +1887,7 @@ jobs:
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
             -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -msimd128" \
             -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -msimd128" \
-            `cat ../options.txt` -DWITH_PTHREADS_PF=OFF -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+            `cat ../options.txt` -DWITH_OPENMP=OFF -DWITH_PTHREADS_PF=OFF -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: build-threads
@@ -1896,7 +1900,7 @@ jobs:
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
             -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4" \
             -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4" \
-            `cat ../options.txt` -DWITH_PTHREADS_PF=ON -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+            `cat ../options.txt` -DWITH_OPENMP=OFF -DWITH_PTHREADS_PF=ON -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: build-simd-threads
@@ -1908,7 +1912,7 @@ jobs:
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
             -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4 -msimd128" \
             -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4 -msimd128" \
-            `cat ../options.txt` -DWITH_PTHREADS_PF=ON -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
+            `cat ../options.txt` -DWITH_OPENMP=OFF -DWITH_PTHREADS_PF=ON -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j $(nproc)
         cmake --build . --target install
     - name: package
