@@ -1,19 +1,8 @@
 name: release
 on:
-  pull_request:
-    paths:
-      - ".github/workflows/release.yml"
-      - "patches/**"
-      - "highgui/**"
-      - "test/**"
-      - "opencv*_cmake_options.txt"
   push:
     tags:
       - '*'
-
-concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
@@ -365,7 +354,6 @@ jobs:
         path: opencv-mobile-5.0.0.zip
 
   android:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: ubuntu-latest
     strategy:
@@ -469,7 +457,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   harmonyos:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: ubuntu-latest
     strategy:
@@ -569,7 +556,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   ios:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -658,7 +644,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   ios-simulator:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -757,7 +742,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   armlinux:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: ubuntu-latest
     strategy:
@@ -856,7 +840,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   macos:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -959,7 +942,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   mac-catalyst:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1058,7 +1040,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   watchos:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1144,7 +1125,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   watchos-simulator:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1243,7 +1223,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   tvos:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1348,7 +1327,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   tvos-simulator:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1447,7 +1425,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   visionos:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1536,7 +1513,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   visionos-simulator:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1840,8 +1816,8 @@ jobs:
       matrix:
         opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
         arch:
-          - { name: webassembly, flags: "", pointer-size: 4 }
-          - { name: webassembly64, flags: "-m64", pointer-size: 8 }
+          - { name: webassembly, flags: "" }
+          - { name: webassembly64, flags: "-m64" }
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1942,7 +1918,6 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
             -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions" \
             -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions" \
-            -DOPENCV_MOBILE_TEST_POINTER_SIZE=${{ matrix.arch.pointer-size }} \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/basic/${{ env.OPENCV_SUBDIR }} ..
         cmake --build . -j $(nproc)
     - name: test-simd
@@ -1953,7 +1928,6 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
             -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -msimd128" \
             -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -msimd128" \
-            -DOPENCV_MOBILE_TEST_POINTER_SIZE=${{ matrix.arch.pointer-size }} \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/simd/${{ env.OPENCV_SUBDIR }} ..
         cmake --build . -j $(nproc)
     - name: test-threads
@@ -1964,7 +1938,6 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
             -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4" \
             -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4" \
-            -DOPENCV_MOBILE_TEST_POINTER_SIZE=${{ matrix.arch.pointer-size }} \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/threads/${{ env.OPENCV_SUBDIR }} ..
         cmake --build . -j $(nproc)
     - name: test-simd-threads
@@ -1975,7 +1948,6 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
             -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4 -msimd128" \
             -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4 -msimd128" \
-            -DOPENCV_MOBILE_TEST_POINTER_SIZE=${{ matrix.arch.pointer-size }} \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/simd-threads/${{ env.OPENCV_SUBDIR }} ..
         cmake --build . -j $(nproc)
     - name: upload
@@ -1985,7 +1957,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   apple:
-    if: github.event_name != 'pull_request'
     needs: [macos, ios, ios-simulator, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator]
     runs-on: macos-14
     strategy:
@@ -2091,7 +2062,6 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   devboard:
-    if: github.event_name != 'pull_request'
     needs: [setup]
     name: "devboard-${{ matrix.name }} (${{ matrix.opencv-version }})"
     runs-on: ubuntu-latest
