@@ -214,6 +214,7 @@ jobs:
 
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-zlib.patch
+        patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-msvc-simd-args.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-link-openmp.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-fix-windows-arm-arch.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-minimal-install.patch
@@ -2058,6 +2059,8 @@ jobs:
             single-core: false
             cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake
             setup-toolchain-cmd: |
+              # Bullseye security packages have moved off the active mirrors.
+              sed -i 's|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list
               apt-get update
               apt-get install -y unzip zip patch cmake g++-arm-linux-gnueabihf
             setup-env-cmd: |
@@ -2073,6 +2076,8 @@ jobs:
             single-core: false
             cmake-toolchain: aarch64-linux-gnu.toolchain.cmake
             setup-toolchain-cmd: |
+              # Bullseye security packages have moved off the active mirrors.
+              sed -i 's|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list
               apt-get update
               apt-get install -y unzip zip patch cmake g++-aarch64-linux-gnu
             setup-env-cmd: |
@@ -2373,6 +2378,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   release:
+    if: startsWith(github.ref, 'refs/tags/')
     permissions:
       contents: write  # for softprops/action-gh-release to create a release
     needs: [setup, android, harmonyos, ios, ios-simulator, armlinux, macos, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator, windows, ubuntu, webassembly, apple, devboard]

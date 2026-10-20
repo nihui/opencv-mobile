@@ -1,0 +1,30 @@
+diff --git a/modules/core/src/count_non_zero.simd.hpp b/modules/core/src/count_non_zero.simd.hpp
+--- a/modules/core/src/count_non_zero.simd.hpp
++++ b/modules/core/src/count_non_zero.simd.hpp
+@@ -90,7 +90,7 @@ template<> inline int cnz_pop_ne<v_float64>(const v_float64& v, const v_float64& z)
+ 
+ struct cnz_pack16u
+ {
+-    static inline v_int8 eq(const ushort* src, int k, v_uint16 z)
++    static inline v_int8 eq(const ushort* src, int k, const v_uint16& z)
+     {
+         const int n = VTraits<v_uint16>::vlanes();
+         return v_pack(v_reinterpret_as_s16(v_eq(vx_load(src + k), z)),
+@@ -100,7 +100,7 @@ struct cnz_pack16u
+ 
+ struct cnz_pack32s
+ {
+-    static inline v_int8 eq(const int* src, int k, v_int32 z)
++    static inline v_int8 eq(const int* src, int k, const v_int32& z)
+     {
+         const int n = VTraits<v_int32>::vlanes();
+         return v_pack(v_pack(v_eq(vx_load(src + k), z), v_eq(vx_load(src + k + n), z)),
+@@ -110,7 +110,7 @@ struct cnz_pack32s
+ 
+ struct cnz_pack32f
+ {
+-    static inline v_int8 eq(const float* src, int k, v_float32 z)
++    static inline v_int8 eq(const float* src, int k, const v_float32& z)
+     {
+         const int n = VTraits<v_float32>::vlanes();
+         return v_pack(v_pack(v_reinterpret_as_s32(v_eq(vx_load(src + k), z)),
