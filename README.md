@@ -51,7 +51,7 @@
 
 https://github.com/nihui/opencv-mobile/releases/latest
 
-OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0 packages are provided for VS2019 and VS2022 only.
+OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0 packages are provided for VS2019, VS2022 and VS2026 only.
 
 <table>
 <tr>
@@ -229,7 +229,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
 </tr>
 
 <tr>
-<td rowspan=2>
+<td rowspan=3>
   <img src="https://user-images.githubusercontent.com/25181517/186884153-99edc188-e4aa-4c84-91b0-e2df260ebc33.png" width="64" height="auto">
 </td>
 <td>Ubuntu-22.04</td>
@@ -253,9 +253,20 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
 
 </td>
 </tr>
+<tr>
+<td>Ubuntu-26.04</td>
+<td>
+
+  [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2604.zip)
+  [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2604.zip)
+  [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-ubuntu-2604.zip)
+  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-ubuntu-2604.zip)
+
+</td>
+</tr>
 
 <tr>
-<td rowspan=4>
+<td rowspan=5>
   <img src="https://user-images.githubusercontent.com/25181517/186884150-05e9ff6d-340e-4802-9533-2c3f02363ee3.png" width="64" height="auto">
 </td>
 <td>VS2015</td>
@@ -299,18 +310,40 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
 
 </td>
 </tr>
+<tr>
+<td>VS2026</td>
+<td>
+
+  [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2026.zip)
+  [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2026.zip)
+  [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-windows-vs2026.zip)
+  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-windows-vs2026.zip)
+
+</td>
+</tr>
 
 <tr>
-<td>
+<td rowspan=2>
   <img src="https://user-images.githubusercontent.com/25181517/188324036-d704ac9a-6e61-4722-b978-254b25b61bed.png" width="64" height="auto">
 </td>
-<td>WebAssembly</td>
+<td>WebAssembly (32-bit)</td>
 <td>
 
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-webassembly.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-webassembly.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-webassembly.zip)
   [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-webassembly.zip)
+
+</td>
+</tr>
+<tr>
+<td>WebAssembly64</td>
+<td>
+
+  [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-webassembly64.zip)
+  [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-webassembly64.zip)
+  [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-webassembly64.zip)
+  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-webassembly64.zip)
 
 </td>
 </tr>
@@ -335,7 +368,9 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
 * [KleidiCV](https://gitlab.arm.com/kleidi/kleidicv) HAL enabled for Android arm64-v8a, all Apple arm64/arm64e platforms and Linux aarch64 targets
 * iOS / MacOS / Mac-Catalyst / watchOS / tvOS / visionOS package build with Xcode 15.2
 * ARM Linux package build with cross-compiler on Ubuntu-24.04
-* WebAssembly package build with Emscripten 3.1.28
+* Ubuntu packages build on Ubuntu-22.04, Ubuntu-24.04 and Ubuntu-26.04 respectively
+* VS2026 package includes x86, x64 and arm64 builds
+* WebAssembly (32-bit) and WebAssembly64 packages build with Emscripten 6.0.12; both include basic, simd, threads and simd-threads variants
 
 ### opencv-mobile package for development boards
 
@@ -532,6 +567,8 @@ find_package(OpenCV REQUIRED)
 
 target_link_libraries(your_target ${OpenCV_LIBS})
 ```
+
+For WebAssembly64, pass ```-m64``` when compiling and linking your application, and use a memory64-capable runtime. The existing WebAssembly package remains 32-bit.
 
 # How-to-build your custom package
 

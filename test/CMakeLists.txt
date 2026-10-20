@@ -25,6 +25,11 @@ endif()
 
 add_executable(opencv-mobile-test main.cpp)
 
+set(OPENCV_MOBILE_TEST_POINTER_SIZE "" CACHE STRING "Expected pointer size for the test target")
+if(OPENCV_MOBILE_TEST_POINTER_SIZE)
+    target_compile_definitions(opencv-mobile-test PRIVATE OPENCV_MOBILE_TEST_POINTER_SIZE=${OPENCV_MOBILE_TEST_POINTER_SIZE})
+endif()
+
 if(NOT OPENCV_MOBILE_TEST_CXX_STANDARD AND DEFINED OpenCV_VERSION)
     if(OpenCV_VERSION VERSION_GREATER_EQUAL 5)
         set(OPENCV_MOBILE_TEST_CXX_STANDARD 17)

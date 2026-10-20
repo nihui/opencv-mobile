@@ -1,6 +1,12 @@
 name: release
-#on: pull_request
 on:
+  pull_request:
+    paths:
+      - ".github/workflows/release.yml"
+      - "patches/**"
+      - "highgui/**"
+      - "test/**"
+      - "opencv*_cmake_options.txt"
   push:
     tags:
       - '*'
@@ -16,7 +22,7 @@ env:
   ENABLE_BITCODE: OFF
   ENABLE_ARC: OFF
   ENABLE_VISIBILITY: OFF
-  EMSCRIPTEN_VERSION: 3.1.28
+  EMSCRIPTEN_VERSION: 6.0.12
 
 permissions:
   contents: read
@@ -355,6 +361,7 @@ jobs:
         path: opencv-mobile-5.0.0.zip
 
   android:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: ubuntu-latest
     strategy:
@@ -458,6 +465,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   harmonyos:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: ubuntu-latest
     strategy:
@@ -557,6 +565,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   ios:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -645,6 +654,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   ios-simulator:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -743,6 +753,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   armlinux:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: ubuntu-latest
     strategy:
@@ -841,6 +852,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   macos:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -943,6 +955,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   mac-catalyst:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1041,6 +1054,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   watchos:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1126,6 +1140,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   watchos-simulator:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1224,6 +1239,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   tvos:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1328,6 +1344,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   tvos-simulator:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1426,6 +1443,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   visionos:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1514,6 +1532,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   visionos-simulator:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     runs-on: macos-14
     strategy:
@@ -1623,6 +1642,7 @@ jobs:
           - { msvc-version: vs2017, windows-version: 2022, toolset-version: v141, windows-sdk-version: 22621 }
           - { msvc-version: vs2019, windows-version: 2022, toolset-version: v142, windows-sdk-version: 22621 }
           - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143, windows-sdk-version: 26100 }
+          - { msvc-version: vs2026, windows-version: 2025-vs2026, toolset-version: v145, windows-sdk-version: 26100 }
         include:
           - opencv-version: 5.0.0
             os-compiler:
@@ -1636,10 +1656,16 @@ jobs:
               windows-version: 2022
               toolset-version: v143
               windows-sdk-version: 26100
+          - opencv-version: 5.0.0
+            os-compiler:
+              msvc-version: vs2026
+              windows-version: 2025-vs2026
+              toolset-version: v145
+              windows-sdk-version: 26100
     runs-on: windows-${{ matrix.os-compiler.windows-version }}
     env:
       UseMultiToolTask: true
-      COMMON_CMAKE_OPTIONS: -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_INSTALL_PREFIX=install
+      COMMON_CMAKE_OPTIONS: -G "${{ matrix.os-compiler.msvc-version == 'vs2026' && 'Visual Studio 18 2026' || 'Visual Studio 17 2022' }}" -T ${{ matrix.os-compiler.toolset-version }},host=x64 -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_PREFIX=install
     steps:
     - uses: actions/checkout@v7
     - uses: actions/download-artifact@v8
@@ -1690,7 +1716,7 @@ jobs:
         cmake --build . --config Release -j 4
         cmake --build . --config Release --target install
     - name: build-arm64
-      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
+      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022' || matrix.os-compiler.msvc-version == 'vs2026'
       run: |
         cd ${{ env.SOURCE_DIR }}
         mkdir build-arm64; cd build-arm64
@@ -1707,7 +1733,7 @@ jobs:
         Copy-Item -Verbose -Recurse -Path "${{ env.SOURCE_DIR }}\build-x64\install\*" -Destination "${{ env.PACKAGE_NAME }}\x64"
         7z a -r ${{ env.PACKAGE_NAME }}.zip ${{ env.PACKAGE_NAME }}
     - name: package
-      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
+      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022' || matrix.os-compiler.msvc-version == 'vs2026'
       run: |
         mkdir ${{ env.PACKAGE_NAME }}
         mkdir ${{ env.PACKAGE_NAME }}/x86
@@ -1730,7 +1756,7 @@ jobs:
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} -A x64,version=10.0.${{ matrix.os-compiler.windows-sdk-version }}.0 -DOpenCV_DIR="$env:GITHUB_WORKSPACE\${{ env.PACKAGE_NAME }}\x64" -DOpenCV_STATIC=ON ..
         cmake --build . --config Release -j 4
     - name: test-arm64
-      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022'
+      if: matrix.os-compiler.msvc-version == 'vs2019' || matrix.os-compiler.msvc-version == 'vs2022' || matrix.os-compiler.msvc-version == 'vs2026'
       run: |
         cd test
         mkdir build-arm64; cd build-arm64
@@ -1752,9 +1778,10 @@ jobs:
         os-ubuntu:
           - { ubuntu-id: 2204, ubuntu-version: 22.04 }
           - { ubuntu-id: 2404, ubuntu-version: 24.04 }
+          - { ubuntu-id: 2604, ubuntu-version: 26.04 }
     runs-on: ubuntu-${{ matrix.os-ubuntu.ubuntu-version }}
     env:
-      COMMON_CMAKE_OPTIONS: -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
+      COMMON_CMAKE_OPTIONS: -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release
     steps:
     - uses: actions/checkout@v7
     - uses: actions/download-artifact@v8
@@ -1802,14 +1829,20 @@ jobs:
 
   webassembly:
     needs: [setup]
+    name: "${{ matrix.arch.name }} (${{ matrix.opencv-version }})"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        arch:
+          - { name: webassembly, flags: "", pointer-size: 4 }
+          - { name: webassembly64, flags: "-m64", pointer-size: 8 }
     env:
       COMMON_CMAKE_OPTIONS: |
-        -DCMAKE_TOOLCHAIN_FILE=../emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+        -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+        -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.arch.flags }}" \
         -DCMAKE_INSTALL_PREFIX=install \
         -DCMAKE_BUILD_TYPE=Release \
     steps:
@@ -1827,7 +1860,7 @@ jobs:
       run: |
         unzip -q opencv-mobile-${{ matrix.opencv-version }}.zip
         echo "SOURCE_DIR=opencv-mobile-${{ matrix.opencv-version }}" >> $GITHUB_ENV
-        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-webassembly" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=opencv-mobile-${{ matrix.opencv-version }}-${{ matrix.arch.name }}" >> $GITHUB_ENV
     - name: build
       run: |
         source emsdk/emsdk_env.sh
@@ -1836,8 +1869,8 @@ jobs:
         mkdir build && cd build
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+            -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions" \
+            -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions" \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j $(nproc)
         cmake --build . --target install
@@ -1848,8 +1881,8 @@ jobs:
         mkdir build-simd && cd build-simd
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -msimd128" \
+            -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -msimd128" \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j $(nproc)
         cmake --build . --target install
@@ -1861,8 +1894,8 @@ jobs:
         mkdir build-threads && cd build-threads
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4" \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j $(nproc)
         cmake --build . --target install
@@ -1873,8 +1906,8 @@ jobs:
         mkdir build-simd-threads && cd build-simd-threads
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
             -DCPU_BASELINE="" -DCPU_DISPATCH="" -DWITH_PTHREADS_PF=ON -DCV_ENABLE_INTRINSICS=ON -DBUILD_WASM_INTRIN_TESTS=OFF \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4 -msimd128" \
             `cat ../options.txt` -DBUILD_opencv_world=OFF -DOPENCV_DISABLE_FILESYSTEM_SUPPORT=ON ..
         cmake --build . -j $(nproc)
         cmake --build . --target install
@@ -1899,38 +1932,46 @@ jobs:
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv5" >> $GITHUB_ENV
     - name: test
       run: |
+        source emsdk/emsdk_env.sh
         cd test
         mkdir build && cd build
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
-            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0" \
+            -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions" \
+            -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions" \
+            -DOPENCV_MOBILE_TEST_POINTER_SIZE=${{ matrix.arch.pointer-size }} \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/basic/${{ env.OPENCV_SUBDIR }} ..
         cmake --build . -j $(nproc)
     - name: test-simd
       run: |
+        source emsdk/emsdk_env.sh
         cd test
         mkdir build-simd && cd build-simd
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
-            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=0 -msimd128" \
+            -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -msimd128" \
+            -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -msimd128" \
+            -DOPENCV_MOBILE_TEST_POINTER_SIZE=${{ matrix.arch.pointer-size }} \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/simd/${{ env.OPENCV_SUBDIR }} ..
         cmake --build . -j $(nproc)
     - name: test-threads
       run: |
+        source emsdk/emsdk_env.sh
         cd test
         mkdir build-threads && cd build-threads
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
-            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4" \
+            -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4" \
+            -DOPENCV_MOBILE_TEST_POINTER_SIZE=${{ matrix.arch.pointer-size }} \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/threads/${{ env.OPENCV_SUBDIR }} ..
         cmake --build . -j $(nproc)
     - name: test-simd-threads
       run: |
+        source emsdk/emsdk_env.sh
         cd test
         mkdir build-simd-threads && cd build-simd-threads
         cmake ${{ env.COMMON_CMAKE_OPTIONS }} \
-            -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
-            -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions -s WASM=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_C_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DCMAKE_CXX_FLAGS="${{ matrix.arch.flags }} -fno-rtti -fno-exceptions -pthread -s PTHREAD_POOL_SIZE=4 -msimd128" \
+            -DOPENCV_MOBILE_TEST_POINTER_SIZE=${{ matrix.arch.pointer-size }} \
             -DOpenCV_DIR=$GITHUB_WORKSPACE/${{ env.PACKAGE_NAME }}/simd-threads/${{ env.OPENCV_SUBDIR }} ..
         cmake --build . -j $(nproc)
     - name: upload
@@ -1940,6 +1981,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   apple:
+    if: github.event_name != 'pull_request'
     needs: [macos, ios, ios-simulator, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator]
     runs-on: macos-14
     strategy:
@@ -2045,6 +2087,7 @@ jobs:
         path: ${{ env.PACKAGE_NAME }}.zip
 
   devboard:
+    if: github.event_name != 'pull_request'
     needs: [setup]
     name: "devboard-${{ matrix.name }} (${{ matrix.opencv-version }})"
     runs-on: ubuntu-latest
