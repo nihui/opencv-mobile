@@ -1,15 +1,18 @@
 diff -Nuarp opencv-3.4.20.orig/cmake/OpenCVDetectCXXCompiler.cmake opencv-3.4.20/cmake/OpenCVDetectCXXCompiler.cmake
 --- opencv-3.4.20.orig/cmake/OpenCVDetectCXXCompiler.cmake	2023-06-27 19:29:13.000000000 +0800
 +++ opencv-3.4.20/cmake/OpenCVDetectCXXCompiler.cmake	2024-06-10 14:47:05.286016469 +0800
-@@ -169,7 +169,7 @@ elseif(MSVC)
+@@ -169,8 +169,10 @@ elseif(MSVC)
      set(OpenCV_RUNTIME vc15)
    elseif(MSVC_VERSION MATCHES "^192[0-9]$")
      set(OpenCV_RUNTIME vc16)
 -  elseif(MSVC_VERSION MATCHES "^193[0-9]$")
 +  elseif(MSVC_VERSION MATCHES "^19[34][0-9]$")
      set(OpenCV_RUNTIME vc17)
++  elseif(MSVC_VERSION MATCHES "^195[0-9]$")
++    set(OpenCV_RUNTIME vc18)
    else()
      message(WARNING "OpenCV does not recognize MSVC_VERSION \"${MSVC_VERSION}\". Cannot set OpenCV_RUNTIME")
+   endif()
 diff -Nuarp opencv-3.4.20.orig/cmake/templates/OpenCVConfig.root-WIN32.cmake.in opencv-3.4.20/cmake/templates/OpenCVConfig.root-WIN32.cmake.in
 --- opencv-3.4.20.orig/cmake/templates/OpenCVConfig.root-WIN32.cmake.in	2023-06-27 19:29:13.000000000 +0800
 +++ opencv-3.4.20/cmake/templates/OpenCVConfig.root-WIN32.cmake.in	2024-06-10 14:46:17.345712729 +0800
@@ -22,3 +25,28 @@ diff -Nuarp opencv-3.4.20.orig/cmake/templates/OpenCVConfig.root-WIN32.cmake.in 
      set(OpenCV_RUNTIME vc17)
      check_one_config(has_VS2022)
      if(NOT has_VS2022)
+@@ -151,6 +151,24 @@ elseif(MSVC)
+        endif()
+      endif()
+     endif()
++  elseif(MSVC_VERSION MATCHES "^195[0-9]$")
++    set(OpenCV_RUNTIME vc18)
++    check_one_config(has_VS2026)
++    if(NOT has_VS2026)
++      set(OpenCV_RUNTIME vc17) # selecting previous compatible runtime version
++      check_one_config(has_VS2022)
++      if(NOT has_VS2022)
++        set(OpenCV_RUNTIME vc16) # selecting previous compatible runtime version
++        check_one_config(has_VS2019)
++        if(NOT has_VS2019)
++          set(OpenCV_RUNTIME vc15) # selecting previous compatible runtime version
++          check_one_config(has_VS2017)
++          if(NOT has_VS2017)
++            set(OpenCV_RUNTIME vc14) # selecting previous compatible runtime version
++          endif()
++        endif()
++      endif()
++    endif()
+   endif()
+ elseif(MINGW)
+   set(OpenCV_RUNTIME mingw)
