@@ -1,5 +1,4 @@
-//
-// Copyright (C) 2024 nihui
+// Copyright (C) 2025 nihui&futz12
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,6 +20,18 @@
 #include <string.h>
 #include <time.h>
 
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h>
+#include <iphlpapi.h>
+
+#ifdef _MSC_VER
+#pragma comment(lib, "Ws2_32.lib")
+#pragma comment(lib, "Iphlpapi.lib")
+#endif
+
+#else
 #include <arpa/inet.h>
 #include <ifaddrs.h>
 #include <netdb.h>
@@ -28,68 +39,95 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-
 #include <pthread.h>
+#endif
 
 namespace cv {
 
 class writer_http_client
 {
 public:
+#ifdef _WIN32
+    writer_http_client(SOCKET _cfd) : cfd(_cfd) {}
+    SOCKET cfd;
+#else
     writer_http_client(int _cfd) : cfd(_cfd) {}
-
     int cfd;
+#endif
 
 public:
     bool valid()
     {
+#ifdef _WIN32
+        return cfd != INVALID_SOCKET;
+#else
         return cfd >= 0;
+#endif
     }
 
     void close()
     {
+#ifdef _WIN32
+        closesocket(cfd);
+        cfd = INVALID_SOCKET;
+#else
         ::close(cfd);
         cfd = -1;
+#endif
     }
 
     void wait_for_recv()
     {
-        if (cfd == -1)
+        if (!valid())
             return;
 
         fd_set rfds;
         FD_ZERO(&rfds);
+#ifdef _WIN32
         FD_SET(cfd, &rfds);
+#else
+        FD_SET(cfd, &rfds);
+#endif
 
         struct timeval tv;
         tv.tv_sec = 5;
         tv.tv_usec = 0;
 
+#ifdef _WIN32
+        int ret = select(0, &rfds, 0, 0, &tv);
+#else
         int ret = select(cfd + 1, &rfds, 0, 0, &tv);
+#endif
         if (ret <= 0)
         {
-            // timeout or error
             close();
         }
     }
 
     void wait_for_send()
     {
-        if (cfd == -1)
+        if (!valid())
             return;
 
         fd_set wfds;
         FD_ZERO(&wfds);
+#ifdef _WIN32
         FD_SET(cfd, &wfds);
+#else
+        FD_SET(cfd, &wfds);
+#endif
 
         struct timeval tv;
         tv.tv_sec = 5;
         tv.tv_usec = 0;
 
+#ifdef _WIN32
+        int ret = select(0, 0, &wfds, 0, &tv);
+#else
         int ret = select(cfd + 1, 0, &wfds, 0, &tv);
+#endif
         if (ret <= 0)
         {
-            // timeout or error
             close();
         }
     }
@@ -98,14 +136,17 @@ public:
     {
         wait_for_recv();
 
-        if (cfd == -1)
+        if (!valid())
             return;
 
+#ifdef _WIN32
+        int nrecv = ::recv(cfd, buf, (int)len, 0);
+#else
         ssize_t nrecv = ::recv(cfd, buf, len, 0);
-        if (nrecv == -1)
+#endif
+        if (nrecv <= 0)
         {
             buf[0] = '\0';
-            // recv break
             close();
         }
         else
@@ -118,13 +159,16 @@ public:
     {
         wait_for_send();
 
-        if (cfd == -1)
+        if (!valid())
             return;
 
+#ifdef _WIN32
+        int nsend = ::send(cfd, buf, (int)len, 0);
+#else
         ssize_t nsend = ::send(cfd, buf, len, MSG_NOSIGNAL);
-        if (nsend != len)
+#endif
+        if (nsend != (int)len)
         {
-            // send break
             close();
         }
     }
@@ -143,34 +187,53 @@ public:
     void close();
 
 public:
+#ifdef _WIN32
+    SOCKET sfd;
+    HANDLE looper;
+    CRITICAL_SECTION mutex;
+    CONDITION_VARIABLE cond;
+#else
     int sfd;
-    int port;
-
     pthread_t looper;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
+#endif
+
+    int port;
 
     void mainloop();
 
-    // cv::Mat bgr_to_send;
     std::vector<unsigned char> jpgbuf;
     const unsigned char* jpg_data;
     int jpg_size;
     int exit_flag;
 };
 
+#ifdef _WIN32
+static DWORD WINAPI server_loop(LPVOID args)
+#else
 static void* server_loop(void* args)
+#endif
 {
     ((writer_http_impl*)args)->mainloop();
-    return NULL;
+    return 0;
 }
 
 writer_http_impl::writer_http_impl()
 {
+#ifdef _WIN32
+    sfd = INVALID_SOCKET;
+    looper = NULL;
+    InitializeCriticalSection(&mutex);
+    InitializeConditionVariable(&cond);
+#else
     sfd = -1;
-    port = 7766;
-
     looper = 0;
+    pthread_mutex_init(&mutex, 0);
+    pthread_cond_init(&cond, 0);
+#endif
+
+    port = 7766;
 
     jpg_data = 0;
     jpg_size = 0;
@@ -186,31 +249,25 @@ int writer_http_impl::open(int _port)
 {
     port = _port;
 
+#ifdef _WIN32
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
     {
-        int ret = pthread_mutex_init(&mutex, 0);
-        if (ret != 0)
-        {
-            fprintf(stderr, "pthread_mutex_init failed\n");
-            return -1;
-        }
+        fprintf(stderr, "WSAStartup failed\n");
+        return -1;
     }
+#endif
 
+#ifdef _WIN32
+    looper = CreateThread(NULL, 0, server_loop, this, 0, NULL);
+    if (looper == NULL)
+#else
+    int ret = pthread_create(&looper, 0, server_loop, (void*)this);
+    if (ret != 0)
+#endif
     {
-        int ret = pthread_cond_init(&cond, 0);
-        if (ret != 0)
-        {
-            fprintf(stderr, "pthread_cond_init failed\n");
-            return -1;
-        }
-    }
-
-    {
-        int ret = pthread_create(&looper, 0, server_loop, (void*)this);
-        if (ret != 0)
-        {
-            fprintf(stderr, "pthread_create failed\n");
-            return -1;
-        }
+        fprintf(stderr, "Thread creation failed\n");
+        return -1;
     }
 
     return 0;
@@ -221,180 +278,214 @@ void writer_http_impl::write_jpgbuf(const std::vector<unsigned char>& _jpgbuf)
     if (!looper)
         return;
 
-    pthread_mutex_lock(&mutex);
+#ifdef _WIN32
+    EnterCriticalSection(&mutex);
+    while (jpg_data)
     {
-        while (jpg_data)
-        {
-            pthread_cond_wait(&cond, &mutex);
-        }
-
-        jpgbuf = _jpgbuf;
-        jpg_data = jpgbuf.data();
-        jpg_size = jpgbuf.size();
+        SleepConditionVariableCS(&cond, &mutex, INFINITE);
     }
-    pthread_mutex_unlock(&mutex);
 
+    jpgbuf = _jpgbuf;
+    jpg_data = jpgbuf.data();
+    jpg_size = (int)jpgbuf.size();
+    LeaveCriticalSection(&mutex);
+    WakeConditionVariable(&cond);
+#else
+    pthread_mutex_lock(&mutex);
+    while (jpg_data)
+    {
+        pthread_cond_wait(&cond, &mutex);
+    }
+
+    jpgbuf = _jpgbuf;
+    jpg_data = jpgbuf.data();
+    jpg_size = (int)jpgbuf.size();
+    pthread_mutex_unlock(&mutex);
     pthread_cond_signal(&cond);
+#endif
 }
 
 void writer_http_impl::mainloop()
 {
-    sfd = ::socket(AF_INET, SOCK_STREAM, 0);
+#ifdef _WIN32
+    sfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+#else
+    sfd = socket(AF_INET, SOCK_STREAM, 0);
+#endif
     if (sfd <= 0)
         return;
 
-    {
-        int on = 1;
-        setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
-    }
+#ifdef _WIN32
+    int on = 1;
+    setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on));
+#else
+    int on = 1;
+    setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+#endif
 
     // bind
     {
-        const char* ip = "0.0.0.0";
-
         struct sockaddr_in addr;
+        memset(&addr, 0, sizeof(addr));
         addr.sin_family = AF_INET;
         addr.sin_port = htons(port);
-        addr.sin_addr.s_addr = inet_addr(ip);
+        addr.sin_addr.s_addr = INADDR_ANY;
 
-        if (::bind(sfd, (struct sockaddr*)&addr, sizeof(addr)) != 0)
-            goto OUT;
+        if (bind(sfd, (struct sockaddr*)&addr, sizeof(addr)) != 0)
+            goto EXIT;
     }
 
     // listen
+    if (listen(sfd, 8) != 0)
+        goto EXIT;
+
+    // Print streaming URLs
     {
-        if (::listen(sfd, 8) != 0)
-            goto OUT;
-    }
-
-    // print streaming url
-    {
-        struct ifaddrs *ifaddr, *ifa;
-
-        if (getifaddrs(&ifaddr) == -1)
-            goto OUT;
-
-        for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next)
+#ifdef _WIN32
+        PIP_ADAPTER_ADDRESSES pAddresses = NULL;
+        ULONG outBufLen = 0;
+        DWORD dwRetVal = GetAdaptersAddresses(AF_INET, 0, NULL, NULL, &outBufLen);
+        if (dwRetVal == ERROR_BUFFER_OVERFLOW)
         {
-            if (ifa->ifa_addr == NULL)
-                continue;
-
-            int family = ifa->ifa_addr->sa_family;
-
-            if (family == AF_INET)
-            {
-                void* addr = &((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
-                char addressBuffer[INET_ADDRSTRLEN];
-                inet_ntop(AF_INET, addr, addressBuffer, INET_ADDRSTRLEN);
-
-                fprintf(stderr, "streaming at http://%s:%d\n", addressBuffer, port);
-            }
+            pAddresses = (PIP_ADAPTER_ADDRESSES)malloc(outBufLen);
+            dwRetVal = GetAdaptersAddresses(AF_INET, 0, NULL, pAddresses, &outBufLen);
         }
 
-        freeifaddrs(ifaddr);
-
+        if (dwRetVal == NO_ERROR)
+        {
+            PIP_ADAPTER_ADDRESSES pCurr = pAddresses;
+            while (pCurr)
+            {
+                PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pCurr->FirstUnicastAddress;
+                while (pUnicast)
+                {
+                    if (pUnicast->Address.lpSockaddr->sa_family == AF_INET)
+                    {
+                        char ipstr[INET_ADDRSTRLEN];
+                        inet_ntop(AF_INET, &((struct sockaddr_in*)pUnicast->Address.lpSockaddr)->sin_addr, ipstr, sizeof(ipstr));
+                        fprintf(stderr, "streaming at http://%s:%d\n", ipstr, port);
+                    }
+                    pUnicast = pUnicast->Next;
+                }
+                pCurr = pCurr->Next;
+            }
+        }
+        free(pAddresses);
+#else
+        struct ifaddrs *ifaddr, *ifa;
+        if (getifaddrs(&ifaddr) != -1)
+        {
+            for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next)
+            {
+                if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET)
+                {
+                    void* addr = &((struct sockaddr_in*)ifa->ifa_addr)->sin_addr;
+                    char addressBuffer[INET_ADDRSTRLEN];
+                    inet_ntop(AF_INET, addr, addressBuffer, INET_ADDRSTRLEN);
+                    fprintf(stderr, "streaming at http://%s:%d\n", addressBuffer, port);
+                }
+            }
+            freeifaddrs(ifaddr);
+        }
+#endif
         fprintf(stderr, "streaming at http://127.0.0.1:%d\n", port);
     }
 
-    while (1)
+    while (!exit_flag)
     {
         struct sockaddr_in addr;
-        memset(&addr, 0, sizeof(addr));
         socklen_t len = sizeof(addr);
+#ifdef _WIN32
+        SOCKET cfd = accept(sfd, (struct sockaddr*)&addr, &len);
+#else
+        int cfd = accept(sfd, (struct sockaddr*)&addr, &len);
+#endif
 
-        int cfd = ::accept(sfd, (sockaddr*)&addr, &len);
-
-        const char* cip = inet_ntoa(addr.sin_addr);
-        int cport = ntohs(addr.sin_port);
-
-        fprintf(stderr, "client accepted %s %d\n", cip, cport);
+        if (cfd <= 0)
+            break;
 
         writer_http_client client(cfd);
 
-        // handle client
-        while (1)
+        char cip[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &addr.sin_addr, cip, sizeof(cip));
+        fprintf(stderr, "client accepted %s:%d\n", cip, ntohs(addr.sin_port));
+
+        while (client.valid())
         {
-            char buf[1024 * 1024];
-            client.recv(buf, 1024 * 1024 - 1);
+            char buf[1024];
+            client.recv(buf, sizeof(buf)-1);
 
-            // fprintf(stderr, "%s", buf);
-            // fprintf(stderr, "-------------------------\n");
-
-            if (memcmp(buf, "GET / HTTP/1.1", 14) == 0)
+            if (strstr(buf, "GET / HTTP/1.1"))
             {
-                const char sbuf[] = "HTTP/1.1 200 OK\r\n"
-                                    "Content-Type: multipart/x-mixed-replace;boundary=frame\r\n"
-                                    "Connection: keep-alive\r\n"
-                                    "Cache-Control: no-cache, no-store, must-revalidate, pre-check=0, post-check=0, max-age=0\r\n"
-                                    "Pragma: no-cache\r\n"
-                                    "\r\n";
+                const char* header = "HTTP/1.1 200 OK\r\n"
+                    "Content-Type: multipart/x-mixed-replace; boundary=frame\r\n\r\n";
+                client.send(header, strlen(header));
 
-                client.send(sbuf, sizeof(sbuf));
-
-                client.send("--frame\r\n", 9);
-
-                while (1)
+                while (client.valid())
                 {
-                    // wait for new image
-                    pthread_mutex_lock(&mutex);
-                    {
-                        while (!jpg_data && !exit_flag)
-                        {
-                            pthread_cond_wait(&cond, &mutex);
-                        }
-
-                        // block send jpg_data
-                        if (!exit_flag)
-                        {
-                            char sbuf2[1024];
-                            sprintf(sbuf2, "Content-Type: image/jpeg\r\nContent-Length: %lu\r\n\r\n", jpg_size);
-                            client.send(sbuf2, strlen(sbuf2));
-
-                            client.send((const char*)jpg_data, jpg_size);
-
-                            // fprintf(stderr, "[INFO] 4  %4s\n", jpg_data);
-
-                            client.send("\r\n--frame\r\n", 11);
-                        }
-
-                        jpg_data = 0;
-                        jpg_size = 0;
-                    }
-                    pthread_mutex_unlock(&mutex);
-
-                    pthread_cond_signal(&cond);
+#ifdef _WIN32
+                    EnterCriticalSection(&mutex);
+                    while (!jpg_data && !exit_flag)
+                        SleepConditionVariableCS(&cond, &mutex, INFINITE);
 
                     if (exit_flag)
                     {
-                        client.close();
-                        goto OUT;
+                        LeaveCriticalSection(&mutex);
+                        break;
                     }
 
-                    if (!client.valid())
-                        break;
-                }
+                    char header2[128];
+                    int header_len = sprintf(header2, "--frame\r\nContent-Type: image/jpeg\r\nContent-Length: %d\r\n\r\n", jpg_size);
+                    client.send(header2, header_len);
+                    client.send((const char*)jpg_data, jpg_size);
+                    client.send("\r\n", 2);
 
-                // send error or client timeout
-                break;
+                    jpg_data = 0;
+                    jpg_size = 0;
+                    LeaveCriticalSection(&mutex);
+                    WakeConditionVariable(&cond);
+#else
+                    pthread_mutex_lock(&mutex);
+                    while (!jpg_data && !exit_flag)
+                        pthread_cond_wait(&cond, &mutex);
+
+                    if (exit_flag)
+                    {
+                        pthread_mutex_unlock(&mutex);
+                        break;
+                    }
+
+                    char header2[128];
+                    int header_len = sprintf(header2, "--frame\r\nContent-Type: image/jpeg\r\nContent-Length: %d\r\n\r\n", jpg_size);
+                    client.send(header2, header_len);
+                    client.send((const char*)jpg_data, jpg_size);
+                    client.send("\r\n", 2);
+
+                    jpg_data = 0;
+                    jpg_size = 0;
+                    pthread_mutex_unlock(&mutex);
+                    pthread_cond_signal(&cond);
+#endif
+                }
             }
             else
             {
-                const char sbuf[] = "HTTP/1.1 404 Not Found\r\n"
-                                    "Connection: close\r\n"
-                                    "\r\n";
-
-                client.send(sbuf, strlen(sbuf));
-
-                client.close();
+                const char* response = "HTTP/1.1 404 Not Found\r\n\r\n";
+                client.send(response, strlen(response));
                 break;
             }
         }
 
-        fprintf(stderr, "client closed %s %d\n", cip, cport);
+        fprintf(stderr, "client closed %s:%d\n", cip, ntohs(addr.sin_port));
     }
 
-OUT:
-    ::close(sfd);
+EXIT:
+#ifdef _WIN32
+    if (sfd != INVALID_SOCKET) closesocket(sfd);
+    WSACleanup();
+#else
+    if (sfd >= 0) ::close(sfd);
+#endif
     sfd = -1;
 }
 
@@ -403,44 +494,24 @@ void writer_http_impl::close()
     if (!looper)
         return;
 
-    // set exit flag
+#ifdef _WIN32
+    EnterCriticalSection(&mutex);
+    exit_flag = 1;
+    LeaveCriticalSection(&mutex);
+    WakeConditionVariable(&cond);
+    WaitForSingleObject(looper, INFINITE);
+    CloseHandle(looper);
+    DeleteCriticalSection(&mutex);
+#else
     pthread_mutex_lock(&mutex);
-    {
-        exit_flag = 1;
-
-        pthread_cond_signal(&cond);
-    }
+    exit_flag = 1;
     pthread_mutex_unlock(&mutex);
-
-    {
-        int ret = pthread_join(looper, 0);
-        if (ret != 0)
-        {
-            fprintf(stderr, "pthread_join failed\n");
-        }
-    }
-
-    {
-        int ret = pthread_cond_destroy(&cond);
-        if (ret != 0)
-        {
-            fprintf(stderr, "pthread_cond_destroy failed\n");
-        }
-    }
-
-    {
-        int ret = pthread_mutex_destroy(&mutex);
-        if (ret != 0)
-        {
-            fprintf(stderr, "pthread_mutex_destroy failed\n");
-        }
-    }
-
+    pthread_cond_signal(&cond);
+    pthread_join(looper, NULL);
+    pthread_mutex_destroy(&mutex);
+    pthread_cond_destroy(&cond);
+#endif
     looper = 0;
-
-    jpg_data = 0;
-    jpg_size = 0;
-    exit_flag = 0;
 }
 
 bool writer_http::supported()
@@ -448,9 +519,7 @@ bool writer_http::supported()
     return true;
 }
 
-writer_http::writer_http() : d(new writer_http_impl)
-{
-}
+writer_http::writer_http() : d(new writer_http_impl) {}
 
 writer_http::~writer_http()
 {
