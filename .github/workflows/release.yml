@@ -7,7 +7,7 @@ on:
       - '*'
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
   IOS_DEPLOYMENT_TARGET: '13.0'
   MAC_DEPLOYMENT_TARGET: '11.0'
   MAC_CATALYST_DEPLOYMENT_TARGET: '13.1'
@@ -364,6 +364,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_POLICY_DEFAULT_CMP0057=NEW \
         -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
         -DANDROID_USE_LEGACY_TOOLCHAIN_FILE=False \
@@ -559,7 +560,7 @@ jobs:
 
   ios:
     needs: [setup]
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
@@ -647,7 +648,7 @@ jobs:
 
   ios-simulator:
     needs: [setup]
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
@@ -752,6 +753,7 @@ jobs:
         opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
         -DCMAKE_CXX_FLAGS="-fno-rtti -fno-exceptions" \
         -DCMAKE_INSTALL_PREFIX=install \
@@ -843,7 +845,7 @@ jobs:
 
   macos:
     needs: [setup]
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
@@ -945,7 +947,7 @@ jobs:
 
   mac-catalyst:
     needs: [setup]
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
@@ -1043,7 +1045,7 @@ jobs:
 
   watchos:
     needs: [setup]
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
@@ -1128,7 +1130,7 @@ jobs:
 
   watchos-simulator:
     needs: [setup]
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
@@ -1226,7 +1228,7 @@ jobs:
 
   tvos:
     needs: [setup]
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
@@ -1330,7 +1332,7 @@ jobs:
 
   tvos-simulator:
     needs: [setup]
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
@@ -1428,7 +1430,7 @@ jobs:
 
   visionos:
     needs: [setup]
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
@@ -1516,7 +1518,7 @@ jobs:
 
   visionos-simulator:
     needs: [setup]
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
@@ -1960,13 +1962,13 @@ jobs:
 
   apple:
     needs: [macos, ios, ios-simulator, mac-catalyst, watchos, watchos-simulator, tvos, tvos-simulator, visionos, visionos-simulator]
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
         opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     steps:
-    - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
+    - run: sudo xcode-select --switch /Applications/Xcode_16.4.app
     - uses: actions/checkout@v7
     - name: setup-opencv-package
       run: |
