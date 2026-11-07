@@ -734,10 +734,15 @@ jobs:
     - name: test
       run: |
         cd test
-        mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        for arch in x86_64 arm64; do
+          mkdir build-$arch
+          (
+            cd build-$arch
+            cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="$arch" \
+                -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+            cmake --build . -j 4
+          )
+        done
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1033,10 +1038,15 @@ jobs:
     - name: test
       run: |
         cd test
-        mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        for arch in x86_64 arm64; do
+          mkdir build-$arch
+          (
+            cd build-$arch
+            cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="$arch" \
+                -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+            cmake --build . -j 4
+          )
+        done
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1118,10 +1128,15 @@ jobs:
     - name: test
       run: |
         cd test
-        mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="armv7k;arm64_32" \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        for arch in armv7k arm64_32; do
+          mkdir build-$arch
+          (
+            cd build-$arch
+            cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="$arch" \
+                -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+            cmake --build . -j 4
+          )
+        done
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1216,10 +1231,15 @@ jobs:
     - name: test
       run: |
         cd test
-        mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        for arch in x86_64 arm64; do
+          mkdir build-$arch
+          (
+            cd build-$arch
+            cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="$arch" \
+                -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+            cmake --build . -j 4
+          )
+        done
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1320,10 +1340,15 @@ jobs:
     - name: test
       run: |
         cd test
-        mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64;arm64e" \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        for arch in arm64 arm64e; do
+          mkdir build-$arch
+          (
+            cd build-$arch
+            cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="$arch" \
+                -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+            cmake --build . -j 4
+          )
+        done
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1418,10 +1443,15 @@ jobs:
     - name: test
       run: |
         cd test
-        mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        for arch in x86_64 arm64; do
+          mkdir build-$arch
+          (
+            cd build-$arch
+            cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="$arch" \
+                -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+            cmake --build . -j 4
+          )
+        done
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1604,10 +1634,15 @@ jobs:
     - name: test
       run: |
         cd test
-        mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
-            -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        for arch in x86_64 arm64; do
+          mkdir build-$arch
+          (
+            cd build-$arch
+            cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="$arch" \
+                -DOpenCV_DIR=$GITHUB_WORKSPACE ..
+            cmake --build . -j 4
+          )
+        done
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
