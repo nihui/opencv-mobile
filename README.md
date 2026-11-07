@@ -18,7 +18,7 @@
 
 :heavy_check_mark: Packages for **Windows**, **Linux**, **MacOS**, **HarmonyOS** and **WebAssembly** are available now.
 
-:heavy_check_mark: We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.20**, **4.14.0** and **5.0.0**.
+:heavy_check_mark: We provide prebuild binary packages for opencv **2.4.13.7**, **3.4.20**, **4.14.0** and **5.1.0**.
 
 :heavy_check_mark: We also provide prebuild package for **Mac-Catalyst**, **watchOS**, **tvOS**, **visionOS** and **Apple xcframework**.
 
@@ -51,7 +51,7 @@
 
 https://github.com/nihui/opencv-mobile/releases/latest
 
-OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0 packages are provided for VS2019, VS2022 and VS2026 only.
+OpenCV **5.1.0** packages require a C++17-capable compiler. Windows OpenCV 5.1.0 packages are provided for VS2019, VS2022 and VS2026 only.
 
 <table>
 <tr>
@@ -64,7 +64,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0.zip)
 
 </td>
 </tr>
@@ -79,7 +79,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-android.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-android.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-android.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-android.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-android.zip)
 
 </td>
 </tr>
@@ -94,7 +94,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-harmonyos.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-harmonyos.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-harmonyos.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-harmonyos.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-harmonyos.zip)
 
 </td>
 </tr>
@@ -109,7 +109,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-ios.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-ios.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-ios.zip)
 
 </td>
 </tr>
@@ -120,7 +120,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ios-simulator.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ios-simulator.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-ios-simulator.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-ios-simulator.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-ios-simulator.zip)
 
 </td>
 </tr>
@@ -135,7 +135,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-macos.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-macos.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-macos.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-macos.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-macos.zip)
 
 </td>
 </tr>
@@ -146,7 +146,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-mac-catalyst.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-mac-catalyst.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-mac-catalyst.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-mac-catalyst.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-mac-catalyst.zip)
 
 </td>
 </tr>
@@ -157,7 +157,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-watchos.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-watchos.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-watchos.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-watchos.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-watchos.zip)
 
 </td>
 </tr>
@@ -168,7 +168,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-watchos-simulator.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-watchos-simulator.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-watchos-simulator.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-watchos-simulator.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-watchos-simulator.zip)
 
 </td>
 </tr>
@@ -179,7 +179,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-tvos.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-tvos.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-tvos.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-tvos.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-tvos.zip)
 
 </td>
 </tr>
@@ -190,7 +190,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-tvos-simulator.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-tvos-simulator.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-tvos-simulator.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-tvos-simulator.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-tvos-simulator.zip)
 
 </td>
 </tr>
@@ -201,7 +201,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-visionos.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-visionos.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-visionos.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-visionos.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-visionos.zip)
 
 </td>
 </tr>
@@ -212,7 +212,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-visionos-simulator.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-visionos-simulator.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-visionos-simulator.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-visionos-simulator.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-visionos-simulator.zip)
 
 </td>
 </tr>
@@ -223,7 +223,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-apple.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-apple.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-apple.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-apple.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-apple.zip)
 
 </td>
 </tr>
@@ -238,7 +238,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2204.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2204.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-ubuntu-2204.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-ubuntu-2204.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-ubuntu-2204.zip)
 
 </td>
 </tr>
@@ -249,7 +249,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2404.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2404.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-ubuntu-2404.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-ubuntu-2404.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-ubuntu-2404.zip)
 
 </td>
 </tr>
@@ -260,7 +260,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-ubuntu-2604.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-ubuntu-2604.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-ubuntu-2604.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-ubuntu-2604.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-ubuntu-2604.zip)
 
 </td>
 </tr>
@@ -295,7 +295,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2019.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2019.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-windows-vs2019.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-windows-vs2019.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-windows-vs2019.zip)
 
 </td>
 </tr>
@@ -306,7 +306,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2022.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2022.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-windows-vs2022.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-windows-vs2022.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-windows-vs2022.zip)
 
 </td>
 </tr>
@@ -317,7 +317,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-windows-vs2026.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-windows-vs2026.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-windows-vs2026.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-windows-vs2026.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-windows-vs2026.zip)
 
 </td>
 </tr>
@@ -332,7 +332,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-webassembly.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-webassembly.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-webassembly.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-webassembly.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-webassembly.zip)
 
 </td>
 </tr>
@@ -343,7 +343,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-webassembly64.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-webassembly64.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-webassembly64.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-webassembly64.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-webassembly64.zip)
 
 </td>
 </tr>
@@ -358,7 +358,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
   [<img src="https://img.shields.io/badge/download-2.4.13.7-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-2.4.13.7-armlinux.zip)
   [<img src="https://img.shields.io/badge/download-3.4.20-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-3.4.20-armlinux.zip)
   [<img src="https://img.shields.io/badge/download-4.14.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-4.14.0-armlinux.zip)
-  [<img src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-armlinux.zip)
+  [<img src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">](https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-armlinux.zip)
 
 </td>
 </tr>
@@ -374,7 +374,7 @@ OpenCV **5.0.0** packages require a C++17-capable compiler. Windows OpenCV 5.0.0
 
 ### opencv-mobile package for development boards
 
-Development board packages use OpenCV **4.14.0** or **5.0.0** according to
+Development board packages use OpenCV **4.14.0** or **5.1.0** according to
 the C++17 support provided by each board toolchain.
 
 <table>
@@ -386,9 +386,9 @@ the C++17 support provided by each board toolchain.
 
 ||arm|aarch64|
 |---|---|---|
-|bullseye|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-debian-bullseye-arm.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge"></a>|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-debian-bullseye-aarch64.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge"></a>|
-|bookworm|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-debian-bookworm-arm.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge"></a>|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-debian-bookworm-aarch64.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge"></a>|
-|trixie|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-debian-trixie-arm.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge"></a>|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-debian-trixie-aarch64.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge"></a>|
+|bullseye|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-debian-bullseye-arm.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge"></a>|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-debian-bullseye-aarch64.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge"></a>|
+|bookworm|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-debian-bookworm-arm.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge"></a>|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-debian-bookworm-aarch64.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge"></a>|
+|trixie|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-debian-trixie-arm.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge"></a>|<a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-debian-trixie-aarch64.zip"><img alt="opencv5-debian" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge"></a>|
 
 </td>
 </tr>
@@ -401,8 +401,8 @@ the C++17 support provided by each board toolchain.
   <br />riscv64-linux-musl<br />
   &#9989; HW JPG decoder<br />
   &#9989; MIPI CSI camera<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-milkv-duo.zip">
-    <img alt="opencv5-milkv-duo" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-milkv-duo.zip">
+    <img alt="opencv5-milkv-duo" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -413,8 +413,8 @@ the C++17 support provided by each board toolchain.
   <br />riscv64-linux-musl<br />
   &#9989; HW JPG decoder<br />
   &#9989; MIPI CSI camera<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-licheerv-nano.zip">
-    <img alt="opencv5-licheerv-nano" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-licheerv-nano.zip">
+    <img alt="opencv5-licheerv-nano" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -426,8 +426,8 @@ the C++17 support provided by each board toolchain.
   &#9989; HW JPG encoder<br />
   &#9989; MIPI CSI camera<br />
   &#9989; DPI LCD screen<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-luckfox-pico.zip">
-    <img alt="opencv5-luckfox-pico" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-luckfox-pico.zip">
+    <img alt="opencv5-luckfox-pico" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">
   </a>
 </td>
 </tr>
@@ -440,8 +440,8 @@ the C++17 support provided by each board toolchain.
   <br />arm-linux-uclibcgnueabihf<br />
   &#9989; MIPI CSI camera<br />
   <a href="https://github.com/nihui/opencv-mobile/releases/download/v32/yuzuki-lizard-isp-lib.zip"><b>extra isp lib into /usr/lib</b></a><br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-yuzuki-lizard.zip">
-    <img alt="opencv5-yuzuki-lizard" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-yuzuki-lizard.zip">
+    <img alt="opencv5-yuzuki-lizard" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -454,8 +454,8 @@ the C++17 support provided by each board toolchain.
   &#9989; HW JPG encoder<br />
   &#9989; MIPI CSI camera<br />
   &#9989; SPI LCD screen<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-tinyvision.zip">
-    <img alt="opencv5-tinyvision" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-tinyvision.zip">
+    <img alt="opencv5-tinyvision" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -478,8 +478,8 @@ the C++17 support provided by each board toolchain.
     <br /><b>avaota-f1</b>
   </a>
   <br />riscv32-linux-musl<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-avaota-f1.zip">
-    <img alt="opencv5-avaota-f1" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-avaota-f1.zip">
+    <img alt="opencv5-avaota-f1" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -488,8 +488,8 @@ the C++17 support provided by each board toolchain.
     <br /><b>purple-pi</b>
   </a>
   <br />arm-linux-uclibcgnueabihf<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-purple-pi.zip">
-    <img alt="opencv5-purple-pi" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-purple-pi.zip">
+    <img alt="opencv5-purple-pi" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -512,8 +512,8 @@ the C++17 support provided by each board toolchain.
     <br /><b>2k0300-fengniao</b>
   </a>
   <br />loongarch64-linux-gnu<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-2k0300-fengniao.zip">
-    <img alt="opencv5-2k0300-fengniao" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-2k0300-fengniao.zip">
+    <img alt="opencv5-2k0300-fengniao" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">
   </a>
 </td>
 <td>
@@ -525,8 +525,8 @@ the C++17 support provided by each board toolchain.
   &#9989; HW JPG encoder<br />
   &#9989; MIPI CSI camera<br />
   &#9989; DPI LCD screen<br />
-  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0-lockzhiner-vision-module.zip">
-    <img alt="opencv5-lockzhiner-vision-module" src="https://img.shields.io/badge/download-5.0.0-blue?style=for-the-badge">
+  <a href="https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0-lockzhiner-vision-module.zip">
+    <img alt="opencv5-lockzhiner-vision-module" src="https://img.shields.io/badge/download-5.1.0-blue?style=for-the-badge">
   </a>
 </td>
 </tr>
@@ -541,7 +541,7 @@ the C++17 support provided by each board toolchain.
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-5.0.0-android/sdk/native/jni)
+set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-5.1.0-android/sdk/native/jni)
 find_package(OpenCV REQUIRED)
 
 target_link_libraries(your_jni_target ${OpenCV_LIBS})
@@ -550,7 +550,7 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 # Usage iOS, macOS, watchOS, tvOS, visionOS
 
 1. Extract archive, and drag ```opencv2.framework``` or ```opencv2.xcframework``` into your project
-2. Set your app target C++ language standard to C++17 when using OpenCV 5.0.0.
+2. Set your app target C++ language standard to C++17 when using OpenCV 5.1.0.
 
 # Usage ARM Linux, Windows, Linux, WebAssembly
 
@@ -562,7 +562,7 @@ target_link_libraries(your_jni_target ${OpenCV_LIBS})
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-5.0.0-armlinux/arm-linux-gnueabihf/lib/cmake/opencv5)
+set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv-mobile-5.1.0-armlinux/arm-linux-gnueabihf/lib/cmake/opencv5)
 find_package(OpenCV REQUIRED)
 
 target_link_libraries(your_target ${OpenCV_LIBS})
@@ -583,9 +583,9 @@ The opencv-mobile source code package is the result of steps 1 and 2. Based on i
 
 **step 1. download opencv-mobile source**
 ```shell
-wget -q https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.0.0.zip
-unzip -q opencv-mobile-5.0.0.zip
-cd opencv-mobile-5.0.0
+wget -q https://github.com/nihui/opencv-mobile/releases/latest/download/opencv-mobile-5.1.0.zip
+unzip -q opencv-mobile-5.1.0.zip
+cd opencv-mobile-5.1.0
 ```
 
 **step 2. apply your opencv option changes to options.txt**
@@ -607,7 +607,7 @@ make install
 
 **step 4. make a package**
 ```shell
-zip -r -9 opencv-mobile-5.0.0-mypackage.zip install
+zip -r -9 opencv-mobile-5.1.0-mypackage.zip install
 ```
 
 # Some notes
@@ -622,7 +622,7 @@ zip -r -9 opencv-mobile-5.0.0-mypackage.zip install
 
 * C++ RTTI and exceptions are disabled for minimal build on mobile platforms and webassembly build. Be careful when you write ```cv::Mat roi = image(roirect);```  :P
 
-* OpenCV 5.0.0 packages require C++17. Use `lib/cmake/opencv5` as `OpenCV_DIR` for non-Android CMake packages.
+* OpenCV 5.1.0 packages require C++17. Use `lib/cmake/opencv5` as `OpenCV_DIR` for non-Android CMake packages.
 
 ## `cv::putText` supports full-width CJK characters
 

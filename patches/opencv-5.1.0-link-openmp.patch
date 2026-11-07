@@ -1,0 +1,56 @@
+diff -Nuarp opencv-5.1.0.orig/cmake/OpenCVGenConfig.cmake opencv-5.1.0/cmake/OpenCVGenConfig.cmake
+--- opencv-5.1.0.orig/cmake/OpenCVGenConfig.cmake
++++ opencv-5.1.0/cmake/OpenCVGenConfig.cmake
+@@ -17,6 +17,10 @@
+   else()
+     ocv_cmake_configure("${CMAKE_CURRENT_LIST_DIR}/templates/OpenCVConfig-CUDA.cmake.in" CUDA_CONFIGCMAKE @ONLY)
+   endif()
++endif()
++
++if(HAVE_OPENMP)
++  ocv_cmake_configure("${CMAKE_CURRENT_LIST_DIR}/templates/OpenCVConfig-OPENMP.cmake.in" OPENMP_CONFIGCMAKE @ONLY)
+ endif()
+ 
+ if(ANDROID)
+diff -Nuarp opencv-5.1.0.orig/cmake/templates/OpenCVConfig.cmake.in opencv-5.1.0/cmake/templates/OpenCVConfig.cmake.in
+--- opencv-5.1.0.orig/cmake/templates/OpenCVConfig.cmake.in
++++ opencv-5.1.0/cmake/templates/OpenCVConfig.cmake.in
+@@ -86,6 +86,7 @@
+ 
+ 
+ @CUDA_CONFIGCMAKE@
++@OPENMP_CONFIGCMAKE@
+ @ANDROID_CONFIGCMAKE@
+ 
+ @IPPICV_CONFIGCMAKE@
+diff -Nuarp opencv-5.1.0.orig/modules/core/CMakeLists.txt opencv-5.1.0/modules/core/CMakeLists.txt
+--- opencv-5.1.0.orig/modules/core/CMakeLists.txt
++++ opencv-5.1.0/modules/core/CMakeLists.txt
+@@ -212,8 +212,14 @@
+   ocv_target_link_libraries(${the_module} LINK_PRIVATE "${HPX_LIBRARIES}")
+ endif()
+ 
+-if(HAVE_OPENMP AND DEFINED OpenMP_CXX_LIBRARIES AND OpenMP_CXX_LIBRARIES)
+-  ocv_target_link_libraries(${the_module} LINK_PRIVATE "${OpenMP_CXX_LIBRARIES}")
++if(HAVE_OPENMP)
++  if(ANDROID_NDK_MAJOR AND (ANDROID_NDK_MAJOR GREATER 20))
++    ocv_target_link_libraries(${the_module} PUBLIC "-fopenmp" "-static-openmp")
++  elseif(OpenMP_CXX_FOUND)
++    ocv_target_link_libraries(${the_module} PUBLIC OpenMP::OpenMP_CXX)
++  else()
++    ocv_target_link_libraries(${the_module} PUBLIC "${OpenMP_CXX_FLAGS}")
++  endif()
+ endif()
+ 
+ set(test_libs "")
+diff -Nuarp opencv-5.1.0.orig/modules/video/CMakeLists.txt opencv-5.1.0/modules/video/CMakeLists.txt
+--- opencv-5.1.0.orig/modules/video/CMakeLists.txt
++++ opencv-5.1.0/modules/video/CMakeLists.txt
+@@ -12,7 +12,3 @@
+       python
+       js
+ )
+-
+-if(HAVE_OPENMP AND DEFINED OpenMP_CXX_LIBRARIES AND OpenMP_CXX_LIBRARIES)
+-  ocv_target_link_libraries(${the_module} LINK_PRIVATE "${OpenMP_CXX_LIBRARIES}")
+-endif()

@@ -237,7 +237,7 @@ jobs:
         zip -9 -r opencv-mobile-${{ env.opencv-version }}.zip opencv-mobile-${{ env.opencv-version }}
     - name: opencv5-source
       env:
-        opencv-version: 5.0.0
+        opencv-version: 5.1.0
       run: |
         wget -q https://github.com/opencv/opencv/archive/${{ env.opencv-version }}.zip -O opencv-${{ env.opencv-version }}.zip
         unzip -q opencv-${{ env.opencv-version }}.zip
@@ -303,6 +303,7 @@ jobs:
         find modules -type f | xargs -i sed -i '/ovx.hpp/d' {}
         find modules -type f | xargs -i sed -i '/va_intel.hpp/d' {}
 
+        # These patches depend on the source pruning above and on this order.
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-gpu.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-rtti.patch
         patch -p1 -i ../patches/opencv-${{ env.opencv-version }}-no-ptcloud.patch
@@ -316,8 +317,7 @@ jobs:
         rm -rf modules/imgproc/fonts
         rm -f modules/imgproc/src/stb_truetype.cpp
         rm -f modules/imgproc/src/stb_truetype.hpp
-        sed -i '/ZLIB_INCLUDE_DIRS/d' modules/imgproc/CMakeLists.txt
-        sed -i '/^set(UNIFONT_MD5 /,/^ocv_install_3rdparty_licenses(fonts /d' modules/imgproc/CMakeLists.txt
+        # The font patch replaces drawing_text.cpp and its upstream CMake dependencies.
         truncate -s 0 modules/imgproc/src/drawing_text.cpp
         cp ../patches/draw_text.h ../patches/mono_font_data.h modules/imgproc/src/
         cp ../patches/fontface.html ./
@@ -350,8 +350,8 @@ jobs:
     - name: upload-opencv5-source
       uses: actions/upload-artifact@v7
       with:
-        name: opencv-mobile-5.0.0-source
-        path: opencv-mobile-5.0.0.zip
+        name: opencv-mobile-5.1.0-source
+        path: opencv-mobile-5.1.0.zip
 
   android:
     needs: [setup]
@@ -359,7 +359,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_DEFAULT_CMP0057=NEW \
@@ -462,7 +462,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       OHOS_NDK_CMAKE: $GITHUB_WORKSPACE/ohos-sdk/linux/native/build-tools/cmake/bin/cmake
       COMMON_CMAKE_OPTIONS: |
@@ -526,7 +526,7 @@ jobs:
       if: matrix.opencv-version == '4.14.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '5.1.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv5" >> $GITHUB_ENV
     - name: test-armeabi-v7a
       run: |
@@ -561,7 +561,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -600,10 +600,10 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.1.0'
       run: |
         opencv_cmake_dir=opencv4
-        if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
+        if [ "${{ matrix.opencv-version }}" = "5.1.0" ]; then
           opencv_cmake_dir=opencv5
         fi
         libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
@@ -649,7 +649,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -697,10 +697,10 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.1.0'
       run: |
         opencv_cmake_dir=opencv4
-        if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
+        if [ "${{ matrix.opencv-version }}" = "5.1.0" ]; then
           opencv_cmake_dir=opencv5
         fi
         libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
@@ -747,7 +747,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_C_FLAGS="-fno-rtti -fno-exceptions" \
@@ -810,7 +810,7 @@ jobs:
       if: matrix.opencv-version == '4.14.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '5.1.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv5" >> $GITHUB_ENV
     - name: test-arm-linux-gnueabi
       run: |
@@ -845,7 +845,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -890,10 +890,10 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.1.0'
       run: |
         opencv_cmake_dir=opencv4
-        if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
+        if [ "${{ matrix.opencv-version }}" = "5.1.0" ]; then
           opencv_cmake_dir=opencv5
         fi
         libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
@@ -947,7 +947,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -995,10 +995,10 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.1.0'
       run: |
         opencv_cmake_dir=opencv4
-        if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
+        if [ "${{ matrix.opencv-version }}" = "5.1.0" ]; then
           opencv_cmake_dir=opencv5
         fi
         libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
@@ -1045,7 +1045,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1130,7 +1130,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1178,10 +1178,10 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.1.0'
       run: |
         opencv_cmake_dir=opencv4
-        if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
+        if [ "${{ matrix.opencv-version }}" = "5.1.0" ]; then
           opencv_cmake_dir=opencv5
         fi
         libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
@@ -1228,7 +1228,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1276,10 +1276,10 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.1.0'
       run: |
         opencv_cmake_dir=opencv4
-        if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
+        if [ "${{ matrix.opencv-version }}" = "5.1.0" ]; then
           opencv_cmake_dir=opencv5
         fi
         libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
@@ -1332,7 +1332,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1380,10 +1380,10 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.1.0'
       run: |
         opencv_cmake_dir=opencv4
-        if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
+        if [ "${{ matrix.opencv-version }}" = "5.1.0" ]; then
           opencv_cmake_dir=opencv5
         fi
         libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
@@ -1430,7 +1430,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1469,10 +1469,10 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.1.0'
       run: |
         opencv_cmake_dir=opencv4
-        if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
+        if [ "${{ matrix.opencv-version }}" = "5.1.0" ]; then
           opencv_cmake_dir=opencv5
         fi
         libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
@@ -1518,7 +1518,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     env:
       COMMON_CMAKE_OPTIONS: |
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -1566,10 +1566,10 @@ jobs:
         cmake --build . -j 4 || { cd modules/world; $DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../../lib/libopencv_world.a `cat world_objects.rsp` CMakeFiles/opencv_world.dir/src/world_init.cpp.o; cd ../..; }
         cmake --build . --target install
     - name: merge-kleidicv-3rdparty
-      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '4.14.0' || matrix.opencv-version == '5.1.0'
       run: |
         opencv_cmake_dir=opencv4
-        if [ "${{ matrix.opencv-version }}" = "5.0.0" ]; then
+        if [ "${{ matrix.opencv-version }}" = "5.1.0" ]; then
           opencv_cmake_dir=opencv5
         fi
         libtool -static ${{ env.SOURCE_DIR }}/build-arm64/install/lib/libopencv_world.a \
@@ -1624,19 +1624,19 @@ jobs:
           - { msvc-version: vs2022, windows-version: 2022, toolset-version: v143, windows-sdk-version: 26100 }
           - { msvc-version: vs2026, windows-version: 2025-vs2026, toolset-version: v145, windows-sdk-version: 26100 }
         include:
-          - opencv-version: 5.0.0
+          - opencv-version: 5.1.0
             os-compiler:
               msvc-version: vs2019
               windows-version: 2022
               toolset-version: v142
               windows-sdk-version: 22621
-          - opencv-version: 5.0.0
+          - opencv-version: 5.1.0
             os-compiler:
               msvc-version: vs2022
               windows-version: 2022
               toolset-version: v143
               windows-sdk-version: 26100
-          - opencv-version: 5.0.0
+          - opencv-version: 5.1.0
             os-compiler:
               msvc-version: vs2026
               windows-version: 2025-vs2026
@@ -1754,7 +1754,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
         os-ubuntu:
           - { ubuntu-id: 2204, ubuntu-version: 22.04 }
           - { ubuntu-id: 2404, ubuntu-version: 24.04 }
@@ -1793,7 +1793,7 @@ jobs:
       if: matrix.opencv-version == '4.14.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '5.1.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv5" >> $GITHUB_ENV
     - name: test
       run: |
@@ -1814,7 +1814,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
         arch:
           - { name: webassembly, flags: "" }
           - { name: webassembly64, flags: "-m64" }
@@ -1908,7 +1908,7 @@ jobs:
       if: matrix.opencv-version == '4.14.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv4" >> $GITHUB_ENV
     - name: set-opencv-dir
-      if: matrix.opencv-version == '5.0.0'
+      if: matrix.opencv-version == '5.1.0'
       run: echo "OPENCV_SUBDIR=lib/cmake/opencv5" >> $GITHUB_ENV
     - name: test
       run: |
@@ -1962,7 +1962,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.0.0]
+        opencv-version: [2.4.13.7, 3.4.20, 4.14.0, 5.1.0]
     steps:
     - run: sudo xcode-select --switch /Applications/Xcode_15.2.app
     - uses: actions/checkout@v7
@@ -2070,7 +2070,7 @@ jobs:
       matrix:
         include:
           - name: debian-bullseye-arm
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             os-image: debian:bullseye
             single-core: false
@@ -2087,7 +2087,7 @@ jobs:
             cmake-options:
 
           - name: debian-bullseye-aarch64
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             os-image: debian:bullseye
             single-core: false
@@ -2104,7 +2104,7 @@ jobs:
             cmake-options:
 
           - name: debian-bookworm-arm
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             os-image: debian:bookworm
             single-core: false
@@ -2119,7 +2119,7 @@ jobs:
             cmake-options:
 
           - name: debian-bookworm-aarch64
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             os-image: debian:bookworm
             single-core: false
@@ -2134,7 +2134,7 @@ jobs:
             cmake-options: -DWITH_KLEIDICV=ON -DWITH_RPI=ON -DWITH_CIX=ON
 
           - name: debian-trixie-arm
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             os-image: debian:trixie
             single-core: false
@@ -2149,7 +2149,7 @@ jobs:
             cmake-options:
 
           - name: debian-trixie-aarch64
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             os-image: debian:trixie
             single-core: false
@@ -2164,7 +2164,7 @@ jobs:
             cmake-options: -DWITH_KLEIDICV=ON -DWITH_RPI=ON -DWITH_CIX=ON
 
           - name: milkv-duo
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             single-core: true
             cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
@@ -2180,7 +2180,7 @@ jobs:
             cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
 
           - name: licheerv-nano
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             single-core: true
             cmake-toolchain: riscv64-unknown-linux-musl.toolchain.cmake
@@ -2196,7 +2196,7 @@ jobs:
             cmake-options: -DWITH_CVI=ON -DWITH_HAL_RVV=OFF -DOPENCV_EXTRA_FLAGS="-D__riscv_vector_071 -mrvv-vector-bits=128"
 
           - name: luckfox-pico
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             single-core: true
             cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
@@ -2209,7 +2209,7 @@ jobs:
             cmake-options: -DWITH_RK=ON
 
           - name: yuzuki-lizard
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             single-core: true
             cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
@@ -2225,7 +2225,7 @@ jobs:
             cmake-options: -DWITH_AW=ON
 
           - name: tinyvision
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             single-core: true
             cmake-toolchain: arm-openwrt-linux-muslgnueabi.toolchain.cmake
@@ -2257,7 +2257,7 @@ jobs:
             cmake-options: -DWITH_AW=ON
 
           - name: avaota-f1
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             single-core: true
             cmake-toolchain: riscv32-linux-musl.toolchain.cmake
@@ -2271,7 +2271,7 @@ jobs:
             cmake-options: -DWITH_AW=ON
 
           - name: purple-pi
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             single-core: false
             cmake-toolchain: arm-linux-gnueabihf.toolchain.cmake
@@ -2299,7 +2299,7 @@ jobs:
             cmake-options: -DWITH_AW=ON
 
           - name: 2k0300-fengniao
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             single-core: true
             cmake-toolchain: loongarch64-linux-gnu.toolchain.cmake
@@ -2313,7 +2313,7 @@ jobs:
             cmake-options: -DCPU_BASELINE='' -DCPU_DISPATCH=''
 
           - name: lockzhiner-vision-module
-            opencv-version: 5.0.0
+            opencv-version: 5.1.0
             opencv-cmake-dir: opencv5
             single-core: true
             cmake-toolchain: arm-rockchip830-linux-uclibcgnueabihf.toolchain.cmake
