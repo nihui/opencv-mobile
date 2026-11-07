@@ -933,14 +933,17 @@ bool imencode(const String& ext, InputArray _img, std::vector<uchar>& buf, const
             }
         }
 
+        buf.clear();
         success = stbi_write_jpg_to_func(imencode_write_func, (void*)&buf, img.cols, img.rows, c, img.data, quality);
     }
     else if (ext == ".png" || ext == ".PNG")
     {
+        buf.clear();
         success = stbi_write_png_to_func(imencode_write_func, (void*)&buf, img.cols, img.rows, c, img.data, 0);
     }
     else if (ext == ".bmp" || ext == ".BMP")
     {
+        buf.clear();
         success = stbi_write_bmp_to_func(imencode_write_func, (void*)&buf, img.cols, img.rows, c, img.data);
     }
     else
