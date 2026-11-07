@@ -1,6 +1,8 @@
 name: release
 on:
   push:
+    branches:
+      - opencv-5.1.0
     tags:
       - '*'
 
