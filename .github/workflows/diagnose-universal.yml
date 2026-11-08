@@ -1,0 +1,45 @@
+name: diagnose Apple universal builds
+on:
+  push:
+    branches: [opencv-5.1.0]
+    paths: [.github/workflows/diagnose-universal.yml]
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: macos-15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+      IOS_DEPLOYMENT_TARGET: '13.0'
+      MAC_DEPLOYMENT_TARGET: '11.0'
+      WATCHOS_DEPLOYMENT_TARGET: '6.0'
+      TVOS_DEPLOYMENT_TARGET: '11.0'
+    steps:
+      - uses: actions/checkout@v7
+      - name: diagnose
+        shell: bash
+        run: |
+          mkdir probe
+          printf 'cmake_minimum_required(VERSION 3.10)\nproject(probe C CXX)\nadd_executable(probe main.cpp)\n' > probe/CMakeLists.txt
+          printf 'int main() { return 0; }\n' > probe/main.cpp
+          cp toolchains/ios.toolchain.cmake probe/original.cmake
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('probe/original.cmake').read_text()
+          p = p.replace('string(REPLACE ";" "-" ARCHS_SPLIT "${ARCHS}")', 'list(GET ARCHS 0 ARCHS_SPLIT)')
+          Path('probe/firstarch.cmake').write_text(p)
+          PY
+          clang --version
+          cmake --version
+          for variant in original cleanenv firstarch; do
+            echo "::group::$variant"
+            toolchain="$PWD/probe/original.cmake"
+            if [ "$variant" = firstarch ]; then toolchain="$PWD/probe/firstarch.cmake"; fi
+            prefix=()
+            if [ "$variant" = cleanenv ]; then prefix=(env -u TVOS_DEPLOYMENT_TARGET -u WATCHOS_DEPLOYMENT_TARGET); fi
+            if "${prefix[@]}" cmake -S probe -B "probe/build-$variant" -DCMAKE_TOOLCHAIN_FILE="$toolchain" -DPLATFORM=SIMULATOR -DARCHS="x86_64;arm64" -DDEPLOYMENT_TARGET=13.0 -DENABLE_BITCODE=OFF -DENABLE_ARC=OFF -DENABLE_VISIBILITY=OFF; then
+              "${prefix[@]}" cmake --build "probe/build-$variant" --verbose && lipo -info "probe/build-$variant/probe"
+            fi
+            cat "probe/build-$variant/CMakeFiles/CMakeConfigureLog.yaml" || true
+            echo "::endgroup::"
+          done
