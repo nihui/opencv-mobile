@@ -16,13 +16,15 @@ jobs:
       TVOS_DEPLOYMENT_TARGET: '11.0'
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - name: diagnose
         shell: bash
         run: |
           mkdir probe
           printf 'cmake_minimum_required(VERSION 3.10)\nproject(probe C CXX)\nadd_executable(probe main.cpp)\n' > probe/CMakeLists.txt
           printf 'int main() { return 0; }\n' > probe/main.cpp
-          cp toolchains/ios.toolchain.cmake probe/original.cmake
+          git show 019c134:toolchains/ios.toolchain.cmake > probe/original.cmake
           python3 - <<'PY'
           from pathlib import Path
           p = Path('probe/original.cmake').read_text()
@@ -38,7 +40,7 @@ jobs:
             prefix=()
             if [ "$variant" = cleanenv ]; then prefix=(env -u TVOS_DEPLOYMENT_TARGET -u WATCHOS_DEPLOYMENT_TARGET); fi
             if "${prefix[@]}" cmake -S probe -B "probe/build-$variant" -DCMAKE_TOOLCHAIN_FILE="$toolchain" -DPLATFORM=SIMULATOR -DARCHS="x86_64;arm64" -DDEPLOYMENT_TARGET=13.0 -DENABLE_BITCODE=OFF -DENABLE_ARC=OFF -DENABLE_VISIBILITY=OFF; then
-              "${prefix[@]}" cmake --build "probe/build-$variant" --verbose && lipo -info "probe/build-$variant/probe"
+              "${prefix[@]}" cmake --build "probe/build-$variant" --verbose && lipo -info "probe/build-$variant/probe.app/probe"
             fi
             cat "probe/build-$variant/CMakeFiles/CMakeConfigureLog.yaml" || true
             echo "::endgroup::"
