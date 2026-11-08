@@ -300,7 +300,7 @@ set(PLATFORM_INT "${PLATFORM}")
 
 # A compiler target triple contains one architecture. CMake passes all requested
 # architectures separately with -arch when building universal binaries.
-if(DEFINED ARCHS)
+if(ARCHS)
   list(GET ARCHS 0 ARCHS_FIRST)
 endif()
 
@@ -312,7 +312,7 @@ if(PLATFORM_INT STREQUAL "OS")
     set(ARCHS armv7 armv7s arm64)
     set(APPLE_TARGET_TRIPLE_INT arm-apple-ios${DEPLOYMENT_TARGET})
   else()
-    set(APPLE_TARGET_TRIPLE_INT ${ARCHS_FIRST}-apple-ios${DEPLOYMENT_TARGET})  
+    set(APPLE_TARGET_TRIPLE_INT ${ARCHS_FIRST}-apple-ios${DEPLOYMENT_TARGET})
   endif()
 elseif(PLATFORM_INT STREQUAL "OS64")
   set(SDK_NAME iphoneos)
