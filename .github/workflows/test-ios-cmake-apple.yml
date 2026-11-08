@@ -3,9 +3,6 @@ on:
   push:
     branches: [opencv-5.1.0]
     paths: [.github/workflows/test-ios-cmake-apple.yml]
-permissions:
-  contents: read
-
 env:
   DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
   IOS_DEPLOYMENT_TARGET: '13.0'
