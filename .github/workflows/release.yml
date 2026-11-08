@@ -733,9 +733,9 @@ jobs:
       run: |
         cd test
         mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
+        cmake -G Xcode ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        cmake --build . --config Release -j 4
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1032,9 +1032,9 @@ jobs:
       run: |
         cd test
         mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
+        cmake -G Xcode ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        cmake --build . --config Release -j 4
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1117,9 +1117,9 @@ jobs:
       run: |
         cd test
         mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="armv7k;arm64_32" \
+        cmake -G Xcode ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="armv7k;arm64_32" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        cmake --build . --config Release -j 4
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1215,9 +1215,9 @@ jobs:
       run: |
         cd test
         mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
+        cmake -G Xcode ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        cmake --build . --config Release -j 4
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1319,9 +1319,9 @@ jobs:
       run: |
         cd test
         mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64;arm64e" \
+        cmake -G Xcode ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="arm64;arm64e" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        cmake --build . --config Release -j 4
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1417,9 +1417,9 @@ jobs:
       run: |
         cd test
         mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
+        cmake -G Xcode ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        cmake --build . --config Release -j 4
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
@@ -1603,9 +1603,9 @@ jobs:
       run: |
         cd test
         mkdir build && cd build
-        cmake ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
+        cmake -G Xcode ${{ env.COMMON_CMAKE_OPTIONS }} -DARCHS="x86_64;arm64" \
             -DOpenCV_DIR=$GITHUB_WORKSPACE ..
-        cmake --build . -j 4
+        cmake --build . --config Release -j 4
     - name: upload-zip
       uses: actions/upload-artifact@v7
       with:
