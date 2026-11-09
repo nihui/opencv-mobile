@@ -1,7 +1,41 @@
-diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/async.hpp opencv-5.0.0/modules/core/include/opencv2/core/async.hpp
---- opencv-5.0.0.orig/modules/core/include/opencv2/core/async.hpp	2026-07-02 19:55:20.824439375 +0800
-+++ opencv-5.0.0/modules/core/include/opencv2/core/async.hpp	2026-07-02 19:55:20.986472779 +0800
-@@ -84,7 +84,6 @@ public:
+diff -Nuarp opencv-5.1.0.orig/modules/core/include/opencv2/core.hpp opencv-5.1.0/modules/core/include/opencv2/core.hpp
+--- opencv-5.1.0.orig/modules/core/include/opencv2/core.hpp
++++ opencv-5.1.0/modules/core/include/opencv2/core.hpp
+@@ -176,8 +176,6 @@
+ /** @brief Swaps two matrices
+ */
+ CV_EXPORTS void swap(Mat& a, Mat& b);
+-/** @overload */
+-CV_EXPORTS void swap( UMat& a, UMat& b );
+ 
+ /** @brief Computes the source location of an extrapolated pixel.
+ 
+@@ -1643,10 +1641,6 @@
+ needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
+ */
+ CV_EXPORTS void min(const Mat& src1, const Mat& src2, Mat& dst);
+-/** @overload
+-needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
+-*/
+-CV_EXPORTS void min(const UMat& src1, const UMat& src2, UMat& dst);
+ 
+ /** @brief Calculates per-element maximum of two arrays or an array and a scalar.
+ 
+@@ -1664,10 +1658,6 @@
+ needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
+ */
+ CV_EXPORTS void max(const Mat& src1, const Mat& src2, Mat& dst);
+-/** @overload
+-needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
+-*/
+-CV_EXPORTS void max(const UMat& src1, const UMat& src2, UMat& dst);
+ 
+ /** @brief Calculates a square root of array elements.
+ 
+diff -Nuarp opencv-5.1.0.orig/modules/core/include/opencv2/core/async.hpp opencv-5.1.0/modules/core/include/opencv2/core/async.hpp
+--- opencv-5.1.0.orig/modules/core/include/opencv2/core/async.hpp
++++ opencv-5.1.0/modules/core/include/opencv2/core/async.hpp
+@@ -84,7 +84,6 @@
  
  #if 0
      std::future<Mat> getFutureMat() const;
@@ -9,10 +43,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/async.hpp opencv
  #endif
  
  
-diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/cvdef.h opencv-5.0.0/modules/core/include/opencv2/core/cvdef.h
---- opencv-5.0.0.orig/modules/core/include/opencv2/core/cvdef.h	2026-07-02 19:55:20.830919769 +0800
-+++ opencv-5.0.0/modules/core/include/opencv2/core/cvdef.h	2026-07-02 19:55:20.986556949 +0800
-@@ -999,4 +999,9 @@ CV_INLINE int CV_FOURCC(char c1, char c2
+diff -Nuarp opencv-5.1.0.orig/modules/core/include/opencv2/core/cvdef.h opencv-5.1.0/modules/core/include/opencv2/core/cvdef.h
+--- opencv-5.1.0.orig/modules/core/include/opencv2/core/cvdef.h
++++ opencv-5.1.0/modules/core/include/opencv2/core/cvdef.h
+@@ -1027,4 +1027,9 @@
  #include "opencv2/core/fast_math.hpp" // define cvRound(double)
  #endif
  
@@ -22,26 +56,26 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/cvdef.h opencv-5
 +#define CV_OVX_RUN(condition, func, ...)
 +
  #endif // OPENCV_CORE_CVDEF_H
-diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/cvstd.inl.hpp opencv-5.0.0/modules/core/include/opencv2/core/cvstd.inl.hpp
---- opencv-5.0.0.orig/modules/core/include/opencv2/core/cvstd.inl.hpp	2026-07-02 19:55:20.832565398 +0800
-+++ opencv-5.0.0/modules/core/include/opencv2/core/cvstd.inl.hpp	2026-07-02 19:55:20.986615139 +0800
-@@ -89,12 +89,6 @@ std::ostream& operator << (std::ostream&
+diff -Nuarp opencv-5.1.0.orig/modules/core/include/opencv2/core/cvstd.inl.hpp opencv-5.1.0/modules/core/include/opencv2/core/cvstd.inl.hpp
+--- opencv-5.1.0.orig/modules/core/include/opencv2/core/cvstd.inl.hpp
++++ opencv-5.1.0/modules/core/include/opencv2/core/cvstd.inl.hpp
+@@ -87,12 +87,6 @@
+ std::ostream& operator << (std::ostream& out, const Mat& mtx)
+ {
      return out << Formatter::get()->format(mtx);
- }
- 
--static inline
+-}
+-
+-inline
 -std::ostream& operator << (std::ostream& out, const UMat& m)
 -{
 -    return out << m.getMat(ACCESS_READ);
--}
--
- template<typename _Tp> static inline
- std::ostream& operator << (std::ostream& out, const Complex<_Tp>& c)
- {
-diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/fwddecl.hpp opencv-5.0.0/modules/core/include/opencv2/core/fwddecl.hpp
---- opencv-5.0.0.orig/modules/core/include/opencv2/core/fwddecl.hpp	2026-07-02 19:55:20.838977712 +0800
-+++ opencv-5.0.0/modules/core/include/opencv2/core/fwddecl.hpp	2026-07-02 19:55:20.986690220 +0800
-@@ -33,8 +33,6 @@ class CV_EXPORTS RNG;
+ }
+ 
+ template<typename _Tp> inline
+diff -Nuarp opencv-5.1.0.orig/modules/core/include/opencv2/core/fwddecl.hpp opencv-5.1.0/modules/core/include/opencv2/core/fwddecl.hpp
+--- opencv-5.1.0.orig/modules/core/include/opencv2/core/fwddecl.hpp
++++ opencv-5.1.0/modules/core/include/opencv2/core/fwddecl.hpp
+@@ -33,8 +33,6 @@
  class CV_EXPORTS Mat;
  class CV_EXPORTS MatExpr;
  
@@ -50,7 +84,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/fwddecl.hpp open
  class CV_EXPORTS SparseMat;
  typedef Mat MatND;
  
-@@ -49,27 +47,6 @@ template<typename _Tp> class MatConstIte
+@@ -49,27 +47,6 @@
  template<typename _Tp> class SparseMatIterator_;
  template<typename _Tp> class SparseMatConstIterator_;
  
@@ -78,10 +112,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/fwddecl.hpp open
  //! @endcond
  
  } // cv::
-diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5.0.0/modules/core/include/opencv2/core/mat.hpp
---- opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp	2026-07-02 19:55:20.839711307 +0800
-+++ opencv-5.0.0/modules/core/include/opencv2/core/mat.hpp	2026-07-02 19:55:20.986928491 +0800
-@@ -190,8 +190,7 @@ It is defined as:
+diff -Nuarp opencv-5.1.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5.1.0/modules/core/include/opencv2/core/mat.hpp
+--- opencv-5.1.0.orig/modules/core/include/opencv2/core/mat.hpp
++++ opencv-5.1.0/modules/core/include/opencv2/core/mat.hpp
+@@ -204,8 +204,7 @@
  @endcode
  where \ref cv::_InputArray is a class that can be constructed from \ref cv::Mat, \ref cv::Mat_<T>,
  \ref cv::Matx<T, m, n>, std::vector<T>, std::vector<std::vector<T>>, std::vector<Mat>,
@@ -91,7 +125,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
  
  Since this is mostly implementation-level class, and its interface may change in future versions, we
  do not describe it in details. There are a few key things, though, that should be kept in mind:
-@@ -281,16 +280,8 @@ public:
+@@ -295,16 +294,8 @@
          STD_VECTOR        = 3 << KIND_SHIFT,
          STD_VECTOR_VECTOR = 4 << KIND_SHIFT,
          STD_VECTOR_MAT    = 5 << KIND_SHIFT,
@@ -109,7 +143,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
      };
  
      _InputArray();
-@@ -307,16 +298,6 @@ public:
+@@ -321,16 +312,6 @@
      template<typename _Tp> _InputArray(const _Tp* vec, int n);
      template<typename _Tp, int m, int n> _InputArray(const Matx<_Tp, m, n>& matx);
      _InputArray(const double& val);
@@ -126,7 +160,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
      template<typename _Tp, std::size_t _Nm> _InputArray(const std::array<_Tp, _Nm>& arr);
      template<std::size_t _Nm> _InputArray(const std::array<Mat, _Nm>& arr);
  
-@@ -325,14 +306,7 @@ public:
+@@ -339,14 +320,7 @@
  
      Mat getMat(int idx=-1) const;
      Mat getMat_(int idx=-1) const;
@@ -141,7 +175,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
  
      int getFlags() const;
      void* getObj() const;
-@@ -359,15 +333,10 @@ public:
+@@ -373,15 +347,10 @@
      size_t offset(int i=-1) const;
      size_t step(int i=-1) const;
      bool isMat() const;
@@ -157,7 +191,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
      ~_InputArray();
  
  protected:
-@@ -434,13 +403,6 @@ public:
+@@ -457,13 +426,6 @@
      _OutputArray(int _flags, void* _obj);
      _OutputArray(Mat& m);
      _OutputArray(std::vector<Mat>& vec);
@@ -171,7 +205,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
      template<typename _Tp> _OutputArray(std::vector<_Tp>& vec);
      _OutputArray(std::vector<bool>& vec) = delete;  // not supported
      template<typename _Tp> _OutputArray(std::vector<std::vector<_Tp> >& vec);
-@@ -449,27 +411,14 @@ public:
+@@ -472,27 +434,14 @@
      template<typename _Tp> _OutputArray(Mat_<_Tp>& m);
      template<typename _Tp> _OutputArray(_Tp* vec, int n);
      template<typename _Tp, int m, int n> _OutputArray(Matx<_Tp, m, n>& matx);
@@ -199,7 +233,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
      template<typename _Tp, std::size_t _Nm> _OutputArray(std::array<_Tp, _Nm>& arr);
      template<typename _Tp, std::size_t _Nm> _OutputArray(const std::array<_Tp, _Nm>& arr);
      template<std::size_t _Nm> _OutputArray(std::array<Mat, _Nm>& arr);
-@@ -482,16 +431,8 @@ public:
+@@ -505,16 +454,8 @@
      bool fixedType() const;
      bool needed() const;
      Mat& getMatRef(int i=-1) const;
@@ -216,7 +250,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
  
      void create(Size sz, int type, int i=-1, bool allowTransposed=false, _OutputArray::DepthMask fixedDepthMask=static_cast<_OutputArray::DepthMask>(0)) const;
      void create(int rows, int cols, int type, int i=-1, bool allowTransposed=false, _OutputArray::DepthMask fixedDepthMask=static_cast<_OutputArray::DepthMask>(0)) const;
-@@ -511,13 +452,10 @@ public:
+@@ -534,13 +475,10 @@
      void setZero() const;
      Mat reinterpret( int type ) const;
  
@@ -228,9 +262,9 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
  
 -    void move(UMat& u) const;
      void move(Mat& m) const;
- };
  
-@@ -529,13 +467,6 @@ public:
+ private:
+@@ -556,13 +494,6 @@
      _InputOutputArray(int _flags, void* _obj);
      _InputOutputArray(Mat& m);
      _InputOutputArray(std::vector<Mat>& vec);
@@ -244,7 +278,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
      template<typename _Tp> _InputOutputArray(std::vector<_Tp>& vec);
      _InputOutputArray(std::vector<bool>& vec) = delete;  // not supported
      template<typename _Tp> _InputOutputArray(std::vector<std::vector<_Tp> >& vec);
-@@ -543,26 +474,15 @@ public:
+@@ -570,26 +501,15 @@
      template<typename _Tp> _InputOutputArray(Mat_<_Tp>& m);
      template<typename _Tp> _InputOutputArray(_Tp* vec, int n);
      template<typename _Tp, int m, int n> _InputOutputArray(Matx<_Tp, m, n>& matx);
@@ -271,7 +305,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
  
      template<typename _Tp, std::size_t _Nm> _InputOutputArray(std::array<_Tp, _Nm>& arr);
      template<typename _Tp, std::size_t _Nm> _InputOutputArray(const std::array<_Tp, _Nm>& arr);
-@@ -614,11 +534,6 @@ CV_EXPORTS InputOutputArray noArray();
+@@ -641,11 +561,6 @@
  
   @warning  All flags except `USAGE_DEFAULT` are experimental.
  
@@ -283,9 +317,9 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
  */
  enum UMatUsageFlags
  {
-@@ -1270,9 +1185,6 @@ public:
+@@ -1259,9 +1174,6 @@
      */
-     template<typename _Tp> CV_DEPRECATED_EXTERNAL explicit Mat(const MatCommaInitializer_<_Tp>& commaInitializer);
+     template<typename _Tp> explicit Mat(const Point3_<_Tp>& pt, bool copyData=true);
  
 -    //! download data from GpuMat
 -    explicit Mat(const cuda::GpuMat& m);
@@ -293,17 +327,17 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
      //! destructor - calls release()
      ~Mat();
  
-@@ -1295,9 +1207,6 @@ public:
+@@ -1283,9 +1195,6 @@
+     automatic C reallocation.
      */
      Mat& operator = (const MatExpr& expr);
- 
+-
 -    //! retrieve UMat from Mat
 -    UMat getUMat(AccessFlag accessFlags, UMatUsageFlags usageFlags = USAGE_DEFAULT) const;
--
+ 
      /** @brief Creates a matrix header for the specified matrix row.
  
-     The method makes a new header for the specified matrix row and returns it. This is an O(1)
-@@ -2505,7 +2414,6 @@ public:
+@@ -2513,7 +2422,6 @@
      //! internal use method: updates the continuity flag
      void updateContinuityFlag();
  
@@ -311,11 +345,36 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
      UMatData* u;
  
      MatSize size;
-@@ -2783,238 +2691,6 @@ typedef Mat_<Vec2d> Mat2d;
+@@ -2789,272 +2697,6 @@
+ typedef Mat_<Vec2d> Mat2d;
  typedef Mat_<Vec3d> Mat3d;
  typedef Mat_<Vec4d> Mat4d;
- 
--/** @todo document */
+-
+-/** @brief Matrix class whose data may reside outside host memory. \anchor UMat_Details
+-
+-UMat repeats the Mat interface, but the buffer is owned by a MatAllocator, and it is the
+-allocator that decides where the data physically resides: in host memory, in an OpenCL
+-device buffer (see cv::ocl::getOpenCLAllocator) or in CUDA device memory (see
+-cv::cuda::getCudaAllocator). Headers, reference counting, ROIs and submatrices and
+-n-dimensional shapes behave as they do in Mat.
+-
+-Passing UMat instead of Mat to a cv:: function is the basis of the Transparent API
+-(T-API). The dispatch is not keyed on the allocator: a cv:: call takes its OpenCL branch
+-when OpenCL is active and the arguments are UMat objects, and otherwise maps the data
+-back to host memory and runs the CPU implementation. UMat has no `data` pointer and no
+-element accessors, because there may be no host address to expose; host access goes
+-through UMat::getMat.
+-
+-@note
+-  A non-default allocator must be assigned to @ref cv::UMat::allocator "UMat::allocator"
+-  before the data is allocated. OpenCL is the only allocator with accelerated cv::
+-  implementations, and because the T-API branch tests only whether OpenCL is active, a
+-  UMat backed by any other device allocator must not be passed to cv:: functions while
+-  OpenCL is enabled.
+-
+-@sa Mat, MatAllocator, UMatUsageFlags, cv::ocl::getOpenCLAllocator,
+-cv::cuda::getCudaAllocator
+-*/
 -class CV_EXPORTS UMat
 -{
 -public:
@@ -349,6 +408,14 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
 -    //! assignment operators
 -    UMat& operator = (const UMat& m);
 -
+-    /** @brief Returns a Mat header giving host access to the same data
+-    @note
+-      The data is mapped into host memory on the first such view and unmapped when the
+-      returned Mat is destroyed. @p flags is widened to ACCESS_RW internally, so the
+-      mapping is always read-write and the allocator may write back even after
+-      read-only use.
+-    @param flags combination of AccessFlag values
+-    */
 -    Mat getMat(AccessFlag flags) const;
 -
 -    //! returns a new matrix header for the specified row
@@ -492,7 +559,9 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
 -    UMat(UMat&& m);
 -    UMat& operator = (UMat&& m);
 -
--    /*! Returns the OpenCL buffer handle on which UMat operates on.
+-    /*! Returns the device buffer handle on which UMat operates on.
+-        The concrete type depends on the allocator: a `cl_mem` for the OpenCL allocator,
+-        a CUDA device pointer for cv::cuda::getCudaAllocator().
 -        The UMat instance should be kept alive during the use of the handle to prevent the buffer to be
 -        returned to the OpenCV buffer pool.
 -     */
@@ -519,7 +588,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
 -    //! number of columns in the matrix; -1 when the matrix has more than 2 dimensions
 -    int cols;
 -
--    //! custom allocator
+-    //! custom allocator; assign before the data is allocated, see @ref UMat_Details
 -    MatAllocator* allocator;
 -
 -    //! usage flags for allocator; recommend do not set directly, instead set during construct/create/getUMat
@@ -546,14 +615,13 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.hpp opencv-5
 -protected:
 -};
 -
--
+ 
  /////////////////////////// multi-dimensional sparse matrix //////////////////////////
  
- /** @brief The class SparseMat represents multi-dimensional sparse numerical arrays.
-diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp opencv-5.0.0/modules/core/include/opencv2/core/mat.inl.hpp
---- opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp	2026-07-02 19:55:20.840891737 +0800
-+++ opencv-5.0.0/modules/core/include/opencv2/core/mat.inl.hpp	2026-07-02 19:55:20.987254707 +0800
-@@ -165,8 +165,6 @@ inline _InputArray::_InputArray() { init
+diff -Nuarp opencv-5.1.0.orig/modules/core/include/opencv2/core/mat.inl.hpp opencv-5.1.0/modules/core/include/opencv2/core/mat.inl.hpp
+--- opencv-5.1.0.orig/modules/core/include/opencv2/core/mat.inl.hpp
++++ opencv-5.1.0/modules/core/include/opencv2/core/mat.inl.hpp
+@@ -168,8 +168,6 @@
  inline _InputArray::_InputArray(int _flags, void* _obj) { init(_flags, _obj); }
  inline _InputArray::_InputArray(const Mat& m) { init(+MAT+ACCESS_READ, &m); }
  inline _InputArray::_InputArray(const std::vector<Mat>& vec) { init(+STD_VECTOR_MAT+ACCESS_READ, &vec); }
@@ -562,10 +630,11 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp open
  
  template<typename _Tp> inline
  _InputArray::_InputArray(const std::vector<_Tp>& vec)
-@@ -210,24 +208,6 @@ _InputArray::_InputArray(const Mat_<_Tp>
+@@ -212,24 +210,6 @@
+ 
  inline _InputArray::_InputArray(const double& val)
  { init(FIXED_TYPE + FIXED_SIZE + MATX + CV_64F + ACCESS_READ, &val, Size(1,1)); }
- 
+-
 -inline _InputArray::_InputArray(const cuda::GpuMat& d_mat)
 -{ init(+CUDA_GPU_MAT + ACCESS_READ, &d_mat); }
 -
@@ -583,11 +652,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp open
 -
 -inline _InputArray::_InputArray(const cuda::HostMem& cuda_mem)
 -{ init(+CUDA_HOST_MEM + ACCESS_READ, &cuda_mem); }
--
+ 
  template<typename _Tp> inline
  _InputArray _InputArray::rawIn(const std::vector<_Tp>& vec)
- {
-@@ -257,17 +237,12 @@ inline Mat _InputArray::getMat(int i) co
+@@ -341,17 +321,12 @@
  }
  
  inline bool _InputArray::isMat() const { return kind() == _InputArray::MAT; }
@@ -605,7 +673,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp open
  
  ////////////////////////////////////////////////////////////////////////////////////////
  
-@@ -275,8 +250,6 @@ inline _OutputArray::_OutputArray() { in
+@@ -359,8 +334,6 @@
  inline _OutputArray::_OutputArray(int _flags, void* _obj) { init(_flags + ACCESS_WRITE, _obj); }
  inline _OutputArray::_OutputArray(Mat& m) { init(+MAT+ACCESS_WRITE, &m); }
  inline _OutputArray::_OutputArray(std::vector<Mat>& vec) { init(+STD_VECTOR_MAT + ACCESS_WRITE, &vec); }
@@ -614,7 +682,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp open
  
  template<typename _Tp> inline
  _OutputArray::_OutputArray(std::vector<_Tp>& vec)
-@@ -342,51 +315,12 @@ template<typename _Tp> inline
+@@ -426,50 +399,11 @@
  _OutputArray::_OutputArray(const _Tp* vec, int n)
  { init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_WRITE, vec, Size(n, 1)); }
  
@@ -641,7 +709,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp open
  
  inline _OutputArray::_OutputArray(const std::vector<Mat>& vec)
  { init(FIXED_SIZE + STD_VECTOR_MAT + ACCESS_WRITE, &vec); }
- 
+-
 -inline _OutputArray::_OutputArray(const UMat& m)
 -{ init(FIXED_TYPE + FIXED_SIZE + UMAT + ACCESS_WRITE, &m); }
 -
@@ -662,25 +730,24 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp open
 -
 -inline _OutputArray::_OutputArray(const cuda::HostMem& cuda_mem)
 -{ init(FIXED_TYPE + FIXED_SIZE + CUDA_HOST_MEM + ACCESS_WRITE, &cuda_mem); }
--
+ 
  template<typename _Tp> inline
  _OutputArray _OutputArray::rawOut(std::vector<_Tp>& vec)
+@@ -495,13 +429,6 @@
  {
-@@ -413,13 +347,6 @@ std::vector<Mat>& _OutputArray::getMatVe
+     CV_Assert(kind() == _InputArray::STD_VECTOR_MAT);
      return *(std::vector<Mat>*)obj;
- }
- 
+-}
+-
 -inline
 -std::vector<UMat>& _OutputArray::getUMatVecRef() const
 -{
 -    CV_Assert(kind() == _InputArray::STD_VECTOR_UMAT);
 -    return *(std::vector<UMat>*)obj;
--}
--
+ }
+ 
  template<typename _Tp> inline
- std::vector<std::vector<_Tp> >& _OutputArray::getVecVecRef() const
- {
-@@ -434,8 +361,6 @@ inline _InputOutputArray::_InputOutputAr
+@@ -546,8 +473,6 @@
  inline _InputOutputArray::_InputOutputArray(int _flags, void* _obj) { init(_flags+ACCESS_RW, _obj); }
  inline _InputOutputArray::_InputOutputArray(Mat& m) { init(+MAT+ACCESS_RW, &m); }
  inline _InputOutputArray::_InputOutputArray(std::vector<Mat>& vec) { init(+STD_VECTOR_MAT+ACCESS_RW, &vec); }
@@ -689,7 +756,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp open
  
  template<typename _Tp> inline
  _InputOutputArray::_InputOutputArray(std::vector<_Tp>& vec)
-@@ -501,57 +426,12 @@ template<typename _Tp> inline
+@@ -613,56 +538,11 @@
  _InputOutputArray::_InputOutputArray(const _Tp* vec, int n)
  { init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_RW, vec, Size(n, 1)); }
  
@@ -716,7 +783,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp open
  
  inline _InputOutputArray::_InputOutputArray(const std::vector<Mat>& vec)
  { init(FIXED_SIZE + STD_VECTOR_MAT + ACCESS_RW, &vec); }
- 
+-
 -inline _InputOutputArray::_InputOutputArray(const UMat& m)
 -{ init(FIXED_TYPE + FIXED_SIZE + UMAT + ACCESS_RW, &m); }
 -
@@ -743,11 +810,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp open
 -
 -inline _InputOutputArray::_InputOutputArray(const cuda::HostMem& cuda_mem)
 -{ init(FIXED_TYPE + FIXED_SIZE + CUDA_HOST_MEM + ACCESS_RW, &cuda_mem); }
--
+ 
  template<typename _Tp> inline
  _InputOutputArray _InputOutputArray::rawInOut(std::vector<_Tp>& vec)
- {
-@@ -3464,117 +3344,6 @@ const Mat_<_Tp>& operator /= (const Mat_
+@@ -3530,117 +3410,6 @@
  }
  
  
@@ -865,84 +931,69 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/mat.inl.hpp open
  inline bool UMatData::hostCopyObsolete() const { return (flags & HOST_COPY_OBSOLETE) != 0; }
  inline bool UMatData::deviceCopyObsolete() const { return (flags & DEVICE_COPY_OBSOLETE) != 0; }
  inline bool UMatData::deviceMemMapped() const { return (flags & DEVICE_MEM_MAPPED) != 0; }
-diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core/operations.hpp opencv-5.0.0/modules/core/include/opencv2/core/operations.hpp
---- opencv-5.0.0.orig/modules/core/include/opencv2/core/operations.hpp	2026-07-02 19:55:20.844583422 +0800
-+++ opencv-5.0.0/modules/core/include/opencv2/core/operations.hpp	2026-07-02 19:55:20.987419889 +0800
-@@ -461,12 +461,6 @@ int print(const Mat& mtx, FILE* stream =
+diff -Nuarp opencv-5.1.0.orig/modules/core/include/opencv2/core/operations.hpp opencv-5.1.0/modules/core/include/opencv2/core/operations.hpp
+--- opencv-5.1.0.orig/modules/core/include/opencv2/core/operations.hpp
++++ opencv-5.1.0/modules/core/include/opencv2/core/operations.hpp
+@@ -459,12 +459,6 @@
+ int print(const Mat& mtx, FILE* stream = stdout)
+ {
      return print(Formatter::get()->format(mtx), stream);
- }
- 
--static inline
+-}
+-
+-inline
 -int print(const UMat& mtx, FILE* stream = stdout)
 -{
 -    return print(Formatter::get()->format(mtx.getMat(ACCESS_READ)), stream);
--}
--
- template<typename _Tp> static inline
- int print(const std::vector<Point_<_Tp> >& vec, FILE* stream = stdout)
- {
-diff -Nuarp opencv-5.0.0.orig/modules/core/include/opencv2/core.hpp opencv-5.0.0/modules/core/include/opencv2/core.hpp
---- opencv-5.0.0.orig/modules/core/include/opencv2/core.hpp	2026-07-02 19:55:20.822278853 +0800
-+++ opencv-5.0.0/modules/core/include/opencv2/core.hpp	2026-07-02 19:55:20.987580653 +0800
-@@ -171,8 +171,6 @@ enum ReduceTypes { REDUCE_SUM = 0, //!<
- /** @brief Swaps two matrices
- */
- CV_EXPORTS void swap(Mat& a, Mat& b);
--/** @overload */
--CV_EXPORTS void swap( UMat& a, UMat& b );
+ }
  
- /** @brief Computes the source location of an extrapolated pixel.
- 
-@@ -1477,10 +1475,6 @@ CV_EXPORTS_W void min(InputArray src1, I
- needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
- */
- CV_EXPORTS void min(const Mat& src1, const Mat& src2, Mat& dst);
--/** @overload
--needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
--*/
--CV_EXPORTS void min(const UMat& src1, const UMat& src2, UMat& dst);
- 
- /** @brief Calculates per-element maximum of two arrays or an array and a scalar.
- 
-@@ -1498,10 +1492,6 @@ CV_EXPORTS_W void max(InputArray src1, I
- needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
- */
- CV_EXPORTS void max(const Mat& src1, const Mat& src2, Mat& dst);
--/** @overload
--needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
--*/
--CV_EXPORTS void max(const UMat& src1, const UMat& src2, UMat& dst);
- 
- /** @brief Calculates a square root of array elements.
- 
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/arithm.cpp opencv-5.0.0/modules/core/src/arithm.cpp
---- opencv-5.0.0.orig/modules/core/src/arithm.cpp	2026-07-02 19:55:20.547964878 +0800
-+++ opencv-5.0.0/modules/core/src/arithm.cpp	2026-07-02 19:55:20.987810918 +0800
-@@ -436,22 +436,6 @@ void cv::min(const Mat& src1, const Mat&
-     binary_op(src1, src2, _dst, noArray(), getMinTab(), false, OCL_OP_MIN );
+ template<typename _Tp> inline
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/arithm.cpp opencv-5.1.0/modules/core/src/arithm.cpp
+--- opencv-5.1.0.orig/modules/core/src/arithm.cpp
++++ opencv-5.1.0/modules/core/src/arithm.cpp
+@@ -266,21 +266,6 @@
+     arithm_op(ew::OP_MIN, src1, src2, dst, noArray(), -1, OCL_OP_MIN, false);
  }
  
 -void cv::max(const UMat& src1, const UMat& src2, UMat& dst)
 -{
 -    CV_INSTRUMENT_REGION();
 -
--    OutputArray _dst(dst);
--    binary_op(src1, src2, _dst, noArray(), getMaxTab(), false, OCL_OP_MAX );
+-    arithm_op(ew::OP_MAX, src1, src2, dst, noArray(), -1, OCL_OP_MAX, false);
 -}
 -
 -void cv::min(const UMat& src1, const UMat& src2, UMat& dst)
 -{
 -    CV_INSTRUMENT_REGION();
 -
--    OutputArray _dst(dst);
--    binary_op(src1, src2, _dst, noArray(), getMinTab(), false, OCL_OP_MIN );
+-    arithm_op(ew::OP_MIN, src1, src2, dst, noArray(), -1, OCL_OP_MIN, false);
 -}
 -
- 
+-
  /****************************************************************************************\
  *                                      add/subtract                                      *
-@@ -1373,13 +1357,6 @@ void divide(double scale, InputArray src
-     arithm_op(src2, src2, dst, noArray(), dtype, getRecipTab(), true, &scale, OCL_OP_RECIP_SCALE);
+ \****************************************************************************************/
+@@ -642,19 +627,6 @@
+         if (dtype >= 0)
+             dst.create(0, 0, dtype);
+         return;
+-    }
+-
+-    // UMat -> classic OpenCL kernel. It declines (false) when OpenCL can't apply (no device, dims>2, a
+-    // broadcast, cn>4 masked, ...) - then the CPU engine below handles it (mapping the UMat via getMat).
+-    // oclop < 0 is a sentinel: the caller (e.g. cv::compare) already ran its own OpenCL path, so this
+-    // helper only runs the CPU engine (a UMat operand is mapped via getMat).
+-    if (oclop >= 0 && cv::ocl::isOpenCLActivated() &&
+-        (src1.isUMat() || src2.isUMat() || dst.isUMat()))
+-    {
+-        double abg[3] = { params[0], params[1], params[2] }, scale = params[0];
+-        void* usrdata = (op == ew::OP_ADDW) ? (void*)abg : (muldiv ? (void*)&scale : nullptr);
+-        if (arithm_op_ocl(src1, src2, dst, mask, dtype, oclop, muldiv, usrdata))
+-            return;
+     }
+ 
+     const bool haveMask = !mask.empty();
+@@ -955,13 +927,6 @@
+     arithm_op(ew::OP_DIV, numerator, src2, dst, noArray(), rtype, OCL_OP_RECIP_SCALE, /*muldiv*/ true, Scalar(scale));
  }
  
 -UMat UMat::mul(InputArray m, double scale) const
@@ -955,10 +1006,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/arithm.cpp opencv-5.0.0/modules/c
  /****************************************************************************************\
  *                                      addWeighted                                       *
  \****************************************************************************************/
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/async.cpp opencv-5.0.0/modules/core/src/async.cpp
---- opencv-5.0.0.orig/modules/core/src/async.cpp	2026-07-02 19:55:20.551697981 +0800
-+++ opencv-5.0.0/modules/core/src/async.cpp	2026-07-02 19:55:20.987972293 +0800
-@@ -40,7 +40,6 @@ struct AsyncArray::Impl
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/async.cpp opencv-5.1.0/modules/core/src/async.cpp
+--- opencv-5.1.0.orig/modules/core/src/async.cpp
++++ opencv-5.1.0/modules/core/src/async.cpp
+@@ -40,7 +40,6 @@
      mutable bool has_result; // Mat, UMat or exception
  
      mutable cv::Ptr<Mat> result_mat;
@@ -966,21 +1017,21 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/async.cpp opencv-5.0.0/modules/co
  
  
      bool has_exception;
-@@ -91,13 +90,6 @@ struct AsyncArray::Impl
-                 result_is_fetched = true;
-                 return true;
-             }
+@@ -88,13 +87,6 @@
+             {
+                 dst.move(*result_mat.get());
+                 result_mat.release();
+-                result_is_fetched = true;
+-                return true;
+-            }
 -            if (!result_umat.empty())
 -            {
 -                dst.move(*result_umat.get());
 -                result_umat.release();
--                result_is_fetched = true;
--                return true;
--            }
- #if CV__EXCEPTION_PTR
-             if (has_exception && exception)
-             {
-@@ -162,13 +154,6 @@ struct AsyncArray::Impl
+                 result_is_fetched = true;
+                 return true;
+             }
+@@ -162,13 +154,6 @@
              CV_Error(Error::StsError, "Associated AsyncArray has been destroyed");
          std::unique_lock<std::mutex> lock(mtx);
          CV_Assert(!has_result);
@@ -994,7 +1045,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/async.cpp opencv-5.0.0/modules/co
          {
              result_mat = makePtr<Mat>();
              value.copyTo(*result_mat.get());
-@@ -224,7 +209,6 @@ struct AsyncArray::Impl
+@@ -224,7 +209,6 @@
      mutable bool has_result; // Mat, UMat or exception
  
      mutable cv::Ptr<Mat> result_mat;
@@ -1002,7 +1053,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/async.cpp opencv-5.0.0/modules/co
  
  
      bool has_exception;
-@@ -270,13 +254,6 @@ struct AsyncArray::Impl
+@@ -270,13 +254,6 @@
              result_is_fetched = true;
              return true;
          }
@@ -1016,7 +1067,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/async.cpp opencv-5.0.0/modules/co
  #if CV__EXCEPTION_PTR
          if (has_exception && exception)
          {
-@@ -327,13 +304,6 @@ struct AsyncArray::Impl
+@@ -327,13 +304,6 @@
          if (future_is_returned && refcount_future == 0)
              CV_Error(Error::StsError, "Associated AsyncArray has been destroyed");
          CV_Assert(!has_result);
@@ -1030,10 +1081,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/async.cpp opencv-5.0.0/modules/co
          {
              result_mat = makePtr<Mat>();
              value.copyTo(*result_mat.get());
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/channels.cpp opencv-5.0.0/modules/core/src/channels.cpp
---- opencv-5.0.0.orig/modules/core/src/channels.cpp	2026-07-02 19:55:20.555792216 +0800
-+++ opencv-5.0.0/modules/core/src/channels.cpp	2026-07-02 19:55:20.988051372 +0800
-@@ -284,12 +284,10 @@ void cv::mixChannels(InputArrayOfArrays
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/channels.cpp opencv-5.1.0/modules/core/src/channels.cpp
+--- opencv-5.1.0.orig/modules/core/src/channels.cpp
++++ opencv-5.1.0/modules/core/src/channels.cpp
+@@ -290,12 +290,10 @@
  
      bool src_is_mat = src.kind() != _InputArray::STD_VECTOR_MAT &&
              src.kind() != _InputArray::STD_ARRAY_MAT &&
@@ -1048,7 +1099,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/channels.cpp opencv-5.0.0/modules
      int i;
      int nsrc = src_is_mat ? 1 : (int)src.total();
      int ndst = dst_is_mat ? 1 : (int)dst.total();
-@@ -317,12 +315,10 @@ void cv::mixChannels(InputArrayOfArrays
+@@ -323,12 +321,10 @@
  
      bool src_is_mat = src.kind() != _InputArray::STD_VECTOR_MAT &&
              src.kind() != _InputArray::STD_ARRAY_MAT &&
@@ -1063,10 +1114,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/channels.cpp opencv-5.0.0/modules
      int i;
      int nsrc = src_is_mat ? 1 : (int)src.total();
      int ndst = dst_is_mat ? 1 : (int)dst.total();
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/convert.dispatch.cpp opencv-5.0.0/modules/core/src/convert.dispatch.cpp
---- opencv-5.0.0.orig/modules/core/src/convert.dispatch.cpp	2026-07-02 19:55:20.559007060 +0800
-+++ opencv-5.0.0/modules/core/src/convert.dispatch.cpp	2026-07-02 19:55:20.988131193 +0800
-@@ -51,82 +51,6 @@ BinaryFunc getConvertFunc(int sdepth, in
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/convert.dispatch.cpp opencv-5.1.0/modules/core/src/convert.dispatch.cpp
+--- opencv-5.1.0.orig/modules/core/src/convert.dispatch.cpp
++++ opencv-5.1.0/modules/core/src/convert.dispatch.cpp
+@@ -51,87 +51,6 @@
          CV_CPU_DISPATCH_MODES_ALL);
  }
  
@@ -1080,6 +1131,11 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/convert.dispatch.cpp opencv-5.0.0
 -    int stype = src_.type();
 -    int sdepth = CV_MAT_DEPTH(stype);
 -    int cn = CV_MAT_CN(stype);
+-
+-    // FP8 types are not supported by the OpenCL kernels yet; fall back to CPU.
+-    if ((sdepth >= CV_8F_E4M3FN && sdepth <= CV_8F_E4M3FNUZ) ||
+-        (ddepth >= CV_8F_E4M3FN && ddepth <= CV_8F_E4M3FNUZ))
+-        return false;
 -
 -    int dtype = CV_MAKETYPE(ddepth, cn);
 -
@@ -1149,17 +1205,17 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/convert.dispatch.cpp opencv-5.0.0
  void Mat::convertTo(OutputArray dst, int type_, double alpha, double beta) const
  {
      CV_INSTRUMENT_REGION();
-@@ -162,9 +86,6 @@ void Mat::convertTo(OutputArray dst, int
+@@ -166,9 +85,6 @@
+         copyTo(dst);
          return;
      }
- 
+-
 -    CV_OCL_RUN(dims <= 2 && dst.isUMat(),
 -               ocl_convertTo(*this, dst, ddepth, noScale, alpha, beta))
--
+ 
      int cn = channels();
      int dtype = CV_MAKETYPE(ddepth, cn);
- 
-@@ -205,43 +126,4 @@ void Mat::convertTo(OutputArray dst, int
+@@ -210,43 +126,4 @@
      }
  }
  
@@ -1203,10 +1259,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/convert.dispatch.cpp opencv-5.0.0
 -}
 -
  } // namespace cv
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/copy.cpp opencv-5.0.0/modules/core/src/copy.cpp
---- opencv-5.0.0.orig/modules/core/src/copy.cpp	2026-07-02 19:55:20.563794574 +0800
-+++ opencv-5.0.0/modules/core/src/copy.cpp	2026-07-02 19:55:20.988180435 +0800
-@@ -441,14 +441,6 @@ void Mat::copyTo( OutputArray _dst ) con
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/copy.cpp opencv-5.1.0/modules/core/src/copy.cpp
+--- opencv-5.1.0.orig/modules/core/src/copy.cpp
++++ opencv-5.1.0/modules/core/src/copy.cpp
+@@ -447,14 +447,6 @@
  {
      CV_INSTRUMENT_REGION();
  
@@ -1221,7 +1277,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/copy.cpp opencv-5.0.0/modules/cor
      int stype = type();
      int dtype = _dst.type();
      if( _dst.fixedType() && dtype != stype )
-@@ -464,35 +456,12 @@ void Mat::copyTo( OutputArray _dst ) con
+@@ -470,35 +462,12 @@
          void* obj = _dst.getObj();
          if (_dst.isMat())
              reinterpret_cast<Mat*>(obj)->flags = Mat::MAGIC_VAL | Mat::CONTINUOUS_FLAG | stype;
@@ -1257,22 +1313,22 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/copy.cpp opencv-5.0.0/modules/cor
      if( dims <= 2 )
      {
          _dst.create( dims, size.p, stype, -1, allowTransposed );
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/dxt.cpp opencv-5.0.0/modules/core/src/dxt.cpp
---- opencv-5.0.0.orig/modules/core/src/dxt.cpp	2026-07-02 19:55:20.567216288 +0800
-+++ opencv-5.0.0/modules/core/src/dxt.cpp	2026-07-02 19:55:20.988340978 +0800
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/dxt.cpp opencv-5.1.0/modules/core/src/dxt.cpp
+--- opencv-5.1.0.orig/modules/core/src/dxt.cpp
++++ opencv-5.1.0/modules/core/src/dxt.cpp
 @@ -40,8 +40,6 @@
  //M*/
  
  #include "precomp.hpp"
 -#include "opencv2/core/opencl/runtime/opencl_clfft.hpp"
 -#include "opencv2/core/opencl/runtime/opencl_core.hpp"
- #include <map>
- 
- namespace cv
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/lapack.cpp opencv-5.0.0/modules/core/src/lapack.cpp
---- opencv-5.0.0.orig/modules/core/src/lapack.cpp	2026-07-02 19:55:20.574396192 +0800
-+++ opencv-5.0.0/modules/core/src/lapack.cpp	2026-07-02 19:55:20.988527291 +0800
-@@ -1017,13 +1017,6 @@ double invert( InputArray _src, OutputAr
+ #include "dxt.hpp"
+ #include "dxt.simd.hpp"
+ #include "dxt.simd_declarations.hpp"
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/lapack.cpp opencv-5.1.0/modules/core/src/lapack.cpp
+--- opencv-5.1.0.orig/modules/core/src/lapack.cpp
++++ opencv-5.1.0/modules/core/src/lapack.cpp
+@@ -1013,13 +1013,6 @@
      return result;
  }
  
@@ -1286,9 +1342,24 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/lapack.cpp opencv-5.0.0/modules/c
  
  /****************************************************************************************\
  *                              Solving a linear system                                   *
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/matmul.dispatch.cpp opencv-5.0.0/modules/core/src/matmul.dispatch.cpp
---- opencv-5.0.0.orig/modules/core/src/matmul.dispatch.cpp	2026-07-02 19:55:20.582871564 +0800
-+++ opencv-5.0.0/modules/core/src/matmul.dispatch.cpp	2026-07-02 19:55:20.988648680 +0800
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/mathfuncs.cpp opencv-5.1.0/modules/core/src/mathfuncs.cpp
+--- opencv-5.1.0.orig/modules/core/src/mathfuncs.cpp
++++ opencv-5.1.0/modules/core/src/mathfuncs.cpp
+@@ -1079,11 +1079,6 @@
+ {
+     CV_INSTRUMENT_REGION();
+ 
+-    if (b.isUMat() && a.dims() <= 2)     // the OpenCL route (via ocl_pow) is unchanged
+-    {
+-        cv::pow(a, 0.5, b);
+-        return;
+-    }
+     math_op(ew::OP_SQRT, a, b);
+ }
+ 
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/matmul.dispatch.cpp opencv-5.1.0/modules/core/src/matmul.dispatch.cpp
+--- opencv-5.1.0.orig/modules/core/src/matmul.dispatch.cpp
++++ opencv-5.1.0/modules/core/src/matmul.dispatch.cpp
 @@ -44,10 +44,6 @@
  #include "precomp.hpp"
  #include <opencv2/core/utils/logger.hpp>
@@ -1300,7 +1371,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matmul.dispatch.cpp opencv-5.0.0/
  #include "matmul.simd.hpp"
  #include "matmul.simd_declarations.hpp" // defines CV_CPU_DISPATCH_MODES_ALL=AVX2,...,BASELINE based on CMakeLists.txt content
  
-@@ -1081,19 +1077,5 @@ static bool ocl_dot( InputArray _src1, I
+@@ -1079,19 +1075,5 @@
  
  #endif
  
@@ -1320,13 +1391,26 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matmul.dispatch.cpp opencv-5.0.0/
 -
  }  // namespace cv::
  /* End of file. */
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_operations.cpp opencv-5.0.0/modules/core/src/matrix_operations.cpp
---- opencv-5.0.0.orig/modules/core/src/matrix_operations.cpp	2026-07-02 19:55:20.588663386 +0800
-+++ opencv-5.0.0/modules/core/src/matrix_operations.cpp	2026-07-02 19:55:20.988755303 +0800
-@@ -212,22 +212,6 @@ void cv::setIdentity( InputOutputArray _
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/matrix_expressions.cpp opencv-5.1.0/modules/core/src/matrix_expressions.cpp
+--- opencv-5.1.0.orig/modules/core/src/matrix_expressions.cpp
++++ opencv-5.1.0/modules/core/src/matrix_expressions.cpp
+@@ -1740,7 +1740,7 @@
+     // a non-owning view of caller memory (e.g. a scalar bound to _InputArray(const double&),
+     // a Matx or a Vec) that the returned MatExpr can outlive, so snapshot it.
+     // See https://github.com/opencv/opencv/issues/23577
+-    if( !m.isMat() && !m.isUMat() )
++    if( !m.isMat() )
+         b = b.clone();
+ 
+     MatExpr e;
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/matrix_operations.cpp opencv-5.1.0/modules/core/src/matrix_operations.cpp
+--- opencv-5.1.0.orig/modules/core/src/matrix_operations.cpp
++++ opencv-5.1.0/modules/core/src/matrix_operations.cpp
+@@ -208,22 +208,6 @@
+     }
  }
  
- 
+-
 -namespace cv {
 -
 -UMat UMat::eye(int rows, int cols, int type, UMatUsageFlags usageFlags)
@@ -1342,26 +1426,25 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_operations.cpp opencv-5.0.
 -}
 -
 -}  // namespace
--
+ 
  //////////////////////////////////////////// trace ///////////////////////////////////////////
  
- cv::Scalar cv::trace( InputArray _m )
-@@ -782,11 +766,6 @@ void cv::reduce(InputArray _src, OutputA
+@@ -810,11 +794,6 @@
+ 
      CV_OCL_RUN(_dst.isUMat(),
                 ocl_reduce(_src, _dst, dim, op, op0, stype, dtype))
- 
+-
 -    // Fake reference to source. Resolves issue 8693 in case of src == dst.
 -    UMat srcUMat;
 -    if (_src.isUMat())
 -        srcUMat = _src.getUMat();
--
+ 
      Mat src = _src.getMat();
-     if (src.dims <= 1) {
-         if (src.dims == 0) {
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_transform.cpp opencv-5.0.0/modules/core/src/matrix_transform.cpp
---- opencv-5.0.0.orig/modules/core/src/matrix_transform.cpp	2026-07-02 19:55:20.590367156 +0800
-+++ opencv-5.0.0/modules/core/src/matrix_transform.cpp	2026-07-02 19:55:20.988889625 +0800
-@@ -1370,12 +1370,6 @@ void rotate(InputArray _src, OutputArray
+     if (src.empty()) {
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/matrix_transform.cpp opencv-5.1.0/modules/core/src/matrix_transform.cpp
+--- opencv-5.1.0.orig/modules/core/src/matrix_transform.cpp
++++ opencv-5.1.0/modules/core/src/matrix_transform.cpp
+@@ -1556,12 +1556,6 @@
      CV_Assert(_src.dims() <= 2);
      int angle;
  
@@ -1374,10 +1457,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_transform.cpp opencv-5.0.0
      Mat src = _src.getMat();
      int type = src.type();
      if( src.empty() )
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modules/core/src/matrix_wrap.cpp
---- opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp	2026-07-02 19:55:20.591349040 +0800
-+++ opencv-5.0.0/modules/core/src/matrix_wrap.cpp	2026-07-02 19:55:20.989050630 +0800
-@@ -69,14 +69,6 @@ Mat _InputArray::getMat_(int i) const
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.1.0/modules/core/src/matrix_wrap.cpp
+--- opencv-5.1.0.orig/modules/core/src/matrix_wrap.cpp
++++ opencv-5.1.0/modules/core/src/matrix_wrap.cpp
+@@ -69,14 +69,6 @@
          return m->row(i);
      }
  
@@ -1392,7 +1475,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      if (k == MATX)
      {
          CV_Assert( i < 0 );
-@@ -141,76 +133,9 @@ Mat _InputArray::getMat_(int i) const
+@@ -141,74 +133,7 @@
          return v[i];
      }
  
@@ -1432,8 +1515,8 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -    }
 -
      CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
- }
- 
+-}
+-
 -UMat _InputArray::getUMat(int i) const
 -{
 -    _InputArray::KindFlag k = kind();
@@ -1464,12 +1547,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -    }
 -
 -    return getMat(i).getUMat(accessFlags);
--}
--
+ }
+ 
  void _InputArray::getMatVector(std::vector<Mat>& mv) const
- {
-     _InputArray::KindFlag k = kind();
-@@ -304,164 +229,9 @@ void _InputArray::getMatVector(std::vect
+@@ -304,188 +229,17 @@
          return;
      }
  
@@ -1484,9 +1565,9 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -        return;
 -    }
 -
--    CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
--}
--
+     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+ }
+ 
 -void _InputArray::getUMatVector(std::vector<UMat>& umv) const
 -{
 -    _InputArray::KindFlag k = kind();
@@ -1546,9 +1627,9 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -        return;
 -    }
 -
-     CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
- }
- 
+-    CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
+-}
+-
 -cuda::GpuMat _InputArray::getGpuMat() const
 -{
 -#ifdef HAVE_CUDA
@@ -1631,12 +1712,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -    return *gl_buf;
 -}
 -
- _InputArray::KindFlag _InputArray::kind() const
- {
-     KindFlag k = flags & KIND_MASK;
-@@ -474,28 +244,12 @@ _InputArray::KindFlag _InputArray::kind(
- 
- int _InputArray::rows(int i) const
+ int _InputArray::rows_(int i) const
  {
 -#ifdef HAVE_CUDA
 -    _InputArray::KindFlag k = kind();
@@ -1647,10 +1723,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -    }
 -#endif
  
-     return size(i).height;
+     return size_(i).height;
  }
  
- int _InputArray::cols(int i) const
+ int _InputArray::cols_(int i) const
  {
 -#ifdef HAVE_CUDA
 -    _InputArray::KindFlag k = kind();
@@ -1661,9 +1737,9 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -    }
 -#endif
  
-     return size(i).width;
+     return size_(i).width;
  }
-@@ -512,14 +266,6 @@ Size _InputArray::size(int i) const
+@@ -502,14 +256,6 @@
          return Size(m->cols, m->rows);
      }
  
@@ -1678,7 +1754,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      if (k == MATX)
      {
          CV_Assert( i < 0 );
-@@ -556,86 +302,6 @@ Size _InputArray::size(int i) const
+@@ -546,86 +292,6 @@
          return vv[i].size();
      }
  
@@ -1765,23 +1841,23 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
  }
  
-@@ -655,15 +321,6 @@ int _InputArray::sizend(int* arrsz, int
-             for(j = 0; j < d; j++)
-                 arrsz[j] = m.size.p[j];
-     }
--    else if( k == UMAT )
--    {
--        CV_Assert( i < 0 );
--        const UMat& m = *(const UMat*)obj;
+@@ -640,15 +306,6 @@
+     {
+         CV_Assert( i < 0 );
+         const Mat& m = *(const Mat*)obj;
 -        d = m.dims;
 -        if(arrsz)
 -            for(j = 0; j < d; j++)
 -                arrsz[j] = m.size.p[j];
 -    }
-     else if( k == STD_VECTOR_MAT && i >= 0 )
-     {
-         const std::vector<Mat>& vv = *(const std::vector<Mat>*)obj;
-@@ -683,18 +340,7 @@ int _InputArray::sizend(int* arrsz, int
+-    else if( k == UMAT )
+-    {
+-        CV_Assert( i < 0 );
+-        const UMat& m = *(const UMat*)obj;
+         d = m.dims;
+         if(arrsz)
+             for(j = 0; j < d; j++)
+@@ -673,18 +330,7 @@
          if(arrsz)
              for(j = 0; j < d; j++)
                  arrsz[j] = m.size.p[j];
@@ -1801,22 +1877,19 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
               (k == STD_VECTOR_VECTOR && i >= 0))
      {
          size_t n = total(i);
-@@ -727,13 +373,7 @@ bool _InputArray::empty(int i) const
-             auto mv = reinterpret_cast<const std::vector<Mat>*>(obj);
+@@ -718,11 +364,6 @@
              CV_Assert((size_t)i < mv->size());
              return mv->at(i).empty();
--        }
--        else if (k == STD_VECTOR_MAT) {
+         }
+-        else if (k == STD_VECTOR_UMAT) {
 -            auto umv = reinterpret_cast<const std::vector<UMat>*>(obj);
 -            CV_Assert((size_t)i < umv->size());
 -            return umv->at(i).empty();
 -        }
--        else if (k == STD_VECTOR || k == STD_BOOL_VECTOR || k == STD_VECTOR_VECTOR) {
-+        }        else if (k == STD_VECTOR || k == STD_BOOL_VECTOR || k == STD_VECTOR_VECTOR) {
+         else if (k == STD_VECTOR || k == STD_BOOL_VECTOR || k == STD_VECTOR_VECTOR) {
              size_t n = total(i);
              return n == 0;
-         } else {
-@@ -755,14 +395,7 @@ MatShape _InputArray::shape(int i) const
+@@ -745,14 +386,7 @@
          CV_Assert( i < 0 );
          const Mat& m = *(const Mat*)obj;
          shape = m.size;
@@ -1832,7 +1905,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      {
          const std::vector<Mat>& vv = *(const std::vector<Mat>*)obj;
          CV_Assert( (size_t)i < vv.size() );
-@@ -775,15 +408,7 @@ MatShape _InputArray::shape(int i) const
+@@ -765,15 +399,7 @@
          CV_Assert( i < sz.height );
          const Mat& m = vv[i];
          shape = m.size;
@@ -1849,16 +1922,16 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      {
          int sizes[CV_MAX_DIM];
          int dims = sizend(sizes, i);
-@@ -803,27 +428,10 @@ bool _InputArray::sameSize(const _InputA
+@@ -793,27 +419,10 @@
          const Mat* m = ((const Mat*)obj);
          if( k2 == MAT )
              return m->size == ((const Mat*)arr.obj)->size;
 -        if( k2 == UMAT )
 -            return m->size == ((const UMat*)arr.obj)->size;
--        if( m->dims > 2 )
--            return false;
--        sz1 = m->size();
--    }
+         if( m->dims > 2 )
+             return false;
+         sz1 = m->size();
+     }
 -    else if( k1 == UMAT )
 -    {
 -        const UMat* m = ((const UMat*)obj);
@@ -1866,10 +1939,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -            return m->size == ((const Mat*)arr.obj)->size;
 -        if( k2 == UMAT )
 -            return m->size == ((const UMat*)arr.obj)->size;
-         if( m->dims > 2 )
-             return false;
-         sz1 = m->size();
-     }
+-        if( m->dims > 2 )
+-            return false;
+-        sz1 = m->size();
+-    }
 -    else if ( (k1 == CUDA_GPU_MATND) && (k2 == CUDA_GPU_MATND))
 -    {
 -        return ((const cuda::GpuMatND*)obj)->size == ((const cuda::GpuMatND*)arr.obj)->size;
@@ -1877,20 +1950,20 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      else
          sz1 = size();
  
-@@ -842,12 +450,6 @@ int _InputArray::dims(int i) const
+@@ -830,12 +439,6 @@
+     {
+         CV_Assert( i < 0 );
          return ((const Mat*)obj)->dims;
-     }
- 
+-    }
+-
 -    if( k == UMAT )
 -    {
 -        CV_Assert( i < 0 );
 -        return ((const UMat*)obj)->dims;
--    }
--
+     }
+ 
      if (k == MATX)
-     {
-         CV_Assert( i < 0 );
-@@ -891,40 +493,6 @@ int _InputArray::dims(int i) const
+@@ -881,40 +484,6 @@
          return vv[i].dims;
      }
  
@@ -1931,23 +2004,25 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
  }
  
-@@ -938,12 +506,6 @@ size_t _InputArray::total(int i) const
+@@ -926,12 +495,6 @@
+     {
+         CV_Assert( i < 0 );
          return ((const Mat*)obj)->total();
-     }
- 
+-    }
+-
 -    if( k == UMAT )
 -    {
 -        CV_Assert( i < 0 );
 -        return ((const UMat*)obj)->total();
--    }
--
-     if( k == STD_VECTOR_MAT )
-     {
-         const std::vector<Mat>& vv = *(const std::vector<Mat>*)obj;
-@@ -964,30 +526,6 @@ size_t _InputArray::total(int i) const
-         return vv[i].total();
      }
  
+     if( k == STD_VECTOR_MAT )
+@@ -952,30 +515,6 @@
+ 
+         CV_Assert( i < sz.height );
+         return vv[i].total();
+-    }
+-
 -    if( k == STD_VECTOR_UMAT )
 -    {
 -        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
@@ -1970,12 +2045,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -                res *= _gpuMatND.size[d];
 -            return res;
 -        }
--    }
--
+     }
+ 
      if (k == STD_VECTOR || k == STD_VECTOR_VECTOR)
-     {
-         CV_Assert(i < 0 || k == STD_VECTOR_VECTOR);
-@@ -1018,27 +556,12 @@ int _InputArray::type(int i) const
+@@ -1008,18 +547,15 @@
      if( k == MAT )
          return ((const Mat*)obj)->type();
  
@@ -1991,19 +2064,41 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -    if( k == STD_VECTOR_UMAT )
 -    {
 -        const std::vector<UMat>& vv = *(const std::vector<UMat>*)obj;
++    if( k == STD_VECTOR_MAT )
++    {
++        const std::vector<Mat>& vv = *(const std::vector<Mat>*)obj;
+         if( vv.empty() )
+         {
+             CV_Assert((flags & FIXED_TYPE) != 0);
+@@ -1029,74 +565,18 @@
+         return vv[i >= 0 ? i : 0].type();
+     }
+ 
+-    if( k == STD_VECTOR_MAT )
+-    {
+-        const std::vector<Mat>& vv = *(const std::vector<Mat>*)obj;
 -        if( vv.empty() )
--        {
--            CV_Assert((flags & FIXED_TYPE) != 0);
--            return CV_MAT_TYPE(flags);
--        }
++    if( k == STD_ARRAY_MAT )
++    {
++        const Mat* vv = (const Mat*)obj;
++        if( sz.height == 0 )
+         {
+             CV_Assert((flags & FIXED_TYPE) != 0);
+             return CV_MAT_TYPE(flags);
+         }
 -        CV_Assert( i < (int)vv.size() );
 -        return vv[i >= 0 ? i : 0].type();
 -    }
 -
-     if( k == STD_VECTOR_MAT )
-     {
-         const std::vector<Mat>& vv = *(const std::vector<Mat>*)obj;
-@@ -1063,50 +586,6 @@ int _InputArray::type(int i) const
+-    if( k == STD_ARRAY_MAT )
+-    {
+-        const Mat* vv = (const Mat*)obj;
+-        if( sz.height == 0 )
+-        {
+-            CV_Assert((flags & FIXED_TYPE) != 0);
+-            return CV_MAT_TYPE(flags);
+-        }
+         CV_Assert( i < sz.height );
          return vv[i >= 0 ? i : 0].type();
      }
  
@@ -2054,7 +2149,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
  }
  
-@@ -1127,9 +606,6 @@ bool _InputArray::empty() const
+@@ -1112,9 +592,6 @@
      if( k == MAT )
          return ((const Mat*)obj)->empty();
  
@@ -2064,7 +2159,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      if (k == MATX)
          return false;
  
-@@ -1153,36 +629,6 @@ bool _InputArray::empty() const
+@@ -1138,36 +615,6 @@
          return sz.height == 0;
      }
  
@@ -2101,17 +2196,17 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
  }
  
-@@ -1193,9 +639,6 @@ bool _InputArray::isContinuous(int i) co
+@@ -1177,9 +624,6 @@
+ 
      if( k == MAT )
          return i < 0 ? ((const Mat*)obj)->isContinuous() : true;
- 
+-
 -    if( k == UMAT )
 -        return i < 0 ? ((const UMat*)obj)->isContinuous() : true;
--
+ 
      if( k == MATX || k == STD_VECTOR ||
          k == NONE || k == STD_VECTOR_VECTOR || k == STD_BOOL_VECTOR )
-         return true;
-@@ -1214,19 +657,6 @@ bool _InputArray::isContinuous(int i) co
+@@ -1199,19 +643,6 @@
          return vv[i].isContinuous();
      }
  
@@ -2131,17 +2226,17 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      CV_Error(cv::Error::StsNotImplemented, "Unknown/unsupported array type");
  }
  
-@@ -1237,9 +667,6 @@ bool _InputArray::isSubmatrix(int i) con
+@@ -1221,9 +652,6 @@
+ 
      if( k == MAT )
          return i < 0 ? ((const Mat*)obj)->isSubmatrix() : false;
- 
+-
 -    if( k == UMAT )
 -        return i < 0 ? ((const UMat*)obj)->isSubmatrix() : false;
--
+ 
      if( k == MATX || k == STD_VECTOR ||
          k == NONE || k == STD_VECTOR_VECTOR || k == STD_BOOL_VECTOR )
-         return false;
-@@ -1258,25 +685,6 @@ bool _InputArray::isSubmatrix(int i) con
+@@ -1243,25 +671,6 @@
          return vv[i].isSubmatrix();
      }
  
@@ -2167,7 +2262,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      CV_Error(cv::Error::StsNotImplemented, "");
  }
  
-@@ -1291,12 +699,6 @@ size_t _InputArray::offset(int i) const
+@@ -1276,12 +685,6 @@
          return (size_t)(m->ptr() - m->datastart);
      }
  
@@ -2180,7 +2275,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      if( k == MATX || k == STD_VECTOR ||
          k == NONE || k == STD_VECTOR_VECTOR || k == STD_BOOL_VECTOR )
          return 0;
-@@ -1316,27 +718,6 @@ size_t _InputArray::offset(int i) const
+@@ -1301,27 +704,6 @@
          return (size_t)(vv[i].ptr() - vv[i].datastart);
      }
  
@@ -2208,20 +2303,20 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      CV_Error(Error::StsNotImplemented, "");
  }
  
-@@ -1350,12 +731,6 @@ size_t _InputArray::step(int i) const
+@@ -1333,12 +715,6 @@
+     {
+         CV_Assert( i < 0 );
          return ((const Mat*)obj)->step;
-     }
- 
+-    }
+-
 -    if( k == UMAT )
 -    {
 -        CV_Assert( i < 0 );
 -        return ((const UMat*)obj)->step;
--    }
--
+     }
+ 
      if( k == MATX || k == STD_VECTOR ||
-         k == NONE || k == STD_VECTOR_VECTOR || k == STD_BOOL_VECTOR )
-         return 0;
-@@ -1374,40 +749,6 @@ size_t _InputArray::step(int i) const
+@@ -1359,40 +735,6 @@
          return vv[i].step;
      }
  
@@ -2262,7 +2357,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      CV_Error(Error::StsNotImplemented, "");
  }
  
-@@ -1422,12 +763,6 @@ void _InputArray::copyTo(const _OutputAr
+@@ -1407,12 +749,6 @@
          Mat m = getMat();
          m.copyTo(arr);
      }
@@ -2275,7 +2370,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      else
          CV_Error(Error::StsNotImplemented, "");
  }
-@@ -1443,12 +778,6 @@ void _InputArray::copyTo(const _OutputAr
+@@ -1428,12 +764,6 @@
          Mat m = getMat();
          m.copyTo(arr, mask);
      }
@@ -2288,7 +2383,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      else
          CV_Error(Error::StsNotImplemented, "");
  }
-@@ -1473,58 +802,6 @@ void _OutputArray::create(Size _sz, int
+@@ -1458,58 +788,6 @@
          ((Mat*)obj)->create(_sz, mtype);
          return;
      }
@@ -2347,10 +2442,11 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      int sizes[] = {_sz.height, _sz.width};
      create(2, sizes, mtype, i, allowTransposed, fixedDepthMask);
  }
-@@ -1539,58 +816,6 @@ void _OutputArray::create(int _rows, int
+@@ -1523,58 +801,6 @@
+         CV_Assert(!fixedType() || ((Mat*)obj)->type() == mtype);
          ((Mat*)obj)->create(_rows, _cols, mtype);
          return;
-     }
+-    }
 -    if( k == UMAT && i < 0 && !allowTransposed && fixedDepthMask == 0 )
 -    {
 -        CV_Assert(!fixedSize() || ((UMat*)obj)->size.operator()() == Size(_cols, _rows));
@@ -2402,14 +2498,18 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -#else
 -        CV_Error(Error::StsNotImplemented, "CUDA support is not enabled in this OpenCV build (missing HAVE_CUDA)");
 -#endif
--    }
+     }
      int sizes[] = {_rows, _cols};
      create(2, sizes, mtype, i, allowTransposed, fixedDepthMask);
- }
-@@ -1632,36 +857,6 @@ void _OutputArray::create(int d, const i
-         return;
-     }
- 
+@@ -1612,36 +838,6 @@
+             CV_CheckEQ(m.dims, d, "Can't reallocate Mat with locked size (probably due to misused 'const' modifier)");
+             for(int j = 0; j < d; ++j)
+                 CV_CheckEQ(m.size[j], sizes[j], "Can't reallocate Mat with locked size (probably due to misused 'const' modifier)");
+-        }
+-        m.create(d, sizes, mtype);
+-        return;
+-    }
+-
 -    if( k == UMAT )
 -    {
 -        CV_Assert( i < 0 );
@@ -2435,15 +2535,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -            CV_CheckEQ(m.dims, d, "Can't reallocate UMat with locked size (probably due to misused 'const' modifier)");
 -            for(int j = 0; j < d; ++j)
 -                CV_CheckEQ(m.size[j], sizes[j], "Can't reallocate UMat with locked size (probably due to misused 'const' modifier)");
--        }
--        m.create(d, sizes, mtype);
--        return;
--    }
--
-     if( k == MATX )
-     {
-         CV_Assert( i < 0 );
-@@ -1853,85 +1048,6 @@ void _OutputArray::create(int d, const i
+         }
+         m.create(d, sizes, mtype);
+         return;
+@@ -1838,85 +1034,6 @@
          return;
      }
  
@@ -2529,7 +2624,18 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
  }
  
-@@ -2000,42 +1116,6 @@ void _OutputArray::fit(int d, const int*
+@@ -1968,10 +1085,6 @@
+     _InputArray::KindFlag k = kind();
+     if ((k == MAT && i < 0) || (k == STD_VECTOR_MAT && i >= 0)) {
+         MatSize& msize = getMatRef(i).size;
+-        msize.layout = shape.layout;
+-        msize.C = shape.C;
+-    } else if ((k == UMAT && i < 0) || (k == STD_VECTOR_UMAT && i >= 0)) {
+-        MatSize& msize = getUMatRef(i).size;
+         msize.layout = shape.layout;
+         msize.C = shape.C;
+     }
+@@ -2025,42 +1138,6 @@
          return;
      }
  
@@ -2572,10 +2678,12 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      create(d, sizes, mtype, i, allowTransposed, fixedDepthMask);
  }
  
-@@ -2051,52 +1131,6 @@ void _OutputArray::release() const
+@@ -2074,52 +1151,6 @@
+     {
+         ((Mat*)obj)->release();
          return;
-     }
- 
+-    }
+-
 -    if( k == UMAT )
 -    {
 -        ((UMat*)obj)->release();
@@ -2620,12 +2728,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -#else
 -        CV_Error(Error::StsNotImplemented, "OpenGL support is not enabled in this OpenCV build (missing HAVE_OPENGL)");
 -#endif
--    }
--
-     if( k == NONE )
-         return;
+     }
  
-@@ -2131,20 +1165,6 @@ void _OutputArray::release() const
+     if( k == NONE )
+@@ -2164,20 +1195,6 @@
          return;
      }
  
@@ -2646,7 +2752,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      CV_Error(Error::StsNotImplemented, "Unknown/unsupported array type");
  }
  
-@@ -2192,63 +1212,6 @@ Mat& _OutputArray::getMatRef(int i) cons
+@@ -2225,63 +1242,6 @@
      }
  }
  
@@ -2710,7 +2816,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
  void _OutputArray::setTo(const _InputArray& arr, const _InputArray & mask) const
  {
      _InputArray::KindFlag k = kind();
-@@ -2260,18 +1223,6 @@ void _OutputArray::setTo(const _InputArr
+@@ -2293,18 +1253,6 @@
          Mat m = getMat();
          m.setTo(arr, mask);
      }
@@ -2729,7 +2835,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      else
          CV_Error(Error::StsNotImplemented, "");
  }
-@@ -2293,36 +1244,11 @@ void _OutputArray::setZero() const
+@@ -2326,72 +1274,17 @@
      }
  }
  
@@ -2743,9 +2849,16 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -    else if (k == MAT)
 -    {
 -        u.copyTo(*(Mat*)obj); // TODO check u.getMat()
--    }
--    else if (k == MATX)
--    {
++
++void _OutputArray::assign(const Mat& m) const
++{
++    _InputArray::KindFlag k = kind();
++    if (k == MAT)
++    {
++        *(Mat*)obj = m;
+     }
+     else if (k == MATX)
+     {
 -        u.copyTo(getMat()); // TODO check u.getMat()
 -    }
 -    else
@@ -2754,23 +2867,29 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -    }
 -}
 -
- 
- void _OutputArray::assign(const Mat& m) const
- {
-     _InputArray::KindFlag k = kind();
+-
+-void _OutputArray::assign(const Mat& m) const
+-{
+-    _InputArray::KindFlag k = kind();
 -    if (k == UMAT)
 -    {
 -        m.copyTo(*(UMat*)obj); // TODO check m.getUMat()
 -    }
 -    else if (k == MAT)
-+    if (k == MAT)
-     {
-         *(Mat*)obj = m;
-     }
-@@ -2337,36 +1263,6 @@ void _OutputArray::assign(const Mat& m)
- }
- 
- 
+-    {
+-        *(Mat*)obj = m;
+-    }
+-    else if (k == MATX)
+-    {
+         m.copyTo(getMat());
+-    }
+-    else
+-    {
+-        CV_Error(Error::StsNotImplemented, "");
+-    }
+-}
+-
+-
 -void _OutputArray::move(UMat& u) const
 -{
 -    if (fixedSize())
@@ -2793,18 +2912,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
 -    {
 -        u.copyTo(getMat()); // TODO check u.getMat()
 -        u.release();
--    }
--    else
--    {
--        CV_Error(Error::StsNotImplemented, "");
--    }
--}
--
--
- void _OutputArray::move(Mat& m) const
- {
-     if (fixedSize())
-@@ -2376,12 +1272,7 @@ void _OutputArray::move(Mat& m) const
+     }
+     else
+     {
+@@ -2409,12 +1302,7 @@
          return;
      }
      int k = kind();
@@ -2818,7 +2929,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      {
          *(Mat*)obj = std::move(m);
      }
-@@ -2397,62 +1288,10 @@ void _OutputArray::move(Mat& m) const
+@@ -2430,62 +1318,10 @@
  }
  
  
@@ -2882,10 +2993,85 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/matrix_wrap.cpp opencv-5.0.0/modu
      {
          std::vector<Mat>& this_v = *(std::vector<Mat>*)obj;
          CV_Assert(this_v.size() == v.size());
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/precomp.hpp opencv-5.0.0/modules/core/src/precomp.hpp
---- opencv-5.0.0.orig/modules/core/src/precomp.hpp	2026-07-02 19:55:20.613480714 +0800
-+++ opencv-5.0.0/modules/core/src/precomp.hpp	2026-07-02 19:55:20.989270125 +0800
-@@ -346,19 +346,11 @@ struct ImplCollector
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/mean.dispatch.cpp opencv-5.1.0/modules/core/src/mean.dispatch.cpp
+--- opencv-5.1.0.orig/modules/core/src/mean.dispatch.cpp
++++ opencv-5.1.0/modules/core/src/mean.dispatch.cpp
+@@ -442,7 +442,7 @@
+     CV_INSTRUMENT_REGION();
+ 
+     std::vector<StatChunk> chunks;
+-    if (!_src.isUMat() && !_src.empty())
++    if (!_src.empty())
+     {
+         Mat src = _src.getMat(), mask = _mask.getMat();
+         const int cn = src.channels();
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/minmax.dispatch.cpp opencv-5.1.0/modules/core/src/minmax.dispatch.cpp
+--- opencv-5.1.0.orig/modules/core/src/minmax.dispatch.cpp
++++ opencv-5.1.0/modules/core/src/minmax.dispatch.cpp
+@@ -404,7 +404,6 @@
+     CV_INSTRUMENT_REGION();
+ 
+     std::vector<StatChunk> chunks;
+-    if (!_src.isUMat())
+     {
+         Mat src = _src.getMat(), mask = _mask.getMat();
+         const int cn = src.channels();
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/precomp.hpp opencv-5.1.0/modules/core/src/precomp.hpp
+--- opencv-5.1.0.orig/modules/core/src/precomp.hpp
++++ opencv-5.1.0/modules/core/src/precomp.hpp
+@@ -373,12 +373,6 @@
+         return m.rows == 4 && m.cols == 1 && cn <= 4 && m.dims == 2 &&
+                m.type() == CV_64F && m.isContinuous() && !sameShapeAsArg(sc, arr);
+     }
+-    if (kind == _InputArray::UMAT)
+-    {
+-        const UMat& m = *(const UMat*)sc.getObj();
+-        return m.rows == 4 && m.cols == 1 && cn <= 4 && m.dims == 2 &&
+-               m.type() == CV_64F && m.isContinuous() && !sameShapeAsArg(sc, arr);
+-    }
+     return false;
+ }
+ 
+@@ -400,12 +394,6 @@
+         if ((m.rows != 1 && m.cols != 1) || m.dims > 2) return false;
+         rows = m.rows; cols = m.cols; nval = rows * cols * m.channels(); continuous = m.isContinuous();
+     }
+-    else if (kind == _InputArray::UMAT)
+-    {
+-        const UMat& m = *(const UMat*)sc.getObj();
+-        if ((m.rows != 1 && m.cols != 1) || m.dims > 2) return false;
+-        rows = m.rows; cols = m.cols; nval = rows * cols * m.channels(); continuous = m.isContinuous();
+-    }
+     else
+         return false;
+     if (!continuous || nval > 4 || (nval != 1 && nval != cn))
+@@ -423,6 +411,7 @@
+ // p/d receive the data pointer and depth; returns the value count (elems x channels).
+ inline int scalarArgElems(const _InputArray& sc, const uchar*& p, int& d, uchar* scbuf)
+ {
++    CV_UNUSED(scbuf);
+     const _InputArray::KindFlag kind = sc.kind();
+     if (kind == _InputArray::MAT)
+     {
+@@ -430,17 +419,6 @@
+         p = m.data;
+         d = m.depth();
+         return (int)m.total() * m.channels();
+-    }
+-    if (kind == _InputArray::UMAT)
+-    {
+-        const UMat& u = *(const UMat*)sc.getObj();
+-        d = u.depth();
+-        int n = (int)u.total() * u.channels();
+-        CV_Assert(n * (int)CV_ELEM_SIZE1(d) <= (int)EW_SCALAR_BUF_SIZE);
+-        Mat header(u.dims, u.size.p, u.type(), scbuf);   // header over the caller's stack buffer
+-        u.copyTo(header);                                // create() is a no-op (exact match) -> the
+-        p = scbuf;                                       // copy lands straight in scbuf
+-        return n;
+     }
+     p = (const uchar*)sc.getObj();
+     d = sc.depth();
+@@ -506,19 +484,11 @@
  struct CoreTLSData
  {
      CoreTLSData() :
@@ -2905,10 +3091,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/precomp.hpp opencv-5.0.0/modules/
      int useIPP;    // 1 - use, 0 - do not use, -1 - auto/not initialized
      int useIPP_NE; // 1 - use, 0 - do not use, -1 - auto/not initialized
  };
-diff -Nuarp opencv-5.0.0.orig/modules/core/src/umatrix.cpp opencv-5.0.0/modules/core/src/umatrix.cpp
---- opencv-5.0.0.orig/modules/core/src/umatrix.cpp	2026-07-02 19:55:20.629761869 +0800
-+++ opencv-5.0.0/modules/core/src/umatrix.cpp	2026-07-02 19:55:20.989355466 +0800
-@@ -40,7 +40,6 @@
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/umatrix.cpp opencv-5.1.0/modules/core/src/umatrix.cpp
+--- opencv-5.1.0.orig/modules/core/src/umatrix.cpp
++++ opencv-5.1.0/modules/core/src/umatrix.cpp
+@@ -40,20 +40,12 @@
  //M*/
  
  #include "precomp.hpp"
@@ -2916,21 +3102,20 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/umatrix.cpp opencv-5.0.0/modules/
  
  #include <opencv2/core/utils/tls.hpp>
  
-@@ -48,13 +47,6 @@
+ ///////////////////////////////// UMat implementation ///////////////////////////////
  
  namespace cv {
- 
+-
 -// forward decls, implementation is below in this file
 -void setSize(UMat& m, int _dims, const int* _sz, const size_t* _steps,
 -             bool autoSteps = false);
 -
 -void updateContinuityFlag(UMat& m);
 -void finalizeHdr(UMat& m);
--
+ 
  UMatData::UMatData(const MatAllocator* allocator)
  {
-     prevAllocator = currAllocator = allocator;
-@@ -126,6 +118,7 @@ UMatData::~UMatData()
+@@ -126,6 +118,7 @@
      }
  }
  
@@ -2938,7 +3123,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/umatrix.cpp opencv-5.0.0/modules/
  #ifndef OPENCV_DISABLE_THREAD_SUPPORT
  
  // it should be a prime number for the best hash function
-@@ -1055,7 +1048,6 @@ static bool ocl_setDiag(const UMat& d, U
+@@ -1051,7 +1044,6 @@
      return k.run(2, globalsize, NULL, false);
  }
  }
@@ -2946,7 +3131,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/umatrix.cpp opencv-5.0.0/modules/
  
  UMat UMat::diag(const UMat& d, UMatUsageFlags usageFlags)
  {
-@@ -1344,6 +1336,7 @@ void UMat::copyTo(OutputArray _dst, Inpu
+@@ -1356,6 +1348,7 @@
      Mat src = getMat(ACCESS_READ);
      src.copyTo(_dst, _mask);
  }
@@ -2954,7 +3139,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/umatrix.cpp opencv-5.0.0/modules/
  
  
  //
-@@ -1462,6 +1455,8 @@ UMat UMat::ones(const MatShape& shape, i
+@@ -1474,6 +1467,8 @@
      return UMat(shape.dims, shape.p, type, Scalar(1), usageFlags);
  }
  
@@ -2963,10 +3148,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/core/src/umatrix.cpp opencv-5.0.0/modules/
  }
  
  /* End of file. */
-diff -Nuarp opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp opencv-5.0.0/modules/features/include/opencv2/features.hpp
---- opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp	2026-07-02 19:55:20.496100767 +0800
-+++ opencv-5.0.0/modules/features/include/opencv2/features.hpp	2026-07-02 19:55:20.989458761 +0800
-@@ -972,8 +972,7 @@ public:
+diff -Nuarp opencv-5.1.0.orig/modules/features/include/opencv2/features.hpp opencv-5.1.0/modules/features/include/opencv2/features.hpp
+--- opencv-5.1.0.orig/modules/features/include/opencv2/features.hpp
++++ opencv-5.1.0/modules/features/include/opencv2/features.hpp
+@@ -1023,8 +1023,7 @@
  
      virtual ~DescriptorMatcher();
  
@@ -2976,7 +3161,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp open
  
      If the collection is not empty, the new descriptors are added to existing train descriptors.
  
-@@ -1200,7 +1199,6 @@ protected:
+@@ -1264,7 +1263,6 @@
  
      //! Collection of descriptors from train images.
      std::vector<Mat> trainDescCollection;
@@ -2984,10 +3169,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp open
  };
  
  /** @brief Brute-force descriptor matcher.
-diff -Nuarp opencv-5.0.0.orig/modules/features/src/fast.cpp opencv-5.0.0/modules/features/src/fast.cpp
---- opencv-5.0.0.orig/modules/features/src/fast.cpp	2026-07-02 19:55:20.449769407 +0800
-+++ opencv-5.0.0/modules/features/src/fast.cpp	2026-07-02 19:55:20.989567105 +0800
-@@ -519,11 +519,10 @@ public:
+diff -Nuarp opencv-5.1.0.orig/modules/features/src/fast.cpp opencv-5.1.0/modules/features/src/fast.cpp
+--- opencv-5.1.0.orig/modules/features/src/fast.cpp
++++ opencv-5.1.0/modules/features/src/fast.cpp
+@@ -527,11 +527,10 @@
          }
  
          Mat mask = _mask.getMat(), grayImage;
@@ -3000,10 +3185,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/fast.cpp opencv-5.0.0/modules
              cvtColor( _image, ogray, COLOR_BGR2GRAY );
              gray = ogray;
          }
-diff -Nuarp opencv-5.0.0.orig/modules/features/src/feature2d.cpp opencv-5.0.0/modules/features/src/feature2d.cpp
---- opencv-5.0.0.orig/modules/features/src/feature2d.cpp	2026-07-02 19:55:20.453007605 +0800
-+++ opencv-5.0.0/modules/features/src/feature2d.cpp	2026-07-02 19:55:20.989654792 +0800
-@@ -93,14 +93,6 @@ void Feature2D::detect( InputArrayOfArra
+diff -Nuarp opencv-5.1.0.orig/modules/features/src/feature2d.cpp opencv-5.1.0/modules/features/src/feature2d.cpp
+--- opencv-5.1.0.orig/modules/features/src/feature2d.cpp
++++ opencv-5.1.0/modules/features/src/feature2d.cpp
+@@ -93,14 +93,6 @@
             detect(images.getMat(i), keypoints[i], masks.empty() ? noArray() : masks.getMat(i));
         }
      }
@@ -3018,7 +3203,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/feature2d.cpp opencv-5.0.0/mo
  
  
  }
-@@ -147,18 +139,9 @@ void Feature2D::compute( InputArrayOfArr
+@@ -147,18 +139,9 @@
              compute(images.getMat(i), keypoints[i], vec[i]);
          }
      }
@@ -3038,10 +3223,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/feature2d.cpp opencv-5.0.0/mo
      }
  }
  
-diff -Nuarp opencv-5.0.0.orig/modules/features/src/gftt.cpp opencv-5.0.0/modules/features/src/gftt.cpp
---- opencv-5.0.0.orig/modules/features/src/gftt.cpp	2026-07-02 19:55:20.455395206 +0800
-+++ opencv-5.0.0/modules/features/src/gftt.cpp	2026-07-02 19:55:20.989721477 +0800
-@@ -122,26 +122,12 @@ public:
+diff -Nuarp opencv-5.1.0.orig/modules/features/src/gftt.cpp opencv-5.1.0/modules/features/src/gftt.cpp
+--- opencv-5.1.0.orig/modules/features/src/gftt.cpp
++++ opencv-5.1.0/modules/features/src/gftt.cpp
+@@ -122,26 +122,12 @@
          std::vector<Point2f> corners;
          std::vector<float> cornersQuality;
  
@@ -3073,10 +3258,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/gftt.cpp opencv-5.0.0/modules
  
          CV_Assert(corners.size() == cornersQuality.size());
  
-diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/modules/features/src/matchers.cpp
---- opencv-5.0.0.orig/modules/features/src/matchers.cpp	2026-07-02 19:55:20.458606313 +0800
-+++ opencv-5.0.0/modules/features/src/matchers.cpp	2026-07-02 19:55:20.989813190 +0800
-@@ -532,18 +532,7 @@ DescriptorMatcher::~DescriptorMatcher()
+diff -Nuarp opencv-5.1.0.orig/modules/features/src/matchers.cpp opencv-5.1.0/modules/features/src/matchers.cpp
+--- opencv-5.1.0.orig/modules/features/src/matchers.cpp
++++ opencv-5.1.0/modules/features/src/matchers.cpp
+@@ -532,18 +532,7 @@
  
  void DescriptorMatcher::add( InputArrayOfArrays _descriptors )
  {
@@ -3096,7 +3281,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
      {
          std::vector<Mat> descriptors;
          _descriptors.getMatVector(descriptors);
-@@ -556,7 +545,7 @@ void DescriptorMatcher::add( InputArrayO
+@@ -556,7 +545,7 @@
      }
      else
      {
@@ -3105,7 +3290,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
      }
  }
  
-@@ -567,13 +556,12 @@ const std::vector<Mat>& DescriptorMatche
+@@ -567,13 +556,12 @@
  
  void DescriptorMatcher::clear()
  {
@@ -3120,7 +3305,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
  }
  
  void DescriptorMatcher::train()
-@@ -628,17 +616,16 @@ void DescriptorMatcher::checkMasks( Inpu
+@@ -632,17 +620,16 @@
      if( isMaskSupported() && !masks.empty() )
      {
          // Check masks
@@ -3141,29 +3326,29 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
                  CV_Assert(masks[i].type() == CV_8UC1
                      && masks[i].rows == queryDescriptorsCount
                      && masks[i].cols == rows);
-@@ -900,36 +887,25 @@ static bool ocl_matchWithCrossCheck(Inpu
+@@ -904,36 +891,25 @@
  void BFMatcher::knnMatchImpl( InputArray _queryDescriptors, std::vector<std::vector<DMatch> >& matches, int knn,
                               InputArrayOfArrays _masks, bool compactResult )
  {
 -    int trainDescType = trainDescCollection.empty() ? utrainDescCollection[0].type() : trainDescCollection[0].type();
--    CV_Assert( _queryDescriptors.type() == trainDescType );
--
--    const int IMGIDX_SHIFT = 18;
--    const int IMGIDX_ONE = (1 << IMGIDX_SHIFT);
--
--    if( _queryDescriptors.empty() || (trainDescCollection.empty() && utrainDescCollection.empty()))
 +    if( _queryDescriptors.empty() || trainDescCollection.empty())
-     {
-         matches.clear();
-         return;
-     }
- 
++    {
++        matches.clear();
++        return;
++    }
++
 +    int trainDescType = trainDescCollection[0].type();
-+    CV_Assert( _queryDescriptors.type() == trainDescType );
-+
-+    const int IMGIDX_SHIFT = 18;
-+    const int IMGIDX_ONE = (1 << IMGIDX_SHIFT);
-+
+     CV_Assert( _queryDescriptors.type() == trainDescType );
+ 
+     const int IMGIDX_SHIFT = 18;
+     const int IMGIDX_ONE = (1 << IMGIDX_SHIFT);
+ 
+-    if( _queryDescriptors.empty() || (trainDescCollection.empty() && utrainDescCollection.empty()))
+-    {
+-        matches.clear();
+-        return;
+-    }
+-
      std::vector<Mat> masks;
      _masks.getMatVector(masks);
  
@@ -3188,7 +3373,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
  
      if ( ocl::isOpenCLActivated() && _queryDescriptors.isUMat() && _queryDescriptors.dims()<=2 && trainDescVectorSize == 1 &&
          _queryDescriptors.type() == CV_32FC1 && _queryDescriptors.offset() == 0 && trainDescOffset == 0 &&
-@@ -937,8 +913,7 @@ void BFMatcher::knnMatchImpl( InputArray
+@@ -941,8 +917,7 @@
      {
          if(knn == 1)
          {
@@ -3198,12 +3383,13 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
              bool oclOk = crossCheck ?
                  ocl_matchWithCrossCheck(_queryDescriptors, train, matches, normType) :
                  ocl_match(_queryDescriptors, train, matches, normType);
-@@ -950,37 +925,16 @@ void BFMatcher::knnMatchImpl( InputArray
+@@ -954,37 +929,16 @@
          }
          else
          {
 -            if(trainDescCollection.empty())
--            {
++            if(ocl_knnMatch(_queryDescriptors, trainDescCollection[0], matches, knn, normType, compactResult) )
+             {
 -                if(ocl_knnMatch(_queryDescriptors, utrainDescCollection[0], matches, knn, normType, compactResult) )
 -                {
 -                    CV_IMPL_ADD(CV_IMPL_OCL);
@@ -3211,8 +3397,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
 -                }
 -            }
 -            else
-+            if(ocl_knnMatch(_queryDescriptors, trainDescCollection[0], matches, knn, normType, compactResult) )
-             {
+-            {
 -                if(ocl_knnMatch(_queryDescriptors, trainDescCollection[0], matches, knn, normType, compactResult) )
 -                {
 -                    CV_IMPL_ADD(CV_IMPL_OCL);
@@ -3239,7 +3424,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
  
      matches.reserve(queryDescriptors.rows);
  
-@@ -1045,68 +999,36 @@ static bool ocl_radiusMatch(InputArray q
+@@ -1050,68 +1004,36 @@
  void BFMatcher::radiusMatchImpl( InputArray _queryDescriptors, std::vector<std::vector<DMatch> >& matches,
                                  float maxDistance, InputArrayOfArrays _masks, bool compactResult )
  {
@@ -3289,18 +3474,19 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
 -                CV_IMPL_ADD(CV_IMPL_OCL);
 -                return;
 -            }
--        }
--        else
 +        if (ocl_radiusMatch(_queryDescriptors, trainDescCollection[0], matches, maxDistance, normType, compactResult) )
-         {
++        {
++            CV_IMPL_ADD(CV_IMPL_OCL);
++            return;
+         }
+-        else
+-        {
 -            if (ocl_radiusMatch(_queryDescriptors, trainDescCollection[0], matches, maxDistance, normType, compactResult) )
 -            {
 -                CV_IMPL_ADD(CV_IMPL_OCL);
 -                return;
 -            }
-+            CV_IMPL_ADD(CV_IMPL_OCL);
-+            return;
-         }
+-        }
      }
  #endif
  
@@ -3318,7 +3504,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
  
      matches.resize(queryDescriptors.rows);
      Mat dist, distf;
-@@ -1251,21 +1173,7 @@ void FlannBasedMatcher::add( InputArrayO
+@@ -1256,21 +1178,7 @@
  {
      DescriptorMatcher::add( _descriptors );
  
@@ -3341,7 +3527,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
      {
          std::vector<Mat> descriptors;
          _descriptors.getMatVector(descriptors);
-@@ -1280,7 +1188,7 @@ void FlannBasedMatcher::add( InputArrayO
+@@ -1285,7 +1193,7 @@
      }
      else
      {
@@ -3350,7 +3536,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
      }
  }
  
-@@ -1300,13 +1208,6 @@ void FlannBasedMatcher::train()
+@@ -1305,13 +1213,6 @@
  
      if( !flannIndex || mergedDescriptors.size() < addedDescCount )
      {
@@ -3364,21 +3550,21 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
          mergedDescriptors.set( trainDescCollection );
          flannIndex = makePtr<flann::Index>( mergedDescriptors.getDescriptors(), *indexParams );
      }
-diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers_lightglue.cpp opencv-5.0.0/modules/features/src/matchers_lightglue.cpp
---- opencv-5.0.0.orig/modules/features/src/matchers_lightglue.cpp	2026-07-02 19:55:20.459521902 +0800
-+++ opencv-5.0.0/modules/features/src/matchers_lightglue.cpp	2026-07-02 19:55:20.989963534 +0800
-@@ -102,7 +102,6 @@ Ptr<DescriptorMatcher> LightGlueMatcherI
-     if (!emptyTrainData)
-     {
-         m->trainDescCollection = trainDescCollection;
--        m->utrainDescCollection = utrainDescCollection;
+diff -Nuarp opencv-5.1.0.orig/modules/features/src/matchers_lightglue.cpp opencv-5.1.0/modules/features/src/matchers_lightglue.cpp
+--- opencv-5.1.0.orig/modules/features/src/matchers_lightglue.cpp
++++ opencv-5.1.0/modules/features/src/matchers_lightglue.cpp
+@@ -196,7 +196,6 @@
+         if (!emptyTrainData)
+         {
+             matcher->trainDescCollection = trainDescCollection;
+-            matcher->utrainDescCollection = utrainDescCollection;
+         }
+         return matcher;
      }
-     return m;
- }
-diff -Nuarp opencv-5.0.0.orig/modules/features/src/orb.cpp opencv-5.0.0/modules/features/src/orb.cpp
---- opencv-5.0.0.orig/modules/features/src/orb.cpp	2026-07-02 19:55:20.461238876 +0800
-+++ opencv-5.0.0/modules/features/src/orb.cpp	2026-07-02 19:55:20.990043715 +0800
-@@ -823,10 +823,8 @@ static void uploadORBKeypoints(const std
+diff -Nuarp opencv-5.1.0.orig/modules/features/src/orb.cpp opencv-5.1.0/modules/features/src/orb.cpp
+--- opencv-5.1.0.orig/modules/features/src/orb.cpp
++++ opencv-5.1.0/modules/features/src/orb.cpp
+@@ -823,10 +823,8 @@
   * @param keypoints the resulting keypoints, clustered per level
   */
  static void computeKeyPoints(const Mat& imagePyramid,
@@ -3389,7 +3575,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/orb.cpp opencv-5.0.0/modules/
                               const std::vector<float>& layerScale,
                               std::vector<KeyPoint>& allKeypoints,
                               int nfeatures, double scaleFactor,
-@@ -834,7 +832,7 @@ static void computeKeyPoints(const Mat&
+@@ -834,7 +832,7 @@
                               bool useOCL, int fastThreshold  )
  {
  #ifndef HAVE_OPENCL
@@ -3398,7 +3584,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/orb.cpp opencv-5.0.0/modules/
  #endif
  
      int i, nkeypoints, level, nlevels = (int)layerInfo.size();
-@@ -918,7 +916,6 @@ static void computeKeyPoints(const Mat&
+@@ -918,7 +916,6 @@
          return;
      }
      Mat responses;
@@ -3406,7 +3592,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/orb.cpp opencv-5.0.0/modules/
  
      // Select best features using the Harris cornerness (better scoring than FAST)
      if( scoreType == ORB_Impl::HARRIS_SCORE )
-@@ -926,6 +923,7 @@ static void computeKeyPoints(const Mat&
+@@ -926,6 +923,7 @@
  #ifdef HAVE_OPENCL
          if( useOCL )
          {
@@ -3414,7 +3600,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/orb.cpp opencv-5.0.0/modules/
              uploadORBKeypoints(allKeypoints, ukeypoints_buf, ukeypoints);
              useOCL = ocl_HarrisResponses( uimagePyramid, ulayerInfo, ukeypoints,
                                            uresponses, nkeypoints, 7, HARRIS_K );
-@@ -970,6 +968,7 @@ static void computeKeyPoints(const Mat&
+@@ -970,6 +968,7 @@
      if( useOCL )
      {
          UMat uumax;
@@ -3422,7 +3608,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/orb.cpp opencv-5.0.0/modules/
          if( useOCL )
              copyVectorToUMat(umax, uumax);
  
-@@ -1073,7 +1072,6 @@ void ORB_Impl::detectAndCompute( InputAr
+@@ -1073,7 +1072,6 @@
      std::vector<int> layerOfs(nLevels);
      std::vector<float> layerScale(nLevels);
      Mat imagePyramid, maskPyramid;
@@ -3430,7 +3616,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/orb.cpp opencv-5.0.0/modules/
  
      float level0_inv_scale = 1.0f / getScale(0, firstLevel, scaleFactor);
      size_t level0_width = (size_t)cvRound(image.cols * level0_inv_scale);
-@@ -1157,17 +1155,11 @@ void ORB_Impl::detectAndCompute( InputAr
+@@ -1157,17 +1155,11 @@
          }
      }
  
@@ -3450,10 +3636,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/orb.cpp opencv-5.0.0/modules/
                           nfeatures, scaleFactor, edgeThreshold, patchSize, scoreType, useOCL, fastThreshold);
      }
      else
-diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/contours_link.cpp opencv-5.0.0/modules/imgproc/src/contours_link.cpp
---- opencv-5.0.0.orig/modules/imgproc/src/contours_link.cpp	2026-07-02 19:55:20.059569750 +0800
-+++ opencv-5.0.0/modules/imgproc/src/contours_link.cpp	2026-07-02 19:55:20.990122705 +0800
-@@ -392,8 +392,7 @@ void cv::findContoursLinkRuns(InputArray
+diff -Nuarp opencv-5.1.0.orig/modules/imgproc/src/contours_link.cpp opencv-5.1.0/modules/imgproc/src/contours_link.cpp
+--- opencv-5.1.0.orig/modules/imgproc/src/contours_link.cpp
++++ opencv-5.1.0/modules/imgproc/src/contours_link.cpp
+@@ -392,8 +392,7 @@
  
      // Sanity check: output must be of type vector<vector<Point>>
      CV_Assert(_contours.kind() == _InputArray::STD_VECTOR_VECTOR ||
@@ -3463,10 +3649,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/contours_link.cpp opencv-5.0.0
  
      if (!_contours.empty())
          CV_CheckTypeEQ(_contours.type(), CV_32SC2, "Contours must have type CV_32SC2");
-diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/contours_new.cpp opencv-5.0.0/modules/imgproc/src/contours_new.cpp
---- opencv-5.0.0.orig/modules/imgproc/src/contours_new.cpp	2026-07-02 19:55:20.060409667 +0800
-+++ opencv-5.0.0/modules/imgproc/src/contours_new.cpp	2026-07-02 19:55:20.990226843 +0800
-@@ -684,8 +684,7 @@ void cv::findContours(InputArray _image,
+diff -Nuarp opencv-5.1.0.orig/modules/imgproc/src/contours_new.cpp opencv-5.1.0/modules/imgproc/src/contours_new.cpp
+--- opencv-5.1.0.orig/modules/imgproc/src/contours_new.cpp
++++ opencv-5.1.0/modules/imgproc/src/contours_new.cpp
+@@ -684,8 +684,7 @@
  
      // Sanity check: output must be of type vector<vector<Point>>
      CV_Assert((_contours.kind() == _InputArray::STD_VECTOR_VECTOR) ||
@@ -3476,10 +3662,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/contours_new.cpp opencv-5.0.0/
  
      const int res_type = (method == 0 /*CV_CHAIN_CODE*/) ? CV_8SC1 : CV_32SC2;
      if (!_contours.empty())
-diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/hough.cpp opencv-5.0.0/modules/imgproc/src/hough.cpp
---- opencv-5.0.0.orig/modules/imgproc/src/hough.cpp	2026-07-02 19:55:20.084396263 +0800
-+++ opencv-5.0.0/modules/imgproc/src/hough.cpp	2026-07-02 19:55:20.990405519 +0800
-@@ -2280,7 +2280,7 @@ static void HoughCircles( InputArray _im
+diff -Nuarp opencv-5.1.0.orig/modules/imgproc/src/hough.cpp opencv-5.1.0/modules/imgproc/src/hough.cpp
+--- opencv-5.1.0.orig/modules/imgproc/src/hough.cpp
++++ opencv-5.1.0/modules/imgproc/src/hough.cpp
+@@ -2354,7 +2354,7 @@
          CV_CheckType(type, type == CV_32FC3 || type == CV_32FC4, "Wrong type of output circles");
      }
  
@@ -3488,10 +3674,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/hough.cpp opencv-5.0.0/modules
  
      if( dp <= 0 || minDist <= 0 || param1 <= 0)
          CV_Error( Error::StsOutOfRange, "dp, min_dist and canny_threshold must be all positive numbers" );
-diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/pyramids.cpp opencv-5.0.0/modules/imgproc/src/pyramids.cpp
---- opencv-5.0.0.orig/modules/imgproc/src/pyramids.cpp	2026-07-02 19:55:20.097964095 +0800
-+++ opencv-5.0.0/modules/imgproc/src/pyramids.cpp	2026-07-02 19:55:20.990574879 +0800
-@@ -1535,16 +1535,6 @@ void cv::buildPyramid( InputArray _src,
+diff -Nuarp opencv-5.1.0.orig/modules/imgproc/src/pyramids.cpp opencv-5.1.0/modules/imgproc/src/pyramids.cpp
+--- opencv-5.1.0.orig/modules/imgproc/src/pyramids.cpp
++++ opencv-5.1.0/modules/imgproc/src/pyramids.cpp
+@@ -1688,16 +1688,6 @@
  
      CV_Assert(borderType != BORDER_CONSTANT);
  
@@ -3508,10 +3694,10 @@ diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/pyramids.cpp opencv-5.0.0/modu
      Mat src = _src.getMat();
      _dst.create( maxlevel + 1, 1, 0 );
      _dst.getMatRef(0) = src;
-diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/resize.cpp opencv-5.0.0/modules/imgproc/src/resize.cpp
---- opencv-5.0.0.orig/modules/imgproc/src/resize.cpp	2026-07-02 19:55:20.099716666 +0800
-+++ opencv-5.0.0/modules/imgproc/src/resize.cpp	2026-07-02 19:55:20.990782150 +0800
-@@ -4234,11 +4234,6 @@ void cv::resize( InputArray _src, Output
+diff -Nuarp opencv-5.1.0.orig/modules/imgproc/src/resize.cpp opencv-5.1.0/modules/imgproc/src/resize.cpp
+--- opencv-5.1.0.orig/modules/imgproc/src/resize.cpp
++++ opencv-5.1.0/modules/imgproc/src/resize.cpp
+@@ -3604,11 +3604,6 @@
      CV_OCL_RUN(_src.dims() <= 2 && _dst.isUMat() && _src.cols() > 10 && _src.rows() > 10,
                 ocl_resize(_src, _dst, dsize, inv_scale_x, inv_scale_y, interpolation))
  
@@ -3521,12 +3707,12 @@ diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/resize.cpp opencv-5.0.0/module
 -        srcUMat = _src.getUMat();
 -
      Mat src = _src.getMat();
-     _dst.create(dsize, src.type());
+     _dst.create(dsize, _src.type());
      Mat dst = _dst.getMat();
-diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/smooth.dispatch.cpp opencv-5.0.0/modules/imgproc/src/smooth.dispatch.cpp
---- opencv-5.0.0.orig/modules/imgproc/src/smooth.dispatch.cpp	2026-07-02 19:55:20.105152334 +0800
-+++ opencv-5.0.0/modules/imgproc/src/smooth.dispatch.cpp	2026-07-02 19:55:20.990982269 +0800
-@@ -554,9 +554,7 @@ void GaussianBlur(InputArray _src, Outpu
+diff -Nuarp opencv-5.1.0.orig/modules/imgproc/src/smooth.dispatch.cpp opencv-5.1.0/modules/imgproc/src/smooth.dispatch.cpp
+--- opencv-5.1.0.orig/modules/imgproc/src/smooth.dispatch.cpp
++++ opencv-5.1.0/modules/imgproc/src/smooth.dispatch.cpp
+@@ -555,9 +555,7 @@
      if (sigma2 <= 0)
          sigma2 = sigma1;
  
@@ -3537,9 +3723,9 @@ diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/smooth.dispatch.cpp opencv-5.0
      CV_UNUSED(useOpenCL);
  
      int sdepth = CV_MAT_DEPTH(type), cn = CV_MAT_CN(type);
-diff -Nuarp opencv-5.0.0.orig/modules/photo/src/denoising.cpp opencv-5.0.0/modules/photo/src/denoising.cpp
---- opencv-5.0.0.orig/modules/photo/src/denoising.cpp	2026-07-02 19:55:19.909819080 +0800
-+++ opencv-5.0.0/modules/photo/src/denoising.cpp	2026-07-02 19:55:27.838569232 +0800
+diff -Nuarp opencv-5.1.0.orig/modules/photo/src/denoising.cpp opencv-5.1.0/modules/photo/src/denoising.cpp
+--- opencv-5.1.0.orig/modules/photo/src/denoising.cpp
++++ opencv-5.1.0/modules/photo/src/denoising.cpp
 @@ -43,7 +43,6 @@
  
  #include "fast_nlmeans_denoising_invoker.hpp"
@@ -3548,7 +3734,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/photo/src/denoising.cpp opencv-5.0.0/modul
  
  template<typename ST, typename IT, typename UIT, typename D>
  static void fastNlMeansDenoising_( const Mat& src, Mat& dst, const std::vector<float>& h,
-@@ -120,11 +119,6 @@ void cv::fastNlMeansDenoising( InputArra
+@@ -120,11 +119,6 @@
      CV_Assert(hn == 1 || hn == cn);
  
      Size src_size = _src.size();
@@ -3560,37 +3746,38 @@ diff -Nuarp opencv-5.0.0.orig/modules/photo/src/denoising.cpp opencv-5.0.0/modul
      Mat src = _src.getMat();
      _dst.create(src_size, src.type());
      Mat dst = _dst.getMat();
-@@ -179,11 +173,6 @@ void cv::fastNlMeansDenoisingColored( In
+@@ -178,11 +172,6 @@
+         CV_Error(Error::StsBadArg, "Type of input image should be CV_8UC3 or CV_8UC4!");
          return;
      }
- 
+-
 -    CV_OCL_RUN(_src.dims() <= 2 && (_dst.isUMat() || _src.isUMat()) &&
 -                src_size.width > 5 && src_size.height > 5, // low accuracy on small sizes
 -                ocl_fastNlMeansDenoisingColored(_src, _dst, h, hForColorComponents,
 -                                                templateWindowSize, searchWindowSize))
--
+ 
      Mat src = _src.getMat();
      _dst.create(src_size, type);
-     Mat dst = _dst.getMat();
-diff -Nuarp opencv-5.0.0.orig/modules/video/src/camshift.cpp opencv-5.0.0/modules/video/src/camshift.cpp
---- opencv-5.0.0.orig/modules/video/src/camshift.cpp	2026-07-02 19:55:19.835254874 +0800
-+++ opencv-5.0.0/modules/video/src/camshift.cpp	2026-07-02 19:55:20.991068723 +0800
-@@ -48,13 +48,8 @@ int cv::meanShift( InputArray _probImage
+diff -Nuarp opencv-5.1.0.orig/modules/video/src/camshift.cpp opencv-5.1.0/modules/video/src/camshift.cpp
+--- opencv-5.1.0.orig/modules/video/src/camshift.cpp
++++ opencv-5.1.0/modules/video/src/camshift.cpp
+@@ -48,13 +48,8 @@
      Size size;
      int cn;
      Mat mat;
 -    UMat umat;
 -    bool isUMat = _probImage.isUMat();
- 
+-
 -    if (isUMat)
 -        umat = _probImage.getUMat(), cn = umat.channels(), size = umat.size();
 -    else
 -        mat = _probImage.getMat(), cn = mat.channels(), size = mat.size();
++
 +    mat = _probImage.getMat(), cn = mat.channels(), size = mat.size();
  
      Rect cur_rect = window;
  
-@@ -80,7 +75,7 @@ int cv::meanShift( InputArray _probImage
+@@ -80,7 +75,7 @@
          cur_rect.width = std::max(cur_rect.width, 1);
          cur_rect.height = std::max(cur_rect.height, 1);
  
@@ -3599,22 +3786,23 @@ diff -Nuarp opencv-5.0.0.orig/modules/video/src/camshift.cpp opencv-5.0.0/module
  
          // Calculating center of mass
          if( fabs(m.m00) < DBL_EPSILON )
-@@ -115,13 +110,8 @@ cv::RotatedRect cv::CamShift( InputArray
+@@ -115,13 +110,8 @@
      const int TOLERANCE = 10;
      Size size;
      Mat mat;
 -    UMat umat;
 -    bool isUMat = _probImage.isUMat();
- 
+-
 -    if (isUMat)
 -        umat = _probImage.getUMat(), size = umat.size();
 -    else
 -        mat = _probImage.getMat(), size = mat.size();
++
 +    mat = _probImage.getMat(), size = mat.size();
  
      meanShift( _probImage, window, criteria );
  
-@@ -142,7 +132,7 @@ cv::RotatedRect cv::CamShift( InputArray
+@@ -142,7 +132,7 @@
          window.height = size.height - window.y;
  
      // Calculating moments in new center mass

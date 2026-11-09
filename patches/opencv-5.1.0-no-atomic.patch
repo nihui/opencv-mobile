@@ -1,0 +1,19 @@
+diff -Nuarp opencv-5.1.0.orig/modules/core/src/parallel.cpp opencv-5.1.0/modules/core/src/parallel.cpp
+--- opencv-5.1.0.orig/modules/core/src/parallel.cpp
++++ opencv-5.1.0/modules/core/src/parallel.cpp
+@@ -511,6 +511,7 @@
+     if (range.empty())
+         return;
+ 
++#ifndef OPENCV_DISABLE_THREAD_SUPPORT
+     static std::atomic<bool> flagNestedParallelFor(false);
+     bool isNotNestedRegion = !flagNestedParallelFor.load();
+     if (isNotNestedRegion)
+@@ -523,6 +524,7 @@
+         }
+     }
+     else // nested parallel_for_() calls are not parallelized
++#endif
+     {
+         CV_UNUSED(nstripes);
+         body(range);

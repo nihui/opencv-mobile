@@ -1,6 +1,6 @@
-diff -Nuarp opencv-5.0.0.orig/include/opencv2/opencv.hpp opencv-5.0.0/include/opencv2/opencv.hpp
---- opencv-5.0.0.orig/include/opencv2/opencv.hpp	2026-06-06 02:50:05.000000000 +0800
-+++ opencv-5.0.0/include/opencv2/opencv.hpp	2026-07-02 20:40:05.671248716 +0800
+diff -Nuarp opencv-5.1.0.orig/include/opencv2/opencv.hpp opencv-5.1.0/include/opencv2/opencv.hpp
+--- opencv-5.1.0.orig/include/opencv2/opencv.hpp
++++ opencv-5.1.0/include/opencv2/opencv.hpp
 @@ -64,9 +64,6 @@
  #ifdef HAVE_OPENCV_DNN
  #include "opencv2/dnn.hpp"
@@ -8,13 +8,13 @@ diff -Nuarp opencv-5.0.0.orig/include/opencv2/opencv.hpp opencv-5.0.0/include/op
 -#ifdef HAVE_OPENCV_FLANN
 -#include "opencv2/flann.hpp"
 -#endif
- #ifdef HAVE_OPENCV_HIGHGUI
- #include "opencv2/highgui.hpp"
+ #ifdef HAVE_OPENCV_GEOMETRY
+ #include "opencv2/geometry.hpp"
  #endif
-diff -Nuarp opencv-5.0.0.orig/modules/features/CMakeLists.txt opencv-5.0.0/modules/features/CMakeLists.txt
---- opencv-5.0.0.orig/modules/features/CMakeLists.txt	2026-07-02 20:40:05.391397812 +0800
-+++ opencv-5.0.0/modules/features/CMakeLists.txt	2026-07-02 20:40:05.672686372 +0800
-@@ -6,7 +6,7 @@ set(debug_modules "")
+diff -Nuarp opencv-5.1.0.orig/modules/features/CMakeLists.txt opencv-5.1.0/modules/features/CMakeLists.txt
+--- opencv-5.1.0.orig/modules/features/CMakeLists.txt
++++ opencv-5.1.0/modules/features/CMakeLists.txt
+@@ -6,7 +6,7 @@
  if(DEBUG_opencv_features)
    list(APPEND debug_modules opencv_highgui)
  endif()
@@ -23,9 +23,9 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/CMakeLists.txt opencv-5.0.0/modul
  
  ocv_install_3rdparty_licenses(mscr "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/mscr/chi_table_LICENSE.txt")
  ocv_install_3rdparty_licenses(annoylib "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/annoy/LICENSE")
-diff -Nuarp opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp opencv-5.0.0/modules/features/include/opencv2/features.hpp
---- opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp	2026-07-02 20:40:05.596442619 +0800
-+++ opencv-5.0.0/modules/features/include/opencv2/features.hpp	2026-07-02 20:46:39.277199869 +0800
+diff -Nuarp opencv-5.1.0.orig/modules/features/include/opencv2/features.hpp opencv-5.1.0/modules/features/include/opencv2/features.hpp
+--- opencv-5.1.0.orig/modules/features/include/opencv2/features.hpp
++++ opencv-5.1.0/modules/features/include/opencv2/features.hpp
 @@ -46,10 +46,6 @@
  #include "opencv2/opencv_modules.hpp"
  #include "opencv2/core.hpp"
@@ -37,7 +37,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp open
  #ifdef HAVE_OPENCV_DNN
  #include "opencv2/dnn.hpp"
  #endif
-@@ -999,10 +995,9 @@ public:
+@@ -1063,10 +1059,9 @@
  
      /** @brief Trains a descriptor matcher
  
@@ -51,7 +51,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp open
       */
      CV_WRAP virtual void train();
  
-@@ -1142,7 +1137,6 @@ public:
+@@ -1206,7 +1201,6 @@
      -   `BruteForce-L1`
      -   `BruteForce-Hamming`
      -   `BruteForce-Hamming(2)`
@@ -59,7 +59,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp open
       */
      CV_WRAP static Ptr<DescriptorMatcher> create( const String& descriptorMatcherType );
  
-@@ -1158,7 +1152,7 @@ public:
+@@ -1222,7 +1216,7 @@
  protected:
      /**
       * Class to work with descriptors from several images as with one merged matrix.
@@ -68,10 +68,11 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp open
       */
      class CV_EXPORTS DescriptorCollection
      {
-@@ -1245,55 +1239,6 @@ protected:
+@@ -1308,55 +1302,6 @@
+     int normType;
      bool crossCheck;
  };
- 
+-
 -#if defined(HAVE_OPENCV_FLANN) || defined(CV_DOXYGEN)
 -
 -/** @brief Flann-based descriptor matcher.
@@ -120,13 +121,12 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/include/opencv2/features.hpp open
 -};
 -
 -#endif
--
- /** @brief LightGlue feature matcher.
  
- LightGlue is a CNN-based feature matcher, as described in @cite Lindenberger23 . It takes
-diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/modules/features/src/matchers.cpp
---- opencv-5.0.0.orig/modules/features/src/matchers.cpp	2026-07-02 20:40:05.596913169 +0800
-+++ opencv-5.0.0/modules/features/src/matchers.cpp	2026-07-02 20:40:05.674344164 +0800
+ //! LightGlue model variant (namespace-scoped like dnn::EngineType)
+ enum LightGlueType
+diff -Nuarp opencv-5.1.0.orig/modules/features/src/matchers.cpp opencv-5.1.0/modules/features/src/matchers.cpp
+--- opencv-5.1.0.orig/modules/features/src/matchers.cpp
++++ opencv-5.1.0/modules/features/src/matchers.cpp
 @@ -40,9 +40,6 @@
  //M*/
  
@@ -137,7 +137,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
  #include <limits>
  
  #if defined(HAVE_EIGEN) && EIGEN_WORLD_VERSION == 2
-@@ -1081,13 +1078,6 @@ void BFMatcher::radiusMatchImpl( InputAr
+@@ -1086,13 +1083,6 @@
  Ptr<DescriptorMatcher> DescriptorMatcher::create( const String& descriptorMatcherType )
  {
      Ptr<DescriptorMatcher> dm;
@@ -151,7 +151,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
      if( !descriptorMatcherType.compare( "BruteForce" ) ) // L2
      {
          dm = makePtr<BFMatcher>(int(NORM_L2)); // anonymous enums can't be template parameters
-@@ -1123,11 +1113,6 @@ Ptr<DescriptorMatcher> DescriptorMatcher
+@@ -1128,11 +1118,6 @@
  
      switch(matcherType)
      {
@@ -163,7 +163,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
      case BRUTEFORCE:
          name = "BruteForce";
          break;
-@@ -1152,353 +1137,4 @@ Ptr<DescriptorMatcher> DescriptorMatcher
+@@ -1157,353 +1142,4 @@
  
  }
  
@@ -516,11 +516,12 @@ diff -Nuarp opencv-5.0.0.orig/modules/features/src/matchers.cpp opencv-5.0.0/mod
 -
 -#endif
 -
- }
-diff -Nuarp opencv-5.0.0.orig/modules/geometry/CMakeLists.txt opencv-5.0.0/modules/geometry/CMakeLists.txt
---- opencv-5.0.0.orig/modules/geometry/CMakeLists.txt	2026-07-02 20:40:05.333023629 +0800
-+++ opencv-5.0.0/modules/geometry/CMakeLists.txt	2026-07-02 20:40:05.675602521 +0800
-@@ -4,7 +4,7 @@ set(debug_modules "")
+-}
++}
+diff -Nuarp opencv-5.1.0.orig/modules/geometry/CMakeLists.txt opencv-5.1.0/modules/geometry/CMakeLists.txt
+--- opencv-5.1.0.orig/modules/geometry/CMakeLists.txt
++++ opencv-5.1.0/modules/geometry/CMakeLists.txt
+@@ -4,7 +4,7 @@
  if(DEBUG_opencv_geometry)
    list(APPEND debug_modules opencv_highgui)
  endif()
@@ -529,10 +530,34 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/CMakeLists.txt opencv-5.0.0/modul
      WRAP java objc python js
  )
  ocv_target_link_libraries(${the_module} ${LAPACK_LIBRARIES})
-diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/ransac_solvers.cpp opencv-5.0.0/modules/geometry/src/usac/ransac_solvers.cpp
---- opencv-5.0.0.orig/modules/geometry/src/usac/ransac_solvers.cpp	2026-07-02 20:40:05.379922963 +0800
-+++ opencv-5.0.0/modules/geometry/src/usac/ransac_solvers.cpp	2026-07-02 20:42:49.511377507 +0800
-@@ -211,9 +211,9 @@ UniversalRANSAC::UniversalRANSAC (Ptr<Mo
+diff -Nuarp opencv-5.1.0.orig/modules/geometry/src/usac.hpp opencv-5.1.0/modules/geometry/src/usac.hpp
+--- opencv-5.1.0.orig/modules/geometry/src/usac.hpp
++++ opencv-5.1.0/modules/geometry/src/usac.hpp
+@@ -526,13 +526,13 @@
+ class RadiusSearchNeighborhoodGraph : public NeighborhoodGraph {
+ public:
+     static Ptr<RadiusSearchNeighborhoodGraph> create (const Mat &points, int points_size,
+-            double radius_, int flann_search_params, int num_kd_trees);
+-};
+-
+-class FlannNeighborhoodGraph : public NeighborhoodGraph {
+-public:
+-    static Ptr<FlannNeighborhoodGraph> create(const Mat &points, int points_size,
+-      int k_nearest_neighbors_, bool get_distances, int flann_search_params, int num_kd_trees);
++            double radius_);
++};
++
++class KNearestNeighborhoodGraph : public NeighborhoodGraph {
++public:
++    static Ptr<KNearestNeighborhoodGraph> create(const Mat &points, int points_size,
++      int k_nearest_neighbors_, bool get_distances);
+     virtual const std::vector<double> &getNeighborsDistances (int idx) const = 0;
+ };
+ 
+diff -Nuarp opencv-5.1.0.orig/modules/geometry/src/usac/ransac_solvers.cpp opencv-5.1.0/modules/geometry/src/usac/ransac_solvers.cpp
+--- opencv-5.1.0.orig/modules/geometry/src/usac/ransac_solvers.cpp
++++ opencv-5.1.0/modules/geometry/src/usac/ransac_solvers.cpp
+@@ -211,9 +211,9 @@
              graph = GridNeighborhoodGraph::create(points, points_size,
                      params->getCellSize(), params->getCellSize(), params->getCellSize(), params->getCellSize(), 10);
          } else if (params->getNeighborsSearch() == NeighborSearchMethod::NEIGH_FLANN_KNN) {
@@ -544,7 +569,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/ransac_solvers.cpp openc
          } else CV_Error(cv::Error::StsNotImplemented, "Graph type is not implemented!");
      }
  
-@@ -1339,7 +1339,7 @@ private:
+@@ -1339,7 +1339,7 @@
      int prosac_max_samples = 200000;
  
      // for neighborhood graph
@@ -553,9 +578,9 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/ransac_solvers.cpp openc
      int cell_size = 50; // pixels, for grid neighbors searching
      int radius = 30; // pixels, for radius-search neighborhood graph
      NeighborSearchMethod neighborsType = NeighborSearchMethod::NEIGH_GRID;
-diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.0.0/modules/geometry/src/usac/utils.cpp
---- opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp	2026-07-02 20:40:05.383198661 +0800
-+++ opencv-5.0.0/modules/geometry/src/usac/utils.cpp	2026-07-02 20:40:05.679421737 +0800
+diff -Nuarp opencv-5.1.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.1.0/modules/geometry/src/usac/utils.cpp
+--- opencv-5.1.0.orig/modules/geometry/src/usac/utils.cpp
++++ opencv-5.1.0/modules/geometry/src/usac/utils.cpp
 @@ -4,7 +4,6 @@
  
  #include "../precomp.hpp"
@@ -564,7 +589,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.0.0/m
  #include <map>
  
  namespace cv { namespace usac {
-@@ -388,8 +387,8 @@ void Utils::densitySort (const Mat &poin
+@@ -388,8 +387,8 @@
          sorted_mask[i] = i;
  
      // get neighbors
@@ -575,7 +600,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.0.0/m
  
      std::vector<double> sum_knn_distances (points_size, 0);
      for (int p = 0; p < points_size; p++) {
-@@ -611,68 +610,19 @@ float Utils::findMedian (std::vector<flo
+@@ -611,68 +610,19 @@
      }
  }
  
@@ -597,9 +622,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.0.0/m
      {
 -        CV_Assert( _indexParams );
 -        CV_Assert( _searchParams );
-+        const float diff = pa[i] - pb[i];
-+        result += diff * diff;
-     }
+-    }
 -
 -    void radiusMatch( const Mat& queryDescriptors, const Mat& trainDescriptors,
 -                      std::vector<std::vector<DMatch> >& matches, float maxDistance)
@@ -649,12 +672,15 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.0.0/m
 -        }
 -    }
 -};
++        const float diff = pa[i] - pb[i];
++        result += diff * diff;
++    }
 +    return result;
 +}
  
  ///////////////////////////////// Radius Search Graph /////////////////////////////////////////////
  class RadiusSearchNeighborhoodGraphImpl : public RadiusSearchNeighborhoodGraph {
-@@ -680,29 +630,20 @@ private:
+@@ -680,29 +630,20 @@
      std::vector<std::vector<int>> graph;
  public:
      RadiusSearchNeighborhoodGraphImpl (const Mat &container_, int points_size,
@@ -662,8 +688,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.0.0/m
 -        // Radius search OpenCV works only with float data
 +               double radius) {
          CV_Assert(container_.type() == CV_32F);
-+        CV_Assert(points_size <= container_.rows);
- 
+-
 -        FlannMatcher flann(makePtr<flann::KDTreeIndexParams>(num_kd_trees), makePtr<flann::SearchParams>(flann_search_params));
 -        std::vector<std::vector<DMatch>> neighbours;
 -        flann.radiusMatch(container_, container_, neighbours, (float)radius);
@@ -683,6 +708,8 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.0.0/m
 -                if (idx.trainIdx != pt)
 -                    graph_row[j++] = idx.trainIdx;
 -            pt++;
++        CV_Assert(points_size <= container_.rows);
++
 +        const float radius2 = (float)(radius * radius);
 +        graph = std::vector<std::vector<int>>(points_size);
 +        for (int pt = 0; pt < points_size; pt++) {
@@ -696,19 +723,21 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.0.0/m
          }
      }
      const std::vector<std::vector<int>> &getGraph () const override { return graph; }
-@@ -711,45 +652,40 @@ public:
+@@ -711,45 +652,40 @@
      }
  };
  Ptr<RadiusSearchNeighborhoodGraph> RadiusSearchNeighborhoodGraph::create (const Mat &points,
 -        int points_size, double radius_, int flann_search_params, int num_kd_trees) {
 -    return makePtr<RadiusSearchNeighborhoodGraphImpl> (points, points_size, radius_,
 -            flann_search_params, num_kd_trees);
-+        int points_size, double radius_) {
-+    return makePtr<RadiusSearchNeighborhoodGraphImpl> (points, points_size, radius_);
- }
- 
+-}
+-
 -///////////////////////////////// FLANN Graph /////////////////////////////////////////////
 -class FlannNeighborhoodGraphImpl : public FlannNeighborhoodGraph {
++        int points_size, double radius_) {
++    return makePtr<RadiusSearchNeighborhoodGraphImpl> (points, points_size, radius_);
++}
++
 +///////////////////////////////// KNN Graph /////////////////////////////////////////////
 +class KNearestNeighborhoodGraphImpl : public KNearestNeighborhoodGraph {
  private:
@@ -763,7 +792,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.0.0/m
          }
      }
      const std::vector<double>& getNeighborsDistances (int idx) const override {
-@@ -762,11 +698,10 @@ public:
+@@ -762,11 +698,10 @@
      }
  };
  
@@ -779,24 +808,3 @@ diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac/utils.cpp opencv-5.0.0/m
  }
  
  ///////////////////////////////// Grid Neighborhood Graph /////////////////////////////////////////
-diff -Nuarp opencv-5.0.0.orig/modules/geometry/src/usac.hpp opencv-5.0.0/modules/geometry/src/usac.hpp
---- opencv-5.0.0.orig/modules/geometry/src/usac.hpp	2026-07-02 20:40:05.368821509 +0800
-+++ opencv-5.0.0/modules/geometry/src/usac.hpp	2026-07-02 20:40:05.677751060 +0800
-@@ -526,13 +526,13 @@ public:
- class RadiusSearchNeighborhoodGraph : public NeighborhoodGraph {
- public:
-     static Ptr<RadiusSearchNeighborhoodGraph> create (const Mat &points, int points_size,
--            double radius_, int flann_search_params, int num_kd_trees);
-+            double radius_);
- };
- 
--class FlannNeighborhoodGraph : public NeighborhoodGraph {
-+class KNearestNeighborhoodGraph : public NeighborhoodGraph {
- public:
--    static Ptr<FlannNeighborhoodGraph> create(const Mat &points, int points_size,
--      int k_nearest_neighbors_, bool get_distances, int flann_search_params, int num_kd_trees);
-+    static Ptr<KNearestNeighborhoodGraph> create(const Mat &points, int points_size,
-+      int k_nearest_neighbors_, bool get_distances);
-     virtual const std::vector<double> &getNeighborsDistances (int idx) const = 0;
- };
- 

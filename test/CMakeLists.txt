@@ -24,6 +24,7 @@ else()
 endif()
 
 add_executable(opencv-mobile-test main.cpp)
+add_executable(opencv-mobile-test-imencode imencode.cpp)
 
 if(NOT OPENCV_MOBILE_TEST_CXX_STANDARD AND DEFINED OpenCV_VERSION)
     if(OpenCV_VERSION VERSION_GREATER_EQUAL 5)
@@ -34,8 +35,12 @@ if(NOT OPENCV_MOBILE_TEST_CXX_STANDARD AND DEFINED OpenCV_VERSION)
 endif()
 
 if(OPENCV_MOBILE_TEST_CXX_STANDARD)
-    set_property(TARGET opencv-mobile-test PROPERTY CXX_STANDARD ${OPENCV_MOBILE_TEST_CXX_STANDARD})
-    set_property(TARGET opencv-mobile-test PROPERTY CXX_STANDARD_REQUIRED ON)
+    set_property(TARGET opencv-mobile-test opencv-mobile-test-imencode PROPERTY CXX_STANDARD ${OPENCV_MOBILE_TEST_CXX_STANDARD})
+    set_property(TARGET opencv-mobile-test opencv-mobile-test-imencode PROPERTY CXX_STANDARD_REQUIRED ON)
 endif()
 
 target_link_libraries(opencv-mobile-test ${OpenCV_LIBS})
+target_link_libraries(opencv-mobile-test-imencode ${OpenCV_LIBS})
+
+enable_testing()
+add_test(NAME imencode COMMAND opencv-mobile-test-imencode)

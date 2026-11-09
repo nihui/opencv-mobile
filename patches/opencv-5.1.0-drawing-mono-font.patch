@@ -1,7 +1,74 @@
-diff -Nuarp opencv-5.0.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv-5.0.0/modules/imgproc/include/opencv2/imgproc.hpp
---- opencv-5.0.0.orig/modules/imgproc/include/opencv2/imgproc.hpp	2026-07-02 22:23:00.285195495 +0800
-+++ opencv-5.0.0/modules/imgproc/include/opencv2/imgproc.hpp	2026-07-02 22:23:20.684667603 +0800
-@@ -4296,45 +4296,20 @@ CV_EXPORTS_W double getFontScaleFromHeig
+diff -Nuarp opencv-5.1.0.orig/modules/imgproc/CMakeLists.txt opencv-5.1.0/modules/imgproc/CMakeLists.txt
+--- opencv-5.1.0.orig/modules/imgproc/CMakeLists.txt
++++ opencv-5.1.0/modules/imgproc/CMakeLists.txt
+@@ -17,8 +17,6 @@
+ 
+ ocv_define_module(imgproc opencv_core opencv_geometry WRAP java objc python js)
+ 
+-ocv_module_include_directories(opencv_imgproc ${ZLIB_INCLUDE_DIRS})
+-
+ if(HAVE_IPP)
+   # OPENCV_IPP_ENABLE_ALL is defined in modules/core/CMakeList.txt
+   OCV_OPTION(OPENCV_IPP_GAUSSIAN_BLUR "Enable IPP optimizations for GaussianBlur (+8Mb in binary size)" OPENCV_IPP_ENABLE_ALL)
+@@ -27,54 +25,3 @@
+   endif()
+ endif()
+ 
+-if(HAVE_HARFBUZZ)
+-  set(UNIFONT_MD5 "fb79cf5b4f4c89414f1233f14c2eb273")
+-  set(UNIFONT_NAME "WenQuanYiMicroHei.ttf.gz")
+-  set(UNIFONT_COMMIT "cc7d85179d69a704bee209aa37ce8a657f2f8b34")
+-  set(UNIFONT_URL "https://raw.githubusercontent.com/vpisarev/opencv_3rdparty/${UNIFONT_COMMIT}/")
+-
+-  unset(HAVE_UNIFONT)
+-  unset(HAVE_UNIFONT CACHE)
+-
+-  if (WITH_UNIFONT)
+-      ocv_download(FILENAME ${UNIFONT_NAME}
+-                   HASH ${UNIFONT_MD5}
+-                   URL
+-                     "${OPENCV_UNIFONT_URL}"
+-                     "${UNIFONT_URL}"
+-                   DESTINATION_DIR "${CMAKE_CURRENT_BINARY_DIR}"
+-                   ID UNIFONT
+-                   STATUS res
+-                   RELATIVE_URL)
+-
+-      if (res)
+-          message(STATUS "Unicode font has been downloaded successfully.")
+-          set(HAVE_UNIFONT ON CACHE INTERNAL "")
+-      else()
+-          message(STATUS "Unicode font download failed. Turning it off.")
+-          set(HAVE_UNIFONT OFF CACHE INTERNAL "")
+-      endif()
+-  else()
+-      set(HAVE_UNIFONT OFF CACHE INTERNAL "")
+-  endif()
+-
+-  ocv_blob2hdr("${CMAKE_CURRENT_SOURCE_DIR}/fonts/Rubik.ttf.gz" "${CMAKE_CURRENT_BINARY_DIR}/builtin_font_sans.h" OcvBuiltinFontSans)
+-  unset(HAVE_ITALICFONT)
+-  unset(HAVE_ITALICFONT CACHE)
+-  if(WITH_ITALICFONT)
+-    ocv_blob2hdr("${CMAKE_CURRENT_SOURCE_DIR}/fonts/Rubik-Italic.ttf.gz" "${CMAKE_CURRENT_BINARY_DIR}/builtin_font_italic.h" OcvBuiltinFontItalic)
+-    set(HAVE_ITALICFONT ON CACHE INTERNAL "")
+-  endif()
+-  if (HAVE_UNIFONT)
+-      ocv_blob2hdr("${CMAKE_CURRENT_BINARY_DIR}/${UNIFONT_NAME}" "${CMAKE_CURRENT_BINARY_DIR}/builtin_font_uni.h" OcvBuiltinFontUni)
+-  endif()
+-  include_directories("${CMAKE_CURRENT_BINARY_DIR}")
+-  ocv_target_link_libraries(${the_module} LINK_PRIVATE ${ZLIB_LIBRARIES})
+-  ocv_install_3rdparty_licenses(fonts fonts/Rubik_OFL.txt)
+-
+-  ocv_module_include_directories(opencv_imgproc ${HARFBUZZ_INCLUDE_DIR})
+-  ocv_target_link_libraries(${the_module} LINK_PRIVATE ${HARFBUZZ_LIBRARIES})
+-  if(HARFBUZZ_IS_BUNDLED)
+-    ocv_install_3rdparty_licenses(harfbuzz "${OpenCV_SOURCE_DIR}/3rdparty/harfbuzz/COPYING")
+-  endif()
+-endif()
+diff -Nuarp opencv-5.1.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv-5.1.0/modules/imgproc/include/opencv2/imgproc.hpp
+--- opencv-5.1.0.orig/modules/imgproc/include/opencv2/imgproc.hpp
++++ opencv-5.1.0/modules/imgproc/include/opencv2/imgproc.hpp
+@@ -4380,71 +4380,20 @@
                                             const int pixelHeight,
                                             const int thickness = 1);
  
@@ -19,8 +86,17 @@ diff -Nuarp opencv-5.0.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv
 -    /** @brief loads default font */
 -    CV_WRAP FontFace();
 -    /** @brief loads font at the specified path or with specified name.
--       @param fontPathOrName either path to the custom font or the name of embedded font: "sans", "italic" or "uni".
--          Empty fontPathOrName means the default embedded font.
+-       @param fontPathOrName either path to a custom font file (.ttf/.otf, optionally gzip-compressed)
+-          or the name of one of the built-in font slots:
+-          - "sans": the default font (Rubik, always compiled in);
+-          - "italic": Rubik Italic, compiled in only if OpenCV was built with WITH_ITALICFONT=ON;
+-            otherwise it can be provided with setBuiltinFont(), and if it is not available,
+-            "italic" silently resolves to "sans";
+-          - "uni": WenQuanYi Micro Hei (CJK), compiled in only with WITH_UNIFONT=ON; otherwise
+-            provide it with setBuiltinFont(), or loading fails.
+-          The built-in slots also serve as the fallback chain: characters missing from the
+-          user's font are taken from "sans", then "italic", then "uni".
+-          Empty fontPathOrName means the default embedded font ("sans").
 -    */
 -    CV_WRAP FontFace(const String& fontPathOrName);
 +    FontFace();
@@ -41,6 +117,23 @@ diff -Nuarp opencv-5.0.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv
 -    CV_WRAP bool setInstance(const std::vector<int>& params);
 -    CV_WRAP bool getInstance(CV_OUT std::vector<int>& params) const;
 -
+-    /** @brief Provides or replaces one of the built-in font slots with an external font file.
+-        @param fontName the slot: "sans", "italic" or "uni".
+-        @param fontPath path to a .ttf/.otf font (optionally gzip-compressed, e.g. `.ttf.gz`).
+-          An empty path restores the compiled-in font of that slot (if any), otherwise the slot
+-          becomes empty.
+-        @return false if the slot name is unknown or the font file cannot be loaded (the
+-          registry is left unchanged).
+-
+-        This is the way to get CJK text or a true italic when OpenCV is built without
+-        WITH_UNIFONT / WITH_ITALICFONT (the defaults), e.g.
+-        `cv::FontFace::setBuiltinFont("uni", "/usr/share/fonts/NotoSansCJK-Regular.ttc")`.
+-        The registered font participates in the automatic fallback chain like the compiled-in
+-        one would. The change is global (all threads) and applies to FontFace objects created
+-        afterwards; existing FontFace objects keep the font they were created with.
+-    */
+-    CV_WRAP static bool setBuiltinFont(const String& fontName, const String& fontPath);
+-
 -    struct Impl;
 -
 -    Impl* operator -> ();
@@ -55,7 +148,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv
  };
  
  /** @brief Defines various put text flags */
-@@ -4377,7 +4352,7 @@ example. The function returns the coordi
+@@ -4487,7 +4436,7 @@
         [0, org.x] is for RTL one.
  */
  CV_EXPORTS_W Point putText( InputOutputArray img, const String& text, Point org,
@@ -64,7 +157,7 @@ diff -Nuarp opencv-5.0.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv
                              PutTextFlags flags=PUT_TEXT_ALIGN_LEFT, Range wrap=Range() );
  
  /** @brief Calculates the bounding rect for the text
-@@ -4400,7 +4375,7 @@ That is, the following code renders some
+@@ -4510,7 +4459,7 @@
  @param wrap The optional text wrapping range; see #putText.
  */
  CV_EXPORTS_W Rect getTextSize( Size imgsize, const String& text, Point org,
@@ -73,9 +166,9 @@ diff -Nuarp opencv-5.0.0.orig/modules/imgproc/include/opencv2/imgproc.hpp opencv
                                 PutTextFlags flags=PUT_TEXT_ALIGN_LEFT, Range wrap=Range() );
  
  
-diff -Nuarp opencv-5.0.0.orig/modules/imgproc/src/drawing_text.cpp opencv-5.0.0/modules/imgproc/src/drawing_text.cpp
---- opencv-5.0.0.orig/modules/imgproc/src/drawing_text.cpp	2026-07-02 22:23:01.621100617 +0800
-+++ opencv-5.0.0/modules/imgproc/src/drawing_text.cpp	2026-07-02 22:23:20.685690284 +0800
+diff -Nuarp opencv-5.1.0.orig/modules/imgproc/src/drawing_text.cpp opencv-5.1.0/modules/imgproc/src/drawing_text.cpp
+--- opencv-5.1.0.orig/modules/imgproc/src/drawing_text.cpp
++++ opencv-5.1.0/modules/imgproc/src/drawing_text.cpp
 @@ -0,0 +1,203 @@
 +// This file is part of OpenCV project.
 +// It is subject to the license terms in the LICENSE file found in the top-level directory
