@@ -30,11 +30,11 @@
 
 :heavy_check_mark: ***NEW FEATURE*** [`cv::VideoWriter` supports jpg streaming over http](#cvvideowriter-supports-jpg-streaming-over-http)
 
-|opencv 5.0.0 package size|The official opencv|opencv-mobile|
+|opencv 5.1.0 package size|The official opencv|opencv-mobile|
 |:-:|:-:|:-:|
-|source zip|81.9 MB|9.07 MB|
-|android|303 MB|25 MB|
-|ios|42.1 MB|5.56 MB|
+|source zip|83.8 MB|9.56 MB|
+|android|319 MB|30 MB|
+|ios|42.2 MB|6.42 MB|
 
 
 <table>
@@ -364,9 +364,9 @@ OpenCV **5.1.0** packages require a C++17-capable compiler. Windows OpenCV 5.1.0
 </tr>
 </table>
 
-* Android package build with ndk r29 and android api 21
+* Android package build with ndk r30 and android api 21
 * [KleidiCV](https://gitlab.arm.com/kleidi/kleidicv) HAL enabled for Android arm64-v8a, all Apple arm64/arm64e platforms and Linux aarch64 targets
-* iOS / MacOS / Mac-Catalyst / watchOS / tvOS / visionOS package build with Xcode 15.2
+* iOS / MacOS / Mac-Catalyst / watchOS / tvOS / visionOS package build with Xcode 16.4
 * ARM Linux package build with cross-compiler on Ubuntu-24.04
 * Ubuntu packages build on Ubuntu-22.04, Ubuntu-24.04 and Ubuntu-26.04 respectively
 * VS2026 package includes x86, x64 and arm64 builds
